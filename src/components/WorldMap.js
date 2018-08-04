@@ -7,7 +7,11 @@ class WorldMap extends Component {
     super()
     this.state = {
       worldData: [],
+      width: 0,
+      height: 0
     }
+
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
   projection() {
@@ -29,11 +33,18 @@ class WorldMap extends Component {
           })
         })
       })
+
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({width: window.innerWidth, height: window.innerHeight });
   }
   
   render() {
     return (
-      <svg width={ 1920 } height={ 1000 } viewBox="0 0 800 270">
+      <svg width={ this.state.width*.8 } height={ this.state.height - 250} viewBox="0 0 800 270">
         <g className="countries">
           {
             this.state.worldData.map((d,i) => (
