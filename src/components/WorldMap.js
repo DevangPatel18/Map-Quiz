@@ -16,8 +16,8 @@ class WorldMap extends Component {
 
   projection() {
     return geoMercator()
-      .scale(100)
-      .translate([ 800 / 2, 450 / 2 ])
+      .scale(200)
+      .translate([ 960 / 2, 500 / 2 ])
   }
 
   componentDidMount() {
@@ -45,9 +45,9 @@ class WorldMap extends Component {
   render() {
     return (
       <svg
-        width={ this.state.width*.8 }
-        height={ this.state.height - 250}
-        viewBox="0 0 1000 100"
+        width={ this.state.width }
+        height={ this.state.width/2.2 }
+        viewBox="0 -120 960 620"
       >
         <g className="countries">
           {
@@ -58,7 +58,7 @@ class WorldMap extends Component {
                 className="country"
                 fill="white"
                 stroke="black"
-                strokeWidth={ 0.5 }
+                strokeWidth={ 0.3 }
               />
             ))
           }
