@@ -21,7 +21,7 @@ class WorldMap extends Component {
   }
 
   componentDidMount() {
-    fetch("/world-110m.json")
+    fetch("/world-50m.json")
       .then(response => {
         if (response.status !== 200) {
           console.log(`There was a problem: ${response.status}`)
@@ -44,7 +44,11 @@ class WorldMap extends Component {
   
   render() {
     return (
-      <svg width={ this.state.width*.8 } height={ this.state.height - 250} viewBox="0 0 800 270">
+      <svg
+        width={ this.state.width*.8 }
+        height={ this.state.height - 250}
+        viewBox="0 0 1000 100"
+      >
         <g className="countries">
           {
             this.state.worldData.map((d,i) => (
