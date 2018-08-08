@@ -38,6 +38,9 @@ class WorldMap extends Component {
 
               var data = feature(worldData, worldData.objects.countries).features;
 
+              // Remove Antarctica
+              data = data.filter(x => +x.id !== 10 ? 1:0)
+
               data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
                 let y = cIso.find(c => +c["country-code"] === +x.id)
                 x.properties = {
