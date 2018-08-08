@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { geoMercator, geoPath } from "d3-geo"
 import { feature } from "topojson-client"
-import cIso from "./iso3166.json"
 
 class WorldMap extends Component {
   constructor() {
@@ -30,20 +29,28 @@ class WorldMap extends Component {
           return;
         }
         response.json().then(worldData => {
-          
-          var data = feature(worldData, worldData.objects.countries).features;
-          data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
-            let y = cIso.find(c => +c["country-code"] === +x.id)
-            x.properties = {
-              name: y.name,
-              acronym: y['alpha-3'],
-              region: y.region,
-              'sub-region': y['sub-region'],
-              'intermediate-region': y['intermediate-region']
-            }
-          })          
 
-          this.setState({ worldData: data })
+          var isoUrl = 'https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json';
+
+          fetch(isoUrl)
+            .then(response => response.json())
+            .then(cIso => {
+
+              var data = feature(worldData, worldData.objects.countries).features;
+
+              data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
+                let y = cIso.find(c => +c["country-code"] === +x.id)
+                x.properties = {
+                  name: y.name,
+                  acronym: y['alpha-3'],
+                  region: y.region,
+                  'sub-region': y['sub-region'],
+                  'intermediate-region': y['intermediate-region']
+                }
+              })
+
+              this.setState({ worldData: data })
+            })
         })
       })
 
