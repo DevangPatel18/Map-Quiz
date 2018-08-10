@@ -13,3 +13,7 @@
 .App-title {
   font-size: 4em;
 }
+
+*:focus {
+    outline: none;
+}
