@@ -7,12 +7,14 @@ import {
   Geography,
 } from "react-simple-maps"
 import { feature } from "topojson-client"
+import { Motion, spring } from "react-motion"
 
 class App extends Component {
   constructor() {
     super()
 
     this.state = {
+      center: [0,0],
       zoom: 1,
       geographyPaths: []
     }
@@ -75,7 +77,7 @@ class App extends Component {
   }
 
   handleMoveStart(currentCenter) {
-    // console.log("New center: ", currentCenter)
+    // console.log("Current center: ", currentCenter)
   }
 
   handleMoveEnd(newCenter) {
@@ -97,43 +99,60 @@ class App extends Component {
         <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
         <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
 
-        <ComposableMap
-          width={980}
-          height={551}
+        <Motion
+          defaultStyle={{
+            zoom: 1,
+            x: 0,
+            y: 0,
+          }}
           style={{
-            width: "100%",
-            height: "auto"
+            zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
+            x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
+            y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
           }}
         >
-          <ZoomableGroup
-            zoom={ this.state.zoom }
-            onMoveStart={this.handleMoveStart}
-            onMoveEnd={this.handleMoveEnd}
-          >
-            <Geographies geography={ this.state.geographyPaths }>
-              {(geographies, projection) => 
-                geographies.map((geography, i) =>
-                <Geography
-                  key={ `geography-${i}` }
-                  cacheId={ `geography-${i}` }
-                  geography={ geography }
-                  projection={ projection }
-                  onClick={() => this.handleCountryClick(i)}
+          {({zoom,x,y}) => (
+            <ComposableMap
+              projectionConfig={{ scale: 205 }}
+              width={980}
+              height={551}
+              style={{
+                width: "100%",
+                height: "auto"
+              }}
+            >
+              <ZoomableGroup
+                center={[x,y]}
+                zoom={zoom}
+                onMoveStart={this.handleMoveStart}
+                onMoveEnd={this.handleMoveEnd}
+              >
+                <Geographies geography={ this.state.geographyPaths }>
+                  {(geographies, projection) => 
+                    geographies.map((geography, i) => (
+                    <Geography
+                      key={ `geography-${i}` }
+                      cacheId={ `geography-${i}` }
+                      geography={ geography }
+                      projection={ projection }
+                      onClick={() => this.handleCountryClick(i)}
 
-                  fill="white"
-                  stroke="black"
-                  strokeWidth={ 0.1 }
+                      fill="white"
+                      stroke="black"
+                      strokeWidth={ 0.1 }
 
-                  style={{
-                    default: { fill: "#FFF" },
-                    hover:   { fill: "#F5F5F5" },
-                    pressed: { fill: "#C0C0C0" },
-                  }}
-                />
-              )}
-            </Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
+                      style={{
+                        default: { fill: "#FFF" },
+                        hover:   { fill: "#F5F5F5" },
+                        pressed: { fill: "#C0C0C0" },
+                      }}
+                    />
+                  ))}
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+          )}
+        </Motion>
       </div>
     );
   }
