@@ -8,6 +8,7 @@ import {
 } from "react-simple-maps"
 import { feature } from "topojson-client"
 import { Motion, spring } from "react-motion"
+import WheelReact from 'wheel-react';
 
 class App extends Component {
   constructor() {
@@ -19,6 +20,23 @@ class App extends Component {
       geographyPaths: []
     }
 
+    WheelReact.config({
+      left: () => {
+        // console.log('wheel left detected.');
+      },
+      right: () => {
+        // console.log('wheel right detected.');
+      },
+      up: () => {
+        // console.log('wheel up detected.');
+        this.handleZoomOut()
+      },
+      down: () => {
+        // console.log('wheel down detected.');
+        this.handleZoomIn()
+      }
+    });
+
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
@@ -26,6 +44,10 @@ class App extends Component {
 
   componentDidMount() {
     this.loadPaths()
+  }
+
+  componentWillUnmount () {
+    WheelReact.clearTimeout();
   }
 
   loadPaths() {
@@ -108,60 +130,62 @@ class App extends Component {
         <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
         <button onClick={ this.handleReset }>{ "Reset view" }</button>
 
-        <Motion
-          defaultStyle={{
-            zoom: 1,
-            x: 0,
-            y: 0,
-          }}
-          style={{
-            zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
-            x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
-            y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
-          }}
-        >
-          {({zoom,x,y}) => (
-            <ComposableMap
-              projectionConfig={{ scale: 205 }}
-              width={980}
-              height={551}
-              style={{
-                width: "100%",
-                height: "auto"
-              }}
-            >
-              <ZoomableGroup
-                center={[x,y]}
-                zoom={zoom}
-                onMoveStart={this.handleMoveStart}
-                onMoveEnd={this.handleMoveEnd}
+        <div {...WheelReact.events}>
+          <Motion
+            defaultStyle={{
+              zoom: 1,
+              x: 0,
+              y: 0,
+            }}
+            style={{
+              zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
+              x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
+              y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
+            }}
+          >
+            {({zoom,x,y}) => (
+              <ComposableMap
+                projectionConfig={{ scale: 205 }}
+                width={980}
+                height={551}
+                style={{
+                  width: "100%",
+                  height: "auto"
+                }}
               >
-                <Geographies geography={ this.state.geographyPaths }>
-                  {(geographies, projection) => 
-                    geographies.map((geography, i) => (
-                    <Geography
-                      key={ `geography-${i}` }
-                      cacheId={ `geography-${i}` }
-                      geography={ geography }
-                      projection={ projection }
-                      onClick={() => this.handleCountryClick(i)}
+                <ZoomableGroup
+                  center={[x,y]}
+                  zoom={zoom}
+                  onMoveStart={this.handleMoveStart}
+                  onMoveEnd={this.handleMoveEnd}
+                >
+                  <Geographies geography={ this.state.geographyPaths }>
+                    {(geographies, projection) => 
+                      geographies.map((geography, i) => (
+                      <Geography
+                        key={ `geography-${i}` }
+                        cacheId={ `geography-${i}` }
+                        geography={ geography }
+                        projection={ projection }
+                        onClick={() => this.handleCountryClick(i)}
 
-                      fill="white"
-                      stroke="black"
-                      strokeWidth={ 0.1 }
+                        fill="white"
+                        stroke="black"
+                        strokeWidth={ 0.1 }
 
-                      style={{
-                        default: { fill: "#FFF" },
-                        hover:   { fill: "#F5F5F5" },
-                        pressed: { fill: "#C0C0C0" },
-                      }}
-                    />
-                  ))}
-                </Geographies>
-              </ZoomableGroup>
-            </ComposableMap>
-          )}
-        </Motion>
+                        style={{
+                          default: { fill: "#FFF" },
+                          hover:   { fill: "#F5F5F5" },
+                          pressed: { fill: "#C0C0C0" },
+                        }}
+                      />
+                    ))}
+                  </Geographies>
+                </ZoomableGroup>
+              </ComposableMap>
+            )}
+          </Motion>
+        </div>
       </div>
     );
   }
