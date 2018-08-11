@@ -21,6 +21,7 @@ class App extends Component {
 
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
+    this.handleReset = this.handleReset.bind(this)
   }
 
   componentDidMount() {
@@ -76,6 +77,13 @@ class App extends Component {
     })
   }
 
+  handleReset() {
+    this.setState({
+      center: [0,Math.random()/1000],
+      zoom: 1,
+    })
+  }
+
   handleMoveStart(currentCenter) {
     // console.log("Current center: ", currentCenter)
   }
@@ -98,6 +106,7 @@ class App extends Component {
 
         <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
         <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
+        <button onClick={ this.handleReset }>{ "Reset view" }</button>
 
         <Motion
           defaultStyle={{
