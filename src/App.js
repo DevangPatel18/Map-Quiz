@@ -18,7 +18,9 @@ class App extends Component {
     this.state = {
       center: [0,0],
       zoom: 1,
-      geographyPaths: []
+      geographyPaths: [],
+      selected: null,
+      disableOptimization: false,
     }
 
     WheelReact.config({
@@ -41,6 +43,7 @@ class App extends Component {
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
+    this.handleCountryClick = this.handleCountryClick.bind(this)
   }
 
   componentDidMount() {
@@ -107,9 +110,14 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleCountryClick(countryIndex) {
-    let x = this.state.geographyPaths[countryIndex].properties
-    console.log(x);
+  handleCountryClick(geo) {
+    this.setState(prevState => ({
+      disableOptimization: true,
+      selected: prevState.selected !== geo.properties.name ? geo.properties.name : null
+      }), () => {
+        this.setState({ disableOptimization: false })
+        , console.log(geo.properties)}
+    )
   }
 
   render() {
@@ -152,27 +160,33 @@ class App extends Component {
                   onMoveStart={this.handleMoveStart}
                   onMoveEnd={this.handleMoveEnd}
                 >
-                  <Geographies geography={ this.state.geographyPaths }>
+                  <Geographies 
+                    geography={ this.state.geographyPaths }
+                    disableOptimization={this.state.disableOptimization}
+                  >
                     {(geographies, projection) => 
-                      geographies.map((geography, i) => (
+                      geographies.map((geography, i) => {
+                      const isSelected = this.state.selected === geography.properties.name
+                      return (
                       <Geography
                         key={ `geography-${i}` }
                         cacheId={ `geography-${i}` }
                         geography={ geography }
                         projection={ projection }
-                        onClick={() => this.handleCountryClick(i)}
+                        onClick={this.handleCountryClick}
 
                         fill="white"
                         stroke="black"
                         strokeWidth={ 0.1 }
 
                         style={{
-                          default: { fill: "#FFF" },
-                          hover:   { fill: "#F5F5F5" },
-                          pressed: { fill: "#C0C0C0" },
+                          default: { fill : isSelected ? "#F0F8FF" : "FFF"},
+                          hover:   { fill : isSelected ? "#F0F8FF" : "#F5F5F5" },
+                          pressed: { fill : "#C0C0C0" },
                         }}
                       />
-                    ))}
+                      )}
+                    )}
                   </Geographies>
                 </ZoomableGroup>
               </ComposableMap>
