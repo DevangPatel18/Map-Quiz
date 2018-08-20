@@ -3,7 +3,8 @@
 }
 
 .App-header {
-  background: #F0F8FF;
+  background: #63707d;
+  color: #fff;
   height: 150px;
   display: flex;
   justify-content: center;
@@ -12,4 +13,8 @@
 
 .App-title {
   font-size: 4em;
+}
+
+*:focus {
+    outline: none;
 }
