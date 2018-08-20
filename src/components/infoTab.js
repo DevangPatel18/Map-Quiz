@@ -15,6 +15,7 @@ const InfoTab = (props) => {
     <div style={{
       position: "absolute",
       left: "1em",
+      top: "calc(150px + 1em)",
       textAlign: "left",
     }}>
       <img src={props.country.flag}

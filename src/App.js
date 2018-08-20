@@ -123,12 +123,18 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Map quiz</h1>
+          <h1 className="App-title">Country Data</h1>
         </header>
-
-        <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
-        <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
-        <button onClick={ this.handleReset }>{ "Reset view" }</button>
+        
+        <div style={{
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)"
+        }}>
+          <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
+          <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
+          <button onClick={ this.handleReset }>{ "Reset view" }</button>
+        </div>
         
         <InfoTab country={this.state.selectedProperties}/>
 
@@ -181,9 +187,18 @@ class App extends Component {
                         strokeWidth={ 0.1 }
 
                         style={{
-                          default: { fill : isSelected ? "#F0F8FF" : "FFF"},
-                          hover:   { fill : isSelected ? "#F0F8FF" : "#F5F5F5" },
-                          pressed: { fill : "#C0C0C0" },
+                          default: {
+                            fill : isSelected ? "rgba(105, 105, 105, .7)" : "#FFF",
+                            transition: "fill .5s",
+                          },
+                          hover:   {
+                            fill : isSelected ? "rgba(105, 105, 105, .7)" : "rgba(105, 105, 105, .2)",
+                            transition: "fill .5s",
+                          },
+                          pressed: {
+                            fill : "rgba(105, 105, 105, 1)",
+                            transition: "fill .5s"
+                          },
                         }}
                       />
                       )}
