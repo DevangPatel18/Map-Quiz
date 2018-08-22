@@ -11,6 +11,7 @@ import { Motion, spring } from "react-motion"
 import WheelReact from 'wheel-react';
 import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
+import alpha3Codes from "./assets/regionAlpha3Codes.js"
 
 class App extends Component {
   constructor() {
@@ -19,9 +20,11 @@ class App extends Component {
     this.state = {
       center: [0,0],
       zoom: 1,
+      defaultZoom: 1,
       geographyPaths: [],
       selectedProperties: "",
       disableOptimization: false,
+      filterRegions: [],
     }
 
     WheelReact.config({
@@ -45,6 +48,7 @@ class App extends Component {
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
     this.handleCountryClick = this.handleCountryClick.bind(this)
+    this.handleRegionSelect = this.handleRegionSelect.bind(this)
   }
 
   componentDidMount() {
@@ -69,7 +73,7 @@ class App extends Component {
           // Remove Antarctica and invalid iso codes
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
-          var essentialData = ["name", "capital", "population", "area", "flag"];
+          var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code"];
 
           data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
             let y = countryData.find(c => +c["numericCode"] === +x.id)
@@ -98,8 +102,8 @@ class App extends Component {
 
   handleReset() {
     this.setState({
-      center: [0,Math.random()/1000],
-      zoom: 1,
+      center: [this.state.center[0], this.state.center[1] + Math.random()/1000],
+      zoom: this.state.defaultZoom,
     })
   }
 
@@ -119,6 +123,61 @@ class App extends Component {
     )
   }
 
+  handleRegionSelect(region) {
+    let center, zoom, defaultZoom;
+    switch(region) {
+      case 'world':
+        center = [0,0]
+        zoom = 1
+        defaultZoom = 1
+        break
+      case 'naca':
+        center = [-95,30]
+        zoom = 2.5
+        defaultZoom = 2.5
+        break
+      case 'south':
+        center = [-65,-30]
+        zoom = 2
+        defaultZoom = 2
+        break
+      case 'carrib':
+        center = [-70,17]
+        zoom = 8.5
+        defaultZoom = 8.5
+        break
+      case 'africa':
+        center = [10,-4]
+        zoom = 2
+        defaultZoom = 2
+        break
+      case 'europe':
+        center = [5,50]
+        zoom = 3.5
+        defaultZoom = 3.5
+        break
+      case 'asia':
+        center = [90,20]
+        zoom = 2
+        defaultZoom = 2
+        break
+      case 'oceania':
+        center = [140,-30]
+        zoom = 2.5
+        defaultZoom = 2.5
+        break
+      default:
+        console.log("Invalid entry:", region);
+    }
+    this.setState({
+      disableOptimization: true,
+      zoom,
+      defaultZoom,
+      center,
+      filterRegions: alpha3Codes[region]
+    }, () => { this.setState({ disableOptimization: false }) })
+  }
+
   render() {
     return (
       <div className="App">
@@ -135,15 +194,32 @@ class App extends Component {
           <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
           <button onClick={ this.handleReset }>{ "Reset view" }</button>
         </div>
+
+        <div style={{
+          position: "absolute",
+          top: "calc(150px + 1em)",
+          right: "1em",
+          display: "flex",
+          flexDirection: "column",
+        }}>
+          <button onClick={ () => this.handleRegionSelect("world") }>{ "World" }</button>
+          <button onClick={ () => this.handleRegionSelect("naca") }>{ "North and Central America" }</button>
+          <button onClick={ () => this.handleRegionSelect("south") }>{ "South America" }</button>
+          <button onClick={ () => this.handleRegionSelect("carrib") }>{ "Carribean" }</button>
+          <button onClick={ () => this.handleRegionSelect("africa") }>{ "Africa" }</button>
+          <button onClick={ () => this.handleRegionSelect("europe") }>{ "Europe" }</button>
+          <button onClick={ () => this.handleRegionSelect("asia") }>{ "Asia" }</button>
+          <button onClick={ () => this.handleRegionSelect("oceania") }>{ "Oceania" }</button>
+        </div>
         
         <InfoTab country={this.state.selectedProperties}/>
 
         <div {...WheelReact.events}>
           <Motion
             defaultStyle={{
-              zoom: 1,
-              x: 0,
-              y: 0,
+              zoom: this.state.defaultZoom,
+              x: this.state.center[0],
+              y: this.state.center[1],
             }}
             style={{
               zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
@@ -174,7 +250,11 @@ class App extends Component {
                     {(geographies, projection) => 
                       geographies.map((geography, i) => {
                       const isSelected = this.state.selectedProperties === geography.properties
-                      return (
+                      let render = true
+                      if(this.state.filterRegions.length !== 0) {
+                        render = this.state.filterRegions.indexOf(geography.properties["alpha3Code"]) !== -1
+                      }
+                      return render && (
                       <Geography
                         key={ `geography-${i}` }
                         cacheId={ `geography-${i}` }
