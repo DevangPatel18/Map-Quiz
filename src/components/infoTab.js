@@ -3,13 +3,13 @@ import React from 'react';
 const InfoTab = (props) => {
   let name, capital, population, area;
 
-  if ((props.country === "") || (Object.keys(props.country).length === 0)) {
+  if ((Object.keys(props.country).length === 0)) {
     name = capital = population = area = "N/A"
   } else {
     name = props.country.name
     capital = props.country.capital
     population = props.country.population.toLocaleString()
-    area = props.country.area.toLocaleString()
+    area = props.country.area ? props.country.area.toLocaleString():"N/A"
   }
   return (
     <div style={{
