@@ -12,6 +12,7 @@ import WheelReact from 'wheel-react';
 import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
 import alpha3Codes from "./assets/regionAlpha3Codes.js"
+import mapConfig from "./assets/regionMapConfig.js"
 
 class App extends Component {
   constructor() {
@@ -124,51 +125,9 @@ class App extends Component {
   }
 
   handleRegionSelect(region) {
-    let center, zoom, defaultZoom;
-    switch(region) {
-      case 'world':
-        center = [0,0]
-        zoom = 1
-        defaultZoom = 1
-        break
-      case 'naca':
-        center = [-95,30]
-        zoom = 2.5
-        defaultZoom = 2.5
-        break
-      case 'south':
-        center = [-65,-30]
-        zoom = 2
-        defaultZoom = 2
-        break
-      case 'carrib':
-        center = [-70,17]
-        zoom = 8.5
-        defaultZoom = 8.5
-        break
-      case 'africa':
-        center = [10,-4]
-        zoom = 2
-        defaultZoom = 2
-        break
-      case 'europe':
-        center = [5,50]
-        zoom = 3.5
-        defaultZoom = 3.5
-        break
-      case 'asia':
-        center = [90,20]
-        zoom = 2
-        defaultZoom = 2
-        break
-      case 'oceania':
-        center = [140,-30]
-        zoom = 2.5
-        defaultZoom = 2.5
-        break
-      default:
-        console.log("Invalid entry:", region);
-    }
+    let { center, zoom, defaultZoom } = mapConfig[region];
+    console.log(center, zoom, defaultZoom);
+    console.log(mapConfig[region]);
     this.setState({
       disableOptimization: true,
       zoom,
