@@ -26,6 +26,10 @@ class App extends Component {
       selectedProperties: "",
       disableOptimization: false,
       filterRegions: [],
+      quizAnswers: [],
+      quizGuesses: [],
+      quiz: false,
+      activeQuestionNum: null
     }
 
     WheelReact.config({
@@ -50,6 +54,9 @@ class App extends Component {
     this.handleReset = this.handleReset.bind(this)
     this.handleCountryClick = this.handleCountryClick.bind(this)
     this.handleRegionSelect = this.handleRegionSelect.bind(this)
+    this.handleQuiz = this.handleQuiz.bind(this)
+    this.handleAnswer = this.handleAnswer.bind(this)
+    this.handleQuizClose = this.handleQuizClose.bind(this)
   }
 
   componentDidMount() {
@@ -117,17 +124,28 @@ class App extends Component {
   }
 
   handleCountryClick(geo) {
-    this.setState(prevState => ({
-      disableOptimization: true,
-      selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
-      }), () => { this.setState({ disableOptimization: false }) }
-    )
+    if(this.state.quiz === true) {
+      if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
+        this.setState(prevState => {
+          let quizGuesses = [...prevState.quizGuesses];
+          quizGuesses.push(geo.properties["alpha3Code"]);
+          return ({
+            quizGuesses,
+            selectedProperties: geo.properties
+          })}, () => { this.setState({ disableOptimization: false }) }
+        )
+      }
+    } else {
+      this.setState(prevState => ({
+        disableOptimization: true,
+        selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
+        }), () => { this.setState({ disableOptimization: false }) }
+      )
+    }
   }
 
   handleRegionSelect(region) {
     let { center, zoom, defaultZoom } = mapConfig[region];
-    console.log(center, zoom, defaultZoom);
-    console.log(mapConfig[region]);
     this.setState({
       disableOptimization: true,
       zoom,
@@ -137,7 +155,71 @@ class App extends Component {
     }, () => { this.setState({ disableOptimization: false }) })
   }
 
+  handleQuiz(){
+    let quizAnswers = [...this.state.filterRegions]
+    quizAnswers.reduce((dum1, dum2, i) => {
+        const j = Math.floor(Math.random()*(quizAnswers.length - i) + i);
+        [ quizAnswers[i], quizAnswers[j]] = [ quizAnswers[j], quizAnswers[i]];
+        return quizAnswers
+      }, quizAnswers)
+
+    this.setState({quizAnswers, activeQuestionNum: 0})    
+  }
+
+  handleAnswer(){
+    if(this.state.activeQuestionNum === this.state.quizGuesses.length - 1) {
+      let ans = this.state.quizGuesses;
+      let cor = this.state.quizAnswers;
+      let idx = this.state.activeQuestionNum;
+      let text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
+
+      let next = <button 
+        onClick={ () => {
+          this.setState( prevState => 
+            ({selectedProperties: "", activeQuestionNum: prevState.activeQuestionNum + 1})
+          )
+        }
+      }>NEXT</button>;
+
+      if(idx === cor.length - 1) {
+        var score = ans
+          .reduce((total, x, i) => {
+            return total += (x === cor[i])*1
+          }, 0);
+        var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
+        next = ""
+      }
+
+      return (
+        <div>
+          <p>{text}</p>
+          {scoreText}
+          {next}
+        </div>
+      )
+    }
+  }
+
+  handleQuizClose(){
+    this.setState({quizAnswers: [], quizGuesses: [], quiz: false, activeQuestionNum: null })
+  }
+
   render() {
+
+    let quiz = this.state.quiz;
+    let country, answerResult, alpha
+
+    if(quiz) {
+      alpha = this.state.quizAnswers[this.state.activeQuestionNum]
+      country = this.state.geographyPaths
+        .find(x => x.properties["alpha3Code"] === alpha)
+        .properties.name;
+
+      answerResult = this.handleAnswer()
+    } else {
+      answerResult = ""
+    }
+
     return (
       <div className="App">
         <header className="App-header">
@@ -153,6 +235,22 @@ class App extends Component {
           <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
           <button onClick={ this.handleReset }>{ "Reset view" }</button>
         </div>
+        
+        {this.state.filterRegions.length !== 0 ?
+          <div className="App-quiz">
+            {!this.state.quiz ? 
+              <button onClick={ () => { this.setState({quiz: true}, this.handleQuiz) } }>
+                START QUIZ
+              </button> 
+              :
+              <div>
+                <button className="App-quiz-close" onClick={ this.handleQuizClose}>X</button>
+                Where is {country}?
+                {answerResult}
+              </div>
+            }
+          </div>:""
+        }
 
         <div style={{
           position: "absolute",
