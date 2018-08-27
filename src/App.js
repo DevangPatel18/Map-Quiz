@@ -131,6 +131,7 @@ class App extends Component {
           quizGuesses.push(geo.properties["alpha3Code"]);
           return ({
             quizGuesses,
+            disableOptimization: true,
             selectedProperties: geo.properties
           })}, () => { this.setState({ disableOptimization: false }) }
         )
@@ -176,7 +177,12 @@ class App extends Component {
       let next = <button 
         onClick={ () => {
           this.setState( prevState => 
-            ({selectedProperties: "", activeQuestionNum: prevState.activeQuestionNum + 1})
+            ({
+              selectedProperties: "", 
+              activeQuestionNum: prevState.activeQuestionNum + 1,
+              disableOptimization: true
+            })
+            , () => { this.setState({ disableOptimization: false }) }
           )
         }
       }>NEXT</button>;
@@ -201,7 +207,13 @@ class App extends Component {
   }
 
   handleQuizClose(){
-    this.setState({quizAnswers: [], quizGuesses: [], quiz: false, activeQuestionNum: null })
+    this.setState({
+      quizAnswers: [],
+      quizGuesses: [],
+      quiz: false,
+      activeQuestionNum: null,
+      disableOptimization: true
+    }, () => { this.setState({ disableOptimization: false }) } )
   }
 
   render() {
@@ -307,10 +319,29 @@ class App extends Component {
                     {(geographies, projection) => 
                       geographies.map((geography, i) => {
                       const isSelected = this.state.selectedProperties === geography.properties
+                      let defaultColor, hoverColor;
+
+                      defaultColor = "#FFF";
+                      hoverColor = "rgba(105, 105, 105, .2)";
+
+                      if(isSelected) {
+                        defaultColor = "rgba(105, 105, 105, .7)";
+                        hoverColor = "rgba(105, 105, 105, .7)";
+                      }
+
+                      if(this.state.quiz === true){
+                        let geoQuizIdx = this.state.quizGuesses.indexOf(geography.properties.alpha3Code)
+                        if( geoQuizIdx !== -1 && this.state.quizGuesses[geoQuizIdx] === this.state.quizAnswers[geoQuizIdx]) {
+                          defaultColor = "rgb(144, 238, 144)"
+                          hoverColor = "rgb(144, 238, 144)"
+                        }
+                      }
+
                       let render = true
                       if(this.state.filterRegions.length !== 0) {
                         render = this.state.filterRegions.indexOf(geography.properties["alpha3Code"]) !== -1
                       }
+
                       return render && (
                       <Geography
                         key={ `geography-${i}` }
@@ -325,11 +356,11 @@ class App extends Component {
 
                         style={{
                           default: {
-                            fill : isSelected ? "rgba(105, 105, 105, .7)" : "#FFF",
+                            fill : defaultColor,
                             transition: "fill .5s",
                           },
                           hover:   {
-                            fill : isSelected ? "rgba(105, 105, 105, .7)" : "rgba(105, 105, 105, .2)",
+                            fill : hoverColor,
                             transition: "fill .5s",
                           },
                           pressed: {
