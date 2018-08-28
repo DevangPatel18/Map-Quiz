@@ -14,6 +14,7 @@ import InfoTab from "./components/infoTab.js"
 import alpha3Codes from "./assets/regionAlpha3Codes.js"
 import mapConfig from "./assets/regionMapConfig.js"
 import QuestionBox from "./components/questionBox.js"
+import RegionButtons from "./components/regionButtons.js"
 
 class App extends Component {
   constructor() {
@@ -255,22 +256,7 @@ class App extends Component {
           </div>:""
         }
 
-        <div style={{
-          position: "absolute",
-          top: "calc(150px + 1em)",
-          right: "1em",
-          display: "flex",
-          flexDirection: "column",
-        }}>
-          <button onClick={ () => this.handleRegionSelect("world") }>{ "World" }</button>
-          <button onClick={ () => this.handleRegionSelect("naca") }>{ "North and Central America" }</button>
-          <button onClick={ () => this.handleRegionSelect("south") }>{ "South America" }</button>
-          <button onClick={ () => this.handleRegionSelect("carrib") }>{ "Carribean" }</button>
-          <button onClick={ () => this.handleRegionSelect("africa") }>{ "Africa" }</button>
-          <button onClick={ () => this.handleRegionSelect("europe") }>{ "Europe" }</button>
-          <button onClick={ () => this.handleRegionSelect("asia") }>{ "Asia" }</button>
-          <button onClick={ () => this.handleRegionSelect("oceania") }>{ "Oceania" }</button>
-        </div>
+        <RegionButtons regionFunc={ this.handleRegionSelect } />
         
         <InfoTab country={this.state.selectedProperties}/>
 
