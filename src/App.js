@@ -13,6 +13,7 @@ import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
 import alpha3Codes from "./assets/regionAlpha3Codes.js"
 import mapConfig from "./assets/regionMapConfig.js"
+import QuestionBox from "./components/questionBox.js"
 
 class App extends Component {
   constructor() {
@@ -218,20 +219,6 @@ class App extends Component {
 
   render() {
 
-    let quiz = this.state.quiz;
-    let country, answerResult, alpha
-
-    if(quiz) {
-      alpha = this.state.quizAnswers[this.state.activeQuestionNum]
-      country = this.state.geographyPaths
-        .find(x => x.properties["alpha3Code"] === alpha)
-        .properties.name;
-
-      answerResult = this.handleAnswer()
-    } else {
-      answerResult = ""
-    }
-
     return (
       <div className="App">
         <header className="App-header">
@@ -257,8 +244,12 @@ class App extends Component {
               :
               <div>
                 <button className="App-quiz-close" onClick={ this.handleQuizClose}>X</button>
-                Where is {country}?
-                {answerResult}
+                <QuestionBox
+                  quizAnswers={ this.state.quizAnswers }
+                  geoPath={ this.state.geographyPaths }
+                  activeNum={ this.state.activeQuestionNum }
+                  answerResultFunc={ this.handleAnswer }
+                />
               </div>
             }
           </div>:""
