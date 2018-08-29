@@ -307,7 +307,7 @@ class App extends Component {
                       }
 
                       if(this.state.quiz === true){
-                        let geoQuizIdx = this.state.quizGuesses.indexOf(geography.properties.alpha3Code)
+                        let geoQuizIdx = this.state.quizAnswers.indexOf(geography.properties.alpha3Code)
                         if( geoQuizIdx !== -1 && this.state.quizGuesses[geoQuizIdx] === this.state.quizAnswers[geoQuizIdx]) {
                           defaultColor = "rgb(144, 238, 144)"
                           hoverColor = "rgb(144, 238, 144)"
