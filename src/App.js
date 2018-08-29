@@ -13,8 +13,8 @@ import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
 import alpha3Codes from "./assets/regionAlpha3Codes.js"
 import mapConfig from "./assets/regionMapConfig.js"
-import QuestionBox from "./components/questionBox.js"
 import RegionButtons from "./components/regionButtons.js"
+import QuizBox from "./components/quizBox.js"
 
 class App extends Component {
   constructor() {
@@ -235,26 +235,17 @@ class App extends Component {
           <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
           <button onClick={ this.handleReset }>{ "Reset view" }</button>
         </div>
-        
-        {this.state.filterRegions.length !== 0 ?
-          <div className="App-quiz">
-            {!this.state.quiz ? 
-              <button onClick={ () => { this.setState({quiz: true}, this.handleQuiz) } }>
-                START QUIZ
-              </button> 
-              :
-              <div>
-                <button className="App-quiz-close" onClick={ this.handleQuizClose}>X</button>
-                <QuestionBox
-                  quizAnswers={ this.state.quizAnswers }
-                  geoPath={ this.state.geographyPaths }
-                  activeNum={ this.state.activeQuestionNum }
-                  answerResultFunc={ this.handleAnswer }
-                />
-              </div>
-            }
-          </div>:""
-        }
+
+        <QuizBox
+          visible={ this.state.filterRegions.length !== 0 ? true:false }
+          active={ !this.state.quiz ? true:false }
+          startquiz={ () => { this.setState({quiz: true}, this.handleQuiz) } }
+          closequiz={ this.handleQuizClose}
+          quizAnswers={ this.state.quizAnswers }
+          geoPath={ this.state.geographyPaths }
+          activeNum={ this.state.activeQuestionNum }
+          answerResultFunc={ this.handleAnswer }          
+        />        
 
         <RegionButtons regionFunc={ this.handleRegionSelect } />
         
