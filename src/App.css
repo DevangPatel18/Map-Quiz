@@ -30,7 +30,8 @@
   border: 1px solid black;
   background: #F0F8FF;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
 }
 

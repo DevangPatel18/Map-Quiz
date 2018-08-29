@@ -238,7 +238,7 @@ class App extends Component {
 
         <QuizBox
           visible={ this.state.filterRegions.length !== 0 ? true:false }
-          active={ !this.state.quiz ? true:false }
+          nonactive={ !this.state.quiz ? true:false }
           startquiz={ () => { this.setState({quiz: true}, this.handleQuiz) } }
           closequiz={ this.handleQuizClose}
           quizAnswers={ this.state.quizAnswers }

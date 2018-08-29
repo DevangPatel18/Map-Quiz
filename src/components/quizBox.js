@@ -1,31 +1,64 @@
-import React from 'react';
+import React, { Component } from 'react';
 import QuestionBox from './questionBox.js';
 
-const QuizBox = (props) => {
-  
-  if(props.visible) {
-    if(props.active) {
+class QuizBox extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      quizType: "clickCountry"
+    }
+
+    this.handleQuizChange = this.handleQuizChange.bind(this)
+  }
+
+  handleQuizChange(event) {
+    this.setState({ quizType: event.target.value })
+  }
+
+  render() {
+
+  if(this.props.visible) {
+    if(this.props.nonactive) {
       return (
         <div className="App-quiz">
-          <button onClick={ props.startquiz }>START QUIZ</button>
+          <button onClick={ this.props.startquiz }>START QUIZ</button>
+          <div>
+            <input type="radio" id="clickCountry" value="clickCountry" name="quiz" checked={this.state.quizType === "clickCountry"} onChange={this.handleQuizChange} />
+            <label htmlFor="clickCountry">Click Country</label>
+            <input type="radio" id="nameCountry" value="nameCountry" name="quiz" checked={this.state.quizType === "nameCountry"} onChange={this.handleQuizChange} />
+            <label htmlFor="nameCountry">Name Country</label>
+          </div>
         </div>
       )
     } else {
-      return (
-        <div className="App-quiz">
-          <button className="App-quiz-close" onClick={ props.closequiz }>X</button>
-          <QuestionBox
-            quizAnswers = { props.quizAnswers }
-            geoPath = { props.geoPath }
-            activeNum = { props.activeNum }
-            answerResultFunc = { props.answerResultFunc }
-          />
-        </div>
-      )
+      if(this.state.quizType === "clickCountry") {
+        return (
+          <div className="App-quiz">
+            <button className="App-quiz-close" onClick={ this.props.closequiz }>X</button>
+            <QuestionBox
+              quizAnswers = { this.props.quizAnswers }
+              geoPath = { this.props.geoPath }
+              activeNum = { this.props.activeNum }
+              answerResultFunc = { this.props.answerResultFunc }
+            />
+          </div>
+        )
+      } else {
+        return (
+          <div className="App-quiz">
+            <button className="App-quiz-close" onClick={ this.props.closequiz }>X</button>
+            Input field goes here
+          </div>
+        )        
+      }
     }
   }
 
   return null
+
+  }
+  
 }
 
 export default QuizBox
