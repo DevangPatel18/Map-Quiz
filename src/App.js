@@ -31,7 +31,8 @@ class App extends Component {
       quizAnswers: [],
       quizGuesses: [],
       quiz: false,
-      activeQuestionNum: null
+      activeQuestionNum: null,
+      disableInfoClick: false,
     }
 
     WheelReact.config({
@@ -59,6 +60,8 @@ class App extends Component {
     this.handleQuiz = this.handleQuiz.bind(this)
     this.handleAnswer = this.handleAnswer.bind(this)
     this.handleQuizClose = this.handleQuizClose.bind(this)
+    this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
+    this.handleMapRefresh = this.handleMapRefresh.bind(this)
   }
 
   componentDidMount() {
@@ -126,7 +129,7 @@ class App extends Component {
   }
 
   handleCountryClick(geo) {
-    if(this.state.quiz === true) {
+    if(!this.state.disableInfoClick) {
       if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
         this.setState(prevState => {
           let quizGuesses = [...prevState.quizGuesses];
@@ -137,13 +140,13 @@ class App extends Component {
             selectedProperties: geo.properties
           })}, () => { this.setState({ disableOptimization: false }) }
         )
+      } else {
+        this.setState(prevState => ({
+          disableOptimization: true,
+          selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
+          }), () => { this.setState({ disableOptimization: false }) }
+        )
       }
-    } else {
-      this.setState(prevState => ({
-        disableOptimization: true,
-        selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
-        }), () => { this.setState({ disableOptimization: false }) }
-      )
     }
   }
 
@@ -169,43 +172,71 @@ class App extends Component {
     this.setState({quizAnswers, activeQuestionNum: 0})    
   }
 
-  handleAnswer(){
-    if(this.state.activeQuestionNum === this.state.quizGuesses.length - 1) {
-      let ans = this.state.quizGuesses;
-      let cor = this.state.quizAnswers;
-      let idx = this.state.activeQuestionNum;
-      let text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
+  handleAnswer(userGuess = null){
+    let ans = this.state.quizGuesses;
+    let cor = this.state.quizAnswers;
+    let idx = this.state.activeQuestionNum;
+    let text;
 
-      let next = <button 
-        onClick={ () => {
-          this.setState( prevState => 
-            ({
-              selectedProperties: "", 
-              activeQuestionNum: prevState.activeQuestionNum + 1,
-              disableOptimization: true
-            })
-            , () => { this.setState({ disableOptimization: false }) }
-          )
-        }
-      }>NEXT</button>;
+    if(userGuess) {
+      let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
+      let correctName = this.state.geographyPaths
+        .find(geo => geo.properties.alpha3Code === correctAlpha )
+        .properties.name;
 
-      if(idx === cor.length - 1) {
-        var score = ans
-          .reduce((total, x, i) => {
-            return total += (x === cor[i])*1
-          }, 0);
-        var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-        next = ""
-      }
+      let result = userGuess.toLowerCase() === correctName.toLowerCase() ? true : false;
 
-      return (
-        <div>
-          <p>{text}</p>
-          {scoreText}
-          {next}
-        </div>
-      )
+      text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
+
+      this.setState(prevState => {
+        let quizGuesses = [...prevState.quizGuesses];
+        quizGuesses.push([userGuess, result]);
+        return ({
+          quizGuesses,
+          disableOptimization: true,
+        })}, () => { this.setState({ disableOptimization: false })
+      })      
+    } else {
+      text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
     }
+
+    let next = <button 
+      onClick={ () => {
+        this.setState( prevState => 
+          ({
+            selectedProperties: "",
+            activeQuestionNum: prevState.activeQuestionNum + 1,
+            disableOptimization: true
+          })
+          , () => { this.setState({ disableOptimization: false }) }
+        )
+      }
+    }>NEXT</button>;
+
+    if(idx === cor.length - 1) {
+      var score = ans
+        .reduce((total, x, i) => {
+          if(userGuess) {
+            return total += x[1] ? 1: 0;
+          } else {
+            return total += (x === cor[i])*1            
+          }
+        }, 0);
+      var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
+      next = ""
+    }
+
+    if(userGuess){
+
+    }
+
+    return (
+      <div>
+        <p>{text}</p>
+        {scoreText}
+        {next}
+      </div>
+    )
   }
 
   handleQuizClose(){
@@ -214,8 +245,19 @@ class App extends Component {
       quizGuesses: [],
       quiz: false,
       activeQuestionNum: null,
-      disableOptimization: true
+      disableOptimization: true,
+      disableInfoClick: false,
     }, () => { this.setState({ disableOptimization: false }) } )
+  }
+
+  handleDisableInfoClick() {
+    this.setState({ disableInfoClick: true }
+      , this.handleMapRefresh )
+  }
+
+  handleMapRefresh() {
+    this.setState({ disableOptimization: true}
+      , () => { this.setState({ disableOptimization: false }) } )
   }
 
   render() {
@@ -242,9 +284,11 @@ class App extends Component {
           startquiz={ () => { this.setState({quiz: true}, this.handleQuiz) } }
           closequiz={ this.handleQuizClose}
           quizAnswers={ this.state.quizAnswers }
+          quizGuesses={ this.state.quizGuesses }
           geoPath={ this.state.geographyPaths }
           activeNum={ this.state.activeQuestionNum }
-          answerResultFunc={ this.handleAnswer }          
+          answerResultFunc={ this.handleAnswer }
+          disableInfoClick={ this.handleDisableInfoClick }
         />        
 
         <RegionButtons regionFunc={ this.handleRegionSelect } />
@@ -299,7 +343,24 @@ class App extends Component {
 
                       if(this.state.quiz === true){
                         let geoQuizIdx = this.state.quizAnswers.indexOf(geography.properties.alpha3Code)
-                        if( geoQuizIdx !== -1 && this.state.quizGuesses[geoQuizIdx] === this.state.quizAnswers[geoQuizIdx]) {
+
+                        // Fills country with name input request as yellow
+                        if(this.state.disableInfoClick && this.state.quizAnswers[this.state.activeQuestionNum] === geography.properties.alpha3Code) {
+                          defaultColor = "rgb(255, 255, 0)"
+                          hoverColor = "rgb(255, 255, 0)"
+                        }
+
+                        // Fills correct status of country name guess, green for correct and red for incorrect
+                        if(this.state.disableInfoClick){
+                            if(this.state.quizGuesses[geoQuizIdx] !== undefined) {
+                            let answer = this.state.quizGuesses[geoQuizIdx][1] ? "rgb(144, 238, 144)": "rgb(255, 69, 0)"
+                            defaultColor = answer
+                            hoverColor = answer
+                            }
+                        }
+
+                        // Fills correct country click guesses as green
+                        if ( geoQuizIdx !== -1 && this.state.quizGuesses[geoQuizIdx] === this.state.quizAnswers[geoQuizIdx]) {
                           defaultColor = "rgb(144, 238, 144)"
                           hoverColor = "rgb(144, 238, 144)"
                         }
