@@ -94,7 +94,20 @@ class App extends Component {
             essentialData.forEach(key => {
               x.properties[key] = y[key]
             })
+
+            y["altSpellings"].shift()
+
+            x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
+
           })
+
+          // Additional spellings for countries
+          data.find(x => x.properties.alpha3Code === "COG").properties.spellings.push("Republic of the Congo")
+          data.find(x => x.properties.alpha3Code === "COD").properties.spellings.push("Democratic Republic of the Congo")
+          data.find(x => x.properties.alpha3Code === "GBR").properties.spellings.push("Britain")
+          data.find(x => x.properties.alpha3Code === "PRK").properties.spellings.push("North Korea")
+          data.find(x => x.properties.alpha3Code === "KOR").properties.spellings.push("South Korea")
+          data.find(x => x.properties.alpha3Code === "SYR").properties.spellings.push("Syria")
 
           this.setState({ geographyPaths: data })
         })
@@ -180,11 +193,11 @@ class App extends Component {
 
     if(userGuess) {
       let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-      let correctName = this.state.geographyPaths
+      let correctNames = this.state.geographyPaths
         .find(geo => geo.properties.alpha3Code === correctAlpha )
-        .properties.name;
+        .properties.spellings;
 
-      let result = userGuess.toLowerCase() === correctName.toLowerCase() ? true : false;
+      let result = correctNames.some(name => userGuess.toLowerCase() === name.toLowerCase())
 
       text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
 
@@ -224,10 +237,6 @@ class App extends Component {
         }, 0);
       var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
       next = ""
-    }
-
-    if(userGuess){
-
     }
 
     return (
