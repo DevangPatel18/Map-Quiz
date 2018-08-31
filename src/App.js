@@ -15,6 +15,7 @@ import alpha3Codes from "./assets/regionAlpha3Codes.js"
 import mapConfig from "./assets/regionMapConfig.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
+import ColorPicker from "./components/colorPicker.js"
 
 class App extends Component {
   constructor() {
@@ -339,46 +340,10 @@ class App extends Component {
                   >
                     {(geographies, projection) => 
                       geographies.map((geography, i) => {
-                      const isSelected = this.state.selectedProperties === geography.properties
-                      let defaultColor, hoverColor;
+                      
+                      let defaultColor, hoverColor, render;
 
-                      defaultColor = "rgba(105, 105, 105, .3)";
-                      hoverColor = "rgba(105, 105, 105, .6)";
-
-                      if(isSelected) {
-                        defaultColor = "rgba(105, 105, 105, .8)";
-                        hoverColor = "rgba(105, 105, 105, .8)";
-                      }
-
-                      if(this.state.quiz === true){
-                        let geoQuizIdx = this.state.quizAnswers.indexOf(geography.properties.alpha3Code)
-
-                        // Fills country with name input request as yellow
-                        if(this.state.disableInfoClick && this.state.quizAnswers[this.state.activeQuestionNum] === geography.properties.alpha3Code) {
-                          defaultColor = "rgb(255, 255, 0)"
-                          hoverColor = "rgb(255, 255, 0)"
-                        }
-
-                        // Fills correct status of country name guess, green for correct and red for incorrect
-                        if(this.state.disableInfoClick){
-                            if(this.state.quizGuesses[geoQuizIdx] !== undefined) {
-                            let answer = this.state.quizGuesses[geoQuizIdx][1] ? "rgb(144, 238, 144)": "rgb(255, 69, 0)"
-                            defaultColor = answer
-                            hoverColor = answer
-                            }
-                        }
-
-                        // Fills correct country click guesses as green
-                        if ( geoQuizIdx !== -1 && this.state.quizGuesses[geoQuizIdx] === this.state.quizAnswers[geoQuizIdx]) {
-                          defaultColor = "rgb(144, 238, 144)"
-                          hoverColor = "rgb(144, 238, 144)"
-                        }
-                      }
-
-                      let render = true
-                      if(this.state.filterRegions.length !== 0) {
-                        render = this.state.filterRegions.indexOf(geography.properties["alpha3Code"]) !== -1
-                      }
+                      [defaultColor, hoverColor, render] = ColorPicker(this.state, geography)
 
                       return render && (
                       <Geography
