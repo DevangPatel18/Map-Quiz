@@ -28,7 +28,7 @@ class QuestionInputBox extends Component {
 
   render() {
 
-    let country, answerResult, alpha, next
+    let next
 
     if(this.props.activeNum === this.props.quizGuesses.length - 1) {
       next = this.state.answerResult;

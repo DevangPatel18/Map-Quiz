@@ -333,12 +333,12 @@ class App extends Component {
                       const isSelected = this.state.selectedProperties === geography.properties
                       let defaultColor, hoverColor;
 
-                      defaultColor = "#FFF";
-                      hoverColor = "rgba(105, 105, 105, .2)";
+                      defaultColor = "rgba(105, 105, 105, .3)";
+                      hoverColor = "rgba(105, 105, 105, .6)";
 
                       if(isSelected) {
-                        defaultColor = "rgba(105, 105, 105, .7)";
-                        hoverColor = "rgba(105, 105, 105, .7)";
+                        defaultColor = "rgba(105, 105, 105, .8)";
+                        hoverColor = "rgba(105, 105, 105, .8)";
                       }
 
                       if(this.state.quiz === true){
@@ -381,7 +381,7 @@ class App extends Component {
 
                         fill="white"
                         stroke="black"
-                        strokeWidth={ 0.1 }
+                        strokeWidth={ 0.05 }
 
                         style={{
                           default: {
@@ -393,7 +393,7 @@ class App extends Component {
                             transition: "fill .5s",
                           },
                           pressed: {
-                            fill : "rgba(105, 105, 105, 1)",
+                            fill : "rgb(105, 105, 105)",
                             transition: "fill .5s"
                           },
                         }}
