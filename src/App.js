@@ -227,17 +227,18 @@ class App extends Component {
       }
     }>NEXT</button>;
 
-    if(idx === cor.length - 1) {
+    if(idx === cor.length){
       var score = ans
         .reduce((total, x, i) => {
-          if(userGuess) {
+          if(x.length === 2) {
             return total += x[1] ? 1: 0;
           } else {
             return total += (x === cor[i])*1            
           }
         }, 0);
       var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-      next = ""
+      text = "";
+      next = "";
     }
 
     return (

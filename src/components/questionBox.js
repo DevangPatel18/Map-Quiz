@@ -2,7 +2,7 @@ import React from 'react';
 
 const QuestionBox = (props) => {
 
-  let country, answerResult, alpha
+  let country, answerResult, alpha, questionBoxContent;
 
   alpha = props.quizAnswers[props.activeNum]
   country = props.geoPath
@@ -13,10 +13,23 @@ const QuestionBox = (props) => {
     answerResult = props.answerResultFunc()
   }
 
+  if(props.activeNum !== props.quizAnswers.length) {
+    questionBoxContent =
+      <div>
+        Where is {country}?
+        {answerResult}
+      </div>
+  } else {
+    answerResult = props.answerResultFunc()
+    questionBoxContent =
+      <div>
+        {answerResult}
+      </div>
+  }
+
   return (
     <div>
-      Where is {country}?
-      {answerResult}
+      {questionBoxContent}
     </div>
   )
 }
