@@ -186,7 +186,7 @@ class App extends Component {
     this.setState({quizAnswers, activeQuestionNum: 0})    
   }
 
-  handleAnswer(userGuess = null){
+  handleAnswer(userGuess = null, testing = null){
     let ans = this.state.quizGuesses;
     let cor = this.state.quizAnswers;
     let idx = this.state.activeQuestionNum;
@@ -194,11 +194,23 @@ class App extends Component {
 
     if(userGuess) {
       let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-      let correctNames = this.state.geographyPaths
-        .find(geo => geo.properties.alpha3Code === correctAlpha )
-        .properties.spellings;
 
-      let result = correctNames.some(name => userGuess.toLowerCase() === name.toLowerCase())
+      let answer, result;
+      
+      if(testing === "name") {
+
+        answer = this.state.geographyPaths
+          .find(geo => geo.properties.alpha3Code === correctAlpha )
+          .properties.spellings;
+
+        result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
+      } else {
+        answer = this.state.geographyPaths
+          .find(geo => geo.properties.alpha3Code === correctAlpha )
+          .properties.capital;
+          
+        result = userGuess.toLowerCase() === answer.toLowerCase()
+      }
 
       text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
 

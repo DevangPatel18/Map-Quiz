@@ -7,7 +7,7 @@ const QuestionBox = (props) => {
   alpha = props.quizAnswers[props.activeNum]
   country = props.geoPath
     .find(x => x.properties["alpha3Code"] === alpha)
-    .properties.name;
+    .properties[props.testing];
 
   if(props.activeNum === props.quizGuesses.length - 1){
     answerResult = props.answerResultFunc()
