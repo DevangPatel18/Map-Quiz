@@ -19,8 +19,7 @@ class QuizBox extends Component {
   }
 
   handleQuizStart() {
-    if((this.state.quizType === "click_name") || 
-       (this.state.quizType === "click_capital")) {
+    if(this.state.quizType.split("_")[0] === "click") {
       this.props.startquiz()
     } else {
       this.props.startquiz()
@@ -47,11 +46,14 @@ class QuizBox extends Component {
             <input type="radio" id="type_capital" value="type_capital" name="quiz" checked={this.state.quizType === "type_capital"} onChange={this.handleQuizChange} />
             <label htmlFor="type_capital">Type Capital</label>
           </div>
+          <div>
+            <input type="radio" id="click_flag" value="click_flag" name="quiz" checked={this.state.quizType === "click_flag"} onChange={this.handleQuizChange} />
+            <label htmlFor="click_flag">Click Country from matching Flag</label>
+          </div>
         </div>
       )
     } else {
-      if(this.state.quizType === "click_name" || 
-         this.state.quizType === "click_capital") {
+      if(this.state.quizType.split("_")[0] === "click") {
         return (
           <div className="App-quiz">
             <button className="App-quiz-close" onClick={ this.props.closequiz }>X</button>
