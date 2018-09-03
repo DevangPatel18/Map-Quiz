@@ -390,6 +390,7 @@ class App extends Component {
             )}
           </Motion>
         </div>
+        <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>
     );
   }

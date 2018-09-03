@@ -3,16 +3,14 @@
 }
 
 .App-header {
-  background: #63707d;
-  color: #fff;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: .25em;
+  left: .5em;
+  color: rgba(0,0,0,.6);
 }
 
 .App-title {
-  font-size: 4em;
+  margin: 0;
 }
 
 *:focus {
@@ -39,4 +37,11 @@
   position: absolute;
   right: 0;
   top: 0;
+}
+
+footer {
+  position: absolute;
+  bottom: .25em;
+  left: 50%;
+  transform: translateX(-50%);
 }
