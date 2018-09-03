@@ -183,32 +183,29 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.setState({quizAnswers, activeQuestionNum: 0})    
+    this.setState({quizAnswers, activeQuestionNum: 0, selectedProperties: ""})
   }
 
   handleAnswer(userGuess = null, testing = null){
     let ans = this.state.quizGuesses;
     let cor = this.state.quizAnswers;
     let idx = this.state.activeQuestionNum;
-    let text;
+    let text, nextButton;
 
     if(userGuess) {
       let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
 
       let answer, result;
+
+      answer = this.state.geographyPaths
+          .find(geo => geo.properties.alpha3Code === correctAlpha )
+          .properties;
       
       if(testing === "name") {
-
-        answer = this.state.geographyPaths
-          .find(geo => geo.properties.alpha3Code === correctAlpha )
-          .properties.spellings;
-
+        answer = answer.spellings;
         result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
       } else {
-        answer = this.state.geographyPaths
-          .find(geo => geo.properties.alpha3Code === correctAlpha )
-          .properties.capital;
-          
+        answer = answer.capital;
         result = userGuess.toLowerCase() === answer.toLowerCase()
       }
 
@@ -221,23 +218,10 @@ class App extends Component {
           quizGuesses,
           disableOptimization: true,
         })}, () => { this.setState({ disableOptimization: false })
-      })      
+      })
     } else {
       text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
     }
-
-    let next = <button 
-      onClick={ () => {
-        this.setState( prevState => 
-          ({
-            selectedProperties: "",
-            activeQuestionNum: prevState.activeQuestionNum + 1,
-            disableOptimization: true
-          })
-          , () => { this.setState({ disableOptimization: false }) }
-        )
-      }
-    }>NEXT</button>;
 
     if(idx === cor.length){
       var score = ans
@@ -245,19 +229,32 @@ class App extends Component {
           if(x.length === 2) {
             return total += x[1] ? 1: 0;
           } else {
-            return total += (x === cor[i])*1            
+            return total += (x === cor[i])*1;
           }
         }, 0);
       var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
       text = "";
-      next = "";
+    } else {
+      nextButton = <button 
+        autoFocus
+        onClick={ () => {
+          this.setState( prevState => 
+            ({
+              selectedProperties: "",
+              activeQuestionNum: prevState.activeQuestionNum + 1,
+              disableOptimization: true
+            })
+            , () => { this.setState({ disableOptimization: false }) }
+          )
+        }
+      }>NEXT</button>;
     }
 
     return (
       <div>
         <p>{text}</p>
         {scoreText}
-        {next}
+        {nextButton}
       </div>
     )
   }
@@ -333,7 +330,7 @@ class App extends Component {
           >
             {({zoom,x,y}) => (
               <ComposableMap
-                projectionConfig={{ scale: 205 }}
+                projectionConfig={{ scale: 205, rotation: [-10,0,0] }}
                 width={980}
                 height={551}
                 style={{

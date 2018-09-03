@@ -37,7 +37,7 @@ class QuestionInputBox extends Component {
         <div>
           <p>Enter the { this.props.testing } of the highlighted country</p>
           <form onSubmit={this.handleSubmit}>
-            <input type="text" value={this.state.userGuess} onChange={this.handleChange} />
+            <input type="text" autoFocus value={this.state.userGuess} onChange={this.handleChange} />
             <button type="submit">Submit</button>
           </form>
         </div>
