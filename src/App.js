@@ -16,6 +16,10 @@ import mapConfig from "./assets/regionMapConfig.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
+import { Transition } from "react-transition-group"
+
+// Duration for infoTab click
+const infoDuration = 200;
 
 class App extends Component {
   constructor() {
@@ -34,6 +38,7 @@ class App extends Component {
       quiz: false,
       activeQuestionNum: null,
       disableInfoClick: false,
+      viewInfoDiv: false,
     }
 
     WheelReact.config({
@@ -151,15 +156,28 @@ class App extends Component {
           return ({
             quizGuesses,
             disableOptimization: true,
-            selectedProperties: geo.properties
+            selectedProperties: geo.properties,
+            viewInfoDiv: true
           })}, () => { this.setState({ disableOptimization: false }) }
         )
       } else {
+
         this.setState(prevState => ({
           disableOptimization: true,
-          selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
-          }), () => { this.setState({ disableOptimization: false }) }
-        )
+          viewInfoDiv: !prevState.viewInfoDiv,
+          }), () => {
+
+            let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
+            let viewInfoDiv = selectedProperties !== "";
+
+            setTimeout(() => {
+              this.setState({
+                disableOptimization: false,
+                selectedProperties,
+                viewInfoDiv
+                }, this.handleMapRefresh)
+              },infoDuration)
+        })
       }
     }
   }
@@ -312,8 +330,25 @@ class App extends Component {
         />        
 
         <RegionButtons regionFunc={ this.handleRegionSelect } />
-        
-        <InfoTab country={this.state.selectedProperties}/>
+
+        <Transition in={this.state.viewInfoDiv} timeout={infoDuration}>
+          {(state) => {
+            const defaultStyle = {
+              transition: `opacity ${infoDuration}ms ease-in-out`,
+              opacity: 0,
+            }
+
+            const transitionStyles = {
+              entering: { opacity: 0 },
+              entered: { opacity: 1 },
+            };
+
+            return (
+              <div style={{ ...defaultStyle, ...transitionStyles[state] }}>
+                <InfoTab country={this.state.selectedProperties}/>
+              </div>
+          )}}
+        </Transition> 
 
         <div {...WheelReact.events}>
           <Motion
