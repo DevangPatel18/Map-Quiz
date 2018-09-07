@@ -5,6 +5,8 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
+  Markers,
+  Marker
 } from "react-simple-maps"
 import { feature } from "topojson-client"
 import { Motion, spring } from "react-motion"
@@ -17,9 +19,14 @@ import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
 import { Transition } from "react-transition-group"
+import { geoPath } from "d3-geo"
+import { geoTimes } from "d3-geo-projection"
 
 // Duration for infoTab click
 const infoDuration = 200;
+
+// Array of country centroids
+let centroids = [];
 
 class App extends Component {
   constructor() {
@@ -58,6 +65,7 @@ class App extends Component {
       }
     });
 
+    this.projection = this.projection.bind(this)
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
@@ -68,6 +76,13 @@ class App extends Component {
     this.handleQuizClose = this.handleQuizClose.bind(this)
     this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
+    this.handleDoubleClick = this.handleDoubleClick.bind(this)
+  }
+
+  projection() {
+    return geoTimes()
+      .translate([980/2, 551/2])
+      .scale(205)
   }
 
   componentDidMount() {
@@ -105,7 +120,19 @@ class App extends Component {
 
             x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
 
+            let path = geoPath().projection(this.projection())
+            centroids
+              .push([y["name"],this.projection().invert(path.centroid(x)),y["alpha3Code"]])
           })
+
+          centroids = centroids.map(array => ({ name: array[0], alpha3Code: array[2], coordinates: array[1], markerOffset: 0}))
+
+          // Fix positioning of country labels
+          centroids.find(x => x.alpha3Code === "CAN").coordinates = [-100, 55];
+          centroids.find(x => x.alpha3Code === "USA").coordinates = [-100, 40];
+          centroids.find(x => x.alpha3Code === "CHL").coordinates = [-73, -39];
+          centroids.find(x => x.alpha3Code === "FRA").coordinates = [2, 47];
+          centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
 
           // Additional spellings for countries
           data.find(x => x.properties.alpha3Code === "COG").properties.spellings.push("Republic of the Congo")
@@ -308,6 +335,36 @@ class App extends Component {
       , () => { this.setState({ disableOptimization: false }) } )
   }
 
+  handleDoubleClick(evt) {
+    const width = 980;
+    const height = 551;
+
+    const projection = this.projection()
+
+    const svg = this._wrapper.querySelector("svg")
+    const box = svg.getBoundingClientRect()
+
+    const resizeFactorX = 1 / width * box.width
+    const resizeFactorY = 1 / height * box.height
+
+    const originalCenter = [width/2, height/2]
+    const prevCenter = projection(this.state.center)
+
+    const offsetX = prevCenter[0] - originalCenter[0]
+    const offsetY = prevCenter[1] - originalCenter[1]
+
+    const { top, left } = box
+    const clientX = (evt.clientX - left) / resizeFactorX
+    const clientY = (evt.clientY - top) / resizeFactorY
+
+    const x = clientX + offsetX
+    const y = clientY + offsetY
+
+    const center = projection.invert([x,y])
+
+    console.log(center);
+  }
+
   render() {
 
     return (
@@ -374,6 +431,11 @@ class App extends Component {
             }}
           >
             {({zoom,x,y}) => (
+          
+              <div
+                ref={wrapper => this._wrapper = wrapper}
+                // onDoubleClick={this.handleDoubleClick}
+                >
               <ComposableMap
                 projectionConfig={{ scale: 205, rotation: [-10,0,0] }}
                 width={980}
@@ -396,8 +458,6 @@ class App extends Component {
                     {(geographies, projection) => 
                       geographies.map((geography, i) => {
 
-                      console.log(geography);
-                      
                       let defaultColor, hoverColor, render;
 
                       [defaultColor, hoverColor, render] = ColorPicker(this.state, geography)
@@ -432,8 +492,37 @@ class App extends Component {
                       )}
                     )}
                   </Geographies>
+                  <Markers>
+                    {centroids.map((marker, i) => {
+                      let display = false;
+                      if(this.state.quizGuesses.includes(marker.alpha3Code)) {
+                        let ansIdx = this.state.quizGuesses.indexOf(marker.alpha3Code);
+                        display = this.state.quizAnswers[ansIdx] === marker.alpha3Code;
+                      }
+                      return display&&(
+                        <Marker
+                          key={i}
+                          marker={marker}
+                          style={{
+                            default: { fill: "#FF5722" },
+                            hover: { fill: "#FFFFFF" },
+                            pressed: { fill: "#FF5722" },
+                          }}
+                        >
+                          <text
+                            textAnchor="middle"
+                            y={marker.markerOffset}
+                            className="countryLabel"
+                          >
+                            {marker.name}
+                          </text>
+                        </Marker>
+                      )}
+                    )}
+                  </Markers>
                 </ZoomableGroup>
               </ComposableMap>
+              </div>
             )}
           </Motion>
         </div>

@@ -45,3 +45,22 @@ footer {
   left: 50%;
   transform: translateX(-50%);
 }
+
+.countryLabel {
+  font-family: Roboto, sans-serif;
+  fill: white;
+  font-size: .5em;
+  font-weight: 600;
+  text-shadow: 1px 1px .7em black;
+  animation: dropFade .2s;
+}
+
+@keyframes dropFade {
+  from {
+    opacity: 0;
+    transform: translateY(-.5rem);
+  }
+  to {
+    opacity: 1;
+  }
+}
