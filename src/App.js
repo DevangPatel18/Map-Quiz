@@ -21,6 +21,7 @@ import ColorPicker from "./components/colorPicker.js"
 import { Transition } from "react-transition-group"
 import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
+import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
 
 // Duration for infoTab click
 const infoDuration = 200;
@@ -121,26 +122,16 @@ class App extends Component {
             x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
 
             let path = geoPath().projection(this.projection())
-            centroids
-              .push([y["name"],this.projection().invert(path.centroid(x)),y["alpha3Code"]])
+            centroids.push([this.projection().invert(path.centroid(x)), y["alpha3Code"]])
           })
 
-          centroids = centroids.map(array => ({ name: array[0], alpha3Code: array[2], coordinates: array[1], markerOffset: 0}))
+          DataFix(data)
 
-          // Fix positioning of country labels
-          centroids.find(x => x.alpha3Code === "CAN").coordinates = [-100, 55];
-          centroids.find(x => x.alpha3Code === "USA").coordinates = [-100, 40];
-          centroids.find(x => x.alpha3Code === "CHL").coordinates = [-73, -39];
-          centroids.find(x => x.alpha3Code === "FRA").coordinates = [2, 47];
-          centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
+          centroids = centroids.map(array => ({ 
+            name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
+            alpha3Code: array[1], coordinates: array[0], markerOffset: 0}))
 
-          // Additional spellings for countries
-          data.find(x => x.properties.alpha3Code === "COG").properties.spellings.push("Republic of the Congo")
-          data.find(x => x.properties.alpha3Code === "COD").properties.spellings.push("Democratic Republic of the Congo")
-          data.find(x => x.properties.alpha3Code === "GBR").properties.spellings.push("Britain")
-          data.find(x => x.properties.alpha3Code === "PRK").properties.spellings.push("North Korea")
-          data.find(x => x.properties.alpha3Code === "KOR").properties.spellings.push("South Korea")
-          data.find(x => x.properties.alpha3Code === "SYR").properties.spellings.push("Syria")
+          CentroidsFix(centroids)
 
           this.setState({ geographyPaths: data })
         })
