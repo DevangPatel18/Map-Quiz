@@ -1,14 +1,9 @@
 import React from 'react';
+import "../App.css"
 
 const RegionButtons = (props) => {
   return (
-    <div style={{
-      position: "absolute",
-      top: "calc(150px + 1em)",
-      right: "1em",
-      display: "flex",
-      flexDirection: "column",
-    }}>
+    <div className="regionButtons">
       <button onClick={ () => props.regionFunc("world") }>World</button>
       <button onClick={ () => props.regionFunc("naca") }>North and Central America</button>
       <button onClick={ () => props.regionFunc("south") }>South America</button>

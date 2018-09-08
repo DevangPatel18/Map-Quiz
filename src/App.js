@@ -109,6 +109,9 @@ class App extends Component {
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
           var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code"];
+          
+          // Remove Ashmore Reef to prevent extra Australia label
+          data.splice(11, 1)
 
           data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
             let y = countryData.find(c => +c["numericCode"] === +x.id)

@@ -19,8 +19,8 @@
 
 .App-quiz {
   position: absolute;
-  top: calc(150px + 3em);
-  left: 50%;
+  top: 1em;
+  right: 3em;
   transform: translateX(-50%);
   background: white;
   width: 300px;
@@ -63,4 +63,12 @@ footer {
   to {
     opacity: 1;
   }
+}
+
+.regionButtons {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  display: flex;
+  flex-direction: column;
 }

@@ -34,22 +34,11 @@ class QuizBox extends Component {
       return (
         <div className="App-quiz">
           <button onClick={ this.handleQuizStart }>START QUIZ</button>
-          <div>
-            <input type="radio" id="click_name" value="click_name" name="quiz" checked={this.state.quizType === "click_name"} onChange={this.handleQuizChange} />
-            <label htmlFor="click_name">Click Country</label>
-            <input type="radio" id="type_name" value="type_name" name="quiz" checked={this.state.quizType === "type_name"} onChange={this.handleQuizChange} />
-            <label htmlFor="type_name">Type Country</label>
-          </div>
-          <div>
-            <input type="radio" id="click_capital" value="click_capital" name="quiz" checked={this.state.quizType === "click_capital"} onChange={this.handleQuizChange} />
-            <label htmlFor="click_capital">Click Capital</label>
-            <input type="radio" id="type_capital" value="type_capital" name="quiz" checked={this.state.quizType === "type_capital"} onChange={this.handleQuizChange} />
-            <label htmlFor="type_capital">Type Capital</label>
-          </div>
-          <div>
-            <input type="radio" id="click_flag" value="click_flag" name="quiz" checked={this.state.quizType === "click_flag"} onChange={this.handleQuizChange} />
-            <label htmlFor="click_flag">Click Country from matching Flag</label>
-          </div>
+            <label htmlFor="click_name"><input type="radio" id="click_name" value="click_name" name="quiz" checked={this.state.quizType === "click_name"} onChange={this.handleQuizChange} />Click Country</label>
+            <label htmlFor="type_name"><input type="radio" id="type_name" value="type_name" name="quiz" checked={this.state.quizType === "type_name"} onChange={this.handleQuizChange} />Type Country</label>
+            <label htmlFor="click_capital"><input type="radio" id="click_capital" value="click_capital" name="quiz" checked={this.state.quizType === "click_capital"} onChange={this.handleQuizChange} />Click Capital</label>
+            <label htmlFor="type_capital"><input type="radio" id="type_capital" value="type_capital" name="quiz" checked={this.state.quizType === "type_capital"} onChange={this.handleQuizChange} />Type Capital</label>
+            <label htmlFor="click_flag"><input type="radio" id="click_flag" value="click_flag" name="quiz" checked={this.state.quizType === "click_flag"} onChange={this.handleQuizChange} />Click Country from matching Flag</label>
         </div>
       )
     } else {
