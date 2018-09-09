@@ -46,12 +46,15 @@ footer {
   transform: translateX(-50%);
 }
 
-.countryLabel {
+.mapLabel {
   font-family: Roboto, sans-serif;
   fill: white;
   font-size: .5em;
   font-weight: 600;
   text-shadow: 1px 1px .7em black;
+}
+
+.dropFade {
   animation: dropFade .2s;
 }
 

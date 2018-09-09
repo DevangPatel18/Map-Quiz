@@ -21,13 +21,15 @@ import ColorPicker from "./components/colorPicker.js"
 import { Transition } from "react-transition-group"
 import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
-import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
+import { DataFix } from "./helpers/attributeFix.js"
+import capitalData from "./assets/country_capitals.json"
 
 // Duration for infoTab click
 const infoDuration = 200;
 
-// Array of country centroids
-let centroids = [];
+// Arrays for label markers
+let countryMarkers = [];
+let capitalMarkers = [];
 
 class App extends Component {
   constructor() {
@@ -44,6 +46,7 @@ class App extends Component {
       quizAnswers: [],
       quizGuesses: [],
       quiz: false,
+      quizType: null,
       activeQuestionNum: null,
       disableInfoClick: false,
       viewInfoDiv: false,
@@ -124,17 +127,23 @@ class App extends Component {
 
             x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
 
-            let path = geoPath().projection(this.projection())
-            centroids.push([this.projection().invert(path.centroid(x)), y["alpha3Code"]])
+            let captemp = capitalData.find(x => x.CountryCode === y["alpha2Code"])
+            if(captemp) {
+              let capitalCoords = [+captemp.CapitalLongitude,+captemp.CapitalLatitude]
+              
+              capitalMarkers.push({name: y["capital"], alpha3Code: y["alpha3Code"], 
+                coordinates:  capitalCoords,
+                markerOffset: -7})
+            }
+
+            countryMarkers.push([y["latlng"].reverse(), y["alpha3Code"]])
           })
 
           DataFix(data)
 
-          centroids = centroids.map(array => ({ 
+          countryMarkers = countryMarkers.map(array => ({ 
             name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
             alpha3Code: array[1], coordinates: array[0], markerOffset: 0}))
-
-          CentroidsFix(centroids)
 
           this.setState({ geographyPaths: data })
         })
@@ -214,7 +223,7 @@ class App extends Component {
     }, () => { this.setState({ disableOptimization: false }) })
   }
 
-  handleQuiz(){
+  handleQuiz(quizType){
     let quizAnswers = [...this.state.filterRegions]
     quizAnswers.reduce((dum1, dum2, i) => {
         const j = Math.floor(Math.random()*(quizAnswers.length - i) + i);
@@ -222,7 +231,7 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.setState({quizAnswers, activeQuestionNum: 0, viewInfoDiv: false}
+    this.setState({quizAnswers, quizType, activeQuestionNum: 0, viewInfoDiv: false}
       ,() => { 
 
         setTimeout(() => {
@@ -313,6 +322,7 @@ class App extends Component {
       quizAnswers: [],
       quizGuesses: [],
       quiz: false,
+      quizType: null,
       activeQuestionNum: null,
       disableOptimization: true,
       disableInfoClick: false,
@@ -380,7 +390,7 @@ class App extends Component {
         <QuizBox
           visible={ this.state.filterRegions.length !== 0 ? true:false }
           nonactive={ !this.state.quiz ? true:false }
-          startquiz={ () => { this.setState({quiz: true}, this.handleQuiz) } }
+          startquiz={ (quizType) => { this.setState({quiz: true}, this.handleQuiz(quizType)) } }
           closequiz={ this.handleQuizClose}
           quizAnswers={ this.state.quizAnswers }
           quizGuesses={ this.state.quizGuesses }
@@ -487,11 +497,18 @@ class App extends Component {
                     )}
                   </Geographies>
                   <Markers>
-                    {centroids.map((marker, i) => {
-                      let display = false;
-                      if(this.state.quizGuesses.includes(marker.alpha3Code)) {
-                        let ansIdx = this.state.quizGuesses.indexOf(marker.alpha3Code);
-                        display = this.state.quizAnswers[ansIdx] === marker.alpha3Code;
+                    {
+                      this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
+                      let display = false
+                      let marker, offset;
+                      if((this.state.quizType === "name" || this.state.quizType === "flag" ) 
+                        && (gss === this.state.quizAnswers[i])){
+                        display = true;
+                        marker = countryMarkers.find(x => x.alpha3Code === gss);
+                      } else if ((this.state.quizType === "capital") 
+                        && (gss === this.state.quizAnswers[i])) {
+                        display = true;
+                        marker = capitalMarkers.find(x => x.alpha3Code === gss);
                       }
                       return display&&(
                         <Marker
@@ -503,16 +520,29 @@ class App extends Component {
                             pressed: { fill: "#FF5722" },
                           }}
                         >
+                          {this.state.quizType === "capital" ? 
+                            (<circle
+                              cx={0}
+                              cy={0}
+                              r={2}
+                              className="dropFade"
+                              style={{
+                                stroke: "#FF5722",
+                                strokeWidth: 3,
+                                opacity: 0.9,
+                              }}
+                            />):null
+                          }
                           <text
                             textAnchor="middle"
                             y={marker.markerOffset}
-                            className="countryLabel"
+                            className="mapLabel dropFade"
                           >
                             {marker.name}
                           </text>
                         </Marker>
                       )}
-                    )}
+                    ):null}
                   </Markers>
                 </ZoomableGroup>
               </ComposableMap>

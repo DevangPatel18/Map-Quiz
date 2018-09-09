@@ -20,9 +20,9 @@ class QuizBox extends Component {
 
   handleQuizStart() {
     if(this.state.quizType.split("_")[0] === "click") {
-      this.props.startquiz()
+      this.props.startquiz(this.state.quizType.split("_")[1])
     } else {
-      this.props.startquiz()
+      this.props.startquiz(this.state.quizType.split("_")[1])
       this.props.disableInfoClick()
     }
   }
