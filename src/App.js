@@ -18,13 +18,13 @@ import mapConfig from "./assets/regionMapConfig.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
+import handleAnswer from "./components/handleAnswer.js"
+import handleCountryClick from "./components/handleCountryClick.js"
+import handleDoubleClick from "./components/handleDoubleClick.js"
 import { Transition } from "react-transition-group"
 import { geoTimes } from "d3-geo-projection"
 import { DataFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
-
-// Duration for infoTab click
-const infoDuration = 200;
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -38,6 +38,7 @@ class App extends Component {
       center: [0,0],
       zoom: 1,
       defaultZoom: 1,
+      infoDuration: 200,
       geographyPaths: [],
       selectedProperties: "",
       disableOptimization: false,
@@ -72,14 +73,14 @@ class App extends Component {
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
-    this.handleCountryClick = this.handleCountryClick.bind(this)
+    this.handleCountryClick = handleCountryClick.bind(this)
     this.handleRegionSelect = this.handleRegionSelect.bind(this)
     this.handleQuiz = this.handleQuiz.bind(this)
-    this.handleAnswer = this.handleAnswer.bind(this)
+    this.handleAnswer = handleAnswer.bind(this)
     this.handleQuizClose = this.handleQuizClose.bind(this)
     this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
-    this.handleDoubleClick = this.handleDoubleClick.bind(this)
+    this.handleDoubleClick = handleDoubleClick.bind(this)
   }
 
   projection() {
@@ -176,36 +177,6 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleCountryClick(geo) {
-    if(!this.state.disableInfoClick) {
-      if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
-        let result = geo.properties["alpha3Code"] === this.state.quizAnswers[this.state.activeQuestionNum]
-        this.setState(prevState => ({
-            quizGuesses: [...prevState.quizGuesses, result],
-            disableOptimization: true,
-            selectedProperties: geo.properties,
-            viewInfoDiv: true
-          }), () => { this.setState({ disableOptimization: false }) }
-        )
-      } else {
-        this.setState(prevState => ({
-          disableOptimization: true,
-          viewInfoDiv: !prevState.viewInfoDiv,
-          }), () => {
-            let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
-            let viewInfoDiv = selectedProperties !== "";
-            setTimeout(() => {
-              this.setState({
-                disableOptimization: false,
-                selectedProperties,
-                viewInfoDiv
-                }, this.handleMapRefresh)
-              },infoDuration)
-        })
-      }
-    }
-  }
-
   handleRegionSelect(region) {
     let { center, zoom, defaultZoom } = mapConfig[region];
     this.setState({
@@ -230,74 +201,8 @@ class App extends Component {
 
         setTimeout(() => {
           this.setState({ selectedProperties: "" }, this.handleMapRefresh) 
-        }, infoDuration)
+        },  this.state.infoDuration)
       })
-  }
-
-  handleAnswer(userGuess = null, testing = null){
-    let ans = this.state.quizGuesses;
-    let cor = this.state.quizAnswers;
-    let idx = this.state.activeQuestionNum;
-    let text, nextButton;
-
-    if(userGuess) {
-      let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-      let answer, result;
-
-      answer = this.state.geographyPaths
-          .find(geo => geo.properties.alpha3Code === correctAlpha )
-          .properties;
-      
-      if(testing === "name") {
-        answer = answer.spellings;
-        result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
-      } else {
-        answer = answer.capital;
-        result = userGuess.toLowerCase() === answer.toLowerCase()
-      }
-
-      text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
-
-      this.setState(prevState => ({
-          quizGuesses: [...prevState.quizGuesses, result],
-          disableOptimization: true,
-        }), () => { this.setState({ disableOptimization: false }) }
-      )
-    } else {
-      text = ans[idx] ? "that is correct!":"that is incorrect!";
-    }
-
-    if(idx === cor.length){
-      var score = ans.reduce((total, x, i) => total += x*1, 0);
-      var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-      text = "";
-    } else {
-      nextButton = <button 
-        autoFocus
-        onClick={ () => {
-          this.setState( prevState => 
-            ({
-              viewInfoDiv: false,
-              activeQuestionNum: prevState.activeQuestionNum + 1,
-              disableOptimization: true
-            })
-            , () => { 
-              setTimeout(() => {
-                this.setState({ selectedProperties: ""}, this.handleMapRefresh) 
-              }, infoDuration)
-            }
-          )
-        }
-      }>NEXT</button>;
-    }
-
-    return (
-      <div>
-        <p>{text}</p>
-        {scoreText}
-        {nextButton}
-      </div>
-    )
   }
 
   handleQuizClose(){
@@ -320,36 +225,6 @@ class App extends Component {
   handleMapRefresh() {
     this.setState({ disableOptimization: true}
       , () => { this.setState({ disableOptimization: false }) } )
-  }
-
-  handleDoubleClick(evt) {
-    const width = 980;
-    const height = 551;
-
-    const projection = this.projection()
-
-    const svg = this._wrapper.querySelector("svg")
-    const box = svg.getBoundingClientRect()
-
-    const resizeFactorX = 1 / width * box.width
-    const resizeFactorY = 1 / height * box.height
-
-    const originalCenter = [width/2, height/2]
-    const prevCenter = projection(this.state.center)
-
-    const offsetX = prevCenter[0] - originalCenter[0]
-    const offsetY = prevCenter[1] - originalCenter[1]
-
-    const { top, left } = box
-    const clientX = (evt.clientX - left) / resizeFactorX
-    const clientY = (evt.clientY - top) / resizeFactorY
-
-    const x = clientX + offsetX
-    const y = clientY + offsetY
-
-    const center = projection.invert([x,y])
-
-    console.log(center);
   }
 
   render() {
@@ -385,10 +260,10 @@ class App extends Component {
 
         <RegionButtons regionFunc={ this.handleRegionSelect } />
 
-        <Transition in={this.state.viewInfoDiv} timeout={infoDuration}>
+        <Transition in={this.state.viewInfoDiv} timeout={ this.state.infoDuration}>
           {(state) => {
             const defaultStyle = {
-              transition: `opacity ${infoDuration}ms ease-in-out`,
+              transition: `opacity ${ this.state.infoDuration}ms ease-in-out`,
               opacity: 0,
             }
 
