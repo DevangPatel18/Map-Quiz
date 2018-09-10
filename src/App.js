@@ -19,7 +19,6 @@ import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
 import { Transition } from "react-transition-group"
-import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
 import { DataFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
@@ -180,26 +179,21 @@ class App extends Component {
   handleCountryClick(geo) {
     if(!this.state.disableInfoClick) {
       if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
-        this.setState(prevState => {
-          let quizGuesses = [...prevState.quizGuesses];
-          quizGuesses.push(geo.properties["alpha3Code"]);
-          return ({
-            quizGuesses,
+        let result = geo.properties["alpha3Code"] === this.state.quizAnswers[this.state.activeQuestionNum]
+        this.setState(prevState => ({
+            quizGuesses: [...prevState.quizGuesses, result],
             disableOptimization: true,
             selectedProperties: geo.properties,
             viewInfoDiv: true
-          })}, () => { this.setState({ disableOptimization: false }) }
+          }), () => { this.setState({ disableOptimization: false }) }
         )
       } else {
-
         this.setState(prevState => ({
           disableOptimization: true,
           viewInfoDiv: !prevState.viewInfoDiv,
           }), () => {
-
             let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
             let viewInfoDiv = selectedProperties !== "";
-
             setTimeout(() => {
               this.setState({
                 disableOptimization: false,
@@ -248,7 +242,6 @@ class App extends Component {
 
     if(userGuess) {
       let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-
       let answer, result;
 
       answer = this.state.geographyPaths
@@ -265,27 +258,17 @@ class App extends Component {
 
       text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
 
-      this.setState(prevState => {
-        let quizGuesses = [...prevState.quizGuesses];
-        quizGuesses.push([userGuess, result]);
-        return ({
-          quizGuesses,
+      this.setState(prevState => ({
+          quizGuesses: [...prevState.quizGuesses, result],
           disableOptimization: true,
-        })}, () => { this.setState({ disableOptimization: false })
-      })
+        }), () => { this.setState({ disableOptimization: false }) }
+      )
     } else {
-      text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
+      text = ans[idx] ? "that is correct!":"that is incorrect!";
     }
 
     if(idx === cor.length){
-      var score = ans
-        .reduce((total, x, i) => {
-          if(x.length === 2) {
-            return total += x[1] ? 1: 0;
-          } else {
-            return total += (x === cor[i])*1;
-          }
-        }, 0);
+      var score = ans.reduce((total, x, i) => total += x*1, 0);
       var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
       text = "";
     } else {
@@ -499,18 +482,14 @@ class App extends Component {
                   <Markers>
                     {
                       this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
-                      let display = false
-                      let marker, offset;
-                      if((this.state.quizType === "name" || this.state.quizType === "flag" ) 
-                        && (gss === this.state.quizAnswers[i])){
-                        display = true;
-                        marker = countryMarkers.find(x => x.alpha3Code === gss);
-                      } else if ((this.state.quizType === "capital") 
-                        && (gss === this.state.quizAnswers[i])) {
-                        display = true;
-                        marker = capitalMarkers.find(x => x.alpha3Code === gss);
+                      if(gss){
+                        if(this.state.quizType === "name" || this.state.quizType === "flag" ) {
+                          var marker = countryMarkers.find(x => x.alpha3Code === this.state.quizAnswers[i]);
+                        } else if (this.state.quizType === "capital") {
+                          marker = capitalMarkers.find(x => x.alpha3Code === this.state.quizAnswers[i]);
+                        }
                       }
-                      return display&&(
+                      return gss&&(
                         <Marker
                           key={i}
                           marker={marker}
