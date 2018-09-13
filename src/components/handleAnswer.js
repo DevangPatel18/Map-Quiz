@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'semantic-ui-react'
 
 export default function handleAnswer(userGuess = null, testing = null){
   let ans = this.state.quizGuesses;
@@ -38,7 +39,7 @@ export default function handleAnswer(userGuess = null, testing = null){
     var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
     text = "";
   } else {
-    nextButton = <button 
+    nextButton = <Button 
       autoFocus
       onClick={ () => {
         this.setState( prevState => 
@@ -54,7 +55,7 @@ export default function handleAnswer(userGuess = null, testing = null){
           }
         )
       }
-    }>NEXT</button>;
+    }>NEXT</Button>;
   }
 
   return (

@@ -1,0 +1,50 @@
+.App-quiz {
+  position: absolute;
+  top: 14em;
+  right: 1em;
+  padding: 1em;
+  min-width: 350px;
+  min-height: 130px;
+  border-radius: 3rem 0 3rem 3rem;
+  background: rgba(0,0,0, .5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 1.1em;
+  color: white;
+}
+
+.App-quiz-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.App-quiz > .ui.button {
+  margin-bottom: 1em;
+}
+
+.ui.radio.checkbox label,
+.ui.radio.checkbox label:hover,
+.ui.radio.checkbox.checked label {
+  color: white;
+  font-size: 1.1em;
+}
+
+.qInputBox {
+  padding: .5em 1em;
+}
+
+.qFlag {
+  padding: .4em 0;
+}
+
+.ui.large.button.qSubmit {
+  margin-left: .5em;
+  padding: 12.571px .5em;
+}
+
+button.ui.button {
+  margin: 0;
+}

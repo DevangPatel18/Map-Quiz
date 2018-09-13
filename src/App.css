@@ -17,28 +17,6 @@
     outline: none;
 }
 
-.App-quiz {
-  position: absolute;
-  top: 1em;
-  right: 3em;
-  transform: translateX(-50%);
-  background: white;
-  width: 300px;
-  min-height: 100px;
-  border: 1px solid black;
-  background: #F0F8FF;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.App-quiz-close {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
 footer {
   position: absolute;
   bottom: .25em;

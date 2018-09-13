@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import QuestionBox from './questionBox.js';
 import QuestionInputBox from "./questionInputBox.js"
+import { Button, Form, Radio } from 'semantic-ui-react'
+import './quizBox.css'
 
 class QuizBox extends Component {
   constructor() {
@@ -14,8 +16,8 @@ class QuizBox extends Component {
     this.handleQuizStart = this.handleQuizStart.bind(this)
   }
 
-  handleQuizChange(event) {
-    this.setState({ quizType: event.target.value })
+  handleQuizChange(event, { value }) {
+    this.setState({ quizType: value })
   }
 
   handleQuizStart() {
@@ -33,12 +35,54 @@ class QuizBox extends Component {
     if(this.props.nonactive) {
       return (
         <div className="App-quiz">
-          <button onClick={ this.handleQuizStart }>START QUIZ</button>
-            <label htmlFor="click_name"><input type="radio" id="click_name" value="click_name" name="quiz" checked={this.state.quizType === "click_name"} onChange={this.handleQuizChange} />Click Country</label>
-            <label htmlFor="type_name"><input type="radio" id="type_name" value="type_name" name="quiz" checked={this.state.quizType === "type_name"} onChange={this.handleQuizChange} />Type Country</label>
-            <label htmlFor="click_capital"><input type="radio" id="click_capital" value="click_capital" name="quiz" checked={this.state.quizType === "click_capital"} onChange={this.handleQuizChange} />Click Capital</label>
-            <label htmlFor="type_capital"><input type="radio" id="type_capital" value="type_capital" name="quiz" checked={this.state.quizType === "type_capital"} onChange={this.handleQuizChange} />Type Capital</label>
-            <label htmlFor="click_flag"><input type="radio" id="click_flag" value="click_flag" name="quiz" checked={this.state.quizType === "click_flag"} onChange={this.handleQuizChange} />Click Country from matching Flag</label>
+          <Button onClick={ this.handleQuizStart }>START QUIZ</Button>
+            <Form>
+            <Form.Field>
+              <Radio
+                label="Click Country"
+                value="click_name"
+                name="quiz"
+                checked={this.state.quizType === "click_name"}
+                onChange={this.handleQuizChange}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Radio
+                label="Type Country"
+                value="type_name"
+                name="quiz"
+                checked={this.state.quizType === "type_name"}
+                onChange={this.handleQuizChange}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Radio
+                label="Click Capital"
+                value="click_capital"
+                name="quiz"
+                checked={this.state.quizType === "click_capital"}
+                onChange={this.handleQuizChange}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Radio
+                label="Type Capital"
+                value="type_capital"
+                name="quiz"
+                checked={this.state.quizType === "type_capital"}
+                onChange={this.handleQuizChange}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Radio
+                label="Click Country from matching Flag"
+                value="click_flag"
+                name="quiz"
+                checked={this.state.quizType === "click_flag"}
+                onChange={this.handleQuizChange}
+              />
+            </Form.Field>
+            </Form>
         </div>
       )
     } else {
