@@ -182,13 +182,12 @@ class App extends Component {
 
   handleRegionSelect(region) {
     let { center, zoom, defaultZoom } = mapConfig[region];
-    this.setState({
-      disableOptimization: true,
+    this.handleMapRefresh({
       zoom,
       defaultZoom,
       center,
       filterRegions: alpha3Codes[region]
-    }, () => { this.setState({ disableOptimization: false }) })
+    })
   }
 
   handleQuiz(quizType){
@@ -203,30 +202,34 @@ class App extends Component {
       ,() => { 
 
         setTimeout(() => {
-          this.setState({ selectedProperties: "" }, this.handleMapRefresh) 
+          
+          this.handleMapRefresh({ selectedProperties: "" }) 
         },  this.state.infoDuration)
       })
   }
 
   handleQuizClose(){
-    this.setState({
-      quizAnswers: [],
-      quizGuesses: [],
-      quiz: false,
-      quizType: null,
-      activeQuestionNum: null,
-      disableOptimization: true,
-      disableInfoClick: false,
-    }, () => { this.setState({ disableOptimization: false }) } )
+    this.setState({viewInfoDiv: false}, () => {
+      setTimeout(() => {
+        this.handleMapRefresh({
+          quizAnswers: [],
+          quizGuesses: [],
+          quiz: false,
+          quizType: null,
+          activeQuestionNum: null,
+          disableInfoClick: false,
+          selectedProperties: "",
+        })
+      }, this.state.infoDuration)
+    })
   }
 
   handleDisableInfoClick() {
-    this.setState({ disableInfoClick: true }
-      , this.handleMapRefresh )
+    this.handleMapRefresh({ disableInfoClick: true })
   }
 
-  handleMapRefresh() {
-    this.setState({ disableOptimization: true}
+  handleMapRefresh(args) {
+    this.setState({ ...args, disableOptimization: true}
       , () => { this.setState({ disableOptimization: false }) } )
   }
 

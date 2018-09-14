@@ -24,12 +24,7 @@ export default function handleAnswer(userGuess = null, testing = null){
     }
 
     text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
-
-    this.setState(prevState => ({
-        quizGuesses: [...prevState.quizGuesses, result],
-        disableOptimization: true,
-      }), () => { this.setState({ disableOptimization: false }) }
-    )
+    this.handleMapRefresh({quizGuesses: [...this.state.quizGuesses, result]})
   } else {
     text = ans[idx] ? "That is correct!":"That is incorrect!";
   }
@@ -45,11 +40,10 @@ export default function handleAnswer(userGuess = null, testing = null){
           ({
             viewInfoDiv: false,
             activeQuestionNum: prevState.activeQuestionNum + 1,
-            disableOptimization: true
           })
           , () => { 
             setTimeout(() => {
-              this.setState({ selectedProperties: ""}, this.handleMapRefresh) 
+              this.handleMapRefresh({ selectedProperties: ""})
             }, this.state.infoDuration)
           }
         )
