@@ -25,6 +25,7 @@ import { Transition } from "react-transition-group"
 import { geoTimes } from "d3-geo-projection"
 import { DataFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
+import { Button, Icon } from "semantic-ui-react"
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -235,14 +236,12 @@ class App extends Component {
           <h1 className="App-title">Country Data</h1>
         </header>
         
-        <div style={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)"
-        }}>
-          <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
-          <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
-          <button onClick={ this.handleReset }>{ "Reset view" }</button>
+        <div className="zoomButtons">
+          <Button.Group size="tiny" basic vertical>
+            <Button onClick={ this.handleZoomIn } icon="plus" />
+            <Button onClick={ this.handleZoomOut } icon="minus" />
+            <Button onClick={ this.handleReset } icon="undo" />
+          </Button.Group>
         </div>
 
         <QuizBox

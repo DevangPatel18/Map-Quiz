@@ -52,3 +52,11 @@ footer {
   right: 1em;
   width: 220px;
 }
+
+.zoomButtons {
+  position: absolute;
+  left: 1em;
+  top: 4em;
+  display: flex;
+  flex-direction: column;
+}
