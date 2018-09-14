@@ -50,6 +50,5 @@ footer {
   position: absolute;
   top: 1em;
   right: 1em;
-  display: flex;
-  flex-direction: column;
+  width: 220px;
 }
