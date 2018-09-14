@@ -25,7 +25,7 @@ import { Transition } from "react-transition-group"
 import { geoTimes } from "d3-geo-projection"
 import { DataFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
-import { Button, Icon } from "semantic-ui-react"
+import { Button } from "semantic-ui-react"
 
 // Arrays for label markers
 let countryMarkers = [];

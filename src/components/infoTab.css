@@ -1,0 +1,23 @@
+.infoTab {
+  position: absolute;
+  left: 1em;
+  top: 13em;
+  text-align: left;
+}
+
+.infoTab-flag {
+  display: block;
+  max-width:250px;
+  max-height: 150px;
+  background: white;
+  border: 1px solid black;
+}
+
+.infoTab-desc {
+  background: rgba(0,0,0,.6);
+  list-style-type: none;
+  padding: .3em;
+  color: white;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
