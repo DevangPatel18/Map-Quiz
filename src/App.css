@@ -27,7 +27,7 @@ footer {
 .mapLabel {
   font-family: Roboto, sans-serif;
   fill: white;
-  font-size: .5em;
+  font-size: .75em;
   font-weight: 600;
   text-shadow: 1px 1px .7em black;
 }

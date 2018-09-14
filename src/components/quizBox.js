@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import QuestionBox from './questionBox.js';
 import QuestionInputBox from "./questionInputBox.js"
-import { Button, Form, Radio } from 'semantic-ui-react'
+import { Button, Form, Radio, Icon } from 'semantic-ui-react'
 import './quizBox.css'
 
 class QuizBox extends Component {
@@ -89,7 +89,9 @@ class QuizBox extends Component {
       if(this.state.quizType.split("_")[0] === "click") {
         return (
           <div className="App-quiz">
-            <button className="App-quiz-close" onClick={ this.props.closequiz }>X</button>
+            <Button size="tiny" className="App-quiz-close" onClick={ this.props.closequiz }>
+              <Icon fitted size="large" name="close"/>
+            </Button>
             <QuestionBox
               testing = { this.state.quizType.split("_")[1] }
               quizAnswers = { this.props.quizAnswers }
@@ -103,7 +105,9 @@ class QuizBox extends Component {
       } else {
         return (
           <div className="App-quiz">
-            <button className="App-quiz-close" onClick={ this.props.closequiz }>X</button>
+            <Button size="tiny" className="App-quiz-close" onClick={ this.props.closequiz }>
+              <Icon fitted size="large" name="close"/>
+            </Button>
             <QuestionInputBox
               testing = { this.state.quizType.split("_")[1] }
               quizAnswers = { this.props.quizAnswers }

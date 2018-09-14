@@ -259,7 +259,7 @@ class App extends Component {
           disableInfoClick={ this.handleDisableInfoClick }
         />        
 
-        <RegionButtons regionFunc={ this.handleRegionSelect } />
+        {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
 
         <Transition in={this.state.viewInfoDiv} timeout={ this.state.infoDuration}>
           {(state) => {

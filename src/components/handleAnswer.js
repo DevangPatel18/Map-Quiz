@@ -5,7 +5,7 @@ export default function handleAnswer(userGuess = null, testing = null){
   let ans = this.state.quizGuesses;
   let cor = this.state.quizAnswers;
   let idx = this.state.activeQuestionNum;
-  let text, nextButton;
+  let text, nextButton, divContent;
 
   if(userGuess) {
     let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
@@ -31,13 +31,12 @@ export default function handleAnswer(userGuess = null, testing = null){
       }), () => { this.setState({ disableOptimization: false }) }
     )
   } else {
-    text = ans[idx] ? "that is correct!":"that is incorrect!";
+    text = ans[idx] ? "That is correct!":"That is incorrect!";
   }
 
   if(idx === cor.length){
     var score = ans.reduce((total, x, i) => total += x*1, 0);
-    var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-    text = "";
+    divContent = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
   } else {
     nextButton = <Button 
       autoFocus
@@ -56,13 +55,13 @@ export default function handleAnswer(userGuess = null, testing = null){
         )
       }
     }>NEXT</Button>;
+
+    divContent = <div><p>{text}</p>{nextButton}</div>
   }
 
   return (
     <div>
-      <p>{text}</p>
-      {scoreText}
-      {nextButton}
+      {divContent}
     </div>
   )
 }

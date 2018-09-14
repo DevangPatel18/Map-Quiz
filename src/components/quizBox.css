@@ -2,8 +2,8 @@
   position: absolute;
   top: 5em;
   right: 1em;
-  padding: 1em;
-  min-width: 350px;
+  padding: 1.7em;
+  min-width: 100px;
   min-height: 130px;
   border-radius: 3rem 0 3rem 3rem;
   background: rgba(0,0,0, .5);
@@ -25,11 +25,25 @@
   margin-bottom: 1em;
 }
 
+.App-quiz > .ui.button.App-quiz-close {
+  border-radius: 0;
+  padding: 4px;
+}
+
+.ui.tiny.button.App-quiz-close .close.large.fitted.icon {
+  line-height: .85;
+}
+
 .ui.radio.checkbox label,
 .ui.radio.checkbox label:hover,
 .ui.radio.checkbox.checked label {
   color: white;
   font-size: 1.1em;
+}
+
+.ui.form {
+  width: 160px;
+  text-align: left;
 }
 
 .qInputBox {
