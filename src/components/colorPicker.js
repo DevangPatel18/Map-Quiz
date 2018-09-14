@@ -30,7 +30,7 @@ const ColorPicker = (state, geo) => {
     }
 
     // Fills correct country click guesses as green
-    if(geoQuizIdx !== -1 && state.quizGuesses[geoQuizIdx] === state.quizAnswers[geoQuizIdx]) {
+    if(geoQuizIdx !== -1 && state.quizGuesses[geoQuizIdx]) {
       defaultColor = "rgb(144, 238, 144)"
       hoverColor = "rgb(144, 238, 144)"
     }

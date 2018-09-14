@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Input } from 'semantic-ui-react'
 
 class QuestionInputBox extends Component {
   constructor(props) {
@@ -20,9 +21,9 @@ class QuestionInputBox extends Component {
   handleSubmit(event) {
     event.preventDefault();
     if(this.state.userGuess.length !== 0) {
-      let result = this.props.answerResultFunc(this.state.userGuess, this.props.testing)
+      let answerResult = this.props.answerResultFunc(this.state.userGuess, this.props.testing)
   
-      this.setState({userGuess: "", answerResult: result})
+      this.setState({userGuess: "", answerResult})
     }
   }
 
@@ -37,8 +38,8 @@ class QuestionInputBox extends Component {
         <div>
           <p>Enter the { this.props.testing } of the highlighted country</p>
           <form onSubmit={this.handleSubmit}>
-            <input type="text" autoFocus value={this.state.userGuess} onChange={this.handleChange} />
-            <button type="submit">Submit</button>
+            <Input type="text" autoFocus value={this.state.userGuess} onChange={this.handleChange} />
+            <Button type="submit" size="large" className="qSubmit">Submit</Button>
           </form>
         </div>
     }
@@ -52,7 +53,7 @@ class QuestionInputBox extends Component {
     }
 
     return (
-      <div>
+      <div className="qInputBox">
         {next}
       </div>
     )

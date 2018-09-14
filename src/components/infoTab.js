@@ -1,4 +1,5 @@
 import React from 'react';
+import './infoTab.css';
 
 const InfoTab = (props) => {
   let name, capital, population, area;
@@ -12,30 +13,9 @@ const InfoTab = (props) => {
     area = props.country.area ? props.country.area.toLocaleString():"N/A"
   }
   return (
-    <div style={{
-      position: "absolute",
-      left: "1em",
-      top: "calc(150px + 1em)",
-      textAlign: "left",
-    }}>
-      <img src={props.country.flag}
-        style={{
-          display: "block",
-          maxWidth:"250px",
-          maxHeight: "150px",
-          background: "white",
-          border: "1px solid black",
-        }}
-        alt=""
-      />
-      <div style={{
-        background: "rgba(0,0,0,.6)",
-        listStyleType: "none", 
-        padding: ".3em",
-        color: "white",
-        lineHeight: "1.4",
-        letterSpacing: "1px"
-      }}>
+    <div className="infoTab">
+      <img className="infoTab-flag" src={props.country.flag} alt="" />
+      <div className="infoTab-desc">
         <li>{name}</li>
         <li>Capital: {capital}</li>
         <li>Population: {population}</li>

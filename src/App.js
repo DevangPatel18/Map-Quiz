@@ -5,6 +5,8 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
+  Markers,
+  Marker
 } from "react-simple-maps"
 import { feature } from "topojson-client"
 import { Motion, spring } from "react-motion"
@@ -16,15 +18,30 @@ import mapConfig from "./assets/regionMapConfig.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
+import handleAnswer from "./components/handleAnswer.js"
+import handleCountryClick from "./components/handleCountryClick.js"
+import handleDoubleClick from "./components/handleDoubleClick.js"
+import { Transition } from "react-transition-group"
+import { geoTimes } from "d3-geo-projection"
+import { DataFix } from "./helpers/attributeFix.js"
+import capitalData from "./assets/country_capitals.json"
+import { Button } from "semantic-ui-react"
+
+// Arrays for label markers
+let countryMarkers = [];
+let capitalMarkers = [];
 
 class App extends Component {
   constructor() {
     super()
 
     this.state = {
-      center: [0,0],
+      center: [10,0],
       zoom: 1,
       defaultZoom: 1,
+      scale: 210,
+      dimensions: [980,551],
+      infoDuration: 200,
       geographyPaths: [],
       selectedProperties: "",
       disableOptimization: false,
@@ -32,8 +49,10 @@ class App extends Component {
       quizAnswers: [],
       quizGuesses: [],
       quiz: false,
+      quizType: null,
       activeQuestionNum: null,
       disableInfoClick: false,
+      viewInfoDiv: false,
     }
 
     WheelReact.config({
@@ -53,16 +72,24 @@ class App extends Component {
       }
     });
 
+    this.projection = this.projection.bind(this)
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)    
     this.handleReset = this.handleReset.bind(this)
-    this.handleCountryClick = this.handleCountryClick.bind(this)
+    this.handleCountryClick = handleCountryClick.bind(this)
     this.handleRegionSelect = this.handleRegionSelect.bind(this)
     this.handleQuiz = this.handleQuiz.bind(this)
-    this.handleAnswer = this.handleAnswer.bind(this)
+    this.handleAnswer = handleAnswer.bind(this)
     this.handleQuizClose = this.handleQuizClose.bind(this)
     this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
+    this.handleDoubleClick = handleDoubleClick.bind(this)
+  }
+
+  projection() {
+    return geoTimes()
+      .translate(this.state.dimensions.map(x => x/2))
+      .scale(this.state.scale)
   }
 
   componentDidMount() {
@@ -88,6 +115,9 @@ class App extends Component {
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
           var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code"];
+          
+          // Remove Ashmore Reef to prevent extra Australia label
+          data.splice(11, 1)
 
           data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
             let y = countryData.find(c => +c["numericCode"] === +x.id)
@@ -100,15 +130,23 @@ class App extends Component {
 
             x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
 
+            let captemp = capitalData.find(x => x.CountryCode === y["alpha2Code"])
+            if(captemp) {
+              let capitalCoords = [+captemp.CapitalLongitude,+captemp.CapitalLatitude]
+              
+              capitalMarkers.push({name: y["capital"], alpha3Code: y["alpha3Code"], 
+                coordinates:  capitalCoords,
+                markerOffset: -7})
+            }
+
+            countryMarkers.push([y["latlng"].reverse(), y["alpha3Code"]])
           })
 
-          // Additional spellings for countries
-          data.find(x => x.properties.alpha3Code === "COG").properties.spellings.push("Republic of the Congo")
-          data.find(x => x.properties.alpha3Code === "COD").properties.spellings.push("Democratic Republic of the Congo")
-          data.find(x => x.properties.alpha3Code === "GBR").properties.spellings.push("Britain")
-          data.find(x => x.properties.alpha3Code === "PRK").properties.spellings.push("North Korea")
-          data.find(x => x.properties.alpha3Code === "KOR").properties.spellings.push("South Korea")
-          data.find(x => x.properties.alpha3Code === "SYR").properties.spellings.push("Syria")
+          DataFix(data)
+
+          countryMarkers = countryMarkers.map(array => ({ 
+            name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
+            alpha3Code: array[1], coordinates: array[0], markerOffset: 0}))
 
           this.setState({ geographyPaths: data })
         })
@@ -142,28 +180,6 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleCountryClick(geo) {
-    if(!this.state.disableInfoClick) {
-      if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
-        this.setState(prevState => {
-          let quizGuesses = [...prevState.quizGuesses];
-          quizGuesses.push(geo.properties["alpha3Code"]);
-          return ({
-            quizGuesses,
-            disableOptimization: true,
-            selectedProperties: geo.properties
-          })}, () => { this.setState({ disableOptimization: false }) }
-        )
-      } else {
-        this.setState(prevState => ({
-          disableOptimization: true,
-          selectedProperties: prevState.selectedProperties !== geo.properties ? geo.properties : "",
-          }), () => { this.setState({ disableOptimization: false }) }
-        )
-      }
-    }
-  }
-
   handleRegionSelect(region) {
     let { center, zoom, defaultZoom } = mapConfig[region];
     this.setState({
@@ -175,7 +191,7 @@ class App extends Component {
     }, () => { this.setState({ disableOptimization: false }) })
   }
 
-  handleQuiz(){
+  handleQuiz(quizType){
     let quizAnswers = [...this.state.filterRegions]
     quizAnswers.reduce((dum1, dum2, i) => {
         const j = Math.floor(Math.random()*(quizAnswers.length - i) + i);
@@ -183,80 +199,13 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.setState({quizAnswers, activeQuestionNum: 0, selectedProperties: ""})
-  }
+    this.setState({quizAnswers, quizType, activeQuestionNum: 0, viewInfoDiv: false}
+      ,() => { 
 
-  handleAnswer(userGuess = null, testing = null){
-    let ans = this.state.quizGuesses;
-    let cor = this.state.quizAnswers;
-    let idx = this.state.activeQuestionNum;
-    let text, nextButton;
-
-    if(userGuess) {
-      let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-
-      let answer, result;
-
-      answer = this.state.geographyPaths
-          .find(geo => geo.properties.alpha3Code === correctAlpha )
-          .properties;
-      
-      if(testing === "name") {
-        answer = answer.spellings;
-        result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
-      } else {
-        answer = answer.capital;
-        result = userGuess.toLowerCase() === answer.toLowerCase()
-      }
-
-      text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
-
-      this.setState(prevState => {
-        let quizGuesses = [...prevState.quizGuesses];
-        quizGuesses.push([userGuess, result]);
-        return ({
-          quizGuesses,
-          disableOptimization: true,
-        })}, () => { this.setState({ disableOptimization: false })
+        setTimeout(() => {
+          this.setState({ selectedProperties: "" }, this.handleMapRefresh) 
+        },  this.state.infoDuration)
       })
-    } else {
-      text = ans[idx] === cor[idx] ? "that is correct!":"that is incorrect!";
-    }
-
-    if(idx === cor.length){
-      var score = ans
-        .reduce((total, x, i) => {
-          if(x.length === 2) {
-            return total += x[1] ? 1: 0;
-          } else {
-            return total += (x === cor[i])*1;
-          }
-        }, 0);
-      var scoreText = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-      text = "";
-    } else {
-      nextButton = <button 
-        autoFocus
-        onClick={ () => {
-          this.setState( prevState => 
-            ({
-              selectedProperties: "",
-              activeQuestionNum: prevState.activeQuestionNum + 1,
-              disableOptimization: true
-            })
-            , () => { this.setState({ disableOptimization: false }) }
-          )
-        }
-      }>NEXT</button>;
-    }
-
-    return (
-      <div>
-        <p>{text}</p>
-        {scoreText}
-        {nextButton}
-      </div>
-    )
   }
 
   handleQuizClose(){
@@ -264,6 +213,7 @@ class App extends Component {
       quizAnswers: [],
       quizGuesses: [],
       quiz: false,
+      quizType: null,
       activeQuestionNum: null,
       disableOptimization: true,
       disableInfoClick: false,
@@ -288,20 +238,18 @@ class App extends Component {
           <h1 className="App-title">Country Data</h1>
         </header>
         
-        <div style={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)"
-        }}>
-          <button onClick={ this.handleZoomIn }>{ "Zoom in" }</button>
-          <button onClick={ this.handleZoomOut }>{ "Zoom out" }</button>
-          <button onClick={ this.handleReset }>{ "Reset view" }</button>
+        <div className="zoomButtons">
+          <Button.Group size="tiny" basic vertical>
+            <Button onClick={ this.handleZoomIn } icon="plus" />
+            <Button onClick={ this.handleZoomOut } icon="minus" />
+            <Button onClick={ this.handleReset } icon="undo" />
+          </Button.Group>
         </div>
 
         <QuizBox
           visible={ this.state.filterRegions.length !== 0 ? true:false }
           nonactive={ !this.state.quiz ? true:false }
-          startquiz={ () => { this.setState({quiz: true}, this.handleQuiz) } }
+          startquiz={ (quizType) => { this.setState({quiz: true}, this.handleQuiz(quizType)) } }
           closequiz={ this.handleQuizClose}
           quizAnswers={ this.state.quizAnswers }
           quizGuesses={ this.state.quizGuesses }
@@ -311,9 +259,26 @@ class App extends Component {
           disableInfoClick={ this.handleDisableInfoClick }
         />        
 
-        <RegionButtons regionFunc={ this.handleRegionSelect } />
-        
-        <InfoTab country={this.state.selectedProperties}/>
+        {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
+
+        <Transition in={this.state.viewInfoDiv} timeout={ this.state.infoDuration}>
+          {(state) => {
+            const defaultStyle = {
+              transition: `opacity ${ this.state.infoDuration}ms ease-in-out`,
+              opacity: 0,
+            }
+
+            const transitionStyles = {
+              entering: { opacity: 0 },
+              entered: { opacity: 1 },
+            };
+
+            return (
+              <div style={{ ...defaultStyle, ...transitionStyles[state] }}>
+                <InfoTab country={this.state.selectedProperties}/>
+              </div>
+          )}}
+        </Transition> 
 
         <div {...WheelReact.events}>
           <Motion
@@ -329,10 +294,15 @@ class App extends Component {
             }}
           >
             {({zoom,x,y}) => (
+          
+              <div
+                ref={wrapper => this._wrapper = wrapper}
+                // onDoubleClick={this.handleDoubleClick}
+                >
               <ComposableMap
-                projectionConfig={{ scale: 205, rotation: [-10,0,0] }}
-                width={980}
-                height={551}
+                projectionConfig={{ scale: this.state.scale, rotation: [-10,0,0] }}
+                width={this.state.dimensions[0]}
+                height={this.state.dimensions[1]}
                 style={{
                   width: "100%",
                   height: "auto"
@@ -350,7 +320,7 @@ class App extends Component {
                   >
                     {(geographies, projection) => 
                       geographies.map((geography, i) => {
-                      
+
                       let defaultColor, hoverColor, render;
 
                       [defaultColor, hoverColor, render] = ColorPicker(this.state, geography)
@@ -385,11 +355,57 @@ class App extends Component {
                       )}
                     )}
                   </Geographies>
+                  <Markers>
+                    {
+                      this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
+                      if(gss){
+                        if(this.state.quizType === "name" || this.state.quizType === "flag" ) {
+                          var marker = countryMarkers.find(x => x.alpha3Code === this.state.quizAnswers[i]);
+                        } else if (this.state.quizType === "capital") {
+                          marker = capitalMarkers.find(x => x.alpha3Code === this.state.quizAnswers[i]);
+                        }
+                      }
+                      return gss&&(
+                        <Marker
+                          key={i}
+                          marker={marker}
+                          style={{
+                            default: { fill: "#FF5722" },
+                            hover: { fill: "#FFFFFF" },
+                            pressed: { fill: "#FF5722" },
+                          }}
+                        >
+                          {this.state.quizType === "capital" ? 
+                            (<circle
+                              cx={0}
+                              cy={0}
+                              r={2}
+                              className="dropFade"
+                              style={{
+                                stroke: "#FF5722",
+                                strokeWidth: 3,
+                                opacity: 0.9,
+                              }}
+                            />):null
+                          }
+                          <text
+                            textAnchor="middle"
+                            y={marker.markerOffset}
+                            className="mapLabel dropFade"
+                          >
+                            {marker.name}
+                          </text>
+                        </Marker>
+                      )}
+                    ):null}
+                  </Markers>
                 </ZoomableGroup>
               </ComposableMap>
+              </div>
             )}
           </Motion>
         </div>
+        <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>
     );
   }

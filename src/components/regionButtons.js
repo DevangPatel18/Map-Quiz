@@ -1,22 +1,37 @@
 import React from 'react';
+import { Dropdown } from 'semantic-ui-react'
+import "../App.css"
+
+const regions = [
+  { text:"World", value:"World" },
+  { text:"North and Central America", value:"North and Central America" },
+  { text:"South America", value:"South America" },
+  { text:"Carribean", value:"Carribean" },
+  { text:"Africa", value:"Africa" },
+  { text:"Europe", value:"Europe" },
+  { text:"Asia", value:"Asia" },
+  { text:"Oceania", value:"Oceania" }
+]
 
 const RegionButtons = (props) => {
   return (
-    <div style={{
-      position: "absolute",
-      top: "calc(150px + 1em)",
-      right: "1em",
-      display: "flex",
-      flexDirection: "column",
-    }}>
-      <button onClick={ () => props.regionFunc("world") }>World</button>
-      <button onClick={ () => props.regionFunc("naca") }>North and Central America</button>
-      <button onClick={ () => props.regionFunc("south") }>South America</button>
-      <button onClick={ () => props.regionFunc("carrib") }>Carribean</button>
-      <button onClick={ () => props.regionFunc("africa") }>Africa</button>
-      <button onClick={ () => props.regionFunc("europe") }>Europe</button>
-      <button onClick={ () => props.regionFunc("asia") }>Asia</button>
-      <button onClick={ () => props.regionFunc("oceania") }>Oceania</button>
+    <div className="regionButtons">
+      <Dropdown placeholder="Select Region" fluid selection options={regions} 
+        onChange={e => {
+          switch(e.target.innerText) {
+            case "World": props.regionFunc("world"); break;
+            case "North and Central America": props.regionFunc("naca"); break;
+            case "South America": props.regionFunc("south"); break;
+            case "Carribean": props.regionFunc("carrib"); break;
+            case "Africa": props.regionFunc("africa"); break;
+            case "Europe": props.regionFunc("europe"); break;
+            case "Asia": props.regionFunc("asia"); break;
+            case "Oceania": props.regionFunc("oceania"); break;
+            default: console.log("Invalid entry:", e.target.innerText);
+          }
+        }}
+      >
+      </Dropdown>
     </div>
   )
 }
