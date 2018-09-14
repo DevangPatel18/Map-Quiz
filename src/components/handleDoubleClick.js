@@ -1,6 +1,5 @@
 export default function handleDoubleClick(evt){
-  const width = 980;
-  const height = 551;
+  const [ width, height ] = this.state.dimensions;
 
   const projection = this.projection()
 

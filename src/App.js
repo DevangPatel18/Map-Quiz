@@ -36,9 +36,11 @@ class App extends Component {
     super()
 
     this.state = {
-      center: [0,0],
+      center: [10,0],
       zoom: 1,
       defaultZoom: 1,
+      scale: 210,
+      dimensions: [980,551],
       infoDuration: 200,
       geographyPaths: [],
       selectedProperties: "",
@@ -86,8 +88,8 @@ class App extends Component {
 
   projection() {
     return geoTimes()
-      .translate([980/2, 551/2])
-      .scale(205)
+      .translate(this.state.dimensions.map(x => x/2))
+      .scale(this.state.scale)
   }
 
   componentDidMount() {
@@ -298,9 +300,9 @@ class App extends Component {
                 // onDoubleClick={this.handleDoubleClick}
                 >
               <ComposableMap
-                projectionConfig={{ scale: 205, rotation: [-10,0,0] }}
-                width={980}
-                height={551}
+                projectionConfig={{ scale: this.state.scale, rotation: [-10,0,0] }}
+                width={this.state.dimensions[0]}
+                height={this.state.dimensions[1]}
                 style={{
                   width: "100%",
                   height: "auto"
