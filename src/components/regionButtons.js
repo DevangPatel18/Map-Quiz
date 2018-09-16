@@ -27,11 +27,10 @@ const RegionButtons = (props) => {
             case "Europe": props.regionFunc("europe"); break;
             case "Asia": props.regionFunc("asia"); break;
             case "Oceania": props.regionFunc("oceania"); break;
-            default: console.log("Invalid entry:", e.target.innerText);
+            default: ;
           }
         }}
-      >
-      </Dropdown>
+      />
     </div>
   )
 }

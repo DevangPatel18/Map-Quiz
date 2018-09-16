@@ -26,6 +26,7 @@ import { geoTimes } from "d3-geo-projection"
 import { DataFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
 import { Button } from "semantic-ui-react"
+import CountrySearch from "./components/countrySearch.js"
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -114,7 +115,7 @@ class App extends Component {
           // Remove Antarctica and invalid iso codes
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
-          var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code"];
+          var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code", "alpha2Code"];
           
           // Remove Ashmore Reef to prevent extra Australia label
           data.splice(11, 1)
@@ -260,7 +261,13 @@ class App extends Component {
           activeNum={ this.state.activeQuestionNum }
           answerResultFunc={ this.handleAnswer }
           disableInfoClick={ this.handleDisableInfoClick }
-        />        
+        />
+
+        <CountrySearch
+          state={this.state}
+          mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
+          countryMarkers={countryMarkers}
+        />
 
         {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
 
