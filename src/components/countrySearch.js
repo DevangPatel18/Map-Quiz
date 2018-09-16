@@ -27,14 +27,17 @@ export default class CountrySearch extends Component {
 
             selectedProperties = selectedProperties.properties;
 
-            let center = this.props.countryMarkers.find(x => x.alpha3Code === selectedProperties.alpha3Code).coordinates
+            let center = this.props.countryMarkers
+                .find(x => x.alpha3Code === selectedProperties.alpha3Code)
+                .coordinates
 
-            console.log(window.innerWidth, window.innerHeight);
+            let countryArea = selectedProperties.area;
+            let kmPerPixel = Math.sqrt(countryArea)*2;
+            let zoomEstimate = (40000000 / window.innerWidth ) / kmPerPixel;
+            let zoom = Math.min(Math.pow(2, Math.floor(Math.log2(zoomEstimate))), 512)
+
             this.props.mapRefresh({
-              selectedProperties,
-              center,
-              zoom: 8,
-              viewInfoDiv: true,
+              selectedProperties, center, zoom, viewInfoDiv: true
             })
             
           }}
