@@ -121,6 +121,10 @@ class App extends Component {
           // Remove Ashmore Reef to prevent extra Australia label
           data.splice(11, 1)
 
+          // Set numericCode for Kosovo
+          data[117].id = "999";
+          DataFix(countryData, capitalMarkers)
+
           data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
             let y = countryData.find(c => +c["numericCode"] === +x.id)
 
@@ -144,8 +148,6 @@ class App extends Component {
             let path = geoPath().projection(this.projection())
             countryMarkers.push([this.projection().invert(path.centroid(x)), y["alpha3Code"]])
           })
-
-          DataFix(data)
 
           countryMarkers = countryMarkers.map(array => ({ 
             name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
