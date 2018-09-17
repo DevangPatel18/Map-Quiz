@@ -269,6 +269,7 @@ class App extends Component {
         />
 
         <CountrySearch
+          projection={this.projection}
           state={this.state}
           mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
           countryMarkers={countryMarkers}

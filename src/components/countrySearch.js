@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react'
 import "./countrySearch.css"
+import { geoPath } from "d3-geo"
 
 export default class CountrySearch extends Component {
   render() {
@@ -25,16 +26,22 @@ export default class CountrySearch extends Component {
 
             if(!selectedProperties) {return}
 
+            let geography = selectedProperties
             selectedProperties = selectedProperties.properties;
 
             let center = this.props.countryMarkers
                 .find(x => x.alpha3Code === selectedProperties.alpha3Code)
                 .coordinates
 
-            let countryArea = selectedProperties.area;
-            let kmPerPixel = Math.sqrt(countryArea)*2;
-            let zoomEstimate = (40000000 / window.innerWidth ) / kmPerPixel;
-            let zoom = Math.min(Math.pow(2, Math.floor(Math.log2(zoomEstimate))), 512)
+            let path = geoPath().projection(this.props.projection())
+            let bounds = path.bounds(geography)
+            let width = bounds[1][0] - bounds[0][0];
+            let height = bounds[1][1] - bounds[0][1];
+            let zoom = 0.7 / Math.max(width / this.props.state.dimensions[0], height / this.props.state.dimensions[1]);
+
+            zoom = ["USA", "FRA"].includes(selectedProperties.alpha3Code) ? zoom*6:zoom;
+            
+            zoom = Math.min(zoom, 512)
 
             this.props.mapRefresh({
               selectedProperties, center, zoom, viewInfoDiv: true
