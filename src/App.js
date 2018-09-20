@@ -272,12 +272,12 @@ class App extends Component {
           disableInfoClick={ this.handleDisableInfoClick }
         />
 
-        <CountrySearch
+        {!this.state.quiz ? <CountrySearch
           projection={this.projection}
           state={this.state}
           mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
           countryMarkers={countryMarkers}
-        />
+        />: ""}
 
         {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
 
