@@ -65,24 +65,22 @@ class App extends Component {
       },
       up: () => {
         // console.log('wheel up detected.');
-        this.handleZoomOut()
+        this.handleZoom(0.5)
       },
       down: () => {
         // console.log('wheel down detected.');
-        this.handleZoomIn()
+        this.handleZoom(2)
       }
     });
 
     this.projection = this.projection.bind(this)
-    this.handleZoomIn = this.handleZoomIn.bind(this)
-    this.handleZoomOut = this.handleZoomOut.bind(this)    
+    this.handleZoom = this.handleZoom.bind(this)
     this.handleReset = this.handleReset.bind(this)
     this.handleCountryClick = handleCountryClick.bind(this)
     this.handleRegionSelect = this.handleRegionSelect.bind(this)
     this.handleQuiz = this.handleQuiz.bind(this)
     this.handleAnswer = handleAnswer.bind(this)
     this.handleQuizClose = this.handleQuizClose.bind(this)
-    this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
     this.handleDoubleClick = handleDoubleClick.bind(this)
     this.oceaniaOutlines = oceaniaOutlines.bind(this)
@@ -160,15 +158,9 @@ class App extends Component {
       })
   }
 
-  handleZoomIn() {
+  handleZoom(x) {
     this.setState({
-      zoom: this.state.zoom * 2,
-    })
-  }
-
-  handleZoomOut() {
-    this.setState({
-      zoom: this.state.zoom / 2,
+      zoom: this.state.zoom * x,
     })
   }
 
@@ -222,10 +214,6 @@ class App extends Component {
     })
   }
 
-  handleDisableInfoClick() {
-    this.handleMapRefresh({ disableInfoClick: true })
-  }
-
   handleMapRefresh(args) {
     this.setState({ ...args, disableOptimization: true}
       , () => { this.setState({ disableOptimization: false }) } )
@@ -241,8 +229,8 @@ class App extends Component {
         
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
-            <Button onClick={ this.handleZoomIn } icon="plus" />
-            <Button onClick={ this.handleZoomOut } icon="minus" />
+            <Button onClick={ () => this.handleZoom(2) } icon="plus" />
+            <Button onClick={ () => this.handleZoom(.5) } icon="minus" />
             <Button onClick={ this.handleReset } icon="undo" />
           </Button.Group>
         </div>
@@ -257,7 +245,7 @@ class App extends Component {
           geoPath={ this.state.geographyPaths }
           activeNum={ this.state.activeQuestionNum }
           answerResultFunc={ this.handleAnswer }
-          disableInfoClick={ this.handleDisableInfoClick }
+          disableInfoClick={ () => this.handleMapRefresh({ disableInfoClick: true }) }
         />
 
         {!this.state.quiz ? <CountrySearch
