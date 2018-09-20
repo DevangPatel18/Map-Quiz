@@ -6,7 +6,7 @@ const mapConfig = {
   africa: { center: [10,-5], zoom: 2, defaultZoom: 2},
   europe: { center: [5,50], zoom: 3.5, defaultZoom: 3.5},
   asia: { center: [90,20], zoom: 2, defaultZoom: 2},
-  oceania: { center: [140,-30], zoom: 3, defaultZoom: 2.5}
+  oceania: { center: [140,-22], zoom: 2, defaultZoom: 2}
 }
 
 export default mapConfig

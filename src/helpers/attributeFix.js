@@ -6,7 +6,7 @@ const DataFix = (data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "GBR").altSpellings.push("Britain");
   
   // Change display name of country to shorter variant
-  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA"]
+  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA", "FSM"]
     .forEach(code => {
       let country = data.find(x => x.alpha3Code === code)
       country.altSpellings.push(country.name)
@@ -26,6 +26,7 @@ const DataFix = (data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "BRN").name = "Brunei";
   data.find(x => x.alpha3Code === "COD").name = "DR Congo";
   data.find(x => x.alpha3Code === "TZA").name = "Tanzania";
+  data.find(x => x.alpha3Code === "FSM").name = "Micronesia";
 
   // Set null areas (data based on Wikipedia)
   data.find(x => x.alpha3Code === "PSE").area = 6220;
@@ -60,6 +61,15 @@ const CentroidsFix = centroids => {
   centroids.find(x => x.alpha3Code === "CHL").coordinates = [-73, -39];
   centroids.find(x => x.alpha3Code === "FRA").coordinates = [2, 47];
   centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
+  centroids.find(x => x.alpha3Code === "FJI").coordinates = [177.5, -18];
+  centroids.find(x => x.alpha3Code === "KIR").coordinates = [180, -1];
+  centroids.find(x => x.alpha3Code === "MHL").coordinates = [169, 8.5];
+  centroids.find(x => x.alpha3Code === "FSM").coordinates = [151, 7.5];
+  centroids.find(x => x.alpha3Code === "MNP").coordinates = [145.5, 16.5];
+  centroids.find(x => x.alpha3Code === "SLB").coordinates = [161.6, -9.75];
+  centroids.find(x => x.alpha3Code === "VUT").coordinates = [168.5, -17];
+  centroids.find(x => x.alpha3Code === "NCL").coordinates = [163.8, -20.9];
+  centroids.find(x => x.alpha3Code === "PLW").coordinates = [133, 6];
 }
 
 export { DataFix, CentroidsFix }

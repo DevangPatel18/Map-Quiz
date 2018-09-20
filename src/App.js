@@ -28,6 +28,7 @@ import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
 import { Button } from "semantic-ui-react"
 import CountrySearch from "./components/countrySearch.js"
+import oceaniaOutlines from "./components/oceaniaRegionOutlines.js"
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -55,6 +56,7 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       viewInfoDiv: false,
+      currentMap: "world"
     }
 
     WheelReact.config({
@@ -86,6 +88,7 @@ class App extends Component {
     this.handleDisableInfoClick = this.handleDisableInfoClick.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
     this.handleDoubleClick = handleDoubleClick.bind(this)
+    this.oceaniaOutlines = oceaniaOutlines.bind(this)
   }
 
   projection() {
@@ -116,7 +119,7 @@ class App extends Component {
           // Remove Antarctica and invalid iso codes
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
-          var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code", "alpha2Code"];
+          var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code", "alpha2Code", "region"];
           
           // Remove Ashmore Reef to prevent extra Australia label
           data.splice(11, 1)
@@ -192,6 +195,7 @@ class App extends Component {
       zoom,
       defaultZoom,
       center,
+      currentMap: region,
       filterRegions: alpha3Codes[region]
     })
   }
@@ -371,6 +375,9 @@ class App extends Component {
                       )}
                     )}
                   </Geographies>
+
+                  <Markers>{ this.oceaniaOutlines(countryMarkers) }</Markers>
+
                   <Markers>
                     {
                       this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
