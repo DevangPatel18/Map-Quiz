@@ -6,7 +6,6 @@ import {
   Geographies,
   Geography,
   Markers,
-  Marker
 } from "react-simple-maps"
 import { feature } from "topojson-client"
 import { Motion, spring } from "react-motion"
@@ -20,7 +19,6 @@ import ColorPicker from "./components/colorPicker.js"
 import handleAnswer from "./components/handleAnswer.js"
 import handleCountryClick from "./components/handleCountryClick.js"
 import handleDoubleClick from "./components/handleDoubleClick.js"
-import { Transition } from "react-transition-group"
 import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
 import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
@@ -45,7 +43,6 @@ class App extends Component {
       defaultZoom: 1,
       scale: 210,
       dimensions: [980,551],
-      infoDuration: 200,
       geographyPaths: [],
       selectedProperties: "",
       disableOptimization: false,
@@ -56,7 +53,6 @@ class App extends Component {
       quizType: null,
       activeQuestionNum: null,
       disableInfoClick: false,
-      viewInfoDiv: false,
       currentMap: "world"
     }
 
@@ -192,7 +188,7 @@ class App extends Component {
   }
 
   handleRegionSelect(region) {
-    let { center, zoom, defaultZoom } = mapConfig[region];
+    let { center, zoom } = mapConfig[region];
     this.handleMapRefresh({
       zoom,
       defaultZoom: zoom,
@@ -211,29 +207,18 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.setState({quizAnswers, quizType, activeQuestionNum: 0, viewInfoDiv: false}
-      ,() => { 
-
-        setTimeout(() => {
-          
-          this.handleMapRefresh({ selectedProperties: "" }) 
-        },  this.state.infoDuration)
-      })
+    this.handleMapRefresh({quizAnswers, quizType, activeQuestionNum: 0, selectedProperties: ""})
   }
 
   handleQuizClose(){
-    this.setState({viewInfoDiv: false}, () => {
-      setTimeout(() => {
-        this.handleMapRefresh({
-          quizAnswers: [],
-          quizGuesses: [],
-          quiz: false,
-          quizType: null,
-          activeQuestionNum: null,
-          disableInfoClick: false,
-          selectedProperties: "",
-        })
-      }, this.state.infoDuration)
+    this.handleMapRefresh({
+      quizAnswers: [],
+      quizGuesses: [],
+      quiz: false,
+      quizType: null,
+      activeQuestionNum: null,
+      disableInfoClick: false,
+      selectedProperties: "",
     })
   }
 
@@ -284,24 +269,7 @@ class App extends Component {
 
         {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
 
-        <Transition in={this.state.viewInfoDiv} timeout={ this.state.infoDuration}>
-          {(state) => {
-            const defaultStyle = {
-              transition: `opacity ${ this.state.infoDuration}ms ease-in-out`,
-              opacity: 0,
-            }
-
-            const transitionStyles = {
-              entering: { opacity: 0 },
-              entered: { opacity: 1 },
-            };
-
-            return (
-              <div style={{ ...defaultStyle, ...transitionStyles[state] }}>
-                <InfoTab country={this.state.selectedProperties}/>
-              </div>
-          )}}
-        </Transition> 
+        <InfoTab country={this.state.selectedProperties}/>
 
         <div {...WheelReact.events}>
           <Motion

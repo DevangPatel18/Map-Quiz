@@ -5,17 +5,10 @@ export default function handleCountryClick(geo){
       this.handleMapRefresh({
         quizGuesses: [...this.state.quizGuesses, result],
         selectedProperties: geo.properties,
-        viewInfoDiv: true
       })
     } else {
-      this.setState({ viewInfoDiv: !this.state.viewInfoDiv }
-      , () => {
-        let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
-        let viewInfoDiv = selectedProperties !== "";
-        setTimeout(() => {
-          this.handleMapRefresh({ selectedProperties, viewInfoDiv })
-        }, this.state.infoDuration)
-      })
+      let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
+      this.handleMapRefresh({ selectedProperties })
     }
   }
 }
