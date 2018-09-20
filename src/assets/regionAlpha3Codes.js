@@ -9,4 +9,15 @@ const alpha3Codes = {
   oceania: ["ASM", "AUS", "FJI", "FSM", "GUM", "KIR", "MHL", "MNP", "NCL", "NFK", "NRU", "NZL", "PLW", "PNG", "SLB", "TON", "VUT", "WLF", "WSM"]
 }
 
-export default alpha3Codes
+const mapConfig = {
+  world: { center: [10,0], zoom: 1 },
+  naca: { center: [-95,30], zoom: 2.5 },
+  south: { center: [-65,-30], zoom: 2 },
+  carrib: { center: [-70,17], zoom: 8.5 },
+  africa: { center: [10,-5], zoom: 2 },
+  europe: { center: [5,50], zoom: 3.5 },
+  asia: { center: [90,20], zoom: 2 },
+  oceania: { center: [140,-22], zoom: 2 }
+}
+
+export { alpha3Codes, mapConfig }

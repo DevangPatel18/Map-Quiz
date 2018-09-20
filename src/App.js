@@ -13,8 +13,7 @@ import { Motion, spring } from "react-motion"
 import WheelReact from 'wheel-react';
 import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
-import alpha3Codes from "./assets/regionAlpha3Codes.js"
-import mapConfig from "./assets/regionMapConfig.js"
+import { alpha3Codes, mapConfig } from "./assets/regionAlpha3Codes.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
 import ColorPicker from "./components/colorPicker.js"
@@ -40,6 +39,7 @@ class App extends Component {
 
     this.state = {
       center: [10,0],
+      defaultCenter: [10,0],
       zoom: 1,
       defaultZoom: 1,
       scale: 210,
@@ -176,7 +176,7 @@ class App extends Component {
 
   handleReset() {
     this.setState({
-      center: [this.state.center[0], this.state.center[1] + Math.random()/1000],
+      center: [this.state.defaultCenter[0], this.state.defaultCenter[1] + Math.random()/1000],
       zoom: this.state.defaultZoom,
     })
   }
@@ -193,8 +193,9 @@ class App extends Component {
     let { center, zoom, defaultZoom } = mapConfig[region];
     this.handleMapRefresh({
       zoom,
-      defaultZoom,
+      defaultZoom: zoom,
       center,
+      defaultCenter: center,
       currentMap: region,
       filterRegions: alpha3Codes[region]
     })
