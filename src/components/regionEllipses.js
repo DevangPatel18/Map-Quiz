@@ -15,11 +15,12 @@ const ellipseDim = {
   "TON": { width: 3, height: 9, angle: 20 }, 
 }
 
-export default function oceaniaOutlines(countryMarkers) {
-  let show = this.state.currentMap === "oceania"
+export default function regionEllipses(countryMarkers) {
+  let show = this.state.currentMap !== "world" && this.state.currentMap !== "carrib"
+  let minArea = this.state.currentMap === "oceania" ? 29000: 6000;
   return show&&this.state.geographyPaths
-    .filter(x => x.properties.region === "Oceania")
-    .filter(x => x.properties.area < 29000)
+    .filter(x => this.state.filterRegions.includes(x.properties.alpha3Code))
+    .filter(x => x.properties.area < minArea)
     .map((country, i) => {
 
       const marker = countryMarkers.find(x => x.alpha3Code === country.properties.alpha3Code);
@@ -31,8 +32,8 @@ export default function oceaniaOutlines(countryMarkers) {
         const bounds = path.bounds(country)
         const originWidth = bounds[1][0] - bounds[0][0];
         const originHeight = bounds[1][1] - bounds[0][1];
-        width = Math.max(originWidth, 2);
-        height = Math.max(originHeight, 2);
+        width = Math.max(originWidth, 3);
+        height = Math.max(originHeight, 3);
         angle = 0
       }
 

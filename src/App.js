@@ -25,7 +25,7 @@ import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
 import { Button } from "semantic-ui-react"
 import CountrySearch from "./components/countrySearch.js"
-import oceaniaOutlines from "./components/oceaniaRegionOutlines.js"
+import regionEllipses from "./components/regionEllipses.js"
 import countryLabels from "./components/countryLabels.js"
 
 // Arrays for label markers
@@ -83,7 +83,7 @@ class App extends Component {
     this.handleQuizClose = this.handleQuizClose.bind(this)
     this.handleMapRefresh = this.handleMapRefresh.bind(this)
     this.handleDoubleClick = handleDoubleClick.bind(this)
-    this.oceaniaOutlines = oceaniaOutlines.bind(this)
+    this.regionEllipses = regionEllipses.bind(this)
     this.countryLabels = countryLabels.bind(this)
   }
 
@@ -334,7 +334,7 @@ class App extends Component {
                       )}
                     )}
                   </Geographies>
-                  <Markers>{ this.oceaniaOutlines(countryMarkers) }</Markers>
+                  <Markers>{ this.regionEllipses(countryMarkers) }</Markers>
                   <Markers>{ this.countryLabels(countryMarkers,capitalMarkers) }</Markers>
                 </ZoomableGroup>
               </ComposableMap>
