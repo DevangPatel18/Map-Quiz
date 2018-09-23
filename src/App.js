@@ -133,7 +133,7 @@ class App extends Component {
 
             y["altSpellings"].shift()
 
-            x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"])])]
+            x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"]).filter(x => x)])]
 
             let captemp = capitalData.find(x => x.CountryCode === y["alpha2Code"])
             if(captemp) {

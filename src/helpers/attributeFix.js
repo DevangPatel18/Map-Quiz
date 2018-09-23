@@ -4,9 +4,13 @@ const DataFix = (data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "COG").altSpellings.push("Republic of the Congo");
   data.find(x => x.alpha3Code === "COD").altSpellings.push("Democratic Republic of the Congo");
   data.find(x => x.alpha3Code === "GBR").altSpellings.push("Britain");
+  data.find(x => x.alpha3Code === "MAF").altSpellings.push("St Martin");
+  data.find(x => x.alpha3Code === "SXM").altSpellings.push("Sint Maarten");
+  data.find(x => x.alpha3Code === "VGB").altSpellings.push("British Virgin Islands");
+  data.find(x => x.alpha3Code === "VIR").altSpellings.push("US Virgin Islands");
   
   // Change display name of country to shorter variant
-  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA", "FSM"]
+  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA", "FSM", "BLM", "KNA", "LCA", "MAF", "SHN", "SPM", "VCT"]
     .forEach(code => {
       let country = data.find(x => x.alpha3Code === code)
       country.altSpellings.push(country.name)
@@ -27,6 +31,13 @@ const DataFix = (data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "COD").name = "DR Congo";
   data.find(x => x.alpha3Code === "TZA").name = "Tanzania";
   data.find(x => x.alpha3Code === "FSM").name = "Micronesia";
+  data.find(x => x.alpha3Code === "BLM").name = "St Barthélemy";
+  data.find(x => x.alpha3Code === "KNA").name = "St Kitts and Nevis";
+  data.find(x => x.alpha3Code === "LCA").name = "St Lucia";
+  data.find(x => x.alpha3Code === "MAF").name = "St Martin (French part)";
+  data.find(x => x.alpha3Code === "SHN").name = "St Helena, Ascension and Tristan da Cunha";
+  data.find(x => x.alpha3Code === "SPM").name = "St Pierre and Miquelon";
+  data.find(x => x.alpha3Code === "VCT").name = "St Vincent and the Grenadines";
 
   // Set null areas (data based on Wikipedia)
   data.find(x => x.alpha3Code === "PSE").area = 6220;
