@@ -248,14 +248,17 @@ class App extends Component {
           disableInfoClick={ () => this.handleMapRefresh({ disableInfoClick: true }) }
         />
 
-        {!this.state.quiz ? <CountrySearch
-          projection={this.projection}
-          state={this.state}
-          mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
-          countryMarkers={countryMarkers}
-        />: ""}
-
-        {!this.state.quiz ? <RegionButtons regionFunc={ this.handleRegionSelect } />: ""}
+        <div className="dropDownSelections"
+          style={ this.state.quiz ? {top: "-5em"}: null }
+        >
+          <CountrySearch
+            projection={this.projection}
+            state={this.state}
+            mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
+            countryMarkers={countryMarkers}
+          />
+          <RegionButtons regionFunc={ this.handleRegionSelect } />
+        </div>
 
         <InfoTab country={this.state.selectedProperties}/>
 

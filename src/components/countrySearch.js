@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react'
-import "./countrySearch.css"
 import { geoPath } from "d3-geo"
 
 export default class CountrySearch extends Component {
