@@ -334,7 +334,7 @@ class App extends Component {
                       )}
                     )}
                   </Geographies>
-                  <Markers>{ this.regionEllipses(countryMarkers) }</Markers>
+                  <Markers>{ this.regionEllipses(countryMarkers,capitalMarkers) }</Markers>
                   <Markers>{ this.countryLabels(countryMarkers,capitalMarkers) }</Markers>
                 </ZoomableGroup>
               </ComposableMap>

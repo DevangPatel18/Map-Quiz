@@ -32,6 +32,15 @@ footer {
   text-shadow: 1px 1px .7em black;
 }
 
+.caribSelector {
+  stroke: black;
+  transition: all .3s;
+}
+
+.caribSelector:hover {
+  fill: gray;
+}
+
 .dropFade {
   animation: dropFade .2s;
 }
