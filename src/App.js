@@ -27,6 +27,7 @@ import { Button } from "semantic-ui-react"
 import CountrySearch from "./components/countrySearch.js"
 import regionEllipses from "./components/regionEllipses.js"
 import countryLabels from "./components/countryLabels.js"
+import statusBar from "./components/statusBar.js"
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -85,6 +86,7 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this)
     this.regionEllipses = regionEllipses.bind(this)
     this.countryLabels = countryLabels.bind(this)
+    this.statusBar = statusBar.bind(this)
   }
 
   projection() {
@@ -259,6 +261,8 @@ class App extends Component {
           />
           <RegionButtons regionFunc={ this.handleRegionSelect } />
         </div>
+
+        { this.statusBar() }
 
         <InfoTab country={this.state.selectedProperties}/>
 
