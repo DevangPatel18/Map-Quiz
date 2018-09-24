@@ -54,7 +54,8 @@ class App extends Component {
       quizType: null,
       activeQuestionNum: null,
       disableInfoClick: false,
-      currentMap: "world"
+      currentMap: "world",
+      time: 0,
     }
 
     WheelReact.config({
@@ -201,7 +202,10 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.handleMapRefresh({quizAnswers, quizType, activeQuestionNum: 0, selectedProperties: ""})
+    this.handleMapRefresh({quizAnswers, quizType, activeQuestionNum: 0, selectedProperties: "", quiz: true})
+
+    let x = Date.now()
+    this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 100)
   }
 
   handleQuizClose(){
@@ -213,6 +217,7 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       selectedProperties: "",
+      time: 0,
     })
   }
 
@@ -222,6 +227,10 @@ class App extends Component {
   }
 
   render() {
+
+    if(this.state.quizGuesses.length === this.state.quizAnswers.length) {
+      clearInterval(this.timer)
+    }
 
     return (
       <div className="App">
@@ -240,7 +249,7 @@ class App extends Component {
         <QuizBox
           visible={ this.state.filterRegions.length !== 0 ? true:false }
           nonactive={ !this.state.quiz ? true:false }
-          startquiz={ (quizType) => { this.setState({quiz: true}, this.handleQuiz(quizType)) } }
+          startquiz={ (quizType) => { this.handleQuiz(quizType) } }
           closequiz={ this.handleQuizClose}
           quizAnswers={ this.state.quizAnswers }
           quizGuesses={ this.state.quizGuesses }
