@@ -83,10 +83,3 @@ footer {
   transition: all .5s;
   display: flex;
 }
-
-.progressBar {
-  position: absolute;
-  left: 25%;
-  width: 50%;
-  transition: all .5s;
-}
