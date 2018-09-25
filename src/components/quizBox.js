@@ -9,7 +9,13 @@ class QuizBox extends Component {
     super()
 
     this.state = {
-      quizType: "click_name"
+      quizType: "click_name",
+      quizOptions: [
+        { label:"Click Country", value: "click_name" },
+        { label:"Type Country", value: "type_name" },
+        { label:"Click Capital", value: "click_capital" },
+        { label:"Type Capital", value: "type_capital" },
+        { label:"Click Country from matching Flag", value: "click_flag" },],
     }
 
     this.handleQuizChange = this.handleQuizChange.bind(this)
@@ -37,51 +43,19 @@ class QuizBox extends Component {
         <div className="App-quiz">
           <Button onClick={ this.handleQuizStart }>START QUIZ</Button>
             <Form>
-            <Form.Field>
-              <Radio
-                label="Click Country"
-                value="click_name"
-                name="quiz"
-                checked={this.state.quizType === "click_name"}
-                onChange={this.handleQuizChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="Type Country"
-                value="type_name"
-                name="quiz"
-                checked={this.state.quizType === "type_name"}
-                onChange={this.handleQuizChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="Click Capital"
-                value="click_capital"
-                name="quiz"
-                checked={this.state.quizType === "click_capital"}
-                onChange={this.handleQuizChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="Type Capital"
-                value="type_capital"
-                name="quiz"
-                checked={this.state.quizType === "type_capital"}
-                onChange={this.handleQuizChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="Click Country from matching Flag"
-                value="click_flag"
-                name="quiz"
-                checked={this.state.quizType === "click_flag"}
-                onChange={this.handleQuizChange}
-              />
-            </Form.Field>
+              {
+                this.state.quizOptions.map((form, i) => 
+                  <Form.Field key={i}>
+                    <Radio
+                      label={form.label}
+                      value={form.value}
+                      name="quiz"
+                      checked={this.state.quizType === form.value}
+                      onChange={this.handleQuizChange}
+                    />
+                  </Form.Field>
+                )
+              }
             </Form>
         </div>
       )
