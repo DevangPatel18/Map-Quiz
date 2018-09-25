@@ -2,14 +2,15 @@ import React from 'react';
 
 const QuestionBox = (props) => {
 
+  let { quizAnswers, quizGuesses, geographyPaths, activeQuestionNum } = props.quizData
   let country, answerResult, alpha, questionBoxContent;
 
-  alpha = props.quizAnswers[props.activeNum]
-  country = props.geoPath
+  alpha = quizAnswers[activeQuestionNum]
+  country = geographyPaths
     .find(x => x.properties["alpha3Code"] === alpha)
     .properties[props.testing];
 
-  if(props.activeNum === props.quizGuesses.length - 1){
+  if(activeQuestionNum === quizGuesses.length - 1){
     answerResult = props.answerResultFunc()
   }
 
@@ -17,7 +18,7 @@ const QuestionBox = (props) => {
     country = <div className="qFlag"><img src={country} display="block" height="100px" border="1px solid black" alt=""/></div>
   }
 
-  if(props.activeNum !== props.quizAnswers.length) {
+  if(activeQuestionNum !== quizAnswers.length) {
     questionBoxContent =
       <div>
         Where is {country}?
@@ -31,11 +32,7 @@ const QuestionBox = (props) => {
       </div>
   }
 
-  return (
-    <div>
-      {questionBoxContent}
-    </div>
-  )
+  return (<div>{questionBoxContent}</div>)
 }
 
 export default QuestionBox

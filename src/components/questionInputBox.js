@@ -28,10 +28,11 @@ class QuestionInputBox extends Component {
   }
 
   render() {
+    let { quizAnswers, quizGuesses, activeQuestionNum } = this.props.quizData
 
     let next
 
-    if(this.props.activeNum === this.props.quizGuesses.length - 1) {
+    if(activeQuestionNum === quizGuesses.length - 1) {
       next = this.state.answerResult;
     } else {
       next = 
@@ -44,7 +45,7 @@ class QuestionInputBox extends Component {
         </div>
     }
 
-    if(this.props.activeNum === this.props.quizAnswers.length) {
+    if(activeQuestionNum === quizAnswers.length) {
       let result = this.props.answerResultFunc()
       next = 
         <div>

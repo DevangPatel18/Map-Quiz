@@ -94,10 +94,7 @@ class QuizBox extends Component {
             </Button>
             <QuestionBox
               testing = { this.state.quizType.split("_")[1] }
-              quizAnswers = { this.props.quizAnswers }
-              quizGuesses = { this.props.quizGuesses }
-              geoPath = { this.props.geoPath }
-              activeNum = { this.props.activeNum }
+              quizData = { this.props.quizData }
               answerResultFunc = { this.props.answerResultFunc }
             />
           </div>
@@ -110,10 +107,7 @@ class QuizBox extends Component {
             </Button>
             <QuestionInputBox
               testing = { this.state.quizType.split("_")[1] }
-              quizAnswers = { this.props.quizAnswers }
-              quizGuesses = { this.props.quizGuesses }
-              geoPath = { this.props.geoPath }
-              activeNum = { this.props.activeNum }            
+              quizData = { this.props.quizData }
               answerResultFunc = { this.props.answerResultFunc }
             />
           </div>
