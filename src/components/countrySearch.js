@@ -24,9 +24,13 @@ export default class CountrySearch extends Component {
         <Dropdown placeholder="Select Country" fluid search selection
           options={countries}
           onChange={(e,d) => {
-            let selected = e.target.innerText
-            let selectedProperties = this.props.state.geographyPaths
-              .find(x => x.properties.name === selected)
+            if(e.code === "Enter") {
+              var selectedProperties = this.props.state.geographyPaths
+                .find(x => x.properties.alpha3Code === d.value)
+            } else {
+              selectedProperties = this.props.state.geographyPaths
+                .find(x => x.properties.name === e.target.innerText)
+            }
 
             if(!selectedProperties) {return}
 
