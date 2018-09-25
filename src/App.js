@@ -21,10 +21,6 @@ import countryLabels from "./components/countryLabels.js"
 import statusBar from "./components/statusBar.js"
 import Map from "./Map.js"
 
-// Arrays for label markers
-let countryMarkers = [];
-let capitalMarkers = [];
-
 class App extends Component {
   constructor() {
     super()
@@ -48,6 +44,8 @@ class App extends Component {
       disableInfoClick: false,
       currentMap: "world",
       time: 0,
+      countryMarkers: [],
+      capitalMarkers: [],
     }
 
     WheelReact.config({
@@ -106,6 +104,8 @@ class App extends Component {
         response.json().then(worldData => {
 
           var data = feature(worldData, worldData.objects.countries).features;
+          let countryMarkers = [];
+          let capitalMarkers = [];
 
           // Remove Antarctica and invalid iso codes
           data = data.filter(x => +x.id !== 10 ? 1:0);
@@ -148,7 +148,7 @@ class App extends Component {
             alpha3Code: array[1], coordinates: array[0], markerOffset: 0}))
           CentroidsFix(countryMarkers)
 
-          this.setState({ geographyPaths: data })
+          this.setState({ geographyPaths: data, countryMarkers, capitalMarkers })
         })
       })
   }
@@ -261,7 +261,6 @@ class App extends Component {
             projection={this.projection}
             state={this.state}
             mapRefresh={(arg) => {this.handleMapRefresh(arg)}}
-            countryMarkers={countryMarkers}
           />
           <RegionButtons regionFunc={ this.handleRegionSelect } />
         </div>
@@ -271,11 +270,7 @@ class App extends Component {
         <InfoTab country={selectedProperties}/>
 
         <div {...WheelReact.events}>
-          <Map
-            appthis={this}
-            countryMarkers={countryMarkers}
-            capitalMarkers={capitalMarkers}
-          />
+          <Map appthis={this} />
         </div>
         <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>

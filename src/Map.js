@@ -3,9 +3,9 @@ import { ComposableMap, ZoomableGroup, Geographies, Geography, Markers } from "r
 import { Motion, spring } from "react-motion"
 import ColorPicker from "./components/colorPicker.js"
 
-const Map = ({ appthis, countryMarkers, capitalMarkers }) => {
-  let { defaultZoom, center, zoom, scale, dimensions, 
-    geographyPaths, disableOptimization } = appthis.state
+const Map = ({ appthis }) => {
+  let { defaultZoom, center, zoom, scale, dimensions, geographyPaths,
+    disableOptimization, countryMarkers, capitalMarkers } = appthis.state
   return (
     <Motion
       defaultStyle={{

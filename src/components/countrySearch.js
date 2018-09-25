@@ -37,7 +37,7 @@ export default class CountrySearch extends Component {
             let geography = selectedProperties
             selectedProperties = selectedProperties.properties;
 
-            let center = this.props.countryMarkers
+            let center = this.props.state.countryMarkers
                 .find(x => x.alpha3Code === selectedProperties.alpha3Code)
                 .coordinates
 
