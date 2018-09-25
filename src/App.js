@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-  Markers,
-} from "react-simple-maps"
 import { feature } from "topojson-client"
-import { Motion, spring } from "react-motion"
 import WheelReact from 'wheel-react';
 import countryData from "./assets/country_data.json"
 import InfoTab from "./components/infoTab.js"
 import { alpha3Codes, mapConfig } from "./assets/regionAlpha3Codes.js"
 import RegionButtons from "./components/regionButtons.js"
 import QuizBox from "./components/quizBox.js"
-import ColorPicker from "./components/colorPicker.js"
 import handleAnswer from "./components/handleAnswer.js"
 import handleCountryClick from "./components/handleCountryClick.js"
 import handleDoubleClick from "./components/handleDoubleClick.js"
@@ -28,6 +19,7 @@ import CountrySearch from "./components/countrySearch.js"
 import regionEllipses from "./components/regionEllipses.js"
 import countryLabels from "./components/countryLabels.js"
 import statusBar from "./components/statusBar.js"
+import Map from "./Map.js"
 
 // Arrays for label markers
 let countryMarkers = [];
@@ -232,6 +224,9 @@ class App extends Component {
       clearInterval(this.timer)
     }
 
+    let { filterRegions, quiz, quizAnswers, quizGuesses,
+      geographyPaths, activeQuestionNum, selectedProperties } = this.state
+
     return (
       <div className="App">
         <header className="App-header">
@@ -247,20 +242,20 @@ class App extends Component {
         </div>
 
         <QuizBox
-          visible={ this.state.filterRegions.length !== 0 ? true:false }
-          nonactive={ !this.state.quiz ? true:false }
+          visible={ filterRegions.length !== 0 ? true:false }
+          nonactive={ !quiz ? true:false }
           startquiz={ (quizType) => { this.handleQuiz(quizType) } }
           closequiz={ this.handleQuizClose}
-          quizAnswers={ this.state.quizAnswers }
-          quizGuesses={ this.state.quizGuesses }
-          geoPath={ this.state.geographyPaths }
-          activeNum={ this.state.activeQuestionNum }
+          quizAnswers={ quizAnswers }
+          quizGuesses={ quizGuesses }
+          geoPath={ geographyPaths }
+          activeNum={ activeQuestionNum }
           answerResultFunc={ this.handleAnswer }
           disableInfoClick={ () => this.handleMapRefresh({ disableInfoClick: true }) }
         />
 
         <div className="dropDownSelections"
-          style={ this.state.quiz ? {top: "-5em"}: null }
+          style={ quiz ? {top: "-5em"}: null }
         >
           <CountrySearch
             projection={this.projection}
@@ -273,90 +268,14 @@ class App extends Component {
 
         { this.statusBar() }
 
-        <InfoTab country={this.state.selectedProperties}/>
+        <InfoTab country={selectedProperties}/>
 
         <div {...WheelReact.events}>
-          <Motion
-            defaultStyle={{
-              zoom: this.state.defaultZoom,
-              x: this.state.center[0],
-              y: this.state.center[1],
-            }}
-            style={{
-              zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
-              x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
-              y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
-            }}
-          >
-            {({zoom,x,y}) => (
-          
-              <div
-                ref={wrapper => this._wrapper = wrapper}
-                // onDoubleClick={this.handleDoubleClick}
-                >
-              <ComposableMap
-                projectionConfig={{ scale: this.state.scale, rotation: [-10,0,0] }}
-                width={this.state.dimensions[0]}
-                height={this.state.dimensions[1]}
-                style={{
-                  width: "100%",
-                  height: "auto"
-                }}
-              >
-                <ZoomableGroup
-                  center={[x,y]}
-                  zoom={zoom}
-                  onMoveStart={this.handleMoveStart}
-                  onMoveEnd={this.handleMoveEnd}
-                >
-                  <Geographies 
-                    geography={ this.state.geographyPaths }
-                    disableOptimization={this.state.disableOptimization}
-                  >
-                    {(geographies, projection) => 
-                      geographies.map((geography, i) => {
-
-                      let defaultColor, hoverColor, render;
-
-                      [defaultColor, hoverColor, render] = ColorPicker(this.state, geography)
-
-                      return render && (
-                      <Geography
-                        key={ `geography-${i}` }
-                        cacheId={ `geography-${i}` }
-                        geography={ geography }
-                        projection={ projection }
-                        onClick={this.handleCountryClick}
-
-                        fill="white"
-                        stroke="black"
-                        strokeWidth={ 0.05 }
-
-                        style={{
-                          default: {
-                            fill : defaultColor,
-                            transition: "fill .5s",
-                          },
-                          hover:   {
-                            fill : hoverColor,
-                            transition: "fill .5s",
-                          },
-                          pressed: {
-                            fill : "rgb(105, 105, 105)",
-                            transition: "fill .5s"
-                          },
-                        }}
-                      />
-                      )}
-                    )}
-                  </Geographies>
-                  <Markers>{ this.regionEllipses(countryMarkers,capitalMarkers) }</Markers>
-                  <Markers>{ this.countryLabels(countryMarkers,capitalMarkers) }</Markers>
-                </ZoomableGroup>
-              </ComposableMap>
-              </div>
-            )}
-          </Motion>
+          <Map
+            appthis={this}
+            countryMarkers={countryMarkers}
+            capitalMarkers={capitalMarkers}
+          />
         </div>
         <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>
