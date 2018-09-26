@@ -194,7 +194,15 @@ class App extends Component {
         return quizAnswers
       }, quizAnswers)
 
-    this.handleMapRefresh({quizAnswers, quizType, activeQuestionNum: 0, selectedProperties: "", quiz: true})
+    this.handleMapRefresh({
+      quizAnswers,
+      quizType,
+      quiz: true,
+      activeQuestionNum: 0,
+      quizGuesses: [],
+      selectedProperties: "",
+      disableInfoClick: quizType.split("_")[0] === "type",
+    })
 
     let x = Date.now()
     this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 100)
@@ -244,11 +252,10 @@ class App extends Component {
         <QuizBox
           visible={ filterRegions.length !== 0 ? true:false }
           nonactive={ !quiz ? true:false }
-          startquiz={ (quizType) => { this.handleQuiz(quizType) } }
+          handleQuiz={ (quizType) => { this.handleQuiz(quizType) } }
           closequiz={ this.handleQuizClose}
           quizData = { {quizAnswers, quizGuesses, geographyPaths, activeQuestionNum} }
           handleAnswer={ this.handleAnswer }
-          disableInfoClick={ () => this.handleMapRefresh({ disableInfoClick: true }) }
         />
 
         <div className="dropDownSelections"

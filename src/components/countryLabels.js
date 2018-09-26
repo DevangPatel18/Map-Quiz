@@ -4,14 +4,14 @@ import { labelDist, tinyCarib } from "../helpers/markerParams"
 
 export default function countryLabels(countryMarkers, capitalMarkers) {
   return this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
+    let testing = this.state.quizType.split("_")[1]
     let alpha3Code = this.state.quizAnswers[i]
     if(gss){
-      if(this.state.quizType === "name" || this.state.quizType === "flag" ) {
+      if(testing === "name" || testing === "flag" ) {
         var marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
-      } else if (this.state.quizType === "capital") {
+      } else if (testing === "capital") {
         marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
       }
-
       var markerName = marker.name
       var textAnchor = "middle"
       var dx = 0;
@@ -19,7 +19,7 @@ export default function countryLabels(countryMarkers, capitalMarkers) {
 
       if(this.state.currentMap === "carrib") {
         if(tinyCarib.includes(alpha3Code)){
-          marker = this.state.quizType !== "capital" ? capitalMarkers.find(x => x.alpha3Code === alpha3Code): marker;
+          marker = testing !== "capital" ? capitalMarkers.find(x => x.alpha3Code === alpha3Code): marker;
           dx = 20;
           dy = -20;
           [dx, dy, textAnchor] = labelDist(dx, dy, alpha3Code)
@@ -36,7 +36,7 @@ export default function countryLabels(countryMarkers, capitalMarkers) {
           pressed: { fill: "#FF5722" },
         }}
       >
-        {this.state.quizType === "capital" ? 
+        {testing === "capital" ? 
           (<circle
             cx={0}
             cy={0}

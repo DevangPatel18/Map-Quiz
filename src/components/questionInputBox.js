@@ -21,7 +21,7 @@ class QuestionBox extends Component {
   handleSubmit(event) {
     event.preventDefault();
     if(this.state.userGuess.length !== 0) {
-      let answerResult = this.props.handleAnswer(this.state.userGuess, this.props.testing)
+      let answerResult = this.props.handleAnswer(this.state.userGuess)
   
       this.setState({userGuess: "", answerResult})
     }
@@ -30,7 +30,8 @@ class QuestionBox extends Component {
   render() {
     let { quizAnswers, quizGuesses, geographyPaths, activeQuestionNum } = this.props.quizData
 
-    let typeTest = this.props.type === "type"
+    let [ type, testing ] = this.props.quizType.split("_");
+    let typeTest = type === "type";
 
     if(activeQuestionNum === quizGuesses.length - 1) {
       var questionBoxContent = typeTest ? this.state.answerResult: this.props.handleAnswer();
@@ -38,7 +39,7 @@ class QuestionBox extends Component {
       if(typeTest){
         questionBoxContent = 
           <div>
-            <p>Enter the { this.props.testing } of the highlighted country</p>
+            <p>Enter the { testing } of the highlighted country</p>
             <form onSubmit={this.handleSubmit}>
               <Input type="text" autoFocus value={this.state.userGuess} onChange={this.handleChange} />
               <Button type="submit" size="large" className="qSubmit">Submit</Button>
@@ -48,9 +49,9 @@ class QuestionBox extends Component {
         let alpha = quizAnswers[activeQuestionNum]
         let region = geographyPaths
           .find(x => x.properties["alpha3Code"] === alpha)
-          .properties[this.props.testing];
+          .properties[testing];
 
-        if(this.props.testing === "flag") {
+        if(testing === "flag") {
           region = 
             <div className="qFlag">
               <img src={region} display="block" height="100px" border="1px solid black" alt=""/>
@@ -74,7 +75,7 @@ class QuestionBox extends Component {
     }
 
     return (
-      <div className={ this.props.type === "type" ? "qInputBox":""}>
+      <div className={ type === "type" ? "qInputBox":""}>
         {questionBoxContent}
       </div>
     )

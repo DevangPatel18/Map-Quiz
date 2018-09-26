@@ -18,29 +18,21 @@ class QuizBox extends Component {
     }
 
     this.handleQuizChange = this.handleQuizChange.bind(this)
-    this.handleQuizStart = this.handleQuizStart.bind(this)
   }
 
   handleQuizChange(event, { value }) {
     this.setState({ quizType: value })
   }
 
-  handleQuizStart() {
-    if(this.state.quizType.split("_")[0] === "click") {
-      this.props.startquiz(this.state.quizType.split("_")[1])
-    } else {
-      this.props.startquiz(this.state.quizType.split("_")[1])
-      this.props.disableInfoClick()
-    }
-  }
-
   render() {
+
+    let { quizType} = this.state
 
     if(this.props.visible) {
       if(this.props.nonactive) {
         return (
           <div className="App-quiz">
-            <Button onClick={ this.handleQuizStart }>START QUIZ</Button>
+            <Button onClick={ () => {this.props.handleQuiz(quizType)} }>START QUIZ</Button>
               <Form>
                 {
                   this.state.quizOptions.map((form, i) => 
@@ -49,7 +41,7 @@ class QuizBox extends Component {
                         label={form.label}
                         value={form.value}
                         name="quiz"
-                        checked={this.state.quizType === form.value}
+                        checked={quizType === form.value}
                         onChange={this.handleQuizChange}
                       />
                     </Form.Field>
@@ -65,8 +57,7 @@ class QuizBox extends Component {
               <Icon fitted size="large" name="close"/>
             </Button>
             <QuestionBox
-              type = { this.state.quizType.split("_")[0] }
-              testing = { this.state.quizType.split("_")[1] }
+              quizType = { quizType }
               quizData = { this.props.quizData }
               handleAnswer = { this.props.handleAnswer }
             />
