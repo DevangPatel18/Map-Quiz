@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react'
 
-export default function handleAnswer(userGuess = null, testing = null){
+export default function handleAnswer(userGuess = null){
   let ans = this.state.quizGuesses;
   let cor = this.state.quizAnswers;
   let idx = this.state.activeQuestionNum;
@@ -15,7 +15,7 @@ export default function handleAnswer(userGuess = null, testing = null){
         .find(geo => geo.properties.alpha3Code === correctAlpha )
         .properties;
     
-    if(testing === "name") {
+    if(this.state.quizType.split("_")[1] === "name") {
       answer = answer.spellings;
       result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
     } else {
@@ -24,37 +24,38 @@ export default function handleAnswer(userGuess = null, testing = null){
     }
 
     text = `${userGuess} is ${result ? "correct!":"incorrect!"}`;
-
-    this.setState(prevState => ({
-        quizGuesses: [...prevState.quizGuesses, result],
-        disableOptimization: true,
-      }), () => { this.setState({ disableOptimization: false }) }
-    )
+    this.handleMapRefresh({quizGuesses: [...this.state.quizGuesses, result]})
   } else {
     text = ans[idx] ? "That is correct!":"That is incorrect!";
   }
 
   if(idx === cor.length){
     var score = ans.reduce((total, x, i) => total += x*1, 0);
-    divContent = <p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
-  } else {
-    nextButton = <Button 
-      autoFocus
-      onClick={ () => {
-        this.setState( prevState => 
-          ({
-            viewInfoDiv: false,
-            activeQuestionNum: prevState.activeQuestionNum + 1,
-            disableOptimization: true
-          })
-          , () => { 
-            setTimeout(() => {
-              this.setState({ selectedProperties: ""}, this.handleMapRefresh) 
-            }, this.state.infoDuration)
+    let quizTypeCopy = this.state.quizType.slice()
+    divContent =
+      <div><p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
+        <Button
+          onClick={ () => {
+              this.handleQuizClose()
+              this.handleQuiz(quizTypeCopy)
+            }
           }
-        )
-      }
-    }>NEXT</Button>;
+        >RESTART
+        </Button>
+      </div>
+  } else {
+    nextButton = 
+      <Button 
+        autoFocus
+        onClick={ () => {
+            this.setState( prevState => 
+              ({ activeQuestionNum: prevState.activeQuestionNum + 1, })
+              , this.handleMapRefresh({ selectedProperties: "" })
+            )
+          }
+        }
+      >NEXT
+      </Button>;
 
     divContent = <div><p>{text}</p>{nextButton}</div>
   }

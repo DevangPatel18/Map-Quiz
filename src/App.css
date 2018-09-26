@@ -32,6 +32,15 @@ footer {
   text-shadow: 1px 1px .7em black;
 }
 
+.caribSelector {
+  stroke: black;
+  transition: all .3s;
+}
+
+.caribSelector:hover {
+  fill: gray;
+}
+
 .dropFade {
   animation: dropFade .2s;
 }
@@ -47,10 +56,16 @@ footer {
 }
 
 .regionButtons {
-  position: absolute;
+  position: relative;
+  top: 1em;
+  width: 220px;
+}
+
+.countrySearch {
+  position: relative;
   top: 1em;
   right: 1em;
-  width: 220px;
+  width: 20em;
 }
 
 .zoomButtons {
@@ -59,4 +74,12 @@ footer {
   top: 4em;
   display: flex;
   flex-direction: column;
+}
+
+.dropDownSelections {
+  position: absolute;
+  top: 0;
+  right: 1em;
+  transition: all .5s;
+  display: flex;
 }
