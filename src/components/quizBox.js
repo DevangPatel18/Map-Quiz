@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import QuestionBox from './questionBox.js';
-import QuestionInputBox from "./questionInputBox.js"
+import QuestionBox from "./questionInputBox.js"
 import { Button, Form, Radio, Icon } from 'semantic-ui-react'
 import './quizBox.css'
 
@@ -37,40 +36,26 @@ class QuizBox extends Component {
 
   render() {
 
-  if(this.props.visible) {
-    if(this.props.nonactive) {
-      return (
-        <div className="App-quiz">
-          <Button onClick={ this.handleQuizStart }>START QUIZ</Button>
-            <Form>
-              {
-                this.state.quizOptions.map((form, i) => 
-                  <Form.Field key={i}>
-                    <Radio
-                      label={form.label}
-                      value={form.value}
-                      name="quiz"
-                      checked={this.state.quizType === form.value}
-                      onChange={this.handleQuizChange}
-                    />
-                  </Form.Field>
-                )
-              }
-            </Form>
-        </div>
-      )
-    } else {
-      if(this.state.quizType.split("_")[0] === "click") {
+    if(this.props.visible) {
+      if(this.props.nonactive) {
         return (
           <div className="App-quiz">
-            <Button size="tiny" className="App-quiz-close" onClick={ this.props.closequiz }>
-              <Icon fitted size="large" name="close"/>
-            </Button>
-            <QuestionBox
-              testing = { this.state.quizType.split("_")[1] }
-              quizData = { this.props.quizData }
-              answerResultFunc = { this.props.answerResultFunc }
-            />
+            <Button onClick={ this.handleQuizStart }>START QUIZ</Button>
+              <Form>
+                {
+                  this.state.quizOptions.map((form, i) => 
+                    <Form.Field key={i}>
+                      <Radio
+                        label={form.label}
+                        value={form.value}
+                        name="quiz"
+                        checked={this.state.quizType === form.value}
+                        onChange={this.handleQuizChange}
+                      />
+                    </Form.Field>
+                  )
+                }
+              </Form>
           </div>
         )
       } else {
@@ -79,21 +64,19 @@ class QuizBox extends Component {
             <Button size="tiny" className="App-quiz-close" onClick={ this.props.closequiz }>
               <Icon fitted size="large" name="close"/>
             </Button>
-            <QuestionInputBox
+            <QuestionBox
+              type = { this.state.quizType.split("_")[0] }
               testing = { this.state.quizType.split("_")[1] }
               quizData = { this.props.quizData }
-              answerResultFunc = { this.props.answerResultFunc }
+              handleAnswer = { this.props.handleAnswer }
             />
           </div>
-        )        
+        )
       }
     }
-  }
 
-  return null
-
+    return null
   }
-  
 }
 
 export default QuizBox

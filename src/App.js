@@ -247,7 +247,7 @@ class App extends Component {
           startquiz={ (quizType) => { this.handleQuiz(quizType) } }
           closequiz={ this.handleQuizClose}
           quizData = { {quizAnswers, quizGuesses, geographyPaths, activeQuestionNum} }
-          answerResultFunc={ this.handleAnswer }
+          handleAnswer={ this.handleAnswer }
           disableInfoClick={ () => this.handleMapRefresh({ disableInfoClick: true }) }
         />
 
