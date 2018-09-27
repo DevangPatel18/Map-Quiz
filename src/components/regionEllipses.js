@@ -70,15 +70,28 @@ export default function regionEllipses(countryMarkers, capitalMarkers) {
       height = height*this.state.zoom;
       let rotate = `rotate(${angle})`
 
-      let defaultColor = ColorPicker(this.state, country)[0]
+      let [ defaultColor, hoverColor ] = ColorPicker(this.state, country)
 
       return (
         <Marker
           key={i}
           marker={marker}
+          style={{
+            default: {
+              fill : defaultColor,
+              transition: "fill .5s",
+            },
+            hover:   {
+              fill : hoverColor,
+              transition: "fill .5s",
+            },
+            pressed: {
+              fill : "rgb(105, 105, 105)",
+              transition: "fill .5s"
+            },
+          }}
         >
           <ellipse
-            fill={defaultColor}
             fillOpacity="0.5"
             stroke="black"
             strokeWidth="0.2"
