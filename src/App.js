@@ -182,7 +182,8 @@ class App extends Component {
       center,
       defaultCenter: center,
       currentMap: region,
-      filterRegions: alpha3Codes[region]
+      filterRegions: alpha3Codes[region],
+      selectedProperties: "",
     })
   }
 

@@ -49,7 +49,7 @@ export default class CountrySearch extends Component {
 
             zoom = ["USA", "FRA"].includes(selectedProperties.alpha3Code) ? zoom*6:zoom;
             
-            zoom = Math.min(zoom, 512)
+            zoom = Math.min(zoom, 64)
 
             this.props.mapRefresh({
               selectedProperties, center, zoom, viewInfoDiv: true
