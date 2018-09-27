@@ -4,8 +4,20 @@ import { Motion, spring } from "react-motion"
 import ColorPicker from "./components/colorPicker.js"
 
 const Map = ({ appthis }) => {
-  let { defaultZoom, center, zoom, scale, dimensions, geographyPaths,
-    disableOptimization, countryMarkers, capitalMarkers } = appthis.state
+  let {
+    defaultZoom,
+    center,
+    zoom,
+    scale,
+    dimensions,
+    geographyPaths,
+    disableOptimization,
+    countryMarkers,
+    capitalMarkers,
+    currentMap,
+  } = appthis.state
+
+  let rotation = currentMap === "oceania" ? [170, 0, 0] : [-10, 0, 0] ;
   return (
     <Motion
       defaultStyle={{
@@ -25,7 +37,7 @@ const Map = ({ appthis }) => {
           // onDoubleClick={appthis.handleDoubleClick}
         >
           <ComposableMap
-            projectionConfig={{ scale: scale, rotation: [-10,0,0] }}
+            projectionConfig={{ scale, rotation }}
             width={dimensions[0]}
             height={dimensions[1]}
             style={{
@@ -43,10 +55,17 @@ const Map = ({ appthis }) => {
                 {(geographies, projection) => 
                   geographies.map((geography, i) => {
                   let [defaultColor, hoverColor, render] = ColorPicker(appthis.state, geography)
+                  if (currentMap === "oceania") {
+                    var key = `oceania-${i}`;
+                    var cacheId = `oceania-${i}`;
+                  } else {
+                    key= `geography-${i}`
+                    cacheId= `geography-${i}`
+                  }
                   return render && (
                     <Geography
-                      key={ `geography-${i}` }
-                      cacheId={ `geography-${i}` }
+                      key={ key }
+                      cacheId={ cacheId }
                       geography={ geography }
                       projection={ projection }
                       onClick={appthis.handleCountryClick}

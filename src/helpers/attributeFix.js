@@ -73,7 +73,7 @@ const CentroidsFix = centroids => {
   centroids.find(x => x.alpha3Code === "FRA").coordinates = [2, 47];
   centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
   centroids.find(x => x.alpha3Code === "FJI").coordinates = [177.5, -18];
-  centroids.find(x => x.alpha3Code === "KIR").coordinates = [180, -1];
+  centroids.find(x => x.alpha3Code === "KIR").coordinates = [189, -1];
   centroids.find(x => x.alpha3Code === "MHL").coordinates = [169, 8.5];
   centroids.find(x => x.alpha3Code === "FSM").coordinates = [151, 7.5];
   centroids.find(x => x.alpha3Code === "MNP").coordinates = [145.5, 16.5];
