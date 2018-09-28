@@ -1,12 +1,12 @@
 const labelPos = {
   "tl": {regions:["ABW", "VCT", "VGB"], coords:[-20,-20]},
-  "tr": {regions:["TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF"], coords:[20,-20]},
+  "tr": {regions:["TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF", "MTQ", "GLP"], coords:[20,-20]},
   "br": {regions:[], coords:[20,20]},
   "bl": {regions:["CYM", "VIR", "CUW", "GRD", "MSR", "KNA" ], coords:[-20,20]},
 }
 
 const labelist = ["AIA", "MAF", "SXM", "BLM"];
-const tinyCarib = ["ABW", "VCT", "VGB", "TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF", "CYM", "VIR", "CUW", "GRD", "MSR", "KNA"]
+const tinyCarib = ["ABW", "VCT", "VGB", "TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF", "CYM", "VIR", "CUW", "GRD", "MSR", "KNA", "MTQ", "GLP"]
 const ellipseDim = {
   "FJI": { width: 13, height: 18, angle: 0 },
   "KIR": { width: 55, height: 23, angle: 0 },

@@ -12,7 +12,7 @@ import handleCountryClick from "./components/handleCountryClick.js"
 import handleDoubleClick from "./components/handleDoubleClick.js"
 import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
-import { DataFix, CentroidsFix } from "./helpers/attributeFix.js"
+import { DataFix, CentroidsFix, SeparateRegions } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
 import { Button } from "semantic-ui-react"
 import CountrySearch from "./components/countrySearch.js"
@@ -111,13 +111,8 @@ class App extends Component {
           data = data.filter(x => +x.id !== 10 ? 1:0);
 
           var essentialData = ["name", "capital", "population", "area", "flag", "alpha3Code", "alpha2Code", "region"];
-          
-          // Remove Ashmore Reef to prevent extra Australia label
-          data.splice(11, 1)
 
-          // Set numericCode for Kosovo
-          data[117].id = "999";
-          DataFix(countryData, capitalMarkers)
+          DataFix(data, countryData, capitalMarkers)
 
           data.filter(x => (+x.id !== -99) ? 1:0).forEach(x => {
             let y = countryData.find(c => +c["numericCode"] === +x.id)
@@ -138,9 +133,14 @@ class App extends Component {
                 coordinates:  capitalCoords,
                 markerOffset: -7})
             }
+          })
 
+          SeparateRegions(data);
+
+          data.forEach(x => {
+            let alpha3Code = x.properties.alpha3Code
             let path = geoPath().projection(this.projection())
-            countryMarkers.push([this.projection().invert(path.centroid(x)), y["alpha3Code"]])
+            countryMarkers.push([this.projection().invert(path.centroid(x)), alpha3Code])
           })
 
           countryMarkers = countryMarkers.map(array => ({ 

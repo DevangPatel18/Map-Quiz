@@ -1,5 +1,5 @@
 // Change entries of data object
-const DataFix = (data, capitalMarkers) => {
+const DataFix = (geoData, data, capitalMarkers) => {
   // Add missing country variants
   data.find(x => x.alpha3Code === "COG").altSpellings.push("Republic of the Congo");
   data.find(x => x.alpha3Code === "COD").altSpellings.push("Democratic Republic of the Congo");
@@ -43,6 +43,11 @@ const DataFix = (data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "PSE").area = 6220;
   data.find(x => x.alpha3Code === "SGS").area = 3903;
   data.find(x => x.alpha3Code === "SHN").area = 394;
+  data.find(x => x.alpha3Code === "REU").area = 2511;
+  data.find(x => x.alpha3Code === "MYT").area = 374;
+  data.find(x => x.alpha3Code === "GUF").area = 83534;
+  data.find(x => x.alpha3Code === "MTQ").area = 1128;
+  data.find(x => x.alpha3Code === "GLP").area = 1628;
   
   // Add Kosovo data
   data.push({
@@ -63,6 +68,62 @@ const DataFix = (data, capitalMarkers) => {
     coordinates: [21.166191, 42.667542],
     markerOffset: -7
   })
+
+  // Create geography paths for regions of France
+  let france = geoData.find(x => x.id === "250");
+  let frenchguiana = JSON.parse(JSON.stringify(france));
+  let guadeloupe = JSON.parse(JSON.stringify(france));
+  let martinique = JSON.parse(JSON.stringify(france));
+  let mayotte = JSON.parse(JSON.stringify(france));
+  let reunion = JSON.parse(JSON.stringify(france));
+  frenchguiana.id = "254";
+  guadeloupe.id = "312";
+  martinique.id = "474";
+  mayotte.id = "175";
+  reunion.id = "638";
+  geoData.push(frenchguiana, guadeloupe, martinique, mayotte, reunion)
+
+  // Remove Ashmore Reef to prevent extra Australia label
+  geoData.splice(11, 1)
+
+  // Set numericCode for Kosovo
+  geoData[117].id = "999";
+
+  // Add capitals for French regions
+  capitalMarkers.push({
+    name: "Cayenne",
+    alpha3Code: "GUF",
+    coordinates: [-52.3135, 4.9224],
+    markerOffset: -7
+  })
+
+  capitalMarkers.push({
+    name: "Saint-Denis",
+    alpha3Code: "REU",
+    coordinates: [55.4551, -20.8907],
+    markerOffset: -7
+  })
+
+  capitalMarkers.push({
+    name: "Fort-de-France",
+    alpha3Code: "MTQ",
+    coordinates: [-61.0588, 14.6161],
+    markerOffset: -7
+  })
+
+  capitalMarkers.push({
+    name: "Mamoudzou",
+    alpha3Code: "MYT",
+    coordinates: [45.2279, -12.7809],
+    markerOffset: -7
+  })
+
+  capitalMarkers.push({
+    name: "Basse-Terre", 
+    alpha3Code: "GLP",
+    coordinates: [-61.6947, 16.0341],
+    markerOffset: -7
+  })
 }
 
 // Change positioning of country labels
@@ -70,7 +131,6 @@ const CentroidsFix = centroids => {
   centroids.find(x => x.alpha3Code === "CAN").coordinates = [-100, 55];
   centroids.find(x => x.alpha3Code === "USA").coordinates = [-100, 40];
   centroids.find(x => x.alpha3Code === "CHL").coordinates = [-73, -39];
-  centroids.find(x => x.alpha3Code === "FRA").coordinates = [2, 47];
   centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
   centroids.find(x => x.alpha3Code === "FJI").coordinates = [177.5, -18];
   centroids.find(x => x.alpha3Code === "KIR").coordinates = [189, -1];
@@ -83,4 +143,19 @@ const CentroidsFix = centroids => {
   centroids.find(x => x.alpha3Code === "PLW").coordinates = [133, 6];
 }
 
-export { DataFix, CentroidsFix }
+function SeparateRegions(data) {
+  // Separate France into regions
+  data.find(x => x.properties.alpha3Code === "FRA").geometry.coordinates.splice(0, 7);
+  let REU = data.find(x => x.properties.alpha3Code === "REU");
+  let MYT = data.find(x => x.properties.alpha3Code === "MYT");
+  let GUF = data.find(x => x.properties.alpha3Code === "GUF");
+  let MTQ = data.find(x => x.properties.alpha3Code === "MTQ");
+  let GLP = data.find(x => x.properties.alpha3Code === "GLP");
+  REU.geometry.coordinates = REU.geometry.coordinates.splice(0, 1);
+  MYT.geometry.coordinates = MYT.geometry.coordinates.splice(1, 1);
+  GUF.geometry.coordinates = GUF.geometry.coordinates.splice(2, 1);
+  MTQ.geometry.coordinates = MTQ.geometry.coordinates.splice(3, 1);
+  GLP.geometry.coordinates = GLP.geometry.coordinates.splice(4, 3);
+}
+
+export { DataFix, CentroidsFix, SeparateRegions }

@@ -9,7 +9,7 @@ export default function regionEllipses(countryMarkers, capitalMarkers) {
   if(this.state.currentMap === "carrib") {
     return show&&this.state.geographyPaths
       .filter(x => this.state.filterRegions.includes(x.properties.alpha3Code))
-      .filter(x => x.properties.area < 1000)
+      .filter(x => x.properties.area < 2000)
       .map((country, i) => {
 
         let alpha3Code = country.properties.alpha3Code;
