@@ -146,6 +146,28 @@ const MarkersFix = (centroids, capitalMarkers) => {
   centroids.find(x => x.alpha3Code === "ZAF").markerOffset = -8;
   centroids.find(x => x.alpha3Code === "MWI").markerOffset = -5;
   
+  centroids.find(x => x.alpha3Code === "AUT").markerOffset = -5;
+  centroids.find(x => x.alpha3Code === "CHE").markerOffset = 5;
+  centroids.find(x => x.alpha3Code === "SVN").markerOffset = -3;
+  centroids.find(x => x.alpha3Code === "HRV").markerOffset = -5;
+  centroids.find(x => x.alpha3Code === "BIH").markerOffset = -7;
+  centroids.find(x => x.alpha3Code === "SRB").markerOffset = 3;
+  centroids.find(x => x.alpha3Code === "MNE").markerOffset = -5;
+  centroids.find(x => x.alpha3Code === "ALB").markerOffset = 5;
+  
+  centroids.find(x => x.alpha3Code === "ISR").markerOffset = 10;
+  centroids.find(x => x.alpha3Code === "JOR").markerOffset = 10;
+  centroids.find(x => x.alpha3Code === "LBN").markerOffset = 5;
+  centroids.find(x => x.alpha3Code === "GEO").markerOffset = -5;
+  centroids.find(x => x.alpha3Code === "ARM").markerOffset = -8;
+  centroids.find(x => x.alpha3Code === "TKM").markerOffset = 5;
+  centroids.find(x => x.alpha3Code === "AZE").markerOffset = 3;
+  centroids.find(x => x.alpha3Code === "BRN").markerOffset = -5;
+  centroids.find(x => x.alpha3Code === "BRN").markerOffset = -5;
+  
+  centroids.find(x => x.alpha3Code === "WLF").markerOffset = -10;
+  centroids.find(x => x.alpha3Code === "ASM").markerOffset = 10;
+  
   capitalMarkers.find(x => x.alpha3Code === "GTM").markerOffset = 10;
   capitalMarkers.find(x => x.alpha3Code === "SLV").markerOffset = 12;
   capitalMarkers.find(x => x.alpha3Code === "CRI").markerOffset = 12;
@@ -181,6 +203,47 @@ const MarkersFix = (centroids, capitalMarkers) => {
   capitalMarkers.find(x => x.alpha3Code === "ZAF").markerOffset = -3;
   capitalMarkers.find(x => x.alpha3Code === "LSO").markerOffset = 13;
   capitalMarkers.find(x => x.alpha3Code === "SWZ").markerOffset = 13;
+  
+  capitalMarkers.find(x => x.alpha3Code === "EST").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "SVK").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "HUN").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "HRV").markerOffset = 8;
+  capitalMarkers.find(x => x.alpha3Code === "SVN").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "CHE").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "AND").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "MCO").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "VAT").markerOffset = 15;
+  capitalMarkers.find(x => x.alpha3Code === "BIH").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "ALB").markerOffset = 12;
+  capitalMarkers.find(x => x.alpha3Code === "MKD").markerOffset = 12;
+  capitalMarkers.find(x => x.alpha3Code === "MNE").markerOffset = 0;
+  capitalMarkers.find(x => x.alpha3Code === "BGR").markerOffset = 5;
+  
+  capitalMarkers.find(x => x.alpha3Code === "ARM").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "PSE").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "JOR").markerOffset = 3;
+  capitalMarkers.find(x => x.alpha3Code === "IRQ").markerOffset = -3;
+  capitalMarkers.find(x => x.alpha3Code === "KWT").markerOffset = -3;
+  capitalMarkers.find(x => x.alpha3Code === "SYR").markerOffset = -12;
+  capitalMarkers.find(x => x.alpha3Code === "OMN").markerOffset = 12;
+  capitalMarkers.find(x => x.alpha3Code === "ARE").markerOffset = -3;
+  capitalMarkers.find(x => x.alpha3Code === "AFG").markerOffset = -9;
+  capitalMarkers.find(x => x.alpha3Code === "PAK").markerOffset = -5;
+  capitalMarkers.find(x => x.alpha3Code === "IND").markerOffset = -9;
+  capitalMarkers.find(x => x.alpha3Code === "NPL").markerOffset = -5;
+  capitalMarkers.find(x => x.alpha3Code === "BTN").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "BGD").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "KOR").markerOffset = 13;
+  
+  capitalMarkers.find(x => x.alpha3Code === "GUM").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "KIR").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "ASM").markerOffset = 13;
+  capitalMarkers.find(x => x.alpha3Code === "WLF").markerOffset = -10;
+  capitalMarkers.find(x => x.alpha3Code === "WSM").markerOffset = -3;
+  
+  capitalMarkers
+    .find(x => x.alpha3Code === "WLF")
+    .coordinates = [-178.1165, -14.2938]
 }
 
 function SeparateRegions(data) {

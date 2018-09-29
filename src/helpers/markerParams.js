@@ -18,6 +18,7 @@ const ellipseDim = {
   "NCL": { width: 13, height: 10, angle: 0 },
   "TON": { width: 3, height: 9, angle: 20 },
   "PYF": { width: 30, height: 30, angle: 0 },
+  "PCN": { width: 8, height: 5, angle: 0 },
 }
 
 function labelDist (x, y, alpha3Code, textAnchor) {
@@ -66,6 +67,20 @@ const labelAnchors = {
   "LSO": "start",
   "SWZ": "start",
   "MOZ": "start",
+  "NOR": "end",
+  "MKD": "start",
+  "BGR": "start",
+  "MNE": "end",
+  "ITA": "end",
+  "AZE": "start",
+  "ISR": "end",
+  "JOR": "start",
+  "ARE": "start",
+  "BHR": "end",
+  "QAT": "start",
+  "LBN": "end",
+  "SYR": "start",
+  "PSE": "end",
 }
 
 export { labelPos, labelist, ellipseDim, labelDist, tinyCarib, labelAnchors }
