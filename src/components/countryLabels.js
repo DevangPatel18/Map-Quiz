@@ -2,10 +2,12 @@ import React from 'react'
 import { Marker } from 'react-simple-maps'
 import { labelDist, tinyCarib, labelAnchors } from "../helpers/markerParams"
 
-export default function countryLabels(countryMarkers, capitalMarkers) {
-  return this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
-    let testing = this.state.quizType.split("_")[1]
-    let alpha3Code = this.state.quizAnswers[i]
+export default function countryLabels() {
+  let { quiz, quizGuesses, quizType, quizAnswers,
+    countryMarkers, capitalMarkers, currentMap } = this.state
+  return quiz ? quizGuesses.map((gss, i) => {
+    let testing = quizType.split("_")[1]
+    let alpha3Code = quizAnswers[i]
     if(gss){
       if(testing === "name" || testing === "flag" ) {
         var marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
@@ -17,7 +19,7 @@ export default function countryLabels(countryMarkers, capitalMarkers) {
       var dx = 0;
       var dy = marker ? marker.markerOffset: 0;
 
-      if(this.state.currentMap === "carrib") {
+      if(currentMap === "carrib") {
         if(tinyCarib.includes(alpha3Code)){
           marker = testing !== "capital" ? capitalMarkers.find(x => x.alpha3Code === alpha3Code): marker;
           dx = 20;

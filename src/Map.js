@@ -12,8 +12,6 @@ const Map = ({ appthis }) => {
     dimensions,
     geographyPaths,
     disableOptimization,
-    countryMarkers,
-    capitalMarkers,
     currentMap,
   } = appthis.state
 
@@ -90,8 +88,8 @@ const Map = ({ appthis }) => {
                   )}
                 )}
               </Geographies>
-              <Markers>{ appthis.regionEllipses(countryMarkers, capitalMarkers) }</Markers>
-              <Markers>{ appthis.countryLabels(countryMarkers, capitalMarkers) }</Markers>
+              <Markers>{ appthis.regionEllipses() }</Markers>
+              <Markers>{ appthis.countryLabels() }</Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>
