@@ -12,7 +12,7 @@ import handleCountryClick from "./components/handleCountryClick.js"
 import handleDoubleClick from "./components/handleDoubleClick.js"
 import { geoPath } from "d3-geo"
 import { geoTimes } from "d3-geo-projection"
-import { DataFix, CentroidsFix, SeparateRegions } from "./helpers/attributeFix.js"
+import { DataFix, MarkersFix, SeparateRegions } from "./helpers/attributeFix.js"
 import capitalData from "./assets/country_capitals.json"
 import { Button } from "semantic-ui-react"
 import CountrySearch from "./components/countrySearch.js"
@@ -146,7 +146,7 @@ class App extends Component {
           countryMarkers = countryMarkers.map(array => ({ 
             name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
             alpha3Code: array[1], coordinates: array[0], markerOffset: 0}))
-          CentroidsFix(countryMarkers)
+          MarkersFix(countryMarkers, capitalMarkers)
 
           this.setState({ geographyPaths: data, countryMarkers, capitalMarkers })
         })

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Marker } from 'react-simple-maps'
-import { labelDist, tinyCarib } from "../helpers/markerParams"
+import { labelDist, tinyCarib, labelAnchors } from "../helpers/markerParams"
 
 export default function countryLabels(countryMarkers, capitalMarkers) {
   return this.state.quiz ? this.state.quizGuesses.map((gss, i) => {
@@ -25,6 +25,10 @@ export default function countryLabels(countryMarkers, capitalMarkers) {
           [dx, dy, textAnchor] = labelDist(dx, dy, alpha3Code)
         }
       }
+
+      if(Object.keys(labelAnchors).includes(alpha3Code)){
+        textAnchor = labelAnchors[alpha3Code];
+      }
     }
     return gss&&(
       <Marker
@@ -40,7 +44,7 @@ export default function countryLabels(countryMarkers, capitalMarkers) {
           (<circle
             cx={0}
             cy={0}
-            r={2}
+            r={1}
             className="dropFade"
             style={{
               stroke: "#FF5722",

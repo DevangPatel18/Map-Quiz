@@ -1,8 +1,8 @@
 const labelPos = {
   "tl": {regions:["ABW", "VCT", "VGB"], coords:[-20,-20]},
-  "tr": {regions:["TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF", "MTQ", "GLP", "BES"], coords:[20,-20]},
+  "tr": {regions:["TCA", "VGB", "SXM", "BLM", "ATG", "BRB", "DMA", "LCA", "AIA", "MAF", "MTQ", "BES"], coords:[20,-20]},
   "br": {regions:[], coords:[20,20]},
-  "bl": {regions:["CYM", "VIR", "CUW", "GRD", "MSR", "KNA" ], coords:[-20,20]},
+  "bl": {regions:["CYM", "VIR", "CUW", "GRD", "MSR", "KNA", "GLP" ], coords:[-20,20]},
 }
 
 const labelist = ["AIA", "MAF", "SXM", "BLM"];
@@ -43,4 +43,29 @@ function labelDist (x, y, alpha3Code, textAnchor) {
   return [dx, dy, textAnchor]
 }
 
-export { labelPos, labelist, ellipseDim, labelDist, tinyCarib }
+const labelAnchors = {
+  "BLZ": "start",
+  "CRI": "end",
+  "GTM": "end",
+  "HND": "start",
+  "NIC": "start",
+  "PAN": "start",
+  "SLV": "end",
+  "URY": "start",
+  "GUY": "start",
+  "SUR": "start",
+  "GUF": "start",
+  "SEN": "end",
+  "GMB": "end",
+  "GNB": "end",
+  "GIN": "end",
+  "SLE": "end",
+  "LBR": "end",
+  "STP": "end",
+  "NAM": "end",
+  "LSO": "start",
+  "SWZ": "start",
+  "MOZ": "start",
+}
+
+export { labelPos, labelist, ellipseDim, labelDist, tinyCarib, labelAnchors }
