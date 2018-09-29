@@ -6,7 +6,7 @@ const labelPos = {
 }
 
 const labelist = ["AIA", "MAF", "SXM", "BLM"];
-const tinyCarib = [...Object.keys(labelPos).map(pos => pos.regions)]
+const tinyCarib = Object.keys(labelPos).map(pos => labelPos[pos].regions).flat()
 const ellipseDim = {
   "FJI": { width: 13, height: 18, angle: 0 },
   "KIR": { width: 55, height: 23, angle: 0 },
