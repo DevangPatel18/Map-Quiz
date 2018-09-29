@@ -10,7 +10,7 @@ const DataFix = (geoData, data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "VIR").altSpellings.push("US Virgin Islands");
   
   // Change display name of country to shorter variant
-  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA", "FSM", "BLM", "KNA", "LCA", "MAF", "SHN", "SPM", "VCT"]
+  ["VEN", "BOL", "GBR", "MDA", "MKD", "PSE", "SYR", "IRN", "PRK", "KOR", "LAO", "BRN", "COD", "TZA", "FSM", "BLM", "KNA", "LCA", "MAF", "SHN", "SPM", "VCT", "KOS"]
     .forEach(code => {
       let country = data.find(x => x.alpha3Code === code)
       country.altSpellings.push(country.name)
@@ -21,6 +21,7 @@ const DataFix = (geoData, data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "GBR").name = "United Kingdom";
   data.find(x => x.alpha3Code === "MDA").name = "Moldova";
   data.find(x => x.alpha3Code === "MKD").name = "Macedonia";
+  data.find(x => x.alpha3Code === "KOS").name = "Kosovo";
   data.find(x => x.alpha3Code === "PSE").name = "Palestine";
   data.find(x => x.alpha3Code === "SYR").name = "Syria";
   data.find(x => x.alpha3Code === "IRN").name = "Iran";
@@ -48,26 +49,9 @@ const DataFix = (geoData, data, capitalMarkers) => {
   data.find(x => x.alpha3Code === "GUF").area = 83534;
   data.find(x => x.alpha3Code === "MTQ").area = 1128;
   data.find(x => x.alpha3Code === "GLP").area = 1628;
-  
-  // Add Kosovo data
-  data.push({
-    alpha3Code: "XKX",
-    name: "Kosovo",
-    capital: "Prishtina",
-    population: 1920079,
-    area: 10908,
-    numericCode: "999",
-    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Flag_of_Kosovo.svg/320px-Flag_of_Kosovo.svg.png",
-    altSpellings: [],
-    translations: {}
-  });
+  data.find(x => x.alpha3Code === "SJM").area = 62049;
 
-  capitalMarkers.push({
-    name: "Prishtina",
-    alpha3Code: "XKX",
-    coordinates: [21.166191, 42.667542],
-    markerOffset: -7
-  })
+  data.find(x => x.alpha3Code === "KOS").numericCode = 999;
 
   // Create geography paths for regions of France
   let france = geoData.find(x => x.id === "250");
@@ -87,7 +71,22 @@ const DataFix = (geoData, data, capitalMarkers) => {
   let bonaire = JSON.parse(JSON.stringify(netherlands));
   bonaire.id = "535"
 
-  geoData.push(frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire)
+  // Set numericCode for Christmas Island
+  geoData[98].id = "162";
+  let cocos = JSON.parse(JSON.stringify(geoData[98]))
+  cocos.id = "166"
+
+  // Create geography path for Svalbard
+  let norway = geoData.find(x => x.id === "578");
+  let svalbard = JSON.parse(JSON.stringify(norway));
+  svalbard.id = "744"
+
+  // Create geography path for Tokelau
+  let newzealand = geoData.find(x => x.id === "554");
+  let tokelau = JSON.parse(JSON.stringify(newzealand));
+  tokelau.id = "772"
+
+  geoData.push(frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, cocos, svalbard, tokelau)
 
   // Remove Ashmore Reef to prevent extra Australia label
   geoData.splice(11, 1)
@@ -96,47 +95,18 @@ const DataFix = (geoData, data, capitalMarkers) => {
   geoData[117].id = "999";
 
   // Add capitals for Overseas regions
-  capitalMarkers.push({
-    name: "Cayenne",
-    alpha3Code: "GUF",
-    coordinates: [-52.3135, 4.9224],
-    markerOffset: -7
-  })
+  let extraCapitals = [
+    { name: "Prishtina", alpha3Code: "KOS", coordinates: [21.166191, 42.667542] },
+    { name: "Cayenne", alpha3Code: "GUF", coordinates: [-52.3135, 4.9224] },
+    { name: "Saint-Denis", alpha3Code: "REU", coordinates: [55.4551, -20.8907] },
+    { name: "Fort-de-France", alpha3Code: "MTQ", coordinates: [-61.0588, 14.6161] },
+    { name: "Mamoudzou", alpha3Code: "MYT", coordinates: [45.2279, -12.7809] },
+    { name: "Basse-Terre", alpha3Code: "GLP", coordinates: [-61.6947, 16.0341] },
+    { name: "Kralendijk", alpha3Code: "BES", coordinates: [-68.2655, 12.1443] },
+    { name: "Fakaofo", alpha3Code: "TKL", coordinates: [-171.2188, -9.3803] },
+  ]
 
-  capitalMarkers.push({
-    name: "Saint-Denis",
-    alpha3Code: "REU",
-    coordinates: [55.4551, -20.8907],
-    markerOffset: -7
-  })
-
-  capitalMarkers.push({
-    name: "Fort-de-France",
-    alpha3Code: "MTQ",
-    coordinates: [-61.0588, 14.6161],
-    markerOffset: -7
-  })
-
-  capitalMarkers.push({
-    name: "Mamoudzou",
-    alpha3Code: "MYT",
-    coordinates: [45.2279, -12.7809],
-    markerOffset: -7
-  })
-
-  capitalMarkers.push({
-    name: "Basse-Terre", 
-    alpha3Code: "GLP",
-    coordinates: [-61.6947, 16.0341],
-    markerOffset: -7
-  })
-// 12.1443° N, 68.2655° W
-  capitalMarkers.push({
-    name: "Kralendijk", 
-    alpha3Code: "BES",
-    coordinates: [-68.2655, 12.1443],
-    markerOffset: -7
-  })  
+  extraCapitals.forEach(capitalObj => { capitalMarkers.push({...capitalObj, markerOffset: -7})})
 }
 
 // Change positioning of country labels
@@ -144,7 +114,6 @@ const CentroidsFix = centroids => {
   centroids.find(x => x.alpha3Code === "CAN").coordinates = [-100, 55];
   centroids.find(x => x.alpha3Code === "USA").coordinates = [-100, 40];
   centroids.find(x => x.alpha3Code === "CHL").coordinates = [-73, -39];
-  centroids.find(x => x.alpha3Code === "NOR").coordinates = [9, 61];
   centroids.find(x => x.alpha3Code === "FJI").coordinates = [177.5, -18];
   centroids.find(x => x.alpha3Code === "KIR").coordinates = [189, -1];
   centroids.find(x => x.alpha3Code === "MHL").coordinates = [169, 8.5];
@@ -168,6 +137,18 @@ function SeparateRegions(data) {
   // Separate Netherlands into regions
   let NLD_coords = data.find(x => x.properties.alpha3Code === "NLD").geometry.coordinates.splice(0, 3);
   data.find(x => x.properties.alpha3Code === "BES").geometry.coordinates = NLD_coords
+
+  // Separate Cocos from Christmas
+  let CXR_coords = data.find(x => x.properties.alpha3Code === "CXR").geometry.coordinates.splice(0, 2);
+  data.find(x => x.properties.alpha3Code === "CCK").geometry.coordinates = CXR_coords
+
+  // Separate Svalbard from Norway
+  let NOR_coords = data.find(x => x.properties.alpha3Code === "NOR").geometry.coordinates.splice(22, 10);
+  data.find(x => x.properties.alpha3Code === "SJM").geometry.coordinates = NOR_coords
+
+  // Separate Tokelau from New Zealand
+  let NZL_coords = data.find(x => x.properties.alpha3Code === "NZL").geometry.coordinates.splice(11, 2);
+  data.find(x => x.properties.alpha3Code === "TKL").geometry.coordinates = NZL_coords
 }
 
 export { DataFix, CentroidsFix, SeparateRegions }

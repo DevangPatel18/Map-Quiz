@@ -16,7 +16,7 @@ export default class CountrySearch extends Component {
         return { key: y, flag: y, text: x.properties.name, value: x.properties.alpha3Code}
       })
       .filter(x => x !== null)
-      .filter(x => !['bl','cw','gg','im','je','mf','ss','sx', 'bq'].includes(x.key))
+      .filter(x => !['bl','cw','gg','im','je','mf','ss','sx', 'bq', 'xk'].includes(x.key))
       .sort((a,b) => a.text > b.text ? 1:-1)
 
     return (
