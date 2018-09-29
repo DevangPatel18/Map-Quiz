@@ -81,7 +81,13 @@ const DataFix = (geoData, data, capitalMarkers) => {
   martinique.id = "474";
   mayotte.id = "175";
   reunion.id = "638";
-  geoData.push(frenchguiana, guadeloupe, martinique, mayotte, reunion)
+
+  // Create geography path for Bonaire
+  let netherlands = geoData.find(x => x.id === "528");
+  let bonaire = JSON.parse(JSON.stringify(netherlands));
+  bonaire.id = "535"
+
+  geoData.push(frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire)
 
   // Remove Ashmore Reef to prevent extra Australia label
   geoData.splice(11, 1)
@@ -89,7 +95,7 @@ const DataFix = (geoData, data, capitalMarkers) => {
   // Set numericCode for Kosovo
   geoData[117].id = "999";
 
-  // Add capitals for French regions
+  // Add capitals for Overseas regions
   capitalMarkers.push({
     name: "Cayenne",
     alpha3Code: "GUF",
@@ -124,6 +130,13 @@ const DataFix = (geoData, data, capitalMarkers) => {
     coordinates: [-61.6947, 16.0341],
     markerOffset: -7
   })
+// 12.1443° N, 68.2655° W
+  capitalMarkers.push({
+    name: "Kralendijk", 
+    alpha3Code: "BES",
+    coordinates: [-68.2655, 12.1443],
+    markerOffset: -7
+  })  
 }
 
 // Change positioning of country labels
@@ -145,17 +158,16 @@ const CentroidsFix = centroids => {
 
 function SeparateRegions(data) {
   // Separate France into regions
-  data.find(x => x.properties.alpha3Code === "FRA").geometry.coordinates.splice(0, 7);
-  let REU = data.find(x => x.properties.alpha3Code === "REU");
-  let MYT = data.find(x => x.properties.alpha3Code === "MYT");
-  let GUF = data.find(x => x.properties.alpha3Code === "GUF");
-  let MTQ = data.find(x => x.properties.alpha3Code === "MTQ");
-  let GLP = data.find(x => x.properties.alpha3Code === "GLP");
-  REU.geometry.coordinates = REU.geometry.coordinates.splice(0, 1);
-  MYT.geometry.coordinates = MYT.geometry.coordinates.splice(1, 1);
-  GUF.geometry.coordinates = GUF.geometry.coordinates.splice(2, 1);
-  MTQ.geometry.coordinates = MTQ.geometry.coordinates.splice(3, 1);
-  GLP.geometry.coordinates = GLP.geometry.coordinates.splice(4, 3);
+  let FRA_coords = data.find(x => x.properties.alpha3Code === "FRA").geometry.coordinates.splice(0, 7);
+  data.find(x => x.properties.alpha3Code === "REU").geometry.coordinates = [FRA_coords[0]];
+  data.find(x => x.properties.alpha3Code === "MYT").geometry.coordinates = [FRA_coords[1]];
+  data.find(x => x.properties.alpha3Code === "GUF").geometry.coordinates = [FRA_coords[2]];
+  data.find(x => x.properties.alpha3Code === "MTQ").geometry.coordinates = [FRA_coords[3]];
+  data.find(x => x.properties.alpha3Code === "GLP").geometry.coordinates = FRA_coords.slice(4);
+
+  // Separate Netherlands into regions
+  let NLD_coords = data.find(x => x.properties.alpha3Code === "NLD").geometry.coordinates.splice(0, 3);
+  data.find(x => x.properties.alpha3Code === "BES").geometry.coordinates = NLD_coords
 }
 
 export { DataFix, CentroidsFix, SeparateRegions }
