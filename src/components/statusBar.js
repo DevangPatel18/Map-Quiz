@@ -1,6 +1,6 @@
 import React from 'react'
 import { Progress } from 'semantic-ui-react'
-import prettyms from 'pretty-ms'
+import msToTime from '../helpers/msToTime.js'
 import './statusBar.css'
 
 function statusBar() {
@@ -13,7 +13,7 @@ function statusBar() {
       <div className="statusBar-ratio">
         <p>Question: {quizGuesses.length} / {quizAnswers.length}</p>
         <p>Score: {quizGuesses.filter(x => x).length}</p>
-        <p>{ prettyms(time, {keepDecimalsOnWholeSeconds: true}) }</p>
+        <p>{ msToTime(time) }</p>
       </div>
     </div>
   )
