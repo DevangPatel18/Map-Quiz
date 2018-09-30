@@ -121,6 +121,10 @@ class App extends Component {
               x.properties[key] = y[key]
             })
 
+            if(y["regionOf"]) {
+              x.properties.regionOf = y["regionOf"];
+            }
+
             y["altSpellings"].shift()
 
             x.properties.spellings = [...new Set([y["name"],...y["altSpellings"], ...Object.values(y["translations"]).filter(x => x)])]
@@ -272,7 +276,7 @@ class App extends Component {
 
         { this.statusBar() }
 
-        <InfoTab country={selectedProperties}/>
+        <InfoTab country={selectedProperties} geoPaths={geographyPaths}/>
 
         <div {...WheelReact.events}>
           <Map appthis={this} />

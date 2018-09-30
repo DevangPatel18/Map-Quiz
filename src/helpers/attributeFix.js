@@ -107,6 +107,24 @@ const DataFix = (geoData, data, capitalMarkers) => {
   ]
 
   extraCapitals.forEach(capitalObj => { capitalMarkers.push({...capitalObj, markerOffset: -7})})
+
+  // Add "Region of" designation for overseas regions
+  let overseasRegions = {
+    "NZL": ["COK", "NIU", "TKL"],
+    "GBR": ["AIA", "BMU", "IOT", "VGB", "CYM", "FLK", "MSR", "PCN", "SHN", "TCA", "SGS", "GGY", "JEY", "IMN"],
+    "USA": ["GUM", "MNP", "PRI", "VIR", "ASM"],
+    "AUS": ["CXR", "CCK", "NFK", "HMD"],
+    "CHN": ["HKG", "MAC"],
+    "DNK": ["FRO", "GRL"],
+    "FRA": ["BLM", "MAF", "SPM", "WLF", "PYF", "NCL", "REU", "GLP", "MTQ", "GUF", "MYT"],
+    "NLD": ["ABW", "CUW", "SXM", "BES"]
+  }
+
+  Object.keys(overseasRegions).forEach(countryAlpha => {
+    for (let regionAlpha of overseasRegions[countryAlpha]) {
+      data.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
+    }
+  })
 }
 
 // Change positioning of country labels
