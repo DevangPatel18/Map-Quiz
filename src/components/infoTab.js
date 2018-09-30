@@ -5,7 +5,7 @@ const InfoTab = (props) => {
   let name, capital, population, area;
 
   if ((Object.keys(props.country).length === 0)) {
-    name = capital = population = area = "N/A"
+    return null
   } else {
     name = props.country.name
     capital = props.country.capital

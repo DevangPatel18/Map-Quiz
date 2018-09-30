@@ -16,7 +16,7 @@ export default class CountrySearch extends Component {
         return { key: y, flag: y, text: x.properties.name, value: x.properties.alpha3Code}
       })
       .filter(x => x !== null)
-      .filter(x => !['bl','cw','gg','im','je','mf','ss','sx'].includes(x.key))
+      .filter(x => !['bl','cw','gg','im','je','mf','ss','sx', 'bq', 'xk'].includes(x.key))
       .sort((a,b) => a.text > b.text ? 1:-1)
 
     return (
@@ -47,9 +47,9 @@ export default class CountrySearch extends Component {
             let height = bounds[1][1] - bounds[0][1];
             let zoom = 0.7 / Math.max(width / this.props.state.dimensions[0], height / this.props.state.dimensions[1]);
 
-            zoom = ["USA", "FRA"].includes(selectedProperties.alpha3Code) ? zoom*6:zoom;
+            zoom = selectedProperties.alpha3Code === "USA" ? zoom*6:zoom;
             
-            zoom = Math.min(zoom, 512)
+            zoom = Math.min(zoom, 64)
 
             this.props.mapRefresh({
               selectedProperties, center, zoom, viewInfoDiv: true

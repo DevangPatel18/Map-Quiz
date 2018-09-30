@@ -5,6 +5,7 @@ export default function handleCountryClick(geo){
       this.handleMapRefresh({
         quizGuesses: [...this.state.quizGuesses, result],
         selectedProperties: geo.properties,
+        activeQuestionNum: this.state.activeQuestionNum + 1,
       })
     } else {
       let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
