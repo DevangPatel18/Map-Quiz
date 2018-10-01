@@ -1,5 +1,5 @@
 export default function msToTime(duration) {
-  var milliseconds = parseInt((duration%1000)/100, 10)
+  let milliseconds = parseInt((duration%1000)/100, 10)
     , seconds = parseInt((duration/1000)%60, 10)
     , minutes = parseInt((duration/(1000*60))%60, 10)
     , hours = parseInt((duration/(1000*60*60))%24, 10);

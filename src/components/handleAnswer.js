@@ -1,46 +1,47 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react';
 
-export default function handleAnswer(userGuess = null){
-  let ans = this.state.quizGuesses;
-  let cor = this.state.quizAnswers;
-  let idx = this.state.activeQuestionNum;
+export default function handleAnswer(userGuess = null) {
+  const ans = this.state.quizGuesses;
+  const cor = this.state.quizAnswers;
+  const idx = this.state.activeQuestionNum;
 
-  if(userGuess) {
-    let correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum]
-    let answer, result;
+  if (userGuess) {
+    const correctAlpha = this.state.quizAnswers[this.state.activeQuestionNum];
+    let result;
 
-    answer = this.state.geographyPaths
-        .find(geo => geo.properties.alpha3Code === correctAlpha )
-        .properties;
-    
-    if(this.state.quizType.split("_")[1] === "name") {
-      answer = answer.spellings;
-      result = answer.some(name => userGuess.toLowerCase() === name.toLowerCase())
+    const answer = this.state.geographyPaths
+      .find(geo => geo.properties.alpha3Code === correctAlpha)
+      .properties;
+
+    if (this.state.quizType.split('_')[1] === 'name') {
+      result = answer.spellings.some(name => userGuess.toLowerCase() === name.toLowerCase());
     } else {
-      answer = answer.capital;
-      result = userGuess.toLowerCase() === answer.toLowerCase()
+      result = userGuess.toLowerCase() === answer.capital.toLowerCase();
     }
 
     this.handleMapRefresh({
       quizGuesses: [...this.state.quizGuesses, result],
       activeQuestionNum: this.state.activeQuestionNum + 1,
-    })
+    });
   }
 
-  if(idx === cor.length){
-    var score = ans.reduce((total, x, i) => total += x*1, 0);
-    let quizTypeCopy = this.state.quizType.slice()
+  if (idx === cor.length) {
+    const score = ans.reduce((a, b) => a * 1 + b * 1);
+    const quizTypeCopy = this.state.quizType.slice();
+    const finalText = `Your score is ${score} / ${cor.length} or ${Math.round(score / cor.length * 100)}%`;
     return (
-      <div><p>Your score is {score} / {cor.length} or {Math.round(score/cor.length*100)}%</p>
+      <div>
+        <p>{finalText}</p>
         <Button
-          onClick={ () => {
-              this.handleQuizClose()
-              this.handleQuiz(quizTypeCopy)
-            }
+          onClick={() => {
+            this.handleQuizClose();
+            this.handleQuiz(quizTypeCopy);
           }
-        >RESTART
-        </Button>
-      </div>)
+          }
+          content="RESTART"
+        />
+      </div>);
   }
+  return '';
 }

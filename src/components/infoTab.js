@@ -2,30 +2,37 @@ import React from 'react';
 import './infoTab.css';
 
 const InfoTab = (props) => {
-  if ((Object.keys(props.country).length === 0)) {
-    return null
-  } else {
-    var { name, capital, population, area, regionOf } = props.country;
-    population = population.toLocaleString()
-    area = area ? area.toLocaleString():"N/A"
-    if(regionOf) {
-      let regionObj = props.geoPaths.find(x => x.properties.alpha3Code === regionOf);
-      let regionName = regionObj.properties.name;
-      regionOf = `Region of ${regionName}`;
-    }
+  const { country, geoPaths } = props;
+  if ((Object.keys(country).length === 0)) {
+    return null;
+  }
+  const {
+    name, capital, population, area, regionOf,
+  } = country;
+  const capitalStr = `Captal: ${capital}`;
+  const populationStr = `Population: ${population.toLocaleString()}`;
+  const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
+  let regionOfStr;
+  if (regionOf) {
+    const regionName = geoPaths
+      .find(x => x.properties.alpha3Code === regionOf).properties.name;
+    regionOfStr = `Region of ${regionName}`;
   }
   return (
     <div className="infoTab">
-      <img className="infoTab-flag" src={props.country.flag} alt="" />
+      <img className="infoTab-flag" src={country.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>
-        <li>Capital: {capital}</li>
-        <li>Population: {population}</li>
-        <li>Area: {area} km<sup style={{fontSize: ".6em"}}>2</sup></li>
-        {regionOf !== "" ? (<li>{regionOf}</li>):""}
+        <li>{capitalStr}</li>
+        <li>{populationStr}</li>
+        <li>
+          {areaStr}
+          <sup style={{ fontSize: '.6em' }}>2</sup>
+        </li>
+        {regionOf !== '' ? (<li>{regionOfStr}</li>) : ''}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InfoTab
+export default InfoTab;

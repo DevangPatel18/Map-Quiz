@@ -10,17 +10,17 @@ const tinyCarib = ["tl", "tr", "br", "bl"]
   .map(pos => labelPos[pos].regions)
   .reduce((acc, val) => acc.concat(val), [])
 const ellipseDim = {
-  "FJI": { width: 13, height: 18, angle: 0 },
-  "KIR": { width: 55, height: 23, angle: 0 },
-  "MHL": { width: 11, height: 13, angle: 0 },
-  "FSM": { width: 37, height: 9, angle: 10 },
-  "MNP": { width: 2, height: 8, angle: 7 }, 
-  "SLB": { width: 19, height: 8, angle: 27 },
-  "VUT": { width: 4, height: 12, angle: -21 },
-  "NCL": { width: 13, height: 10, angle: 0 },
-  "TON": { width: 3, height: 9, angle: 20 },
-  "PYF": { width: 30, height: 30, angle: 0 },
-  "PCN": { width: 8, height: 5, angle: 0 },
+  FJI: { width: 13, height: 18, angle: 0 },
+  KIR: { width: 55, height: 23, angle: 0 },
+  MHL: { width: 11, height: 13, angle: 0 },
+  FSM: { width: 37, height: 9, angle: 10 },
+  MNP: { width: 2, height: 8, angle: 7 }, 
+  SLB: { width: 19, height: 8, angle: 27 },
+  VUT: { width: 4, height: 12, angle: -21 },
+  NCL: { width: 13, height: 10, angle: 0 },
+  TON: { width: 3, height: 9, angle: 20 },
+  PYF: { width: 30, height: 30, angle: 0 },
+  PCN: { width: 8, height: 5, angle: 0 },
 }
 
 function labelDist (x, y, alpha3Code, textAnchor) {

@@ -1,6 +1,15 @@
 import React from 'react';
-import { ComposableMap, ZoomableGroup, Geographies, Geography, Markers } from "react-simple-maps"
-import { Motion, spring } from "react-motion"
+import {
+  ComposableMap,
+  ZoomableGroup,
+  Geographies,
+  Geography,
+  Markers,
+} from "react-simple-maps"
+import {
+  Motion,
+  spring,
+} from "react-motion"
 import ColorPicker from "./components/colorPicker.js"
 
 const Map = ({ appthis }) => {
@@ -53,9 +62,10 @@ const Map = ({ appthis }) => {
                 {(geographies, projection) => 
                   geographies.map((geography, i) => {
                   let [defaultColor, hoverColor, render] = ColorPicker(appthis.state, geography)
+                  let key, cacheId;
                   if (currentMap === "oceania") {
-                    var key = `oceania-${i}`;
-                    var cacheId = `oceania-${i}`;
+                    key = `oceania-${i}`;
+                    cacheId = `oceania-${i}`;
                   } else {
                     key= `geography-${i}`
                     cacheId= `geography-${i}`
