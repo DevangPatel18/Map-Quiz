@@ -270,10 +270,6 @@ const MarkersFix = (centroids, capitalMarkers) => {
   capitalMarkersData.find(x => x.alpha3Code === 'ASM').markerOffset = 13;
   capitalMarkersData.find(x => x.alpha3Code === 'WLF').markerOffset = -10;
   capitalMarkersData.find(x => x.alpha3Code === 'WSM').markerOffset = -3;
-
-  capitalMarkersData
-    .find(x => x.alpha3Code === 'WLF')
-    .coordinates = [-178.1165, -14.2938];
 };
 
 function SeparateRegions(data) {

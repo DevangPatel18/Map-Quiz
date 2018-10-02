@@ -9,7 +9,7 @@ const InfoTab = (props) => {
   const {
     name, capital, population, area, regionOf,
   } = country;
-  const capitalStr = `Captal: ${capital}`;
+  const capitalStr = `Capital: ${capital}`;
   const populationStr = `Population: ${population.toLocaleString()}`;
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
   let regionOfStr;
