@@ -33,10 +33,10 @@ class QuestionBox extends Component {
     const { quizAnswers, geographyPaths, activeQuestionNum } = quizData;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
-    let questionBoxContent;
+    let text; let questionBoxContent;
 
     if (typeTest) {
-      const text = `Enter the ${testing} of the highlighted country`;
+      text = `Enter the ${testing} of the highlighted country`;
       questionBoxContent = (
         <div>
           <p>{ text }</p>
@@ -52,17 +52,24 @@ class QuestionBox extends Component {
         .find(x => x.properties.alpha3Code === alpha)
         .properties[testing];
 
-      if (testing === 'flag') {
-        region = (
-          <div className="qFlag">
-            <img src={region} display="block" height="100px" border="1px solid black" alt="" />
-          </div>
-        );
-      }
-
       if (activeQuestionNum !== quizAnswers.length) {
-        const text = `Where is ${region}?`;
-        questionBoxContent = (<div>{ text }</div>);
+        if (testing !== 'flag') {
+          text = `Where is ${region}?`;
+          questionBoxContent = (<div>{ text }</div>);
+        } else {
+          region = (
+            <div className="qFlag">
+              <img src={region} display="block" height="100px" border="1px solid black" alt="" />
+            </div>
+          );
+          text = 'Which country does this flag belong to?';
+          questionBoxContent = (
+            <div>
+              { text }
+              { region }
+            </div>
+          );
+        }
       }
     }
 

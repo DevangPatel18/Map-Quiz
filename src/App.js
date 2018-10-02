@@ -5,28 +5,28 @@ import WheelReact from 'wheel-react';
 import { geoPath } from 'd3-geo';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
-import countryData from './assets/country_data.json';
-import InfoTab from './components/infoTab.js';
+import restCountries from './assets/country_data.json';
+import InfoTab from './components/infoTab';
 import {
   alpha3Codes,
   mapConfig,
-} from './assets/regionAlpha3Codes.js';
-import RegionButtons from './components/regionButtons.js';
-import QuizBox from './components/quizBox.js';
-import handleAnswer from './components/handleAnswer.js';
-import handleCountryClick from './components/handleCountryClick.js';
-import handleDoubleClick from './components/handleDoubleClick.js';
+} from './assets/regionAlpha3Codes';
+import RegionButtons from './components/regionButtons';
+import QuizBox from './components/quizBox';
+import handleAnswer from './components/handleAnswer';
+import handleCountryClick from './components/handleCountryClick';
+import handleDoubleClick from './components/handleDoubleClick';
 import {
   DataFix,
   MarkersFix,
   SeparateRegions,
-} from './helpers/attributeFix.js';
-import capitalData from './assets/country_capitals.json';
-import CountrySearch from './components/countrySearch.js';
-import regionEllipses from './components/regionEllipses.js';
-import countryLabels from './components/countryLabels.js';
-import statusBar from './components/statusBar.js';
-import Map from './Map.js';
+} from './helpers/attributeFix';
+import capitalData from './assets/country_capitals';
+import CountrySearch from './components/countrySearch';
+import regionEllipses from './components/regionEllipses';
+import countryLabels from './components/countryLabels';
+import StatusBar from './components/statusBar';
+import Map from './Map';
 
 class App extends Component {
   constructor() {
@@ -84,13 +84,6 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
-    this.statusBar = statusBar.bind(this);
-  }
-
-  projection() {
-    return geoTimes()
-      .translate(this.state.dimensions.map(x => x / 2))
-      .scale(this.state.scale);
   }
 
   componentDidMount() {
@@ -99,6 +92,13 @@ class App extends Component {
 
   componentWillUnmount() {
     WheelReact.clearTimeout();
+  }
+
+  projection() {
+    const { dimensions, scale } = this.state;
+    return geoTimes()
+      .translate(dimensions.map(x => x / 2))
+      .scale(scale);
   }
 
   loadPaths() {
@@ -118,28 +118,36 @@ class App extends Component {
 
           const essentialData = ['name', 'capital', 'population', 'area', 'flag', 'alpha3Code', 'alpha2Code', 'region'];
 
-          DataFix(data, countryData, capitalMarkers);
+          DataFix(data, restCountries, capitalMarkers);
 
           data.filter(x => ((+x.id !== -99) ? 1 : 0)).forEach((x) => {
-            const y = countryData.find(c => +c.numericCode === +x.id);
+            const geography = x;
+            const countryData = restCountries.find(c => +c.numericCode === +geography.id);
 
-            essentialData.forEach((key) => { x.properties[key] = y[key]; });
+            essentialData.forEach((key) => { geography.properties[key] = countryData[key]; });
 
-            if (y.regionOf) {
-              x.properties.regionOf = y.regionOf;
+            if (countryData.regionOf) {
+              geography.properties.regionOf = countryData.regionOf;
             }
 
-            y.altSpellings.shift();
+            countryData.altSpellings.shift();
 
-            x.properties.spellings = [...new Set([y.name, ...y.altSpellings, ...Object.values(y.translations).filter(x => x)])];
+            geography.properties.spellings = [
+              ...new Set([
+                countryData.name,
+                ...countryData.altSpellings,
+                ...Object.values(countryData.translations).filter(translations => translations),
+              ]),
+            ];
 
-            const captemp = capitalData.find(x => x.CountryCode === y.alpha2Code);
+            const captemp = capitalData
+              .find(capital => capital.CountryCode === countryData.alpha2Code);
             if (captemp) {
               const capitalCoords = [+captemp.CapitalLongitude, +captemp.CapitalLatitude];
 
               capitalMarkers.push({
-                name: y.capital,
-                alpha3Code: y.alpha3Code,
+                name: countryData.capital,
+                alpha3Code: countryData.alpha3Code,
                 coordinates: capitalCoords,
                 markerOffset: -7,
               });
@@ -149,7 +157,7 @@ class App extends Component {
           SeparateRegions(data);
 
           data.forEach((x) => {
-            const alpha3Code = x.properties.alpha3Code;
+            const { alpha3Code } = x.properties;
             const path = geoPath().projection(this.projection());
             countryMarkers.push([this.projection().invert(path.centroid(x)), alpha3Code]);
           });
@@ -168,15 +176,17 @@ class App extends Component {
   }
 
   handleZoom(x) {
+    const { zoom } = this.state;
     this.setState({
-      zoom: this.state.zoom * x,
+      zoom: zoom * x,
     });
   }
 
   handleReset() {
+    const { defaultCenter, defaultZoom } = this.state;
     this.setState({
-      center: [this.state.defaultCenter[0], this.state.defaultCenter[1] + Math.random() / 1000],
-      zoom: this.state.defaultZoom,
+      center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
+      zoom: defaultZoom,
     });
   }
 
@@ -202,7 +212,8 @@ class App extends Component {
   }
 
   handleQuiz(quizType) {
-    const quizAnswers = [...this.state.filterRegions];
+    const { filterRegions } = this.state;
+    const quizAnswers = [...filterRegions];
     quizAnswers.reduce((dum1, dum2, i) => {
       const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
       [quizAnswers[i], quizAnswers[j]] = [quizAnswers[j], quizAnswers[i]];
@@ -242,14 +253,14 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.quizGuesses.length === this.state.quizAnswers.length) {
-      clearInterval(this.timer);
-    }
-
     const {
       filterRegions, quiz, quizAnswers, quizGuesses,
-      geographyPaths, activeQuestionNum, selectedProperties,
+      geographyPaths, activeQuestionNum, selectedProperties, time,
     } = this.state;
+
+    if (quizGuesses.length === quizAnswers.length) {
+      clearInterval(this.timer);
+    }
 
     return (
       <div className="App">
@@ -288,7 +299,11 @@ class App extends Component {
           <RegionButtons regionFunc={this.handleRegionSelect} />
         </div>
 
-        { this.statusBar() }
+        <StatusBar
+          status={{
+            quiz, quizGuesses, quizAnswers, time,
+          }}
+        />
 
         <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
 
