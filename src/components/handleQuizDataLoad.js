@@ -23,27 +23,46 @@ function handleQuizState(quizType) {
 
 function handleQuizDataLoad(quizType) {
   const { currentMap, filterRegions } = this.state;
-  const url = 'https://restcountries.eu/rest/v2/';
-  let formFields = '?fields=alpha3Code;';
-  let regionLink;
+  const home = 'https://restcountries.eu/rest/v2/';
+  const formFields = '?fields=alpha3Code;';
+  const urls = [];
 
-  if (['Africa', 'Europe', 'Asia', 'Oceania'].includes(currentMap)) {
-    regionLink = `region/${currentMap}`;
+  if (['Africa', 'Europe', 'Oceania'].includes(currentMap)) {
+    urls.push(`${home}region/${currentMap}`);
+  } else if (currentMap === 'Asia') {
+    urls.push(`${home}region/${currentMap}`);
+    urls.push(`${home}alpha/rus`);
+  } else if (['South America', 'Caribbean'].includes(currentMap)) {
+    urls.push(`${home}subregion/${currentMap}`);
   } else {
-    regionLink = `subregion/${currentMap}`;
+    urls.push(`${home}subregion/Central America`);
+    urls.push(`${home}alpha/can`);
+    urls.push(`${home}alpha/usa`);
   }
 
-  if (quizType === 'type_name') {
-    formFields += 'altSpellings;translations';
-  } else if (quizType.split('_')[1] === 'capital') {
-    formFields += 'capital';
-  } else if (quizType === 'click_flag') {
-    formFields += 'flag';
-  }
+  urls.map((url) => {
+    switch (quizType.split('_')[1]) {
+      case 'name':
+        return `${url}${formFields}altSpellings;translations`;
+      case 'capital':
+        return `${url}${formFields}capital`;
+      case 'flag':
+        return `${url}${formFields}flag`;
+      default:
+        console.log('Invalid input ', quizType.split('_')[1]);
+        return null;
+    }
+  });
 
-  regionLink = url + regionLink + formFields;
-  fetch(regionLink)
-    .then(restCountry => restCountry.json())
+  Promise.all(urls.map(url => fetch(url).then(restCountry => restCountry.json())))
+    .then(data => data
+      .reduce((array, a) => {
+        if (Array.isArray(a)) {
+          return array.concat(a);
+        }
+        array.push(a);
+        return array;
+      }, []))
     .then((restCountryData) => {
       this.setState((prevState) => {
         const newFetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])];
