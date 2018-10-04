@@ -14,7 +14,10 @@ import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox';
 import handleAnswer from './components/handleAnswer';
 import handleInfoTabLoad from './components/handleInfoTabLoad';
-import handleQuizDataLoad from './components/handleQuizDataLoad';
+import {
+  handleQuizDataLoad,
+  handleQuizState,
+} from './components/handleQuizDataLoad';
 import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
 import {
@@ -80,6 +83,7 @@ class App extends Component {
     this.handleReset = this.handleReset.bind(this);
     this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
     this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
+    this.handleQuizState = handleQuizState.bind(this);
     this.handleCountryClick = handleCountryClick.bind(this);
     this.handleRegionSelect = this.handleRegionSelect.bind(this);
     this.handleQuiz = this.handleQuiz.bind(this);
@@ -221,79 +225,12 @@ class App extends Component {
   }
 
   handleQuiz(quizType) {
-    const { currentMap, filterRegions, fetchRequests } = this.state;
+    const { currentMap, fetchRequests } = this.state;
     if ((quizType === 'click_name')
       || fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))) {
-      this.handleQuizDataLoad(quizType);
+      this.handleQuizState(quizType);
     } else {
-      const url = 'https://restcountries.eu/rest/v2/';
-      let formFields = '?fields=alpha3Code;';
-      let regionLink;
-
-      if (['Africa', 'Europe', 'Asia', 'Oceania'].includes(currentMap)) {
-        regionLink = `region/${currentMap}`;
-      } else {
-        regionLink = `subregion/${currentMap}`;
-      }
-
-      if (quizType === 'type_name') {
-        formFields += 'altSpellings;translations';
-      } else if (quizType.split('_')[1] === 'capital') {
-        formFields += 'capital';
-      } else if (quizType === 'click_flag') {
-        formFields += 'flag';
-      }
-
-      regionLink = url + regionLink + formFields;
-      fetch(regionLink)
-        .then(restCountry => restCountry.json())
-        .then((restCountryData) => {
-          this.setState((prevState) => {
-            const newFetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])];
-            const geographyPaths = prevState.geographyPaths
-              .map((geography) => {
-                if (filterRegions.includes(geography.properties.alpha3Code)) {
-                  const newGeo = Object.assign({}, geography);
-                  if ((quizType.split('_')[1] === 'capital' && !geography.properties.capital)
-                    || (quizType === 'click_flag' && !geography.properties.flag)) {
-                    newGeo.properties[quizType.split('_')[1]] = restCountryData
-                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]];
-                  } else if (quizType === 'type_name') {
-                    const { translations, altSpellings } = restCountryData
-                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code);
-                    altSpellings.shift();
-                    if (geography.properties.altSpellings) {
-                      altSpellings.push(geography.properties.altSpellings[0]);
-                    }
-                    newGeo.properties.spellings = [
-                      ...new Set([
-                        geography.properties.name,
-                        ...altSpellings,
-                        ...Object.values(translations).filter(x => x),
-                      ]),
-                    ];
-                  }
-                  return newGeo;
-                }
-                return geography;
-              });
-
-            if (quizType.split('_')[1] === 'capital') {
-              const capitalMarkers = prevState.capitalMarkers
-                .map((marker) => {
-                  if (filterRegions.includes(marker.alpha3Code)) {
-                    const newMark = Object.assign({}, marker);
-                    newMark.name = restCountryData
-                      .find(obj => obj.alpha3Code === marker.alpha3Code).capital;
-                    return newMark;
-                  }
-                  return marker;
-                });
-              return { geographyPaths, capitalMarkers, newFetchRequests };
-            }
-            return { geographyPaths, newFetchRequests };
-          }, () => { this.handleQuizDataLoad(quizType); });
-        });
+      this.handleQuizDataLoad(quizType);
     }
   }
 
