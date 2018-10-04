@@ -142,6 +142,10 @@ class App extends Component {
                     geography.properties.regionOf = countryData.regionOf;
                   }
 
+                  if (countryData.altSpellings) {
+                    geography.properties.altSpellings = countryData.altSpellings;
+                  }
+
                   const captemp = capitalData
                     .find(capital => capital.CountryCode === countryData.alpha2Code);
                   if (captemp) {
@@ -254,11 +258,13 @@ class App extends Component {
                     || (quizType === 'click_flag' && !geography.properties.flag)) {
                     newGeo.properties[quizType.split('_')[1]] = restCountryData
                       .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]];
-                    console.log(newGeo);
                   } else if (quizType === 'type_name') {
                     const { translations, altSpellings } = restCountryData
                       .find(obj => obj.alpha3Code === geography.properties.alpha3Code);
                     altSpellings.shift();
+                    if (geography.properties.altSpellings) {
+                      altSpellings.push(geography.properties.altSpellings[0]);
+                    }
                     newGeo.properties.spellings = [
                       ...new Set([
                         geography.properties.name,
@@ -266,7 +272,6 @@ class App extends Component {
                         ...Object.values(translations).filter(x => x),
                       ]),
                     ];
-                    console.log(newGeo.properties.spellings);
                   }
                   return newGeo;
                 }
