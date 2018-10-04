@@ -5,19 +5,19 @@ const DataFix = (geoPath, data, capitalMarkers) => {
   const capitalMarkersData = capitalMarkers;
 
   // Add missing country variants
-  countryData.find(x => x.alpha3Code === 'COG').altSpellings = [ 'Republic of the Congo' ];
-  countryData.find(x => x.alpha3Code === 'COD').altSpellings = [ 'Democratic Republic of the Congo' ];
-  countryData.find(x => x.alpha3Code === 'GBR').altSpellings = [ 'Britain' ];
-  countryData.find(x => x.alpha3Code === 'MAF').altSpellings = [ 'St Martin' ];
-  countryData.find(x => x.alpha3Code === 'SXM').altSpellings = [ 'Sint Maarten' ];
-  countryData.find(x => x.alpha3Code === 'VGB').altSpellings = [ 'British Virgin Islands' ];
-  countryData.find(x => x.alpha3Code === 'VIR').altSpellings = [ 'US Virgin Islands' ];
+  countryData.find(x => x.alpha3Code === 'COG').altSpellings = ['Republic of the Congo'];
+  countryData.find(x => x.alpha3Code === 'COD').altSpellings = ['Democratic Republic of the Congo'];
+  countryData.find(x => x.alpha3Code === 'GBR').altSpellings = ['Britain'];
+  countryData.find(x => x.alpha3Code === 'MAF').altSpellings = ['St Martin'];
+  countryData.find(x => x.alpha3Code === 'SXM').altSpellings = ['Sint Maarten'];
+  countryData.find(x => x.alpha3Code === 'VGB').altSpellings = ['British Virgin Islands'];
+  countryData.find(x => x.alpha3Code === 'VIR').altSpellings = ['US Virgin Islands'];
 
   // Change display name of country to shorter variant
   ['VEN', 'BOL', 'GBR', 'MDA', 'MKD', 'PSE', 'SYR', 'IRN', 'PRK', 'KOR', 'LAO', 'BRN', 'COD', 'TZA', 'FSM', 'BLM', 'KNA', 'LCA', 'MAF', 'SHN', 'SPM', 'VCT', 'KOS']
     .forEach((code) => {
       const country = countryData.find(x => x.alpha3Code === code);
-      if(country.altSpellings) {
+      if (country.altSpellings) {
         country.altSpellings.push(country.name);
       } else {
         country.altSpellings = [country.name];
@@ -200,7 +200,7 @@ const CountryMarkersFix = (centroids) => {
 
   centroidsData.find(x => x.alpha3Code === 'WLF').markerOffset = -10;
   centroidsData.find(x => x.alpha3Code === 'ASM').markerOffset = 10;
-}
+};
 
 const CapitalMarkersFix = (capitalMarkers) => {
   const capitalMarkersData = capitalMarkers;

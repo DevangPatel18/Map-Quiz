@@ -115,69 +115,67 @@ class App extends Component {
         }
         response.json().then((worldData) => {
           fetch('https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area')
-            .then(restCountries => {
+            .then((restCountries) => {
               if (restCountries.status !== 200) {
                 console.log(`There was a problem: ${restCountries.status}`);
                 return;
               }
-              restCountries.json().then(restData => {
+              restCountries.json().then((restData) => {
+                let data = feature(worldData, worldData.objects.countries).features;
+                let countryMarkers = [];
+                const capitalMarkers = [];
 
-          let data = feature(worldData, worldData.objects.countries).features;
-          let countryMarkers = [];
-          const capitalMarkers = [];
+                // Remove Antarctica and invalid iso codes
+                data = data.filter(x => (+x.id !== 10 ? 1 : 0));
 
-          // Remove Antarctica and invalid iso codes
-          data = data.filter(x => (+x.id !== 10 ? 1 : 0));
+                const essentialData = ['name', 'capital', 'alpha3Code', 'alpha2Code', 'area'];
 
-          const essentialData = ['name', 'capital', 'alpha3Code', 'alpha2Code', 'area'];
+                DataFix(data, restData, capitalMarkers);
 
-          DataFix(data, restData, capitalMarkers);
+                data.filter(x => ((+x.id !== -99) ? 1 : 0)).forEach((x) => {
+                  const geography = x;
+                  const countryData = restData.find(c => +c.numericCode === +geography.id);
 
-          data.filter(x => ((+x.id !== -99) ? 1 : 0)).forEach((x) => {
-            const geography = x;
-            const countryData = restData.find(c => +c.numericCode === +geography.id);
+                  essentialData.forEach((key) => { geography.properties[key] = countryData[key]; });
 
-            essentialData.forEach((key) => { geography.properties[key] = countryData[key]; });
+                  if (countryData.regionOf) {
+                    geography.properties.regionOf = countryData.regionOf;
+                  }
 
-            if (countryData.regionOf) {
-              geography.properties.regionOf = countryData.regionOf;
-            }
+                  const captemp = capitalData
+                    .find(capital => capital.CountryCode === countryData.alpha2Code);
+                  if (captemp) {
+                    const capitalCoords = [+captemp.CapitalLongitude, +captemp.CapitalLatitude];
 
-            const captemp = capitalData
-              .find(capital => capital.CountryCode === countryData.alpha2Code);
-            if (captemp) {
-              const capitalCoords = [+captemp.CapitalLongitude, +captemp.CapitalLatitude];
+                    capitalMarkers.push({
+                      name: countryData.capital,
+                      alpha3Code: countryData.alpha3Code,
+                      coordinates: capitalCoords,
+                      markerOffset: -7,
+                    });
+                  }
+                });
 
-              capitalMarkers.push({
-                name: countryData.capital,
-                alpha3Code: countryData.alpha3Code,
-                coordinates: capitalCoords,
-                markerOffset: -7,
+                SeparateRegions(data);
+
+                data.forEach((x) => {
+                  const { alpha3Code } = x.properties;
+                  const path = geoPath().projection(this.projection());
+                  countryMarkers.push([this.projection().invert(path.centroid(x)), alpha3Code]);
+                });
+
+                countryMarkers = countryMarkers.map(array => ({
+                  name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
+                  alpha3Code: array[1],
+                  coordinates: array[0],
+                  markerOffset: 0,
+                }));
+                CountryMarkersFix(countryMarkers);
+                CapitalMarkersFix(capitalMarkers);
+
+                this.setState({ geographyPaths: data, countryMarkers, capitalMarkers });
               });
-            }
-          });
-
-          SeparateRegions(data);
-
-          data.forEach((x) => {
-            const { alpha3Code } = x.properties;
-            const path = geoPath().projection(this.projection());
-            countryMarkers.push([this.projection().invert(path.centroid(x)), alpha3Code]);
-          });
-
-          countryMarkers = countryMarkers.map(array => ({
-            name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
-            alpha3Code: array[1],
-            coordinates: array[0],
-            markerOffset: 0,
-          }));
-          CountryMarkersFix(countryMarkers);
-          CapitalMarkersFix(capitalMarkers);
-
-          this.setState({ geographyPaths: data, countryMarkers, capitalMarkers });
-
-              })
-            })
+            });
         });
       });
   }
@@ -219,78 +217,79 @@ class App extends Component {
   }
 
   handleQuiz(quizType) {
-    const { currentMap, filterRegions, fetchRequests } = this.state
-    if ((quizType === 'click_name') ||
-      fetchRequests.includes( currentMap.concat(quizType.split('_')[1]) )) {
-      this.handleQuizDataLoad(quizType)
+    const { currentMap, filterRegions, fetchRequests } = this.state;
+    if ((quizType === 'click_name')
+      || fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))) {
+      this.handleQuizDataLoad(quizType);
     } else {
+      const url = 'https://restcountries.eu/rest/v2/';
+      let formFields = '?fields=alpha3Code;';
+      let regionLink;
 
-    const url = 'https://restcountries.eu/rest/v2/';
-    let formFields = '?fields=alpha3Code;';
-    let regionLink;
-    
-    if (['Africa', 'Europe', 'Asia', 'Oceania'].includes(currentMap)) {
-      regionLink = `region/${currentMap}`;
-    } else {
-      regionLink = `subregion/${currentMap}`;
-    }
+      if (['Africa', 'Europe', 'Asia', 'Oceania'].includes(currentMap)) {
+        regionLink = `region/${currentMap}`;
+      } else {
+        regionLink = `subregion/${currentMap}`;
+      }
 
-    if (quizType === 'type_name') {
-      formFields += 'altSpellings;translations'
-    } else if (quizType.split('_')[1] === 'capital') {
-      formFields += 'capital'
-    } else if (quizType === 'click_flag') {
-      formFields += 'flag'
-    }
+      if (quizType === 'type_name') {
+        formFields += 'altSpellings;translations';
+      } else if (quizType.split('_')[1] === 'capital') {
+        formFields += 'capital';
+      } else if (quizType === 'click_flag') {
+        formFields += 'flag';
+      }
 
-    regionLink = url + regionLink + formFields
-    fetch(regionLink)
-      .then(restCountry => restCountry.json())
-      .then((restCountryData) => {
-        this.setState(prevState => {
-          const fetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])]
-          const geographyPaths = prevState.geographyPaths
-            .map(geography => {
-              if (filterRegions.includes(geography.properties.alpha3Code)) {
-                const newGeo = Object.assign({}, geography)
-                if ((quizType.split('_')[1] === 'capital' && !geography.properties.capital) ||
-                    (quizType === 'click_flag' && !geography.properties.flag)) {
-                  newGeo.properties[quizType.split('_')[1]] = restCountryData
-                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]]
-                      console.log(newGeo);
-                } else if (quizType === 'type_name') {
-                  const { translations, altSpellings } = restCountryData.find(obj => obj.alpha3Code === geography.properties.alpha3Code);
-                  altSpellings.shift();
-                  newGeo.properties.spellings = [
-                    ...new Set([
-                      geography.properties.name,
-                      ...altSpellings,
-                      ...Object.values(translations).filter(x => x),
-                    ])
-                  ]
+      regionLink = url + regionLink + formFields;
+      fetch(regionLink)
+        .then(restCountry => restCountry.json())
+        .then((restCountryData) => {
+          this.setState((prevState) => {
+            const newFetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])];
+            const geographyPaths = prevState.geographyPaths
+              .map((geography) => {
+                if (filterRegions.includes(geography.properties.alpha3Code)) {
+                  const newGeo = Object.assign({}, geography);
+                  if ((quizType.split('_')[1] === 'capital' && !geography.properties.capital)
+                    || (quizType === 'click_flag' && !geography.properties.flag)) {
+                    newGeo.properties[quizType.split('_')[1]] = restCountryData
+                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]];
+                    console.log(newGeo);
+                  } else if (quizType === 'type_name') {
+                    const { translations, altSpellings } = restCountryData
+                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code);
+                    altSpellings.shift();
+                    newGeo.properties.spellings = [
+                      ...new Set([
+                        geography.properties.name,
+                        ...altSpellings,
+                        ...Object.values(translations).filter(x => x),
+                      ]),
+                    ];
+                    console.log(newGeo.properties.spellings);
+                  }
+                  return newGeo;
                 }
-                return newGeo
-              }
-              return geography
-            })
+                return geography;
+              });
 
-          if(quizType.split('_')[1] === 'capital') {
-            const capitalMarkers = prevState.capitalMarkers
-              .map(marker => {
-                if (filterRegions.includes(marker.alpha3Code)) {
-                const newMark = Object.assign({}, marker)
-                newMark.name = restCountryData.find(obj => obj.alpha3Code === marker.alpha3Code).capital
-                return newMark                  
-                }
-                return marker
-              })
-            return { geographyPaths, capitalMarkers, fetchRequests }
-          }
-          return { geographyPaths, fetchRequests }
-        }, () => { this.handleQuizDataLoad(quizType)})
-      });
+            if (quizType.split('_')[1] === 'capital') {
+              const capitalMarkers = prevState.capitalMarkers
+                .map((marker) => {
+                  if (filterRegions.includes(marker.alpha3Code)) {
+                    const newMark = Object.assign({}, marker);
+                    newMark.name = restCountryData
+                      .find(obj => obj.alpha3Code === marker.alpha3Code).capital;
+                    return newMark;
+                  }
+                  return marker;
+                });
+              return { geographyPaths, capitalMarkers, newFetchRequests };
+            }
+            return { geographyPaths, newFetchRequests };
+          }, () => { this.handleQuizDataLoad(quizType); });
+        });
     }
-
   }
 
   handleQuizClose() {
@@ -367,7 +366,7 @@ class App extends Component {
         <InfoTab
           country={selectedProperties}
           geoPaths={geographyPaths}
-          loadData={ (geo) => { this.handleInfoTabLoad(geo); }}
+          loadData={(geo) => { this.handleInfoTabLoad(geo); }}
         />
 
         <div {...WheelReact.events}>
