@@ -26,7 +26,7 @@ const Map = ({ appthis }) => {
     currentMap,
   } = appthis.state;
 
-  const rotation = currentMap === 'oceania' ? [170, 0, 0] : [-10, 0, 0];
+  const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
     <Motion
       defaultStyle={{
@@ -64,7 +64,7 @@ const Map = ({ appthis }) => {
                 {(geographies, projection) => geographies.map((geography, i) => {
                   const [defaultColor, hoverColor, render] = ColorPicker(appthis.state, geography);
                   let key; let cacheId;
-                  if (currentMap === 'oceania') {
+                  if (currentMap === 'Oceania') {
                     key = `oceania-${i}`;
                     cacheId = `oceania-${i}`;
                   } else {

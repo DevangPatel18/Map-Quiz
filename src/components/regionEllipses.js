@@ -10,10 +10,10 @@ export default function regionEllipses() {
   } = this.state;
   let minArea;
   switch (currentMap) {
-    case 'carrib':
+    case 'Caribbean':
       minArea = 2000;
       break;
-    case 'oceania':
+    case 'Oceania':
       minArea = 29000;
       break;
     default:
@@ -27,7 +27,7 @@ export default function regionEllipses() {
     .map((country) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
       const { alpha3Code } = country.properties;
-      if (currentMap === 'carrib') {
+      if (currentMap === 'Caribbean') {
         marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
         dx = 20;
         dy = -20;
@@ -58,7 +58,7 @@ export default function regionEllipses() {
         <Marker
           key={alpha3Code}
           marker={marker}
-          style={currentMap !== 'carrib' ? {
+          style={currentMap !== 'Caribbean' ? {
             default: {
               fill: defaultColor,
               transition: 'fill .5s',
@@ -73,7 +73,7 @@ export default function regionEllipses() {
             },
           } : ''}
         >
-          {currentMap === 'carrib' ? (
+          {currentMap === 'Caribbean' ? (
             <line
               x1="0"
               y1="0"
@@ -83,7 +83,7 @@ export default function regionEllipses() {
               strokeWidth={0.3}
             />
           ) : ''}
-          {currentMap === 'carrib' ? (
+          {currentMap === 'Caribbean' ? (
             <circle
               cx={dx / 2}
               cy={dy / 2}

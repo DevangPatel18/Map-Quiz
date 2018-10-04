@@ -8,7 +8,7 @@ export default function handleCountryClick(geo) {
         activeQuestionNum: this.state.activeQuestionNum + 1,
       });
     } else {
-      const selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : '';
+      const selectedProperties = this.state.selectedProperties.name !== geo.properties.name ? geo.properties : '';
       this.handleMapRefresh({ selectedProperties });
     }
   }

@@ -5,7 +5,6 @@ import WheelReact from 'wheel-react';
 import { geoPath } from 'd3-geo';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
-import restCountries from './assets/country_data.json';
 import InfoTab from './components/infoTab';
 import {
   alpha3Codes,
@@ -14,11 +13,14 @@ import {
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox';
 import handleAnswer from './components/handleAnswer';
+import handleInfoTabLoad from './components/handleInfoTabLoad';
+import handleQuizDataLoad from './components/handleQuizDataLoad';
 import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
 import {
   DataFix,
-  MarkersFix,
+  CountryMarkersFix,
+  CapitalMarkersFix,
   SeparateRegions,
 } from './helpers/attributeFix';
 import capitalData from './assets/country_capitals';
@@ -53,6 +55,7 @@ class App extends Component {
       time: 0,
       countryMarkers: [],
       capitalMarkers: [],
+      fetchRequests: [],
     };
 
     WheelReact.config({
@@ -75,6 +78,8 @@ class App extends Component {
     this.projection = this.projection.bind(this);
     this.handleZoom = this.handleZoom.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
+    this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
     this.handleCountryClick = handleCountryClick.bind(this);
     this.handleRegionSelect = this.handleRegionSelect.bind(this);
     this.handleQuiz = this.handleQuiz.bind(this);
@@ -109,6 +114,14 @@ class App extends Component {
           return;
         }
         response.json().then((worldData) => {
+          fetch('https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area')
+            .then(restCountries => {
+              if (restCountries.status !== 200) {
+                console.log(`There was a problem: ${restCountries.status}`);
+                return;
+              }
+              restCountries.json().then(restData => {
+
           let data = feature(worldData, worldData.objects.countries).features;
           let countryMarkers = [];
           const capitalMarkers = [];
@@ -116,29 +129,19 @@ class App extends Component {
           // Remove Antarctica and invalid iso codes
           data = data.filter(x => (+x.id !== 10 ? 1 : 0));
 
-          const essentialData = ['name', 'capital', 'population', 'area', 'flag', 'alpha3Code', 'alpha2Code', 'region'];
+          const essentialData = ['name', 'capital', 'alpha3Code', 'alpha2Code', 'area'];
 
-          DataFix(data, restCountries, capitalMarkers);
+          DataFix(data, restData, capitalMarkers);
 
           data.filter(x => ((+x.id !== -99) ? 1 : 0)).forEach((x) => {
             const geography = x;
-            const countryData = restCountries.find(c => +c.numericCode === +geography.id);
+            const countryData = restData.find(c => +c.numericCode === +geography.id);
 
             essentialData.forEach((key) => { geography.properties[key] = countryData[key]; });
 
             if (countryData.regionOf) {
               geography.properties.regionOf = countryData.regionOf;
             }
-
-            countryData.altSpellings.shift();
-
-            geography.properties.spellings = [
-              ...new Set([
-                countryData.name,
-                ...countryData.altSpellings,
-                ...Object.values(countryData.translations).filter(translations => translations),
-              ]),
-            ];
 
             const captemp = capitalData
               .find(capital => capital.CountryCode === countryData.alpha2Code);
@@ -168,9 +171,13 @@ class App extends Component {
             coordinates: array[0],
             markerOffset: 0,
           }));
-          MarkersFix(countryMarkers, capitalMarkers);
+          CountryMarkersFix(countryMarkers);
+          CapitalMarkersFix(capitalMarkers);
 
           this.setState({ geographyPaths: data, countryMarkers, capitalMarkers });
+
+              })
+            })
         });
       });
   }
@@ -202,8 +209,8 @@ class App extends Component {
     const { center, zoom } = mapConfig[region];
     this.handleMapRefresh({
       zoom,
-      defaultZoom: zoom,
       center,
+      defaultZoom: zoom,
       defaultCenter: center,
       currentMap: region,
       filterRegions: alpha3Codes[region],
@@ -212,26 +219,78 @@ class App extends Component {
   }
 
   handleQuiz(quizType) {
-    const { filterRegions } = this.state;
-    const quizAnswers = [...filterRegions];
-    quizAnswers.reduce((dum1, dum2, i) => {
-      const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
-      [quizAnswers[i], quizAnswers[j]] = [quizAnswers[j], quizAnswers[i]];
-      return quizAnswers;
-    }, quizAnswers);
+    const { currentMap, filterRegions, fetchRequests } = this.state
+    if ((quizType === 'click_name') ||
+      fetchRequests.includes( currentMap.concat(quizType.split('_')[1]) )) {
+      this.handleQuizDataLoad(quizType)
+    } else {
 
-    this.handleMapRefresh({
-      quizAnswers,
-      quizType,
-      quiz: true,
-      activeQuestionNum: 0,
-      quizGuesses: [],
-      selectedProperties: '',
-      disableInfoClick: quizType.split('_')[0] === 'type',
-    });
+    const url = 'https://restcountries.eu/rest/v2/';
+    let formFields = '?fields=alpha3Code;';
+    let regionLink;
+    
+    if (['Africa', 'Europe', 'Asia', 'Oceania'].includes(currentMap)) {
+      regionLink = `region/${currentMap}`;
+    } else {
+      regionLink = `subregion/${currentMap}`;
+    }
 
-    const x = Date.now();
-    this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 100);
+    if (quizType === 'type_name') {
+      formFields += 'altSpellings;translations'
+    } else if (quizType.split('_')[1] === 'capital') {
+      formFields += 'capital'
+    } else if (quizType === 'click_flag') {
+      formFields += 'flag'
+    }
+
+    regionLink = url + regionLink + formFields
+    fetch(regionLink)
+      .then(restCountry => restCountry.json())
+      .then((restCountryData) => {
+        this.setState(prevState => {
+          const fetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])]
+          const geographyPaths = prevState.geographyPaths
+            .map(geography => {
+              if (filterRegions.includes(geography.properties.alpha3Code)) {
+                const newGeo = Object.assign({}, geography)
+                if ((quizType.split('_')[1] === 'capital' && !geography.properties.capital) ||
+                    (quizType === 'click_flag' && !geography.properties.flag)) {
+                  newGeo.properties[quizType.split('_')[1]] = restCountryData
+                      .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]]
+                      console.log(newGeo);
+                } else if (quizType === 'type_name') {
+                  const { translations, altSpellings } = restCountryData.find(obj => obj.alpha3Code === geography.properties.alpha3Code);
+                  altSpellings.shift();
+                  newGeo.properties.spellings = [
+                    ...new Set([
+                      geography.properties.name,
+                      ...altSpellings,
+                      ...Object.values(translations).filter(x => x),
+                    ])
+                  ]
+                }
+                return newGeo
+              }
+              return geography
+            })
+
+          if(quizType.split('_')[1] === 'capital') {
+            const capitalMarkers = prevState.capitalMarkers
+              .map(marker => {
+                if (filterRegions.includes(marker.alpha3Code)) {
+                const newMark = Object.assign({}, marker)
+                newMark.name = restCountryData.find(obj => obj.alpha3Code === marker.alpha3Code).capital
+                return newMark                  
+                }
+                return marker
+              })
+            return { geographyPaths, capitalMarkers, fetchRequests }
+          }
+          return { geographyPaths, fetchRequests }
+        }, () => { this.handleQuizDataLoad(quizType)})
+      });
+    }
+
   }
 
   handleQuizClose() {
@@ -305,7 +364,11 @@ class App extends Component {
           }}
         />
 
-        <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
+        <InfoTab
+          country={selectedProperties}
+          geoPaths={geographyPaths}
+          loadData={ (geo) => { this.handleInfoTabLoad(geo); }}
+        />
 
         <div {...WheelReact.events}>
           <Map appthis={this} />

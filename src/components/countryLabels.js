@@ -21,7 +21,7 @@ export default function countryLabels() {
       dx = 0;
       dy = marker ? marker.markerOffset : 0;
 
-      if (currentMap === 'carrib') {
+      if (currentMap === 'Caribbean') {
         if (tinyCarib.includes(alpha3Code)) {
           marker = testing !== 'capital' ? capitalMarkers.find(x => x.alpha3Code === alpha3Code) : marker;
           dx = 20;

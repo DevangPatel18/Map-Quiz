@@ -5,19 +5,23 @@ const DataFix = (geoPath, data, capitalMarkers) => {
   const capitalMarkersData = capitalMarkers;
 
   // Add missing country variants
-  countryData.find(x => x.alpha3Code === 'COG').altSpellings.push('Republic of the Congo');
-  countryData.find(x => x.alpha3Code === 'COD').altSpellings.push('Democratic Republic of the Congo');
-  countryData.find(x => x.alpha3Code === 'GBR').altSpellings.push('Britain');
-  countryData.find(x => x.alpha3Code === 'MAF').altSpellings.push('St Martin');
-  countryData.find(x => x.alpha3Code === 'SXM').altSpellings.push('Sint Maarten');
-  countryData.find(x => x.alpha3Code === 'VGB').altSpellings.push('British Virgin Islands');
-  countryData.find(x => x.alpha3Code === 'VIR').altSpellings.push('US Virgin Islands');
+  countryData.find(x => x.alpha3Code === 'COG').altSpellings = [ 'Republic of the Congo' ];
+  countryData.find(x => x.alpha3Code === 'COD').altSpellings = [ 'Democratic Republic of the Congo' ];
+  countryData.find(x => x.alpha3Code === 'GBR').altSpellings = [ 'Britain' ];
+  countryData.find(x => x.alpha3Code === 'MAF').altSpellings = [ 'St Martin' ];
+  countryData.find(x => x.alpha3Code === 'SXM').altSpellings = [ 'Sint Maarten' ];
+  countryData.find(x => x.alpha3Code === 'VGB').altSpellings = [ 'British Virgin Islands' ];
+  countryData.find(x => x.alpha3Code === 'VIR').altSpellings = [ 'US Virgin Islands' ];
 
   // Change display name of country to shorter variant
   ['VEN', 'BOL', 'GBR', 'MDA', 'MKD', 'PSE', 'SYR', 'IRN', 'PRK', 'KOR', 'LAO', 'BRN', 'COD', 'TZA', 'FSM', 'BLM', 'KNA', 'LCA', 'MAF', 'SHN', 'SPM', 'VCT', 'KOS']
     .forEach((code) => {
       const country = countryData.find(x => x.alpha3Code === code);
-      country.altSpellings.push(country.name);
+      if(country.altSpellings) {
+        country.altSpellings.push(country.name);
+      } else {
+        country.altSpellings = [country.name];
+      }
     });
 
   countryData.find(x => x.alpha3Code === 'VEN').name = 'Venezuela';
@@ -56,6 +60,7 @@ const DataFix = (geoPath, data, capitalMarkers) => {
   countryData.find(x => x.alpha3Code === 'SJM').area = 62049;
 
   countryData.find(x => x.alpha3Code === 'KOS').numericCode = 999;
+  countryData.find(x => x.alpha3Code === 'KOS').alpha2Code = 'KO';
 
   // Create geography paths for regions of France
   const france = geographyPath.find(x => x.id === '250');
@@ -102,7 +107,6 @@ const DataFix = (geoPath, data, capitalMarkers) => {
 
   // Add capitals for Overseas regions
   const extraCapitals = [
-    { name: 'Prishtina', alpha3Code: 'KOS', coordinates: [21.166191, 42.667542] },
     { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
     { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
     { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
@@ -137,9 +141,8 @@ const DataFix = (geoPath, data, capitalMarkers) => {
 };
 
 // Change positioning of country labels
-const MarkersFix = (centroids, capitalMarkers) => {
+const CountryMarkersFix = (centroids) => {
   const centroidsData = centroids;
-  const capitalMarkersData = capitalMarkers;
 
   centroidsData.find(x => x.alpha3Code === 'CAN').coordinates = [-100, 55];
   centroidsData.find(x => x.alpha3Code === 'USA').coordinates = [-100, 40];
@@ -197,6 +200,10 @@ const MarkersFix = (centroids, capitalMarkers) => {
 
   centroidsData.find(x => x.alpha3Code === 'WLF').markerOffset = -10;
   centroidsData.find(x => x.alpha3Code === 'ASM').markerOffset = 10;
+}
+
+const CapitalMarkersFix = (capitalMarkers) => {
+  const capitalMarkersData = capitalMarkers;
 
   capitalMarkersData.find(x => x.alpha3Code === 'GTM').markerOffset = 10;
   capitalMarkersData.find(x => x.alpha3Code === 'SLV').markerOffset = 12;
@@ -299,4 +306,4 @@ function SeparateRegions(data) {
   countryData.find(x => x.properties.alpha3Code === 'TKL').geometry.coordinates = coordsNZL;
 }
 
-export { DataFix, MarkersFix, SeparateRegions };
+export { DataFix, CountryMarkersFix, CapitalMarkersFix, SeparateRegions };

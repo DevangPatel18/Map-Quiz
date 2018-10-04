@@ -22,7 +22,7 @@ export default class CountrySearch extends Component {
         };
       })
       .filter(x => x !== null)
-      .filter(x => !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'xk'].includes(x.key))
+      .filter(x => !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(x.key))
       .sort((a, b) => (a.text > b.text ? 1 : -1));
 
     return (

@@ -6,7 +6,7 @@ const regions = [
   { text: 'World', value: 'World' },
   { text: 'North and Central America', value: 'North and Central America' },
   { text: 'South America', value: 'South America' },
-  { text: 'Carribean', value: 'Carribean' },
+  { text: 'Caribbean', value: 'Caribbean' },
   { text: 'Africa', value: 'Africa' },
   { text: 'Europe', value: 'Europe' },
   { text: 'Asia', value: 'Asia' },
@@ -24,12 +24,12 @@ const RegionButtons = props => (
         switch (e.target.innerText) {
           case 'World': props.regionFunc('world'); break;
           case 'North and Central America': props.regionFunc('naca'); break;
-          case 'South America': props.regionFunc('south'); break;
-          case 'Carribean': props.regionFunc('carrib'); break;
-          case 'Africa': props.regionFunc('africa'); break;
-          case 'Europe': props.regionFunc('europe'); break;
-          case 'Asia': props.regionFunc('asia'); break;
-          case 'Oceania': props.regionFunc('oceania'); break;
+          case 'South America': props.regionFunc('South America'); break;
+          case 'Caribbean': props.regionFunc('Caribbean'); break;
+          case 'Africa': props.regionFunc('Africa'); break;
+          case 'Europe': props.regionFunc('Europe'); break;
+          case 'Asia': props.regionFunc('Asia'); break;
+          case 'Oceania': props.regionFunc('Oceania'); break;
           default:
         }
       }}
