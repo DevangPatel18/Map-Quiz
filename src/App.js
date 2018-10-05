@@ -59,6 +59,7 @@ class App extends Component {
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
+      markerToggle: '',
     };
 
     WheelReact.config({
@@ -285,6 +286,7 @@ class App extends Component {
             quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
           }}
           handleAnswer={this.handleAnswer}
+          markerToggle={(marker) => { this.setState({ markerToggle: marker }); }}
         />
 
         <div

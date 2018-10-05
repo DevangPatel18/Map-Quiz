@@ -4,13 +4,24 @@ import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
 
 export default function countryLabels() {
   const {
-    quiz, quizGuesses, quizType, quizAnswers, countryMarkers, capitalMarkers, currentMap,
+    quiz, quizGuesses, quizType, quizAnswers, countryMarkers,
+    capitalMarkers, currentMap, markerToggle, filterRegions,
   } = this.state;
-  return quiz ? quizGuesses.map((gss, i) => {
-    const testing = quizType.split('_')[1];
-    const alpha3Code = quizAnswers[i];
+  let display = true;
+  let markerArray; let testing;
+  if (quiz) {
+    markerArray = quizAnswers;
+    testing = quizType.split('_')[1];
+  } else if (markerToggle !== '') {
+    markerArray = filterRegions;
+    testing = markerToggle;
+  } else {
+    display = false;
+  }
+  return display && markerArray.map((alpha3Code, i) => {
     let marker; let markerName; let textAnchor; let dx; let dy;
-    if (gss) {
+    const markerDisplay = quiz ? quizGuesses[i] : true;
+    if (markerDisplay) {
       if (testing === 'name' || testing === 'flag') {
         marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
       } else if (testing === 'capital') {
@@ -34,7 +45,7 @@ export default function countryLabels() {
         textAnchor = labelAnchors[alpha3Code];
       }
     }
-    return gss && (
+    return markerDisplay && (
       <Marker
         key={alpha3Code}
         marker={marker}
@@ -44,20 +55,18 @@ export default function countryLabels() {
           pressed: { fill: '#FF5722' },
         }}
       >
-        {testing === 'capital'
-          ? (
-            <circle
-              cx={0}
-              cy={0}
-              r={1}
-              className="dropFade"
-              style={{
-                stroke: '#FF5722',
-                strokeWidth: 3,
-                opacity: 0.9,
-              }}
-            />
-          ) : null
+        {(testing === 'capital') && (
+          <circle
+            cx={0}
+            cy={0}
+            r={1}
+            className="dropFade"
+            style={{
+              stroke: '#FF5722',
+              strokeWidth: 3,
+              opacity: 0.9,
+            }}
+          />)
         }
         <text
           textAnchor={textAnchor}
@@ -69,5 +78,5 @@ export default function countryLabels() {
         </text>
       </Marker>
     );
-  }) : null;
+  });
 }
