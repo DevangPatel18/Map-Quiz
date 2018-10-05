@@ -31,7 +31,8 @@ class QuizBox extends Component {
 
   handleLabelToggle(marker) {
     let { countryLabel, capitalLabel } = this.state;
-    const { markerToggle } = this.props;
+    const { markerToggle, loadData, quizData } = this.props;
+    const { fetchRequests, currentMap } = quizData;
     let parentMarker;
     if (marker === 'name') {
       countryLabel = !countryLabel;
@@ -43,7 +44,13 @@ class QuizBox extends Component {
       parentMarker = capitalLabel ? 'capital' : '';
     }
     this.setState({ countryLabel, capitalLabel },
-      () => { markerToggle(parentMarker); });
+      () => {
+        if (capitalLabel && (!fetchRequests.includes(`${currentMap}capital`))) {
+          loadData('click_capital', true);
+        } else {
+          markerToggle(parentMarker);
+        }
+      });
   }
 
   render() {

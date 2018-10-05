@@ -255,8 +255,8 @@ class App extends Component {
 
   render() {
     const {
-      filterRegions, quiz, quizAnswers, quizGuesses,
-      geographyPaths, activeQuestionNum, selectedProperties, time,
+      filterRegions, quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+      selectedProperties, time, fetchRequests, currentMap,
     } = this.state;
 
     if (quizGuesses.length === quizAnswers.length) {
@@ -283,10 +283,11 @@ class App extends Component {
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           closequiz={this.handleQuizClose}
           quizData={{
-            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap,
           }}
           handleAnswer={this.handleAnswer}
           markerToggle={(marker) => { this.setState({ markerToggle: marker }); }}
+          loadData={(...args) => { this.handleQuizDataLoad(...args); }}
         />
 
         <div

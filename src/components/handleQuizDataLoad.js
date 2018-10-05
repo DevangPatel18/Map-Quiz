@@ -21,8 +21,9 @@ function handleQuizState(quizType) {
   this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 100);
 }
 
-function handleQuizDataLoad(quizType) {
+function handleQuizDataLoad(quizType, capital = false) {
   const { currentMap, filterRegions } = this.state;
+  const testing = quizType.split('_')[1];
   const home = 'https://restcountries.eu/rest/v2/';
   const formFields = '?fields=alpha3Code;';
   const urls = [];
@@ -41,7 +42,7 @@ function handleQuizDataLoad(quizType) {
   }
 
   urls.map((url) => {
-    switch (quizType.split('_')[1]) {
+    switch (testing) {
       case 'name':
         return `${url}${formFields}altSpellings;translations`;
       case 'capital':
@@ -49,7 +50,7 @@ function handleQuizDataLoad(quizType) {
       case 'flag':
         return `${url}${formFields}flag`;
       default:
-        console.log('Invalid input ', quizType.split('_')[1]);
+        console.log('Invalid input ', testing);
         return null;
     }
   });
@@ -65,15 +66,15 @@ function handleQuizDataLoad(quizType) {
       }, []))
     .then((restCountryData) => {
       this.setState((prevState) => {
-        const newFetchRequests = [...prevState.fetchRequests, currentMap.concat(quizType.split('_')[1])];
+        const newFetchRequests = [...prevState.fetchRequests, currentMap.concat(testing)];
         const geographyPaths = prevState.geographyPaths
           .map((geography) => {
             if (filterRegions.includes(geography.properties.alpha3Code)) {
               const newGeo = Object.assign({}, geography);
-              if ((quizType.split('_')[1] === 'capital' && !geography.properties.capital)
+              if ((testing === 'capital' && !geography.properties.capital)
                 || (quizType === 'click_flag' && !geography.properties.flag)) {
-                newGeo.properties[quizType.split('_')[1]] = restCountryData
-                  .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[quizType.split('_')[1]];
+                newGeo.properties[testing] = restCountryData
+                  .find(obj => obj.alpha3Code === geography.properties.alpha3Code)[testing];
               } else if (quizType === 'type_name') {
                 const { translations, altSpellings } = restCountryData
                   .find(obj => obj.alpha3Code === geography.properties.alpha3Code);
@@ -94,7 +95,7 @@ function handleQuizDataLoad(quizType) {
             return geography;
           });
 
-        if (quizType.split('_')[1] === 'capital') {
+        if (testing === 'capital') {
           const capitalMarkers = prevState.capitalMarkers
             .map((marker) => {
               if (filterRegions.includes(marker.alpha3Code)) {
@@ -105,10 +106,16 @@ function handleQuizDataLoad(quizType) {
               }
               return marker;
             });
-          return { geographyPaths, capitalMarkers, newFetchRequests };
+          return { geographyPaths, capitalMarkers, fetchRequests: newFetchRequests };
         }
-        return { geographyPaths, newFetchRequests };
-      }, () => { this.handleQuizState(quizType); });
+        return { geographyPaths, fetchRequests: newFetchRequests };
+      }, () => {
+        if (capital) {
+          this.setState({ markerToggle: 'capital' });
+        } else {
+          this.handleQuizState(quizType);
+        }
+      });
     });
 }
 
