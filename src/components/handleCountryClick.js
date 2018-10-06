@@ -1,15 +1,19 @@
-export default function handleCountryClick(geo){
-  if(!this.state.disableInfoClick) {
-    if(this.state.activeQuestionNum === this.state.quizGuesses.length) {
-      let result = geo.properties["alpha3Code"] === this.state.quizAnswers[this.state.activeQuestionNum]
+export default function handleCountryClick(geo) {
+  const {
+    disableInfoClick, activeQuestionNum, quizGuesses, quizAnswers,
+  } = this.state;
+  if (!disableInfoClick) {
+    if (activeQuestionNum === quizGuesses.length) {
+      const result = geo.properties.alpha3Code === quizAnswers[activeQuestionNum];
+      const selectedProperties = result ? geo.properties : '';
       this.handleMapRefresh({
-        quizGuesses: [...this.state.quizGuesses, result],
-        selectedProperties: geo.properties,
-        activeQuestionNum: this.state.activeQuestionNum + 1,
-      })
+        selectedProperties,
+        quizGuesses: [...quizGuesses, result],
+        activeQuestionNum: activeQuestionNum + 1,
+      });
     } else {
-      let selectedProperties = this.state.selectedProperties !== geo.properties ? geo.properties : "";
-      this.handleMapRefresh({ selectedProperties })
+      const selectedProperties = this.state.selectedProperties.name !== geo.properties.name ? geo.properties : '';
+      this.handleMapRefresh({ selectedProperties });
     }
   }
 }
