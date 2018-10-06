@@ -1,6 +1,6 @@
 import React from 'react';
 import { Progress } from 'semantic-ui-react';
-import msToTime from '../helpers/msToTime';
+import msToTime from '../../helpers/msToTime';
 import './statusBar.css';
 
 const StatusBar = (props) => {

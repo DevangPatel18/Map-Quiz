@@ -1,36 +1,24 @@
 import React, { Component } from 'react';
-import './App.css';
-import { feature } from 'topojson-client';
 import WheelReact from 'wheel-react';
-import { geoPath } from 'd3-geo';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
-import InfoTab from './components/infoTab';
-import {
-  alpha3Codes,
-  mapConfig,
-} from './assets/regionAlpha3Codes';
+import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
-import QuizBox from './components/quizBox';
-import handleAnswer from './components/handleAnswer';
-import handleInfoTabLoad from './components/handleInfoTabLoad';
+import QuizBox from './components/quizBox/quizBox';
+import handleAnswer from './components/quizBox/handleAnswer';
+import handleInfoTabLoad from './components/infoTab/handleInfoTabLoad';
 import {
   handleQuizDataLoad,
   handleQuizState,
-} from './components/handleQuizDataLoad';
+} from './components/quizBox/handleQuizDataLoad';
 import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
-import {
-  DataFix,
-  CountryMarkersFix,
-  CapitalMarkersFix,
-  SeparateRegions,
-} from './helpers/attributeFix';
-import capitalData from './assets/country_capitals';
+import handleRegionSelect from './components/handleRegionSelect';
 import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
-import StatusBar from './components/statusBar';
+import StatusBar from './components/statusBar/statusBar';
+import loadPaths from './components/loadPaths';
 import Map from './Map';
 
 class App extends Component {
@@ -86,7 +74,7 @@ class App extends Component {
     this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
     this.handleQuizState = handleQuizState.bind(this);
     this.handleCountryClick = handleCountryClick.bind(this);
-    this.handleRegionSelect = this.handleRegionSelect.bind(this);
+    this.handleRegionSelect = handleRegionSelect.bind(this);
     this.handleQuiz = this.handleQuiz.bind(this);
     this.handleAnswer = handleAnswer.bind(this);
     this.handleQuizClose = this.handleQuizClose.bind(this);
@@ -94,6 +82,7 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
+    this.loadPaths = loadPaths.bind(this);
   }
 
   componentDidMount() {
@@ -109,84 +98,6 @@ class App extends Component {
     return geoTimes()
       .translate(dimensions.map(x => x / 2))
       .scale(scale);
-  }
-
-  loadPaths() {
-    fetch('/world-50m.json')
-      .then((response) => {
-        if (response.status !== 200) {
-          console.log(`There was a problem: ${response.status}`);
-          return;
-        }
-        response.json().then((worldData) => {
-          fetch('https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area')
-            .then((restCountries) => {
-              if (restCountries.status !== 200) {
-                console.log(`There was a problem: ${restCountries.status}`);
-                return;
-              }
-              restCountries.json().then((restData) => {
-                let data = feature(worldData, worldData.objects.countries).features;
-                let countryMarkers = [];
-                const capitalMarkers = [];
-
-                // Remove Antarctica and invalid iso codes
-                data = data.filter(x => (+x.id !== 10 ? 1 : 0));
-
-                const essentialData = ['name', 'capital', 'alpha3Code', 'alpha2Code', 'area'];
-
-                DataFix(data, restData, capitalMarkers);
-
-                data.filter(x => ((+x.id !== -99) ? 1 : 0)).forEach((x) => {
-                  const geography = x;
-                  const countryData = restData.find(c => +c.numericCode === +geography.id);
-
-                  essentialData.forEach((key) => { geography.properties[key] = countryData[key]; });
-
-                  if (countryData.regionOf) {
-                    geography.properties.regionOf = countryData.regionOf;
-                  }
-
-                  if (countryData.altSpellings) {
-                    geography.properties.altSpellings = countryData.altSpellings;
-                  }
-
-                  const captemp = capitalData
-                    .find(capital => capital.CountryCode === countryData.alpha2Code);
-                  if (captemp) {
-                    const capitalCoords = [+captemp.CapitalLongitude, +captemp.CapitalLatitude];
-
-                    capitalMarkers.push({
-                      name: countryData.capital,
-                      alpha3Code: countryData.alpha3Code,
-                      coordinates: capitalCoords,
-                      markerOffset: -7,
-                    });
-                  }
-                });
-
-                SeparateRegions(data);
-
-                data.forEach((x) => {
-                  const { alpha3Code } = x.properties;
-                  const path = geoPath().projection(this.projection());
-                  countryMarkers.push([this.projection().invert(path.centroid(x)), alpha3Code]);
-                });
-
-                countryMarkers = countryMarkers.map(array => ({
-                  name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
-                  alpha3Code: array[1],
-                  coordinates: array[0],
-                  markerOffset: 0,
-                }));
-                CountryMarkersFix(countryMarkers);
-                CapitalMarkersFix(capitalMarkers);
-
-                this.setState({ geographyPaths: data, countryMarkers, capitalMarkers });
-              });
-            });
-        });
-      });
   }
 
   handleZoom(x) {
@@ -210,20 +121,6 @@ class App extends Component {
 
   handleMoveEnd(newCenter) {
     // console.log("New center: ", newCenter)
-  }
-
-  handleRegionSelect(region) {
-    const { center, zoom } = mapConfig[region];
-    this.handleMapRefresh({
-      zoom,
-      center,
-      defaultZoom: zoom,
-      defaultCenter: center,
-      currentMap: region,
-      filterRegions: alpha3Codes[region],
-      selectedProperties: '',
-      markerToggle: '',
-    });
   }
 
   handleQuiz(quizType) {
