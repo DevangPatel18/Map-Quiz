@@ -222,6 +222,7 @@ class App extends Component {
       currentMap: region,
       filterRegions: alpha3Codes[region],
       selectedProperties: '',
+      markerToggle: '',
     });
   }
 
@@ -256,7 +257,7 @@ class App extends Component {
   render() {
     const {
       filterRegions, quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-      selectedProperties, time, fetchRequests, currentMap,
+      selectedProperties, time, fetchRequests, currentMap, markerToggle,
     } = this.state;
 
     if (quizGuesses.length === quizAnswers.length) {
@@ -283,10 +284,10 @@ class App extends Component {
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           closequiz={this.handleQuizClose}
           quizData={{
-            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap,
+            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap, markerToggle,
           }}
           handleAnswer={this.handleAnswer}
-          markerToggle={(marker) => { this.setState({ markerToggle: marker }); }}
+          setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
           loadData={(...args) => { this.handleQuizDataLoad(...args); }}
         />
 

@@ -17,8 +17,6 @@ class QuizBox extends Component {
         { label: 'Click Capital', value: 'click_capital' },
         { label: 'Type Capital', value: 'type_capital' },
         { label: 'Click Country from matching Flag', value: 'click_flag' }],
-      countryLabel: false,
-      capitalLabel: false,
     };
 
     this.handleQuizChange = this.handleQuizChange.bind(this);
@@ -30,36 +28,26 @@ class QuizBox extends Component {
   }
 
   handleLabelToggle(marker) {
-    let { countryLabel, capitalLabel } = this.state;
-    const { markerToggle, loadData, quizData } = this.props;
-    const { fetchRequests, currentMap } = quizData;
-    let parentMarker;
-    if (marker === 'name') {
-      countryLabel = !countryLabel;
-      capitalLabel = false;
-      parentMarker = countryLabel ? 'name' : '';
+    const { setToggle, loadData, quizData } = this.props;
+    const { fetchRequests, currentMap, markerToggle } = quizData;
+    const parentMarker = ((markerToggle === '') || (marker !== markerToggle)) ? marker:''
+    if ((parentMarker === 'capital') && (!fetchRequests.includes(`${currentMap}capital`))) {
+      loadData('click_capital', true);
     } else {
-      countryLabel = false;
-      capitalLabel = !capitalLabel;
-      parentMarker = capitalLabel ? 'capital' : '';
+      setToggle(parentMarker);
     }
-    this.setState({ countryLabel, capitalLabel },
-      () => {
-        if (capitalLabel && (!fetchRequests.includes(`${currentMap}capital`))) {
-          loadData('click_capital', true);
-        } else {
-          markerToggle(parentMarker);
-        }
-      });
   }
 
   render() {
     const {
-      quizType, quizOptions, countryLabel, capitalLabel,
+      quizType, quizOptions,
     } = this.state;
     const {
       visible, nonactive, handleQuiz, closequiz, quizData, handleAnswer,
     } = this.props;
+    const { markerToggle } = quizData;
+    const countryLabel = markerToggle === 'name';
+    const capitalLabel = markerToggle === 'capital';
 
     if (visible) {
       if (nonactive) {
