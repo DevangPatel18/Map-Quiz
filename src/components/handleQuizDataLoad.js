@@ -100,8 +100,8 @@ function handleQuizDataLoad(quizType, capital = false) {
             .map((marker) => {
               if (filterRegions.includes(marker.alpha3Code)) {
                 const newMark = Object.assign({}, marker);
-                newMark.name = restCountryData
-                  .find(obj => obj.alpha3Code === marker.alpha3Code).capital;
+                newMark.name = geographyPaths
+                  .find(obj => obj.properties.alpha3Code === marker.alpha3Code).properties.capital;
                 return newMark;
               }
               return marker;

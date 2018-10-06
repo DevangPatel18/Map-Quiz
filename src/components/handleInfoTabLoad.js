@@ -7,7 +7,11 @@ export default function handleInfoTabLoad(geo) {
       const newPaths = this.state.geographyPaths.map((geography) => {
         if (geography.properties.alpha3Code === alpha3Code) {
           newGeo = Object.assign({}, geography);
-          newGeo.properties = { ...newGeo.properties, ...restCountryData };
+          Object.keys(restCountryData).forEach((property) => {
+            if (!newGeo.properties[property]) {
+              newGeo.properties[property] = restCountryData[property];
+            }
+          });
           return newGeo;
         }
         return geography;

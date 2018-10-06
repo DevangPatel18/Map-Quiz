@@ -14,7 +14,7 @@ const DataFix = (geoPath, data, capitalMarkers) => {
   countryData.find(x => x.alpha3Code === 'VIR').altSpellings = ['US Virgin Islands'];
 
   // Move original name to altSpellings
-  ['VEN', 'BOL', 'GBR', 'MDA', 'MKD', 'PSE', 'SYR', 'IRN', 'PRK', 'KOR', 'LAO', 'BRN', 'COD', 'TZA', 'FSM', 'BLM', 'KNA', 'LCA', 'MAF', 'SHN', 'SPM', 'VCT', 'KOS']
+  ['VEN', 'BOL', 'GBR', 'MDA', 'MKD', 'PSE', 'SYR', 'IRN', 'PRK', 'KOR', 'LAO', 'BRN', 'COD', 'TZA', 'FSM', 'BLM', 'KNA', 'LCA', 'MAF', 'SHN', 'SPM', 'VCT', 'KOS', 'VAT']
     .forEach((code) => {
       const country = countryData.find(x => x.alpha3Code === code);
       if (country.altSpellings) {
@@ -62,6 +62,9 @@ const DataFix = (geoPath, data, capitalMarkers) => {
     // Set numericCode and alpha2Code for Kosovo
     { alpha: 'KOS', attribute: 'numericCode', value: 999 },
     { alpha: 'KOS', attribute: 'alpha2Code', value: 'KO' },
+    // Resolve Holy See capital name conflict with Italy, and change name to common designation
+    { alpha: 'VAT', attribute: 'capital', value: 'Vatican City' },
+    { alpha: 'VAT', attribute: 'name', value: 'Vatican City' },
   ];
 
   dataCorrections.forEach((obj) => {
