@@ -5,9 +5,10 @@ export default function handleCountryClick(geo) {
   if (!disableInfoClick) {
     if (activeQuestionNum === quizGuesses.length) {
       const result = geo.properties.alpha3Code === quizAnswers[activeQuestionNum];
+      const selectedProperties = result ? geo.properties : '';
       this.handleMapRefresh({
+        selectedProperties,
         quizGuesses: [...quizGuesses, result],
-        selectedProperties: geo.properties,
         activeQuestionNum: activeQuestionNum + 1,
       });
     } else {
