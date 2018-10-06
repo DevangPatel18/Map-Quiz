@@ -53,7 +53,7 @@ export default function regionEllipses() {
         heightMain *= zoom;
         rotate = `rotate(${angleMain})`;
       }
-      const [defaultColor, hoverColor] = ColorPicker(this.state, country);
+      const { defaultColor, hoverColor, pressedColor } = ColorPicker(this.state, country);
       return (
         <Marker
           key={alpha3Code}
@@ -68,7 +68,7 @@ export default function regionEllipses() {
               transition: 'fill .5s',
             },
             pressed: {
-              fill: 'rgb(105, 105, 105)',
+              fill: pressedColor,
               transition: 'fill .5s',
             },
           } : ''}

@@ -62,7 +62,7 @@ const Map = ({ appthis }) => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const [defaultColor, hoverColor, render] = ColorPicker(appthis.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(appthis.state, geography);
                   let key; let cacheId;
                   if (currentMap === 'Oceania') {
                     key = `oceania-${i}`;
@@ -91,7 +91,7 @@ const Map = ({ appthis }) => {
                           transition: 'fill .5s',
                         },
                         pressed: {
-                          fill: 'rgb(105, 105, 105)',
+                          fill: pressedColor,
                           transition: 'fill .5s',
                         },
                       }}
