@@ -1,5 +1,9 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
+import removeDiacritics from '../../helpers/removeDiacritics';
+
+const simple = (str) => removeDiacritics(str.toLowerCase())
+  .replace(/\u002D/g, ' ').replace(/[^\w\s]/g, '');
 
 export default function handleAnswer(userGuess = null) {
   const {
@@ -15,9 +19,9 @@ export default function handleAnswer(userGuess = null) {
 
     if (quizType.split('_')[1] === 'name') {
       result = answerProperties.spellings
-        .some(name => userGuess.toLowerCase() === name.toLowerCase());
+        .some(name => simple(userGuess) === simple(name))
     } else {
-      result = userGuess.toLowerCase() === answerProperties.capital.toLowerCase();
+      result = simple(userGuess) === simple(answerProperties.capital);
     }
 
     const selectedProperties = result ? answerProperties : '';
