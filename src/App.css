@@ -64,6 +64,11 @@ footer {
   width: 220px;
 }
 
+.App .ui.fluid.selection .default.text {
+  color: black;
+  font-weight: bolder;
+}
+
 .countrySearch {
   position: relative;
   top: 1em;
