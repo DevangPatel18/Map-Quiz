@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Button, Form, Radio, Icon,
 } from 'semantic-ui-react';
+import { isMobile } from 'react-device-detect';
 import QuestionBox from './questionInputBox';
 import './quizBox.css';
 
@@ -48,13 +49,15 @@ class QuizBox extends Component {
     const { markerToggle } = quizData;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
+    const fontSize = isMobile ? 5 : 16;
+    const formSize = isMobile ? 'mini' : 'small';
 
     if (visible) {
       if (nonactive) {
         return (
-          <div className="App-quiz">
-            <Button onClick={() => { handleQuiz(quizType); }}>START QUIZ</Button>
-            <Form>
+          <div className="App-quiz" style={{ fontSize: `${fontSize}px` }}>
+            <Button size={formSize} onClick={() => { handleQuiz(quizType); }}>START QUIZ</Button>
+            <Form size={formSize}>
               {
                 quizOptions.map(form => (
                   <Form.Field key={form.value}>
@@ -70,8 +73,8 @@ class QuizBox extends Component {
               }
             </Form>
             <div className="App-quiz-toggle">
-              <p>TOGGLE LABEL</p>
-              <Button.Group size="tiny">
+              <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
+              <Button.Group size={formSize} compact>
                 <Button toggle active={countryLabel} onClick={() => this.handleLabelToggle('name')}>
                   {'Country'}
                 </Button>

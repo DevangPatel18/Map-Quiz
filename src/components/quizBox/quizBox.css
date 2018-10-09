@@ -1,11 +1,11 @@
 .App-quiz {
   position: absolute;
-  top: 7em;
-  right: 1em;
+  top: 98px;
+  right: 14px;
   padding: 1.7em;
   min-width: 100px;
   min-height: 130px;
-  border-radius: 3rem 0 3rem 3rem;
+  border-radius: 1rem 0 1rem 1rem;
   background: rgba(0,0,0, .5);
   display: flex;
   flex-direction: column;
@@ -31,24 +31,44 @@
 }
 
 .App-quiz-toggle {
-  padding-top: 1em;
   margin-top: 1em;
   border-top: 1px solid white;
+}
+
+.App-quiz-toggle-header {
+  font-size: 1rem;
+  padding: .7em;
 }
 
 .ui.tiny.button.App-quiz-close .close.large.fitted.icon {
   line-height: .85;
 }
 
-.ui.radio.checkbox label,
-.ui.radio.checkbox label:hover,
-.ui.radio.checkbox.checked label {
+.ui.small.form .ui.radio.checkbox label,
+.ui.small.form .ui.radio.checkbox label:hover,
+.ui.small.form .ui.radio.checkbox.checked label {
   color: white;
   font-size: 1.1em;
 }
 
-.ui.form {
+.ui.mini.form .ui.radio.checkbox label,
+.ui.mini.form .ui.radio.checkbox label:hover,
+.ui.mini.form .ui.radio.checkbox.checked label {
+  color: white;
+  font-size: .8em;
+}
+
+.ui.mini.form .field {
+  margin: 0.2em;
+}
+
+.ui.small.form {
   width: 160px;
+  text-align: left;
+}
+
+.ui.mini.form {
+  width: 130px;
   text-align: left;
 }
 
