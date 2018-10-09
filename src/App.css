@@ -82,6 +82,7 @@ footer {
   top: 4em;
   display: flex;
   flex-direction: column;
+  z-index: 4;
 }
 
 .dropDownSelections {

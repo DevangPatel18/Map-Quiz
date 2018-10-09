@@ -163,9 +163,11 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Map Quiz</h1>
-        </header>
+        {!quiz && (
+          <header className="App-header">
+            <h1 className="App-title">Map Quiz</h1>
+          </header>)
+        }
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
@@ -179,7 +181,6 @@ class App extends Component {
           visible={filterRegions.length !== 0}
           nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
-          closequiz={this.handleQuizClose}
           quizData={{
             quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap, markerToggle,
           }}
@@ -204,6 +205,7 @@ class App extends Component {
           status={{
             quiz, quizGuesses, quizAnswers, time,
           }}
+          closequiz={this.handleQuizClose}
         />
 
         <InfoTab

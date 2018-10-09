@@ -15,12 +15,6 @@
   color: white;
 }
 
-.App-quiz-close {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
 .App-quiz > .ui.button {
   margin-bottom: 1em;
 }

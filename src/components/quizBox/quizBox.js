@@ -87,9 +87,6 @@ class QuizBox extends Component {
       }
       return (
         <div className="App-quiz">
-          <Button size="tiny" className="App-quiz-close" onClick={closequiz}>
-            <Icon fitted size="large" name="close" />
-          </Button>
           <QuestionBox
             quizType={quizType}
             quizData={quizData}

@@ -26,10 +26,16 @@
   margin: 0;
 }
 
-.statusBar .ui.progress.statusBar-progress:first-child {
+.statusBar .ui.progress.statusBar-progress {
   margin: 0
 }
 
-.statusBar .ui.progress.statusBar-progress:first-child .bar {
+.statusBar .ui.progress.statusBar-progress .bar {
   transition-duration: 1s;
+}
+
+.statusBar-quiz-close {
+  position: absolute;
+  left: 1em;
+  top: 1em;
 }
