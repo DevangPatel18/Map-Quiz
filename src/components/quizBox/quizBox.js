@@ -6,19 +6,19 @@ import { isMobile } from 'react-device-detect';
 import QuestionBox from './questionInputBox';
 import './quizBox.css';
 
+const quizOptions = [
+  { label: 'Click Country', value: 'click_name' },
+  { label: 'Type Country', value: 'type_name' },
+  { label: 'Click Capital', value: 'click_capital' },
+  { label: 'Type Capital', value: 'type_capital' },
+  { label: 'Click Country from matching Flag', value: 'click_flag' }
+];
+
 class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = {
-      quizType: 'click_name',
-      quizOptions: [
-        { label: 'Click Country', value: 'click_name' },
-        { label: 'Type Country', value: 'type_name' },
-        { label: 'Click Capital', value: 'click_capital' },
-        { label: 'Type Capital', value: 'type_capital' },
-        { label: 'Click Country from matching Flag', value: 'click_flag' }],
-    };
+    this.state = { quizType: 'click_name' };
 
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
@@ -40,9 +40,7 @@ class QuizBox extends Component {
   }
 
   render() {
-    const {
-      quizType, quizOptions,
-    } = this.state;
+    const { quizType } = this.state;
     const {
       visible, nonactive, handleQuiz, closequiz, quizData, handleAnswer,
     } = this.props;
