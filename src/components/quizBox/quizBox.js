@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Button, Form, Radio, Icon,
-} from 'semantic-ui-react';
+import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import QuestionBox from './questionInputBox';
 import './quizBox.css';
@@ -11,7 +9,7 @@ const quizOptions = [
   { label: 'Type Country', value: 'type_name' },
   { label: 'Click Capital', value: 'click_capital' },
   { label: 'Type Capital', value: 'type_capital' },
-  { label: 'Click Country from matching Flag', value: 'click_flag' }
+  { label: 'Click Country from matching Flag', value: 'click_flag' },
 ];
 
 class QuizBox extends Component {
@@ -31,7 +29,7 @@ class QuizBox extends Component {
   handleLabelToggle(marker) {
     const { setToggle, loadData, quizData } = this.props;
     const { fetchRequests, currentMap, markerToggle } = quizData;
-    const parentMarker = ((markerToggle === '') || (marker !== markerToggle)) ? marker:''
+    const parentMarker = ((markerToggle === '') || (marker !== markerToggle)) ? marker : '';
     if ((parentMarker === 'capital') && (!fetchRequests.includes(`${currentMap}capital`))) {
       loadData('click_capital', true);
     } else {
@@ -42,7 +40,7 @@ class QuizBox extends Component {
   render() {
     const { quizType } = this.state;
     const {
-      visible, nonactive, handleQuiz, closequiz, quizData, handleAnswer,
+      visible, nonactive, handleQuiz, quizData, handleAnswer,
     } = this.props;
     const { markerToggle } = quizData;
     const countryLabel = markerToggle === 'name';
@@ -86,13 +84,11 @@ class QuizBox extends Component {
         );
       }
       return (
-        <div className="App-quiz">
-          <QuestionBox
-            quizType={quizType}
-            quizData={quizData}
-            handleAnswer={handleAnswer}
-          />
-        </div>
+        <QuestionBox
+          quizType={quizType}
+          quizData={quizData}
+          handleAnswer={handleAnswer}
+        />
       );
     }
 

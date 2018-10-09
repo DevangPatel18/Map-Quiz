@@ -33,59 +33,32 @@ class QuestionBox extends Component {
     const { quizAnswers, geographyPaths, activeQuestionNum } = quizData;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
-    let text; let questionBoxContent;
+    let text;
 
-    if (typeTest) {
-      text = `Enter the ${testing} of the highlighted country`;
-      questionBoxContent = (
-        <div>
-          <p>{ text }</p>
-          <form onSubmit={this.handleSubmit}>
-            <Input type="text" autoFocus value={userGuess} onChange={this.handleChange} />
-            <Button type="submit" size="large" className="qSubmit">Submit</Button>
-          </form>
-        </div>
-      );
-    } else {
+    if (activeQuestionNum !== quizAnswers.length) {
+      if (typeTest) {
+        text = `Enter the ${testing} of the highlighted country`;
+        return (
+          <div className="quizPrompt">
+            <div className="qInputText">{ text }</div>
+            <form onSubmit={this.handleSubmit}>
+              <Input type="text" autoFocus size="mini" value={userGuess} onChange={this.handleChange} />
+              <Button type="submit" size="small" compact className="qSubmit">Submit</Button>
+            </form>
+          </div>
+        );
+      }
       const alpha = quizAnswers[activeQuestionNum];
-      let region = geographyPaths
+      const region = geographyPaths
         .find(x => x.properties.alpha3Code === alpha)
         .properties[testing];
 
-      if (activeQuestionNum !== quizAnswers.length) {
-        if (testing !== 'flag') {
-          text = `Where is ${region}?`;
-          questionBoxContent = (<div>{ text }</div>);
-        } else {
-          region = (
-            <div className="qFlag">
-              <img src={region} display="block" height="100px" border="1px solid black" alt="" />
-            </div>
-          );
-          text = 'Which country does this flag belong to?';
-          questionBoxContent = (
-            <div>
-              { text }
-              { region }
-            </div>
-          );
-        }
+      if (testing === 'flag') {
+        return (<img src={region} className="qFlag" display="block" height="100px" alt="" />);
       }
+      return (<div className="quizPrompt quizName">{region}</div>);
     }
-
-    if (activeQuestionNum === quizAnswers.length) {
-      questionBoxContent = (
-        <div>
-          {handleAnswer()}
-        </div>
-      );
-    }
-
-    return (
-      <div className={type === 'type' ? 'qInputBox' : ''}>
-        {questionBoxContent}
-      </div>
-    );
+    return handleAnswer();
   }
 }
 

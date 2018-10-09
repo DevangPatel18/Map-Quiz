@@ -66,19 +66,51 @@
   text-align: left;
 }
 
-.qInputBox {
-  padding: .5em 1em;
-}
-
-.qFlag {
-  padding: .4em 0;
-}
-
-.ui.large.button.qSubmit {
+.ui.small.button.qSubmit {
   margin-left: .5em;
-  padding: 12.571px .5em;
+  padding: 9.5px .5em;
 }
 
 button.ui.button {
   margin: 0;
+}
+
+.quizPrompt {
+  position: absolute;
+  top: 53px;
+  right: 50%;
+  transform: translateX(50%);
+  flex-direction: column;
+  justify-content: center;
+  padding: .7em;
+  border-radius: .5em;
+  background: rgba(0,0,0, .5);
+  color: white;
+  font-size: 1.1em;
+}
+
+.quizPrompt div {
+  padding: .3em;
+}
+
+.quizPrompt form {
+  display: flex;
+  align-items: center;
+}
+
+.quizPrompt .ui.mini.input {
+  width: 100%;
+}
+
+.quizName {
+  font-size: 1.5rem;
+  font-weight: bolder;
+}
+
+.qFlag {
+  position: absolute;
+  top: 53px;
+  right: 50%;
+  transform: translateX(50%);
+  border: 1px solid black;
 }

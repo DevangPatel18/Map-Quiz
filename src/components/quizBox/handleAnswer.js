@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'semantic-ui-react';
 import removeDiacritics from '../../helpers/removeDiacritics';
 
-const simple = (str) => removeDiacritics(str.toLowerCase())
+const simple = str => removeDiacritics(str.toLowerCase())
   .replace(/\u002D/g, ' ').replace(/[^\w\s]/g, '');
 
 export default function handleAnswer(userGuess = null) {
@@ -19,7 +19,7 @@ export default function handleAnswer(userGuess = null) {
 
     if (quizType.split('_')[1] === 'name') {
       result = answerProperties.spellings
-        .some(name => simple(userGuess) === simple(name))
+        .some(name => simple(userGuess) === simple(name));
     } else {
       result = simple(userGuess) === simple(answerProperties.capital);
     }
@@ -38,16 +38,19 @@ export default function handleAnswer(userGuess = null) {
     const quizTypeCopy = quizType.slice();
     const finalText = `Your score is ${score} / ${quizAnswers.length} or ${Math.round(score / quizAnswers.length * 100)}%`;
     return (
-      <div>
-        <p>{finalText}</p>
-        <Button
-          onClick={() => {
-            this.handleQuizClose();
-            this.handleQuiz(quizTypeCopy);
-          }
-          }
-          content="RESTART"
-        />
+      <div className="quizPrompt">
+        <div>{finalText}</div>
+        <div>
+          <Button
+            onClick={() => {
+              this.handleQuizClose();
+              this.handleQuiz(quizTypeCopy);
+            }}
+            size="large"
+            compact
+            content="RESTART"
+          />
+        </div>
       </div>);
   }
   return '';
