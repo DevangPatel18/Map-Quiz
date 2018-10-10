@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Input } from 'semantic-ui-react';
+import { isMobile } from 'react-device-detect';
+
+const quizPromptMobile = {
+  fontSize: '11px',
+  padding: '.2em',
+  width: '230px',
+  top: 'auto',
+  bottom: '.5em',
+}
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -38,12 +47,17 @@ class QuestionBox extends Component {
     if (activeQuestionNum !== quizAnswers.length) {
       if (typeTest) {
         text = `Enter the ${testing} of the highlighted country`;
+        const mobileStyle = isMobile ? quizPromptMobile : {};
+        const submitClass = isMobile ? 'qSubmit-mobile' : 'qSubmit';
+        const textPad = isMobile ? { padding: '.1em .3em' } : {};
         return (
-          <div className="quizPrompt">
-            <div className="qInputText">{ text }</div>
+          <div className="quizPrompt" style={mobileStyle}>
+            <div className="qInputText" style={textPad}>{ text }</div>
             <form onSubmit={this.handleSubmit}>
               <Input type="text" autoFocus size="mini" value={userGuess} onChange={this.handleChange} />
-              <Button type="submit" size="small" compact className="qSubmit">Submit</Button>
+              <div>
+                <Button type="submit" size="small" compact className={submitClass}>Submit</Button>
+              </div>
             </form>
           </div>
         );
@@ -53,8 +67,10 @@ class QuestionBox extends Component {
         .find(x => x.properties.alpha3Code === alpha)
         .properties[testing];
 
+      const flagHeight = isMobile ? '50px' : '100px';
+      const flagClass = isMobile ? 'qFlag-mobile' : 'qFlag';
       if (testing === 'flag') {
-        return (<img src={region} className="qFlag" display="block" height="100px" alt="" />);
+        return (<img src={region} className={flagClass} display="block" height={flagHeight} alt="" />);
       }
       return (<div className="quizPrompt quizName">{region}</div>);
     }

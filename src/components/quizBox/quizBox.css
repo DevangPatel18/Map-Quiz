@@ -71,6 +71,10 @@
   padding: 9.5px .5em;
 }
 
+.ui.small.button.qSubmit-mobile {
+  padding: 5px .5em;
+}
+
 button.ui.button {
   margin: 0;
 }
@@ -80,13 +84,12 @@ button.ui.button {
   top: 53px;
   right: 50%;
   transform: translateX(50%);
-  flex-direction: column;
-  justify-content: center;
   padding: .7em;
   border-radius: .5em;
   background: rgba(0,0,0, .5);
   color: white;
   font-size: 1.1em;
+  z-index: 2;
 }
 
 .quizPrompt div {
@@ -114,3 +117,12 @@ button.ui.button {
   transform: translateX(50%);
   border: 1px solid black;
 }
+
+.qFlag-mobile {
+  position: absolute;
+  top: 53px;
+  right: 50%;
+  transform: translateX(50%);
+  border: 1px solid black;
+}
+
