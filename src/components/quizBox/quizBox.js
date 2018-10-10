@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
-import QuestionBox from './questionInputBox';
+import QuestionBox from './questionBox';
 import './quizBox.css';
 
 const quizOptions = [
