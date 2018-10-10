@@ -18,7 +18,7 @@ function handleQuizState(quizType) {
   });
 
   const x = Date.now();
-  this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 100);
+  this.timer = setInterval(() => this.setState({ time: Date.now() - x }), 1000);
 }
 
 function handleQuizDataLoad(quizType, capital = false) {
