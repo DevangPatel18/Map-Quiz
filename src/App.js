@@ -20,6 +20,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
+import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
 import Map from './Map';
 
 class App extends Component {
@@ -45,6 +46,7 @@ class App extends Component {
       disableInfoClick: false,
       currentMap: 'world',
       time: 0,
+      timerOn: false,
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
@@ -86,6 +88,8 @@ class App extends Component {
     this.loadPaths = loadPaths.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
+    this.pauseQuiz = pauseQuiz.bind(this);
+    this.resumeQuiz = resumeQuiz.bind(this);
   }
 
   componentDidMount() {
@@ -184,6 +188,7 @@ class App extends Component {
       disableInfoClick: false,
       selectedProperties: '',
       time: 0,
+      timerOn: false,
     });
   }
 
@@ -246,7 +251,9 @@ class App extends Component {
           status={{
             quiz, quizGuesses, quizAnswers, time,
           }}
-          closequiz={this.handleQuizClose}
+          closeQuiz={this.handleQuizClose}
+          pauseQuiz={this.pauseQuiz}
+          resumeQuiz={this.resumeQuiz}
         />
 
         <InfoTab

@@ -15,6 +15,7 @@ function handleQuizState(quizType) {
     quizGuesses: [],
     selectedProperties: '',
     disableInfoClick: quizType.split('_')[0] === 'type',
+    timerOn: true,
   });
 
   const x = Date.now();

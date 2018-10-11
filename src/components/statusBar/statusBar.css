@@ -34,8 +34,12 @@
   transition-duration: 1s;
 }
 
-.statusBar-quiz-close {
+.statusBar-timerButtons {
   position: absolute;
   left: 1em;
   top: 1em;
+}
+
+.statusBar .ui.inverted.red.button {
+  margin-right: 1em;
 }
