@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
+import { isMobile } from 'react-device-detect';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
@@ -83,14 +84,30 @@ class App extends Component {
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
     this.loadPaths = loadPaths.bind(this);
+    this.toggleOrientation = this.toggleOrientation.bind(this);
+    this.adjustMapSize = this.adjustMapSize.bind(this);
   }
 
   componentDidMount() {
     this.loadPaths();
+    window.addEventListener("orientationchange", this.toggleOrientation);
+    window.addEventListener("resize", this.adjustMapSize);
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    if (isMobile) {
+      const dimensions = height > width ? [310, 551] : [980, 551];
+      this.setState({ dimensions });
+    } else {
+      this.adjustMapSize()
+    }
   }
 
   componentWillUnmount() {
     WheelReact.clearTimeout();
+    window.removeEventListener("orientationchange", this.toggleOrientation);
+    window.removeEventListener("resize", this.adjustMapSize);
   }
 
   projection() {
@@ -98,6 +115,30 @@ class App extends Component {
     return geoTimes()
       .translate(dimensions.map(x => x / 2))
       .scale(scale);
+  }
+
+  toggleOrientation() {
+    const { dimensions } = this.state;
+    const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
+    this.handleMapRefresh({ dimensions: newDimensions });
+  }
+
+  adjustMapSize() {
+    const { dimensions } = this.state;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const ratio = width / height;
+    let newDimensions;
+    if (ratio > 1.43) {
+      newDimensions = [980, 551]
+    } else if (ratio > .85) {
+      newDimensions = [645, 551]
+    } else {
+      newDimensions = [420, 551]
+    }
+    if (newDimensions[0] !== dimensions[0]) {
+      this.handleMapRefresh({ dimensions: newDimensions });
+    }
   }
 
   handleZoom(x) {

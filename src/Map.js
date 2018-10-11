@@ -63,13 +63,29 @@ const Map = ({ appthis }) => {
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
                   const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(appthis.state, geography);
+                  let orientation;
+                  switch (dimensions[0]) {
+                    case 980:
+                      orientation = 'landscape';
+                      break;
+                    case 645:
+                      orientation = 'medium';
+                      break;
+                    case 420:
+                      orientation = 'small';
+                      break;
+                    case 310:
+                      orientation = 'portrait';
+                      break;
+                    default:
+                  }
                   let key; let cacheId;
                   if (currentMap === 'Oceania') {
-                    key = `oceania-${i}`;
-                    cacheId = `oceania-${i}`;
+                    key = `oceania-${i}-${orientation}`;
+                    cacheId = `oceania-${i}-${orientation}`;
                   } else {
-                    key = `geography-${i}`;
-                    cacheId = `geography-${i}`;
+                    key = `geography-${i}-${orientation}`;
+                    cacheId = `geography-${i}-${orientation}`;
                   }
                   return render && (
                     <Geography
