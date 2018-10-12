@@ -206,6 +206,7 @@ class App extends Component {
     if (quizGuesses.length === quizAnswers.length) {
       clearInterval(this.timer);
     }
+    const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
     return (
       <div className="App">
@@ -265,7 +266,7 @@ class App extends Component {
         <div {...WheelReact.events}>
           <Map appthis={this} />
         </div>
-        <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
+        <footer><div style={footerStyle}>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>
     );
   }

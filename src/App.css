@@ -19,9 +19,9 @@
 
 footer {
   position: absolute;
-  bottom: .25em;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0em;
+  width: 100%;
+  text-align: center;
 }
 
 .mapLabel {
