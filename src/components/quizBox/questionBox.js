@@ -50,11 +50,12 @@ class QuestionBox extends Component {
         const mobileStyle = isMobile ? quizPromptMobile : {};
         const submitClass = isMobile ? 'qSubmit-mobile' : 'qSubmit';
         const textPad = isMobile ? { padding: '.1em .3em' } : {};
+        const inputSize = isMobile ? 'mini' : 'small';
         return (
           <div className="quizPrompt" style={mobileStyle}>
             <div className="qInputText" style={textPad}>{ text }</div>
             <form onSubmit={this.handleSubmit}>
-              <Input type="text" autoFocus size="mini" value={userGuess} onChange={this.handleChange} />
+              <Input type="text" autoFocus size={inputSize} value={userGuess} onChange={this.handleChange} />
               <div>
                 <Button type="submit" size="small" compact className={submitClass}>Submit</Button>
               </div>

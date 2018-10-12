@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Progress, Button, Modal } from 'semantic-ui-react';
 import msToTime from '../../helpers/msToTime';
+import { isMobile } from 'react-device-detect';
 import './statusBar.css';
 
 class StatusBar extends Component {
@@ -34,16 +35,17 @@ class StatusBar extends Component {
     const questionText = `Question: ${quizGuesses.length} / ${quizAnswers.length}`;
     const scoreText = `Score: ${quizGuesses.filter(x => x).length}`;
     const pauseStyle = quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
+    const statusTextstyle = isMobile ? { fontSize: '12px'} : { fontSize: '17px' };
 
     return (
       <div>
         <div className="statusBar" style={{ top: `${top}` }}>
           <div className="statusBar-timerButtons">
-            <Button size="mini" compact inverted color="red" className="statusBar-stop" content="Close" onClick={closeQuiz} />
-            <Button size="mini" compact inverted color="blue" content="Pause" onClick={this.show} style={pauseStyle} />
+            <Button size="mini" compact inverted color="red" className="statusBar-stop" icon="stop" onClick={closeQuiz} />
+            <Button size="mini" compact inverted color="blue" icon="pause" onClick={this.show} style={pauseStyle} />
           </div>
           <Progress percent={percentComp} className="statusBar-progress" progress />
-          <div className="statusBar-ratio">
+          <div className="statusBar-ratio" style={statusTextstyle}>
             <p>{questionText}</p>
             <p>{scoreText}</p>
             <p>{ msToTime(time) }</p>

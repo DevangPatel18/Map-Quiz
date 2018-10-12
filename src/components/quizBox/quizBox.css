@@ -67,8 +67,8 @@
 }
 
 .ui.small.button.qSubmit {
-  margin-left: .5em;
-  padding: 9.5px .5em;
+  margin-left: .3em;
+  padding: 12.7px .5em;
 }
 
 .ui.small.button.qSubmit-mobile {
@@ -101,7 +101,7 @@ button.ui.button {
   align-items: center;
 }
 
-.quizPrompt .ui.mini.input {
+.quizPrompt .ui.mini.input, .quizPrompt .ui.small.input {
   width: 100%;
 }
 
