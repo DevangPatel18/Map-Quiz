@@ -29,7 +29,9 @@ function handleQuizDataLoad(quizType, capital = false) {
   const formFields = '?fields=alpha3Code;';
   const urls = [];
 
-  if (['Africa', 'Europe', 'Oceania'].includes(currentMap)) {
+  if (currentMap === 'world') {
+    urls.push(`${home}all`);
+  } else if (['Africa', 'Europe', 'Oceania'].includes(currentMap)) {
     urls.push(`${home}region/${currentMap}`);
   } else if (currentMap === 'Asia') {
     urls.push(`${home}region/${currentMap}`);

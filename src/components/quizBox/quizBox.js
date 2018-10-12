@@ -40,15 +40,14 @@ class QuizBox extends Component {
   render() {
     const { quizType } = this.state;
     const {
-      visible, nonactive, handleQuiz, quizData, handleAnswer,
+      nonactive, handleQuiz, quizData, handleAnswer,
     } = this.props;
-    const { markerToggle } = quizData;
+    const { markerToggle, currentMap } = quizData;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const fontSize = isMobile ? 5 : 16;
     const formSize = isMobile ? 'mini' : 'small';
 
-    if (visible) {
       if (nonactive) {
         return (
           <div className="App-quiz" style={{ fontSize: `${fontSize}px` }}>
@@ -68,7 +67,7 @@ class QuizBox extends Component {
                 ))
               }
             </Form>
-            <div className="App-quiz-toggle">
+            {currentMap !== 'world' && (<div className="App-quiz-toggle">
               <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
               <Button.Group size={formSize} compact>
                 <Button toggle active={countryLabel} onClick={() => this.handleLabelToggle('name')}>
@@ -79,7 +78,7 @@ class QuizBox extends Component {
                   {'Capital'}
                 </Button>
               </Button.Group>
-            </div>
+            </div>)}
           </div>
         );
       }
@@ -90,9 +89,6 @@ class QuizBox extends Component {
           handleAnswer={handleAnswer}
         />
       );
-    }
-
-    return null;
   }
 }
 

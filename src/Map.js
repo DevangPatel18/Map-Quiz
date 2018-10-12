@@ -116,7 +116,7 @@ const Map = ({ appthis }) => {
                 })}
               </Geographies>
               <Markers>{ appthis.regionEllipses() }</Markers>
-              <Markers>{ appthis.countryLabels() }</Markers>
+              <Markers>{ (currentMap !== 'world') && appthis.countryLabels() }</Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>

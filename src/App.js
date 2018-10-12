@@ -199,7 +199,7 @@ class App extends Component {
 
   render() {
     const {
-      filterRegions, quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+      quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
       selectedProperties, time, fetchRequests, currentMap, markerToggle,
     } = this.state;
 
@@ -225,7 +225,6 @@ class App extends Component {
         </div>
 
         <QuizBox
-          visible={filterRegions.length !== 0}
           nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           quizData={{
