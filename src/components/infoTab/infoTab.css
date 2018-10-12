@@ -7,8 +7,8 @@
 
 .infoTab-flag {
   display: block;
-  max-width: 14em;
-  max-height: 8em;
+  max-width: 16em;
+  max-height: 10em;
   background: white;
   border: 1px solid black;
 }

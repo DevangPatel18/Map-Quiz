@@ -23,7 +23,7 @@ const InfoTab = (props) => {
       .find(x => x.properties.alpha3Code === regionOf).properties.name;
     regionOfStr = `Region of ${regionName}`;
   }
-  const fontSize = isMobile ? 12 : 16;
+  const fontSize = isMobile ? 9 : 14;
   return (
     <div className="infoTab" style={{ fontSize: `${fontSize}px` }}>
       <img className="infoTab-flag" src={country.flag} alt="" />
