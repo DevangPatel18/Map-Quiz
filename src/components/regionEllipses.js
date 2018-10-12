@@ -4,9 +4,10 @@ import { geoPath } from 'd3-geo';
 import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist } from '../helpers/markerParams';
 
+const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
 export default function regionEllipses() {
   const {
-    currentMap, geographyPaths, filterRegions, capitalMarkers, countryMarkers, zoom,
+    currentMap, geographyPaths, filterRegions, capitalMarkers, countryMarkers, zoom, quiz,
   } = this.state;
   let minArea;
   switch (currentMap) {
@@ -20,10 +21,18 @@ export default function regionEllipses() {
       minArea = 6000;
   }
 
-  const show = currentMap !== 'world';
+  let filterFN;
+
+  if (currentMap !== 'world') {
+    filterFN = x => x.properties.area < minArea;
+  } else {
+    filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
+  }
+
+  const show = !(currentMap === 'world' && !quiz);
   return show && geographyPaths
     .filter(x => filterRegions.includes(x.properties.alpha3Code))
-    .filter(x => x.properties.area < minArea)
+    .filter(filterFN)
     .map((country) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
       const { alpha3Code } = country.properties;
