@@ -1,4 +1,5 @@
 import React from 'react';
+import { isMobile } from 'react-device-detect';
 import './infoTab.css';
 
 const InfoTab = (props) => {
@@ -22,8 +23,9 @@ const InfoTab = (props) => {
       .find(x => x.properties.alpha3Code === regionOf).properties.name;
     regionOfStr = `Region of ${regionName}`;
   }
+  const fontSize = isMobile ? 9 : 14;
   return (
-    <div className="infoTab">
+    <div className="infoTab" style={{ fontSize: `${fontSize}px` }}>
       <img className="infoTab-flag" src={country.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>

@@ -139,6 +139,8 @@ const DataFix = (geoPath, data, capitalMarkers) => {
     DNK: ['FRO', 'GRL'],
     FRA: ['BLM', 'MAF', 'SPM', 'WLF', 'PYF', 'NCL', 'REU', 'GLP', 'MTQ', 'GUF', 'MYT'],
     NLD: ['ABW', 'CUW', 'SXM', 'BES'],
+    FIN: ['ALA'],
+    NOR: ['SJM'],
   };
 
   Object.keys(overseasRegions).forEach((countryAlpha) => {

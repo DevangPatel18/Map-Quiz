@@ -1,14 +1,14 @@
 .infoTab {
   position: absolute;
-  left: 1em;
-  top: 13em;
+  left: 14px;
+  top: 182px;
   text-align: left;
 }
 
 .infoTab-flag {
   display: block;
-  max-width:250px;
-  max-height: 150px;
+  max-width: 16em;
+  max-height: 10em;
   background: white;
   border: 1px solid black;
 }

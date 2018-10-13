@@ -16,7 +16,7 @@ const regions = [
 const RegionButtons = props => (
   <div className="regionButtons">
     <Dropdown
-      placeholder="Select Region"
+      placeholder="Select Region Quiz"
       fluid
       selection
       options={regions}

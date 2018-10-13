@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
+import { isMobile } from 'react-device-detect';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
@@ -19,6 +20,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
+import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
 import Map from './Map';
 
 class App extends Component {
@@ -44,6 +46,7 @@ class App extends Component {
       disableInfoClick: false,
       currentMap: 'world',
       time: 0,
+      timerOn: false,
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
@@ -83,14 +86,32 @@ class App extends Component {
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
     this.loadPaths = loadPaths.bind(this);
+    this.toggleOrientation = this.toggleOrientation.bind(this);
+    this.adjustMapSize = this.adjustMapSize.bind(this);
+    this.pauseQuiz = pauseQuiz.bind(this);
+    this.resumeQuiz = resumeQuiz.bind(this);
   }
 
   componentDidMount() {
     this.loadPaths();
+    window.addEventListener("orientationchange", this.toggleOrientation);
+    window.addEventListener("resize", this.adjustMapSize);
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    if (isMobile) {
+      const dimensions = height > width ? [310, 551] : [980, 551];
+      this.setState({ dimensions });
+    } else {
+      this.adjustMapSize()
+    }
   }
 
   componentWillUnmount() {
     WheelReact.clearTimeout();
+    window.removeEventListener("orientationchange", this.toggleOrientation);
+    window.removeEventListener("resize", this.adjustMapSize);
   }
 
   projection() {
@@ -98,6 +119,30 @@ class App extends Component {
     return geoTimes()
       .translate(dimensions.map(x => x / 2))
       .scale(scale);
+  }
+
+  toggleOrientation() {
+    const { dimensions } = this.state;
+    const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
+    this.handleMapRefresh({ dimensions: newDimensions });
+  }
+
+  adjustMapSize() {
+    const { dimensions } = this.state;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const ratio = width / height;
+    let newDimensions;
+    if (ratio > 1.43) {
+      newDimensions = [980, 551]
+    } else if (ratio > .85) {
+      newDimensions = [645, 551]
+    } else {
+      newDimensions = [420, 551]
+    }
+    if (newDimensions[0] !== dimensions[0]) {
+      this.handleMapRefresh({ dimensions: newDimensions });
+    }
   }
 
   handleZoom(x) {
@@ -143,6 +188,7 @@ class App extends Component {
       disableInfoClick: false,
       selectedProperties: '',
       time: 0,
+      timerOn: false,
     });
   }
 
@@ -153,19 +199,22 @@ class App extends Component {
 
   render() {
     const {
-      filterRegions, quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+      quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
       selectedProperties, time, fetchRequests, currentMap, markerToggle,
     } = this.state;
 
     if (quizGuesses.length === quizAnswers.length) {
       clearInterval(this.timer);
     }
+    const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Map Quiz</h1>
-        </header>
+        {!quiz && (
+          <header className="App-header">
+            <h1 className="App-title">Map Quiz</h1>
+          </header>)
+        }
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
@@ -176,10 +225,8 @@ class App extends Component {
         </div>
 
         <QuizBox
-          visible={filterRegions.length !== 0}
           nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
-          closequiz={this.handleQuizClose}
           quizData={{
             quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap, markerToggle,
           }}
@@ -204,6 +251,9 @@ class App extends Component {
           status={{
             quiz, quizGuesses, quizAnswers, time,
           }}
+          closeQuiz={this.handleQuizClose}
+          pauseQuiz={this.pauseQuiz}
+          resumeQuiz={this.resumeQuiz}
         />
 
         <InfoTab
@@ -215,7 +265,7 @@ class App extends Component {
         <div {...WheelReact.events}>
           <Map appthis={this} />
         </div>
-        <footer><div>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
+        <footer><div style={footerStyle}>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>
     );
   }

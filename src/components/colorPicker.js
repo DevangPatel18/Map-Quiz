@@ -1,7 +1,7 @@
 const ColorPicker = (state, geo) => {
   const {
     quiz, selectedProperties, quizGuesses, quizAnswers,
-    disableInfoClick, activeQuestionNum, filterRegions,
+    disableInfoClick, activeQuestionNum, filterRegions, currentMap,
   } = state;
   const isSelected = selectedProperties === geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';
@@ -53,7 +53,7 @@ const ColorPicker = (state, geo) => {
   }
 
   let render = true;
-  if (filterRegions.length !== 0) {
+  if (currentMap !== 'world') {
     render = filterRegions.indexOf(geo.properties.alpha3Code) !== -1;
   }
 
