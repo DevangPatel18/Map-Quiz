@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
-
-const quizPromptMobile = {
-  fontSize: '11px',
-  padding: '.2em',
-  width: '230px',
-  top: 'auto',
-  bottom: '.5em',
-}
+import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -47,35 +40,52 @@ class QuestionBox extends Component {
     if (activeQuestionNum !== quizAnswers.length) {
       if (typeTest) {
         text = `Enter the ${testing} of the highlighted country`;
-        const mobileStyle = isMobile ? quizPromptMobile : {};
-        const submitClass = isMobile ? 'qSubmit-mobile' : 'qSubmit';
-        const textPad = isMobile ? { padding: '.1em .3em' } : {};
         const inputSize = isMobile ? 'mini' : 'small';
         return (
-          <div className="quizPrompt" style={mobileStyle}>
-            <div className="qInputText" style={textPad}>{ text }</div>
+          <QuizPrompt isMobile={isMobile} typeTest={typeTest}>
+            <div className="qInputText">{text}</div>
             <form onSubmit={this.handleSubmit}>
-              <Input type="text" autoFocus size={inputSize} value={userGuess} onChange={this.handleChange} />
+              <Input
+                type="text"
+                autoFocus
+                size={inputSize}
+                value={userGuess}
+                onChange={this.handleChange}
+              />
               <div>
-                <Button type="submit" size="small" compact className={submitClass}>Submit</Button>
+                <Button type="submit" size="small" compact>
+                  Submit
+                </Button>
               </div>
             </form>
-          </div>
+          </QuizPrompt>
         );
       }
       const alpha = quizAnswers[activeQuestionNum];
-      const region = geographyPaths
-        .find(x => x.properties.alpha3Code === alpha)
+      const region = geographyPaths.find(x => x.properties.alpha3Code === alpha)
         .properties[testing];
 
-      const flagHeight = isMobile ? '50px' : '100px';
-      const flagClass = isMobile ? 'qFlag-mobile' : 'qFlag';
       if (testing === 'flag') {
-        return (<img src={region} className={flagClass} display="block" height={flagHeight} alt="" />);
+        const flagHeight = isMobile ? '50px' : '100px';
+        return (
+          <QuizFlag>
+            <img
+              src={region}
+              className="qFlag"
+              display="block"
+              height={flagHeight}
+              alt=""
+            />
+          </QuizFlag>
+        );
       }
-      return (<div className="quizPrompt quizName">{region}</div>);
+      return (
+        <QuizPrompt>
+          <span className="quizName">{region}</span>
+        </QuizPrompt>
+      );
     }
-    return handleAnswer();
+    return <QuizPrompt>{handleAnswer()}</QuizPrompt>;
   }
 }
 

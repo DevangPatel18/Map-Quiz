@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
-import styled from 'styled-components';
 import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles'
-import './quizBox.css';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },

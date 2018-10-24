@@ -38,7 +38,7 @@ export default function handleAnswer(userGuess = null) {
     const quizTypeCopy = quizType.slice();
     const finalText = `Your score is ${score} / ${quizAnswers.length} or ${Math.round(score / quizAnswers.length * 100)}%`;
     return (
-      <div className="quizPrompt">
+      <div>
         <div>{finalText}</div>
         <div>
           <Button
