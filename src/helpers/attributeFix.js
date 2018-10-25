@@ -1,3 +1,5 @@
+import { moroccoGeo, westernSaharaGeo } from './borderUpdate'
+
 // Change entries of data object
 const DataFix = (geoPath, data, capitalMarkers) => {
   const geographyPath = geoPath;
@@ -149,6 +151,10 @@ const DataFix = (geoPath, data, capitalMarkers) => {
       countryData.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
     });
   });
+
+  // Update borders for Morocco and Western Sahara
+  geographyPath.find(x => x.id === "732").geometry = westernSaharaGeo;
+  geographyPath.find(x => x.id === "504").geometry = moroccoGeo;
 };
 
 // Change positioning of country labels

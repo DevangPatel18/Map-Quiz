@@ -5,6 +5,7 @@ import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist } from '../helpers/markerParams';
 
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
+const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 export default function regionEllipses() {
   const {
     currentMap, geographyPaths, filterRegions, capitalMarkers, countryMarkers, zoom, quiz,
@@ -53,8 +54,12 @@ export default function regionEllipses() {
           const bounds = path.bounds(country);
           const originWidth = bounds[1][0] - bounds[0][0];
           const originHeight = bounds[1][1] - bounds[0][1];
-          widthMain = Math.max(originWidth, 3);
-          heightMain = Math.max(originHeight, 3);
+          
+          const radius = caribUN.includes(alpha3Code) ? 1.5 : 3;
+          
+          widthMain = Math.max(originWidth, radius);
+          heightMain = Math.max(originHeight, radius);
+
           angleMain = 0;
         }
 

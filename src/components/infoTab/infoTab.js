@@ -1,15 +1,13 @@
 import React from 'react';
 import { isMobile } from 'react-device-detect';
-import './infoTab.css';
+import InfoTabStyles from '../styles/InfoTabStyles';
 
-const InfoTab = (props) => {
+const InfoTab = props => {
   const { country, geoPaths, loadData } = props;
-  if ((Object.keys(country).length === 0)) {
+  if (Object.keys(country).length === 0) {
     return null;
   }
-  const {
-    name, capital, population, area, regionOf,
-  } = country;
+  const { name, capital, population, area, regionOf } = country;
   if (!population) {
     loadData(country);
     return null;
@@ -19,13 +17,12 @@ const InfoTab = (props) => {
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
   let regionOfStr;
   if (regionOf) {
-    const regionName = geoPaths
-      .find(x => x.properties.alpha3Code === regionOf).properties.name;
+    const regionName = geoPaths.find(x => x.properties.alpha3Code === regionOf)
+      .properties.name;
     regionOfStr = `Region of ${regionName}`;
   }
-  const fontSize = isMobile ? 9 : 14;
   return (
-    <div className="infoTab" style={{ fontSize: `${fontSize}px` }}>
+    <InfoTabStyles isMobile={isMobile}>
       <img className="infoTab-flag" src={country.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>
@@ -33,11 +30,11 @@ const InfoTab = (props) => {
         <li>{populationStr}</li>
         <li>
           {areaStr}
-          <sup style={{ fontSize: '.6em' }}>2</sup>
+          <sup>2</sup>
         </li>
-        {regionOf !== '' ? (<li>{regionOfStr}</li>) : ''}
+        {regionOf !== '' ? <li>{regionOfStr}</li> : ''}
       </div>
-    </div>
+    </InfoTabStyles>
   );
 };
 

@@ -20,6 +20,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
+import MobileMessage from './components/mobileMessage';
 import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
 import Map from './Map';
 
@@ -215,6 +216,8 @@ class App extends Component {
             <h1 className="App-title">Map Quiz</h1>
           </header>)
         }
+
+        {isMobile && <MobileMessage/>}
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
