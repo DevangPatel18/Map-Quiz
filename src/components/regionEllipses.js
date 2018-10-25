@@ -19,7 +19,7 @@ export default function regionEllipses() {
       minArea = 29000;
       break;
     default:
-      minArea = 5000;
+      minArea = 6000;
   }
 
   let filterFN;
