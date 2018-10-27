@@ -27,6 +27,34 @@ const QuizMenu = styled.div`
     font-size: ${props => (props.isMobile ? '.8em' : '1.1em')};
   }
 
+  &&&& .fmRegionSelect label,
+  &&&& .fmRegionSelect label:hover,
+  &&&& .fmRegionSelect .checked label {
+    color: white;
+    font-size: ${props => (props.isMobile ? '.5em' : '.8em')};
+  }
+
+  && .fmRegionSelect {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+
+    .field {
+      margin: 0;
+
+      label {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        margin-right: .3em;
+
+        input {
+          margin-right: .4em;
+        }
+      }
+    }
+  }
+
   .App-quiz-toggle {
     margin-top: 1em;
     border-top: 1px solid white;

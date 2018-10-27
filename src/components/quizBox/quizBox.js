@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import QuestionBox from './questionBox';
-import QuizMenu from '../styles/QuizMenuStyles'
+import QuizMenu from '../styles/QuizMenuStyles';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -16,10 +16,21 @@ class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = { quizType: 'click_name' };
-
+    this.state = {
+      quizType: 'click_name',
+      checkedRegions: {
+        'North & Central America': true,
+        'South America': true,
+        Caribbean: true,
+        Europe: true,
+        Africa: true,
+        Asia: true,
+        Oceania: true,
+      },
+    };
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
+    this.handleCheckBox = this.handleCheckBox.bind(this);
   }
 
   handleQuizChange(event, { value }) {
@@ -41,8 +52,17 @@ class QuizBox extends Component {
     }
   }
 
+  handleCheckBox(e) {
+    const { value, checked } = e.target;
+    this.setState(prevState => {
+      let checkedRegions = Object.assign({}, prevState.checkedRegions);
+      checkedRegions[value] = checked;
+      return { checkedRegions };
+    });
+  }
+
   render() {
-    const { quizType } = this.state;
+    const { quizType, checkedRegions } = this.state;
     const { nonactive, handleQuiz, quizData, handleAnswer } = this.props;
     const { markerToggle, currentMap } = quizData;
     const countryLabel = markerToggle === 'name';
@@ -94,6 +114,21 @@ class QuizBox extends Component {
                 </Button>
               </Button.Group>
             </div>
+          )}
+          {currentMap === 'world' && (
+            <Form className="fmRegionSelect">
+              {Object.keys(checkedRegions).map(region => (
+                <Form.Field
+                  label={region}
+                  value={region}
+                  key={region}
+                  control="input"
+                  type="checkbox"
+                  checked={checkedRegions[region]}
+                  onChange={this.handleCheckBox}
+                />
+              ))}
+            </Form>
           )}
         </QuizMenu>
       );
