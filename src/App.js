@@ -22,6 +22,7 @@ import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
 import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
+import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import Map from './Map';
 
 class App extends Component {
@@ -91,6 +92,7 @@ class App extends Component {
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.pauseQuiz = pauseQuiz.bind(this);
     this.resumeQuiz = resumeQuiz.bind(this);
+    this.setQuizRegions = this.setQuizRegions.bind(this);
   }
 
   componentDidMount() {
@@ -198,6 +200,15 @@ class App extends Component {
       () => { this.setState({ disableOptimization: false }); });
   }
 
+  setQuizRegions(checkBox) {
+    const filterRegions = Object.keys(checkBox)
+      .filter(region => checkBox[region])
+      .map(region => alpha3CodesSov[region])
+      .reduce((a,b) => a.concat(b), []);
+    
+    this.setState({ filterRegions });
+  }
+
   render() {
     const {
       quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
@@ -236,6 +247,7 @@ class App extends Component {
           handleAnswer={this.handleAnswer}
           setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
           loadData={(...args) => { this.handleQuizDataLoad(...args); }}
+          setQuizRegions={(obj) => { this.setQuizRegions(obj)}}
         />
 
         <div

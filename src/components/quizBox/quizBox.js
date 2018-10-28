@@ -53,12 +53,26 @@ class QuizBox extends Component {
   }
 
   handleCheckBox(e) {
+    const { setQuizRegions } = this.props;
+    const { checkedRegions } = this.state;
     const { value, checked } = e.target;
-    this.setState(prevState => {
-      let checkedRegions = Object.assign({}, prevState.checkedRegions);
-      checkedRegions[value] = checked;
-      return { checkedRegions };
-    });
+    // check if nothing is selected
+    const nothing = Object.keys(checkedRegions)
+      .filter(region => region !== value)
+      .every(region => !checkedRegions[region]);
+
+    if (!(!checked && nothing)) {
+      this.setState(
+        prevState => {
+          let checkedRegions = Object.assign({}, prevState.checkedRegions);
+          checkedRegions[value] = checked;
+          return { checkedRegions };
+        },
+        () => {
+          setQuizRegions(this.state.checkedRegions);
+        }
+      );
+    }
   }
 
   render() {
