@@ -12,22 +12,21 @@ const quizOptions = [
   { label: 'Click Country from matching Flag', value: 'click_flag' },
 ];
 
+const checkedRegionsLabels = [
+  'North & Central America',
+  'South America',
+  'Caribbean',
+  'Europe',
+  'Africa',
+  'Asia',
+  'Oceania',
+];
+
 class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = {
-      quizType: 'click_name',
-      checkedRegions: {
-        'North & Central America': true,
-        'South America': true,
-        Caribbean: true,
-        Europe: true,
-        Africa: true,
-        Asia: true,
-        Oceania: true,
-      },
-    };
+    this.state = { quizType: 'click_name' };
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
@@ -53,8 +52,8 @@ class QuizBox extends Component {
   }
 
   handleCheckBox(e) {
-    const { setQuizRegions } = this.props;
-    const { checkedRegions } = this.state;
+    const { setQuizRegions, quizData } = this.props;
+    const { checkedRegions } = quizData;
     const { value, checked } = e.target;
     // check if nothing is selected
     const nothing = Object.keys(checkedRegions)
@@ -62,23 +61,14 @@ class QuizBox extends Component {
       .every(region => !checkedRegions[region]);
 
     if (!(!checked && nothing)) {
-      this.setState(
-        prevState => {
-          let checkedRegions = Object.assign({}, prevState.checkedRegions);
-          checkedRegions[value] = checked;
-          return { checkedRegions };
-        },
-        () => {
-          setQuizRegions(this.state.checkedRegions);
-        }
-      );
+      setQuizRegions(value, checked);
     }
   }
 
   render() {
-    const { quizType, checkedRegions } = this.state;
+    const { quizType } = this.state;
     const { nonactive, handleQuiz, quizData, handleAnswer } = this.props;
-    const { markerToggle, currentMap } = quizData;
+    const { markerToggle, currentMap, checkedRegions } = quizData;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -131,7 +121,7 @@ class QuizBox extends Component {
           )}
           {currentMap === 'world' && (
             <Form className="fmRegionSelect">
-              {Object.keys(checkedRegions).map(region => (
+              {checkedRegionsLabels.map(region => (
                 <Form.Field
                   label={region}
                   value={region}

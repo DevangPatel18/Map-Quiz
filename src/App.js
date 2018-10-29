@@ -53,6 +53,15 @@ class App extends Component {
       capitalMarkers: [],
       fetchRequests: [],
       markerToggle: '',
+      checkedRegions: {
+        'North & Central America': true,
+        'South America': true,
+        Caribbean: true,
+        Europe: true,
+        Africa: true,
+        Asia: true,
+        Oceania: true,
+      },
     };
 
     WheelReact.config({
@@ -200,19 +209,28 @@ class App extends Component {
       () => { this.setState({ disableOptimization: false }); });
   }
 
-  setQuizRegions(checkBox) {
-    const filterRegions = Object.keys(checkBox)
-      .filter(region => checkBox[region])
-      .map(region => alpha3CodesSov[region])
-      .reduce((a,b) => a.concat(b), []);
-    
-    this.setState({ filterRegions });
+  setQuizRegions(value = null, checked = null) {
+    this.setState(
+      prevState => {
+        let checkedRegions = {...prevState.checkedRegions};
+        if (value) {
+          checkedRegions[value] = !checkedRegions[value];
+        }
+
+        const filterRegions = Object.keys(checkedRegions)
+          .filter(region => checkedRegions[region])
+          .map(region => alpha3CodesSov[region])
+          .reduce((a,b) => a.concat(b), []);
+        return { checkedRegions, filterRegions };
+      }
+    );
   }
 
   render() {
     const {
       quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
       selectedProperties, time, fetchRequests, currentMap, markerToggle,
+      checkedRegions,
     } = this.state;
 
     if (quizGuesses.length === quizAnswers.length) {
@@ -242,7 +260,8 @@ class App extends Component {
           nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           quizData={{
-            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap, markerToggle,
+            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+            fetchRequests, currentMap, markerToggle, checkedRegions
           }}
           handleAnswer={this.handleAnswer}
           setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
