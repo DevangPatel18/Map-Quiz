@@ -6,7 +6,6 @@ import {
   SeparateRegions,
 } from '../helpers/attributeFix';
 import capitalData from '../assets/country_capitals';
-import { alpha3Codes } from '../assets/regionAlpha3Codes';
 import { geoPath } from 'd3-geo';
 
 export default function loadPaths() {
@@ -98,14 +97,13 @@ export default function loadPaths() {
           CountryMarkersFix(countryMarkers);
           CapitalMarkersFix(capitalMarkers);
 
-          const filterRegions = alpha3Codes.world;
-
           this.setState({
             geographyPaths: data,
             countryMarkers,
             capitalMarkers,
-            filterRegions,
           });
+
+          this.setQuizRegions();
         });
       });
     });

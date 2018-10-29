@@ -12,4 +12,7 @@ export default function handleRegionSelect(region) {
     selectedProperties: '',
     markerToggle: '',
   });
+  if (region === 'world') {
+    this.setQuizRegions();
+  }
 }
