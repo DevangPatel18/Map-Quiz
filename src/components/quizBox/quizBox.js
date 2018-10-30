@@ -26,10 +26,14 @@ class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = { quizType: 'click_name' };
+    this.state = {
+      quizType: 'click_name',
+      regionMenu: false,
+    };
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
+    this.handleRegionMenu = this.handleRegionMenu.bind(this);
   }
 
   handleQuizChange(event, { value }) {
@@ -51,6 +55,10 @@ class QuizBox extends Component {
     }
   }
 
+  handleRegionMenu(display) {
+    this.setState({ regionMenu: !this.state.regionMenu });
+  }
+
   handleCheckBox(e) {
     const { setQuizRegions, quizData } = this.props;
     const { checkedRegions } = quizData;
@@ -66,7 +74,7 @@ class QuizBox extends Component {
   }
 
   render() {
-    const { quizType } = this.state;
+    const { quizType, regionMenu } = this.state;
     const { nonactive, handleQuiz, quizData, handleAnswer } = this.props;
     const { markerToggle, currentMap, checkedRegions } = quizData;
     const countryLabel = markerToggle === 'name';
@@ -75,50 +83,65 @@ class QuizBox extends Component {
 
     if (nonactive) {
       return (
-        <QuizMenu isMobile={isMobile}>
-          <Button
-            size={formSize}
-            onClick={() => {
-              handleQuiz(quizType);
-            }}
-          >
-            START QUIZ
-          </Button>
-          <Form size={formSize}>
-            {quizOptions.map(form => (
-              <Form.Field key={form.value}>
-                <Radio
-                  label={form.label}
-                  value={form.value}
-                  name="quiz"
-                  checked={quizType === form.value}
-                  onChange={this.handleQuizChange}
-                />
-              </Form.Field>
-            ))}
-          </Form>
-          {currentMap !== 'world' && (
-            <div className="App-quiz-toggle">
-              <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
-              <Button.Group size={formSize} compact>
-                <Button
-                  toggle
-                  active={countryLabel}
-                  onClick={() => this.handleLabelToggle('name')}
-                >
-                  {'Country'}
-                </Button>
-                <Button.Or />
-                <Button
-                  toggle
-                  active={capitalLabel}
-                  onClick={() => this.handleLabelToggle('capital')}
-                >
-                  {'Capital'}
-                </Button>
-              </Button.Group>
-            </div>
-          )}
+        <QuizMenu isMobile={isMobile} regionMenu={regionMenu}>
+          <div>
+            <Button
+              size={formSize}
+              onClick={() => {
+                handleQuiz(quizType);
+              }}
+              className="startButton"
+            >
+              START QUIZ
+            </Button>
+            <Form size={formSize}>
+              {quizOptions.map(form => (
+                <Form.Field key={form.value}>
+                  <Radio
+                    label={form.label}
+                    value={form.value}
+                    name="quiz"
+                    checked={quizType === form.value}
+                    onChange={this.handleQuizChange}
+                  />
+                </Form.Field>
+              ))}
+            </Form>
+            {currentMap === 'world' && (
+              <Button
+                toggle
+                compact
+                active={regionMenu}
+                content="Toggle Quiz Regions"
+                size={formSize}
+                className="regionDrawer"
+                onClick={this.handleRegionMenu}
+              />
+            )}
+            {currentMap !== 'world' && (
+              <div className="App-quiz-toggle">
+                <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
+                <Button.Group size={formSize} compact>
+                  <Button
+                    toggle
+                    active={countryLabel}
+                    onClick={() => this.handleLabelToggle('name')}
+                  >
+                    {'Country'}
+                  </Button>
+                  <Button.Or />
+                  <Button
+                    toggle
+                    active={capitalLabel}
+                    onClick={() => this.handleLabelToggle('capital')}
+                  >
+                    {'Capital'}
+                  </Button>
+                </Button.Group>
+              </div>
+            )}
+          </div>
+
           {currentMap === 'world' && (
             <Form className="fmRegionSelect">
               {checkedRegionsLabels.map(region => (
