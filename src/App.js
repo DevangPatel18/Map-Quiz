@@ -21,7 +21,6 @@ import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
-import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import Map from './Map';
 
@@ -47,8 +46,6 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       currentMap: 'world',
-      time: 0,
-      timerOn: false,
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
@@ -99,8 +96,6 @@ class App extends Component {
     this.loadPaths = loadPaths.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.pauseQuiz = pauseQuiz.bind(this);
-    this.resumeQuiz = resumeQuiz.bind(this);
     this.setQuizRegions = this.setQuizRegions.bind(this);
   }
 
@@ -199,8 +194,6 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       selectedProperties: '',
-      time: 0,
-      timerOn: false,
     });
   }
 
@@ -229,13 +222,10 @@ class App extends Component {
   render() {
     const {
       quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-      selectedProperties, time, fetchRequests, currentMap, markerToggle,
+      selectedProperties, fetchRequests, currentMap, markerToggle,
       checkedRegions,
     } = this.state;
 
-    if (quizGuesses.length === quizAnswers.length) {
-      clearInterval(this.timer);
-    }
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
     return (
@@ -283,11 +273,9 @@ class App extends Component {
 
         <StatusBar
           status={{
-            quiz, quizGuesses, quizAnswers, time,
+            quiz, quizGuesses, quizAnswers,
           }}
           closeQuiz={this.handleQuizClose}
-          pauseQuiz={this.pauseQuiz}
-          resumeQuiz={this.resumeQuiz}
         />
 
         <InfoTab
