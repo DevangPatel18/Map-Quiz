@@ -35,9 +35,9 @@ const Map = ({ appthis }) => {
         y: center[1],
       }}
       style={{
-        zoom: spring(zoom, { stiffness: 210, damping: 20 }),
-        x: spring(center[0], { stiffness: 210, damping: 20 }),
-        y: spring(center[1], { stiffness: 210, damping: 20 }),
+        zoom: spring(zoom, { stiffness: 250, damping: 25 }),
+        x: spring(center[0], { stiffness: 250, damping: 25 }),
+        y: spring(center[1], { stiffness: 250, damping: 25 }),
       }}
     >
       {({ zoom, x, y }) => (
