@@ -10,6 +10,13 @@ const TimerStyles = styled.div`
     z-index: 2;
   }
 
+  .statusBar-timer {
+    position: absolute;
+    font-size: ${props => (props.mobile ? '12px' : '17px')};
+    right: 1em;
+    top: 3.9em;
+  }
+
   .ui.inverted.red.button {
     margin-right: 1em;
   }

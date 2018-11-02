@@ -115,7 +115,7 @@ class QuizBox extends Component {
     const { handleQuiz } = this.props;
     const { time, timerOn, quizType } = this.state;
 
-    handleQuiz(quizType)
+    handleQuiz(quizType);
     if (!timerOn) {
       this.setState({ timerOn: true });
       const x = Date.now() - time;
@@ -221,7 +221,7 @@ class QuizBox extends Component {
       );
     }
     return (
-      <TimerStyles>
+      <TimerStyles mobile={isMobile}>
         <QuestionBox
           quizType={quizType}
           quizData={quizData}
@@ -246,8 +246,8 @@ class QuizBox extends Component {
             onClick={this.pause}
             style={pauseStyle}
           />
-          <p>{msToTime(time)}</p>
         </div>
+        <p className="statusBar-timer">{msToTime(time)}</p>
         <Modal
           basic
           dimmer="blurring"

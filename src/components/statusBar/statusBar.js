@@ -16,7 +16,7 @@ const StatusBar = props => {
 
   return (
     <div>
-      <StatusBarStyles quiz={quiz} isMobile={isMobile}>
+      <StatusBarStyles quiz={quiz} mobile={isMobile}>
         <Progress
           percent={percentComp}
           className="statusBar-progress"
