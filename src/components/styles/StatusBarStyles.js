@@ -36,16 +36,6 @@ const StatusBarStyles = styled.div`
       transition-duration: 1s;
     }
   }
-
-  .statusBar-timerButtons {
-    position: absolute;
-    left: 1em;
-    top: 1em;
-  }
-
-  .ui.inverted.red.button {
-    margin-right: 1em;
-  }
 `;
 
 export default StatusBarStyles;

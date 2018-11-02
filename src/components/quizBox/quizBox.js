@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Form, Radio } from 'semantic-ui-react';
+import { Button, Form, Radio, Modal } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles';
+import TimerStyles from '../styles/TimerStyles';
+import msToTime from '../../helpers/msToTime';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -29,11 +31,19 @@ class QuizBox extends Component {
     this.state = {
       quizType: 'click_name',
       regionMenu: false,
+      open: false,
+      time: 0,
+      timerOn: false,
     };
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
     this.handleRegionMenu = this.handleRegionMenu.bind(this);
+
+    this.pause = this.pause.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.start = this.start.bind(this);
+    this.close = this.close.bind(this);
   }
 
   handleQuizChange(event, { value }) {
@@ -73,23 +83,73 @@ class QuizBox extends Component {
     }
   }
 
+  pause() {
+    const { timerOn } = this.state;
+    if (timerOn) {
+      clearInterval(this.timer);
+      this.setState({ timerOn: false, open: true });
+    }
+  }
+
+  close() {
+    const { closeQuiz } = this.props;
+    closeQuiz();
+    clearInterval(this.timer);
+    this.setState({ time: 0, timerOn: false });
+  }
+
+  closeModal() {
+    const { timerOn, time } = this.state;
+    if (!timerOn) {
+      this.setState({ timerOn: true, open: false }, () => {
+        const x = Date.now() - time;
+        this.timer = setInterval(
+          () => this.setState({ time: Date.now() - x }),
+          1000
+        );
+      });
+    }
+  }
+
+  start() {
+    const { handleQuiz } = this.props;
+    const { time, timerOn, quizType } = this.state;
+
+    handleQuiz(quizType)
+    if (!timerOn) {
+      this.setState({ timerOn: true });
+      const x = Date.now() - time;
+      this.timer = setInterval(
+        () => this.setState({ time: Date.now() - x }),
+        1000
+      );
+    }
+  }
+
   render() {
-    const { quizType, regionMenu } = this.state;
-    const { nonactive, handleQuiz, quizData, handleAnswer } = this.props;
-    const { markerToggle, currentMap, checkedRegions } = quizData;
+    const { quizType, regionMenu, time, open } = this.state;
+    const { quizData, handleAnswer } = this.props;
+    const {
+      markerToggle,
+      currentMap,
+      checkedRegions,
+      quiz,
+      quizGuesses,
+      quizAnswers,
+    } = quizData;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
+    const pauseStyle =
+      quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
 
-    if (nonactive) {
+    if (!quiz) {
       return (
         <QuizMenu isMobile={isMobile} regionMenu={regionMenu}>
           <div>
             <Button
               size={formSize}
-              onClick={() => {
-                handleQuiz(quizType);
-              }}
+              onClick={this.start}
               className="startButton"
             >
               START QUIZ
@@ -161,11 +221,50 @@ class QuizBox extends Component {
       );
     }
     return (
-      <QuestionBox
-        quizType={quizType}
-        quizData={quizData}
-        handleAnswer={handleAnswer}
-      />
+      <TimerStyles>
+        <QuestionBox
+          quizType={quizType}
+          quizData={quizData}
+          handleAnswer={handleAnswer}
+        />
+        <div className="statusBar-timerButtons">
+          <Button
+            size="mini"
+            compact
+            inverted
+            color="red"
+            className="statusBar-stop"
+            icon="stop"
+            onClick={this.close}
+          />
+          <Button
+            size="mini"
+            compact
+            inverted
+            color="blue"
+            icon="pause"
+            onClick={this.pause}
+            style={pauseStyle}
+          />
+          <p>{msToTime(time)}</p>
+        </div>
+        <Modal
+          basic
+          dimmer="blurring"
+          open={open}
+          onClose={this.closeModal}
+          closeOnDimmerClick={false}
+          style={{ textAlign: 'center' }}
+        >
+          <Button
+            inverted
+            color="green"
+            size="massive"
+            content="Resume"
+            onClick={this.closeModal}
+          />
+        </Modal>
+      </TimerStyles>
     );
   }
 }

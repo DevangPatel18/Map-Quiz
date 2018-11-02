@@ -247,16 +247,16 @@ class App extends Component {
         </div>
 
         <QuizBox
-          nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           quizData={{
             quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-            fetchRequests, currentMap, markerToggle, checkedRegions
+            fetchRequests, currentMap, markerToggle, checkedRegions, quiz,
           }}
           handleAnswer={this.handleAnswer}
           setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
           loadData={(...args) => { this.handleQuizDataLoad(...args); }}
           setQuizRegions={(obj) => { this.setQuizRegions(obj)}}
+          closeQuiz={this.handleQuizClose}
         />
 
         <div
@@ -272,10 +272,7 @@ class App extends Component {
         </div>
 
         <StatusBar
-          status={{
-            quiz, quizGuesses, quizAnswers,
-          }}
-          closeQuiz={this.handleQuizClose}
+          status={{ quiz, quizGuesses, quizAnswers }}
         />
 
         <InfoTab
