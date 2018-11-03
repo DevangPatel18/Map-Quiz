@@ -22,6 +22,8 @@ import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
+import ChoroplethToggles from './components/ChoroplethToggles';
+
 import Map from './Map';
 
 class App extends Component {
@@ -280,6 +282,8 @@ class App extends Component {
           geoPaths={geographyPaths}
           loadData={(geo) => { this.handleInfoTabLoad(geo); }}
         />
+
+        <ChoroplethToggles/>
 
         <div {...WheelReact.events}>
           <Map appthis={this} />
