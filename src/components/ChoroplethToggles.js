@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Radio } from 'semantic-ui-react';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 
 class ChoroplethToggles extends Component {
@@ -33,6 +33,9 @@ class ChoroplethToggles extends Component {
 
         <div className="choropanel">
           <h3>Choropleth Toggles</h3>
+          <div className="choropanel-toggles">
+            <Radio toggle label="Population" />
+          </div>
         </div>
       </ChoroplethTogglesStyles>
     );

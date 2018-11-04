@@ -22,6 +22,12 @@ const ChoroplethTogglesStyles = styled.div`
     background: rgba(0, 0, 0, 0.5);
     color: white;
   }
+
+  .ui.toggle.checkbox {
+    background: rgba(255, 255, 255, 0.5);
+    padding: .5em;
+    border-radius: 2em;
+  }
 `;
 
 export default ChoroplethTogglesStyles;

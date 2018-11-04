@@ -286,7 +286,7 @@ class App extends Component {
         <ChoroplethToggles/>
 
         <div {...WheelReact.events}>
-          <Map appthis={this} />
+          <Map props={this} />
         </div>
         <footer><div style={footerStyle}>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>

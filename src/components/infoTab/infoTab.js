@@ -8,7 +8,7 @@ const InfoTab = props => {
     return null;
   }
   const { name, capital, population, area, regionOf } = country;
-  if (!population) {
+  if (!capital) {
     loadData(country);
     return null;
   }
