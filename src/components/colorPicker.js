@@ -13,6 +13,7 @@ const ColorPicker = (state, geo) => {
     activeQuestionNum,
     filterRegions,
     currentMap,
+    choropleth,
   } = state;
   const isSelected = selectedProperties === geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';
@@ -75,7 +76,9 @@ const ColorPicker = (state, geo) => {
     render = filterRegions.indexOf(geo.properties.alpha3Code) !== -1;
   }
 
-  defaultColor = popScale(geo.properties.population)
+  if(choropleth !== 'None'){
+    defaultColor = popScale(geo.properties.population)
+  }
 
   return { defaultColor, hoverColor, pressedColor, render };
 };

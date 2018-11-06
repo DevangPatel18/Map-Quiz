@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
-import { Button, Radio } from 'semantic-ui-react';
+import { Button, Radio, Form } from 'semantic-ui-react';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
+
+const choroToggles = ['None', 'Population'];
 
 class ChoroplethToggles extends Component {
   constructor() {
     super();
     this.state = {
       open: false,
+      checkedChoropleth: 'None',
     };
 
     this.openDrawer = this.openDrawer.bind(this);
+    this.setRadio = this.setRadio.bind(this);
   }
 
   openDrawer() {
     this.setState({ open: !this.state.open });
   }
 
+  setRadio(e, { value }) {
+    const { setChoropleth } = this.props;
+    this.setState({ checkedChoropleth: value });
+    setChoropleth(value);
+  }
+
   render() {
-    const { open } = this.state;
+    const { open, checkedChoropleth } = this.state;
     return (
       <ChoroplethTogglesStyles show={open}>
         <Button
@@ -33,9 +43,19 @@ class ChoroplethToggles extends Component {
 
         <div className="choropanel">
           <h3>Choropleth Toggles</h3>
-          <div className="choropanel-toggles">
-            <Radio toggle label="Population" />
-          </div>
+          <Form>
+            {choroToggles.map(toggle => (
+              <div className="choropanel-toggles" key={toggle}>
+                <Radio
+                  toggle
+                  label={toggle}
+                  value={toggle}
+                  checked={checkedChoropleth === toggle}
+                  onChange={this.setRadio}
+                />
+              </div>
+            ))}
+          </Form>
         </div>
       </ChoroplethTogglesStyles>
     );
