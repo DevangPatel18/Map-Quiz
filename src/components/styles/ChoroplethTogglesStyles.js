@@ -23,10 +23,15 @@ const ChoroplethTogglesStyles = styled.div`
     color: white;
   }
 
+  .choropanel-toggles {
+    padding: 1em 0;
+  }
+
   .ui.toggle.checkbox {
     background: rgba(255, 255, 255, 0.5);
-    padding: .5em;
+    padding: 0.5em;
     border-radius: 2em;
+    width: 11em;
   }
 `;
 

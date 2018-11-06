@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Radio, Form } from 'semantic-ui-react';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 
-const choroToggles = ['None', 'Population'];
+const choroToggles = ['None', 'Population', 'Area', 'Gini'];
 
 class ChoroplethToggles extends Component {
   constructor() {

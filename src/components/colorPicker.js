@@ -1,7 +1,21 @@
-import { scaleSequential, interpolateBlues } from 'd3';
+import {
+  scaleSequential,
+  interpolateBlues,
+  interpolateOranges,
+  interpolatePiYG,
+} from 'd3';
 
-const popScale = scaleSequential(interpolateBlues)
-  .domain([0, 100000000, 1400000000])
+const popScale = scaleSequential(interpolateBlues).domain([
+  0,
+  100000000,
+  1500000000,
+]);
+
+const areaScale = scaleSequential(interpolateOranges).domain([0, 15000000]);
+
+const giniScale = scaleSequential(interpolatePiYG).domain([70, 20]);
+
+// const BaseLog = (y) => Math.log(y) / Math.log(10);
 
 const ColorPicker = (state, geo) => {
   const {
@@ -76,8 +90,22 @@ const ColorPicker = (state, geo) => {
     render = filterRegions.indexOf(geo.properties.alpha3Code) !== -1;
   }
 
-  if(choropleth !== 'None'){
-    defaultColor = popScale(geo.properties.population)
+  if (choropleth !== 'None') {
+    switch (choropleth) {
+      case 'Population':
+        defaultColor = popScale(geo.properties[choropleth.toLowerCase()]);
+        break;
+      case 'Area':
+        defaultColor = areaScale(geo.properties[choropleth.toLowerCase()]);
+        break;
+      case 'Gini':
+        const gini = geo.properties[choropleth.toLowerCase()];
+        if (gini) {
+          defaultColor = giniScale(gini);
+        }
+        break;
+      default:
+    }
   }
 
   return { defaultColor, hoverColor, pressedColor, render };
