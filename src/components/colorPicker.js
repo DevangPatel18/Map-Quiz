@@ -3,19 +3,16 @@ import {
   interpolateBlues,
   interpolateOranges,
   interpolatePiYG,
+  interpolatePurples,
 } from 'd3';
 
-const popScale = scaleSequential(interpolateBlues).domain([
-  0,
-  100000000,
-  1500000000,
-]);
+const popScale = scaleSequential(interpolateBlues).domain([0, 1377000000]);
 
-const areaScale = scaleSequential(interpolateOranges).domain([0, 15000000]);
+const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
 
 const giniScale = scaleSequential(interpolatePiYG).domain([70, 20]);
 
-// const BaseLog = (y) => Math.log(y) / Math.log(10);
+const densityScale = scaleSequential(interpolatePurples).domain([0, 7]);
 
 const ColorPicker = (state, geo) => {
   const {
@@ -104,6 +101,11 @@ const ColorPicker = (state, geo) => {
           defaultColor = giniScale(gini);
         }
         break;
+      case 'Density':
+        const density = geo.properties['population'] / geo.properties['area'];
+        const densityIndex = [25, 50, 75, 100, 200, 300, 1000, 27000];
+        const index = densityIndex.findIndex(x => x > density);
+        defaultColor = densityScale(index);
       default:
     }
   }
