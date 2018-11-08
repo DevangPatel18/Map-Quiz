@@ -1,18 +1,4 @@
-import {
-  scaleSequential,
-  interpolateBlues,
-  interpolateOranges,
-  interpolatePiYG,
-  interpolatePurples,
-} from 'd3';
-
-const popScale = scaleSequential(interpolateBlues).domain([0, 10]);
-
-const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
-
-const giniScale = scaleSequential(interpolatePiYG).domain([70, 20]);
-
-const densityScale = scaleSequential(interpolatePurples).domain([0, 7]);
+import choroplethColor from '../helpers/choroplethFunctions';
 
 const ColorPicker = (state, geo) => {
   const {
@@ -87,32 +73,8 @@ const ColorPicker = (state, geo) => {
     render = filterRegions.indexOf(geo.properties.alpha3Code) !== -1;
   }
 
-  if (choropleth !== 'None') {
-    switch (choropleth) {
-      case 'Population':
-        const population = geo.properties[choropleth.toLowerCase()];
-        const popNum = [1, 5, 10, 20, 30, 40, 50, 100, 200, 1000, 1400].map(
-          x => x * 1000000
-        );
-        const popIndex = popNum.findIndex(x => x > population);
-        defaultColor = popScale(popIndex);
-        break;
-      case 'Area':
-        defaultColor = areaScale(geo.properties[choropleth.toLowerCase()]);
-        break;
-      case 'Gini':
-        const gini = geo.properties[choropleth.toLowerCase()];
-        if (gini) {
-          defaultColor = giniScale(gini);
-        }
-        break;
-      case 'Density':
-        const density = geo.properties['population'] / geo.properties['area'];
-        const densityIndex = [25, 50, 75, 100, 200, 300, 1000, 27000];
-        const index = densityIndex.findIndex(x => x > density);
-        defaultColor = densityScale(index);
-      default:
-    }
+  if (choropleth !== 'None' && !quiz) {
+    defaultColor = choroplethColor(choropleth, geo, defaultColor);
   }
 
   return { defaultColor, hoverColor, pressedColor, render };
