@@ -32,6 +32,7 @@ const ChoroplethTogglesStyles = styled.div`
     padding: 0.5em;
     border-radius: 2em;
     width: 11em;
+    font-weight: 600;
   }
 `;
 

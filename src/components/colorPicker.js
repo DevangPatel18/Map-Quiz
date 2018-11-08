@@ -6,7 +6,7 @@ import {
   interpolatePurples,
 } from 'd3';
 
-const popScale = scaleSequential(interpolateBlues).domain([0, 1377000000]);
+const popScale = scaleSequential(interpolateBlues).domain([0, 10]);
 
 const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
 
@@ -90,7 +90,12 @@ const ColorPicker = (state, geo) => {
   if (choropleth !== 'None') {
     switch (choropleth) {
       case 'Population':
-        defaultColor = popScale(geo.properties[choropleth.toLowerCase()]);
+        const population = geo.properties[choropleth.toLowerCase()];
+        const popNum = [1, 5, 10, 20, 30, 40, 50, 100, 200, 1000, 1400].map(
+          x => x * 1000000
+        );
+        const popIndex = popNum.findIndex(x => x > population);
+        defaultColor = popScale(popIndex);
         break;
       case 'Area':
         defaultColor = areaScale(geo.properties[choropleth.toLowerCase()]);
