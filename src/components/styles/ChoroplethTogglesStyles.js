@@ -43,9 +43,21 @@ const ChoroplethTogglesStyles = styled.div`
     background: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 1rem;
+    letter-spacing: 1px;
+
+    .legendTitle {
+      margin-bottom: 0.7em;
+      font-weight: 600;
+    }
+
+    .legendItem {
+      display: flex;
+      flex-direction: row;
+    }
 
     .legendColor {
       margin-right: 5px;
+      width: 2em;
     }
   }
 `;

@@ -29,7 +29,7 @@ class ChoroplethToggles extends Component {
 
   createLegend() {
     const { checkedChoropleth } = this.state;
-    const { scaleFunc, bounds } = choroParams[checkedChoropleth];
+    const { scaleFunc, bounds, units } = choroParams[checkedChoropleth];
     let legendsMap;
     const grouped = bounds.length > 2;
 
@@ -43,20 +43,23 @@ class ChoroplethToggles extends Component {
       }
     }
 
-    return legendsMap.map((x, i) => {
-      return (
-        <div key={x} style={{ display: 'flex', flexDirection: 'row' }}>
-          <div
-            className="legendColor"
-            style={{
-              background: `${scaleFunc(grouped ? i : x)}`,
-              width: '2em',
-            }}
-          />
-          {x.toLocaleString()}
-        </div>
-      );
+    legendsMap = legendsMap.map((x, i) => {
+      <div key={x} className="legendItem">
+        <div
+          className="legendColor"
+          style={{ background: `${scaleFunc(grouped ? i : x)}` }}
+        />
+        {x.toLocaleString()}
+      </div>;
     });
+
+    legendsMap.unshift(
+      <div key={checkedChoropleth} className="legendTitle">
+        {checkedChoropleth}
+        {units ? ` - ${units}` : ''}
+      </div>
+    );
+    return legendsMap;
   }
 
   render() {

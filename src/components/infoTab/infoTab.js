@@ -28,10 +28,7 @@ const InfoTab = props => {
         <li>{name}</li>
         <li>{capitalStr}</li>
         <li>{populationStr}</li>
-        <li>
-          {areaStr}
-          <sup>2</sup>
-        </li>
+        <li>{areaStr}²</li>
         {regionOf !== '' ? <li>{regionOfStr}</li> : ''}
       </div>
     </InfoTabStyles>

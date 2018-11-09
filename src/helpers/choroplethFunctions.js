@@ -17,18 +17,22 @@ const choroParams = {
     bounds: [1, 5, 10, 20, 30, 40, 50, 100, 200, 1000, 1400].map(
       x => x * 1000000
     ),
+    units: 'people',
   },
   Area: {
     scaleFunc: areaScale,
     bounds: [0, 17000000],
+    units: 'km²',
   },
   Gini: {
     scaleFunc: giniScale,
     bounds: [70, 20],
+    units: '',
   },
   Density: {
     scaleFunc: densityScale,
     bounds: [25, 50, 75, 100, 200, 300, 1000, 27000],
+    units: 'people / km²',
   },
 };
 
