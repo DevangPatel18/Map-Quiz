@@ -20,11 +20,11 @@ const choroParams = {
   },
   Area: {
     scaleFunc: areaScale,
-    bounds: null,
+    bounds: [0, 17000000],
   },
   Gini: {
     scaleFunc: giniScale,
-    bounds: null,
+    bounds: [70, 20],
   },
   Density: {
     scaleFunc: densityScale,
@@ -38,7 +38,7 @@ const choroplethColor = (choropleth, geo, defaultColor) => {
   const choroplethNum = geo.properties[choropleth.toLowerCase()];
 
   if (choroplethNum) {
-    if (bounds) {
+    if (bounds.length > 2) {
       const choroplethIndex = bounds.findIndex(x => x > choroplethNum);
       return scaleFunc(choroplethIndex);
     }
@@ -47,4 +47,4 @@ const choroplethColor = (choropleth, geo, defaultColor) => {
   return defaultColor;
 };
 
-export default choroplethColor;
+export { choroParams, choroplethColor };

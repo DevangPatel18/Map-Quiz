@@ -1,4 +1,4 @@
-import choroplethColor from '../helpers/choroplethFunctions';
+import { choroplethColor } from '../helpers/choroplethFunctions';
 
 const ColorPicker = (state, geo) => {
   const {

@@ -52,6 +52,9 @@ export default function loadPaths() {
               geography.properties[key] = countryData[key];
             });
 
+            geography.properties.density =
+              geography.properties.population / geography.properties.area;
+
             if (countryData.regionOf) {
               geography.properties.regionOf = countryData.regionOf;
             }

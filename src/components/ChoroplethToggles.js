@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Radio, Form } from 'semantic-ui-react';
+import { choroParams } from '../helpers/choroplethFunctions';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 
 const choroToggles = ['None', 'Population', 'Area', 'Gini', 'Density'];
@@ -26,8 +27,45 @@ class ChoroplethToggles extends Component {
     setChoropleth(value);
   }
 
+  createLegend() {
+    const { checkedChoropleth } = this.state;
+    const { scaleFunc, bounds } = choroParams[checkedChoropleth];
+    let legendsMap;
+    const grouped = bounds.length > 2;
+
+    if (grouped) {
+      legendsMap = bounds;
+    } else {
+      const bound = (bounds[1] - bounds[0]) / 10;
+      legendsMap = [bounds[0]];
+      for (let i = 0; i < 10; i++) {
+        legendsMap.push(legendsMap[i] + bound);
+      }
+    }
+
+    return legendsMap.map((x, i) => {
+      return (
+        <div key={x} style={{ display: 'flex', flexDirection: 'row' }}>
+          <div
+            className="legendColor"
+            style={{
+              background: `${scaleFunc(grouped ? i : x)}`,
+              width: '2em',
+            }}
+          />
+          {x.toLocaleString()}
+        </div>
+      );
+    });
+  }
+
   render() {
     const { open, checkedChoropleth } = this.state;
+    let legend;
+    if (checkedChoropleth !== 'None') {
+      legend = this.createLegend();
+    }
+
     return (
       <ChoroplethTogglesStyles show={open}>
         <Button
@@ -57,6 +95,10 @@ class ChoroplethToggles extends Component {
             ))}
           </Form>
         </div>
+
+        {checkedChoropleth !== 'None' && (
+          <div className="chorolegend">{legend}</div>
+        )}
       </ChoroplethTogglesStyles>
     );
   }

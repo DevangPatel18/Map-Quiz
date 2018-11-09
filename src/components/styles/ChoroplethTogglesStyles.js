@@ -34,6 +34,20 @@ const ChoroplethTogglesStyles = styled.div`
     width: 11em;
     font-weight: 600;
   }
+
+  .chorolegend {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    padding: 1em;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 1rem;
+
+    .legendColor {
+      margin-right: 5px;
+    }
+  }
 `;
 
 export default ChoroplethTogglesStyles;
