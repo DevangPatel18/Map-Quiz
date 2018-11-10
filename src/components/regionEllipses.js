@@ -72,7 +72,7 @@ export default function regionEllipses() {
         <Marker
           key={alpha3Code}
           marker={marker}
-          style={currentMap !== 'Caribbean' ? {
+          style={currentMap !== 'Caribbean' && {
             default: {
               fill: defaultColor,
               transition: 'fill .5s',
@@ -85,9 +85,9 @@ export default function regionEllipses() {
               fill: pressedColor,
               transition: 'fill .5s',
             },
-          } : ''}
+          }}
         >
-          {currentMap === 'Caribbean' ? (
+          {currentMap === 'Caribbean' && (
             <line
               x1="0"
               y1="0"
@@ -96,7 +96,7 @@ export default function regionEllipses() {
               stroke="black"
               strokeWidth={0.3}
             />
-          ) : ''}
+          )}
           {currentMap === 'Caribbean' ? (
             <circle
               cx={dx / 2}

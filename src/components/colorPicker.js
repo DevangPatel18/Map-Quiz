@@ -13,6 +13,7 @@ const ColorPicker = (state, geo) => {
     choropleth,
   } = state;
   const isSelected = selectedProperties === geo.properties;
+  const { alpha3Code } = geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';
   let hoverColor = 'rgba(105, 105, 105, .6)';
   let pressedColor = 'rgba(105, 105, 105, 1)';
@@ -23,12 +24,12 @@ const ColorPicker = (state, geo) => {
   }
 
   if (quiz === true) {
-    const geoQuizIdx = quizAnswers.indexOf(geo.properties.alpha3Code);
+    const geoQuizIdx = quizAnswers.indexOf(alpha3Code);
 
     // Fills country with name input request as yellow
     if (
       disableInfoClick &&
-      quizAnswers[activeQuestionNum] === geo.properties.alpha3Code
+      quizAnswers[activeQuestionNum] === alpha3Code
     ) {
       defaultColor = 'rgb(255, 255, 0)';
       hoverColor = 'rgb(255, 255, 0)';
@@ -48,7 +49,7 @@ const ColorPicker = (state, geo) => {
     // Fills incorrect country clicks red
     if (
       !disableInfoClick &&
-      geo.properties.alpha3Code !== quizAnswers[activeQuestionNum]
+      alpha3Code !== quizAnswers[activeQuestionNum]
     ) {
       pressedColor = 'rgb(255, 69, 0)';
     }
@@ -56,7 +57,7 @@ const ColorPicker = (state, geo) => {
     // Fills correct country clicks green
     if (
       !disableInfoClick &&
-      geo.properties.alpha3Code === quizAnswers[activeQuestionNum]
+      alpha3Code === quizAnswers[activeQuestionNum]
     ) {
       pressedColor = 'rgb(94, 237, 94)';
     }
@@ -70,7 +71,7 @@ const ColorPicker = (state, geo) => {
 
   let render = true;
   if (currentMap !== 'world') {
-    render = filterRegions.indexOf(geo.properties.alpha3Code) !== -1;
+    render = filterRegions.indexOf(alpha3Code) !== -1;
   }
 
   if (choropleth !== 'None' && !quiz) {

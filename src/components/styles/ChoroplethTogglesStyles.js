@@ -6,9 +6,6 @@ const ChoroplethTogglesStyles = styled.div`
     left: 1em;
     top: 50%;
     transform: translateY(-50%);
-
-    :hover {
-    }
   }
 
   .choropanel {

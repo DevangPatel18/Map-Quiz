@@ -43,15 +43,15 @@ class ChoroplethToggles extends Component {
       }
     }
 
-    legendsMap = legendsMap.map((x, i) => {
+    legendsMap = legendsMap.map((x, i) => (
       <div key={x} className="legendItem">
         <div
           className="legendColor"
           style={{ background: `${scaleFunc(grouped ? i : x)}` }}
         />
         {x.toLocaleString()}
-      </div>;
-    });
+      </div>
+    ));
 
     legendsMap.unshift(
       <div key={checkedChoropleth} className="legendTitle">
