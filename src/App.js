@@ -21,7 +21,9 @@ import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import loadPaths from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
-import { pauseQuiz, resumeQuiz } from './components/statusBar/statusBarFunctions';
+import { alpha3CodesSov } from './assets/regionAlpha3Codes';
+import ChoroplethToggles from './components/ChoroplethToggles';
+
 import Map from './Map';
 
 class App extends Component {
@@ -46,12 +48,20 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       currentMap: 'world',
-      time: 0,
-      timerOn: false,
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
       markerToggle: '',
+      checkedRegions: {
+        'North & Central America': true,
+        'South America': true,
+        Caribbean: true,
+        Europe: true,
+        Africa: true,
+        Asia: true,
+        Oceania: true,
+      },
+      choropleth: 'None',
     };
 
     WheelReact.config({
@@ -89,8 +99,8 @@ class App extends Component {
     this.loadPaths = loadPaths.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.pauseQuiz = pauseQuiz.bind(this);
-    this.resumeQuiz = resumeQuiz.bind(this);
+    this.setQuizRegions = this.setQuizRegions.bind(this);
+    this.setChoropleth = this.setChoropleth.bind(this);
   }
 
   componentDidMount() {
@@ -188,8 +198,6 @@ class App extends Component {
       activeQuestionNum: null,
       disableInfoClick: false,
       selectedProperties: '',
-      time: 0,
-      timerOn: false,
     });
   }
 
@@ -198,15 +206,34 @@ class App extends Component {
       () => { this.setState({ disableOptimization: false }); });
   }
 
+  setQuizRegions(value = null, checked = null) {
+    this.setState(
+      prevState => {
+        let checkedRegions = {...prevState.checkedRegions};
+        if (value) {
+          checkedRegions[value] = !checkedRegions[value];
+        }
+
+        const filterRegions = Object.keys(checkedRegions)
+          .filter(region => checkedRegions[region])
+          .map(region => alpha3CodesSov[region])
+          .reduce((a,b) => a.concat(b), []);
+        return { checkedRegions, filterRegions };
+      }
+    );
+  }
+
+  setChoropleth(choroplethType) {
+    this.handleMapRefresh({choropleth: choroplethType});
+  }
+
   render() {
     const {
       quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-      selectedProperties, time, fetchRequests, currentMap, markerToggle,
+      selectedProperties, fetchRequests, currentMap, markerToggle,
+      checkedRegions,
     } = this.state;
 
-    if (quizGuesses.length === quizAnswers.length) {
-      clearInterval(this.timer);
-    }
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
     return (
@@ -228,14 +255,16 @@ class App extends Component {
         </div>
 
         <QuizBox
-          nonactive={!quiz}
           handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
           quizData={{
-            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum, fetchRequests, currentMap, markerToggle,
+            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
+            fetchRequests, currentMap, markerToggle, checkedRegions, quiz,
           }}
           handleAnswer={this.handleAnswer}
           setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
           loadData={(...args) => { this.handleQuizDataLoad(...args); }}
+          setQuizRegions={(obj) => { this.setQuizRegions(obj)}}
+          closeQuiz={this.handleQuizClose}
         />
 
         <div
@@ -251,12 +280,7 @@ class App extends Component {
         </div>
 
         <StatusBar
-          status={{
-            quiz, quizGuesses, quizAnswers, time,
-          }}
-          closeQuiz={this.handleQuizClose}
-          pauseQuiz={this.pauseQuiz}
-          resumeQuiz={this.resumeQuiz}
+          status={{ quiz, quizGuesses, quizAnswers }}
         />
 
         <InfoTab
@@ -265,8 +289,12 @@ class App extends Component {
           loadData={(geo) => { this.handleInfoTabLoad(geo); }}
         />
 
+        <ChoroplethToggles
+          setChoropleth={this.setChoropleth}
+        />
+
         <div {...WheelReact.events}>
-          <Map appthis={this} />
+          <Map props={this} />
         </div>
         <footer><div style={footerStyle}>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
       </div>

@@ -10,6 +10,12 @@ const QuizMenu = styled.div`
   min-height: 130px;
   border-radius: 1rem 0 1rem 1rem;
   background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: row-reverse;
+
+  .ui.button.regionDrawer {
+    margin: 1em 0 0;
+  }
 
   .ui.button {
     margin-bottom: 1em;
@@ -25,6 +31,35 @@ const QuizMenu = styled.div`
   &&& .checked label {
     color: white;
     font-size: ${props => (props.isMobile ? '.8em' : '1.1em')};
+  }
+
+  &&&& .fmRegionSelect label,
+  &&&& .fmRegionSelect label:hover,
+  &&&& .fmRegionSelect .checked label {
+    color: white;
+    font-size: ${props => (props.isMobile ? '.6em' : '.9em')};
+  }
+
+  && .fmRegionSelect {
+    display: ${props => (props.regionMenu ? 'flex' : 'none')};
+    flex-direction: column;
+    justify-content: center;
+    margin-right: ${props => (props.isMobile ? '.6em' : '1.9em')};
+    width: auto;
+
+    .field {
+      margin: 0;
+
+      label {
+        display: flex;
+        align-items: center;
+        margin: 0;
+
+        input {
+          margin-right: 0.4em;
+        }
+      }
+    }
   }
 
   .App-quiz-toggle {

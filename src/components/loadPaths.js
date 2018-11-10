@@ -6,7 +6,6 @@ import {
   SeparateRegions,
 } from '../helpers/attributeFix';
 import capitalData from '../assets/country_capitals';
-import { alpha3Codes } from '../assets/regionAlpha3Codes';
 import { geoPath } from 'd3-geo';
 
 export default function loadPaths() {
@@ -17,7 +16,7 @@ export default function loadPaths() {
     }
     response.json().then(worldData => {
       fetch(
-        'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area'
+        'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini'
       ).then(restCountries => {
         if (restCountries.status !== 200) {
           console.log(`There was a problem: ${restCountries.status}`);
@@ -37,6 +36,8 @@ export default function loadPaths() {
             'alpha3Code',
             'alpha2Code',
             'area',
+            'population',
+            'gini',
           ];
 
           DataFix(data, restData, capitalMarkers);
@@ -50,6 +51,9 @@ export default function loadPaths() {
             essentialData.forEach(key => {
               geography.properties[key] = countryData[key];
             });
+
+            geography.properties.density =
+              geography.properties.population / geography.properties.area;
 
             if (countryData.regionOf) {
               geography.properties.regionOf = countryData.regionOf;
@@ -98,14 +102,13 @@ export default function loadPaths() {
           CountryMarkersFix(countryMarkers);
           CapitalMarkersFix(capitalMarkers);
 
-          const filterRegions = alpha3Codes.world;
-
           this.setState({
             geographyPaths: data,
             countryMarkers,
             capitalMarkers,
-            filterRegions,
           });
+
+          this.setQuizRegions();
         });
       });
     });

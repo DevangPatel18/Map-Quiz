@@ -8,7 +8,7 @@ const InfoTab = props => {
     return null;
   }
   const { name, capital, population, area, regionOf } = country;
-  if (!population) {
+  if (!capital) {
     loadData(country);
     return null;
   }
@@ -28,10 +28,7 @@ const InfoTab = props => {
         <li>{name}</li>
         <li>{capitalStr}</li>
         <li>{populationStr}</li>
-        <li>
-          {areaStr}
-          <sup>2</sup>
-        </li>
+        <li>{areaStr}²</li>
         {regionOf !== '' ? <li>{regionOfStr}</li> : ''}
       </div>
     </InfoTabStyles>

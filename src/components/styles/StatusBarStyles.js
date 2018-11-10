@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StatusBarStyles = styled.div`
   position: absolute;
@@ -35,16 +35,6 @@ const StatusBarStyles = styled.div`
     .bar {
       transition-duration: 1s;
     }
-  }
-
-  .statusBar-timerButtons {
-    position: absolute;
-    left: 1em;
-    top: 1em;
-  }
-
-  .ui.inverted.red.button {
-    margin-right: 1em;
   }
 `;
 

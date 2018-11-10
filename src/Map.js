@@ -14,7 +14,7 @@ import ColorPicker from './components/colorPicker';
 
 const doubleClick = false;
 
-const Map = ({ appthis }) => {
+const Map = ({ props }) => {
   const {
     defaultZoom,
     center,
@@ -24,7 +24,7 @@ const Map = ({ appthis }) => {
     geographyPaths,
     disableOptimization,
     currentMap,
-  } = appthis.state;
+  } = props.state;
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -35,15 +35,15 @@ const Map = ({ appthis }) => {
         y: center[1],
       }}
       style={{
-        zoom: spring(zoom, { stiffness: 210, damping: 20 }),
-        x: spring(center[0], { stiffness: 210, damping: 20 }),
-        y: spring(center[1], { stiffness: 210, damping: 20 }),
+        zoom: spring(zoom, { stiffness: 250, damping: 25 }),
+        x: spring(center[0], { stiffness: 250, damping: 25 }),
+        y: spring(center[1], { stiffness: 250, damping: 25 }),
       }}
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => appthis._wrapper = wrapper}
-          onDoubleClick={doubleClick ? appthis.handleDoubleClick : null}
+          ref={wrapper => props._wrapper = wrapper}
+          onDoubleClick={doubleClick ? props.handleDoubleClick : null}
         >
           <ComposableMap
             projectionConfig={{ scale, rotation }}
@@ -57,12 +57,12 @@ const Map = ({ appthis }) => {
             <ZoomableGroup
               center={[x, y]}
               zoom={zoom}
-              // onMoveStart={appthis.handleMoveStart}
-              // onMoveEnd={appthis.handleMoveEnd}
+              // onMoveStart={props.handleMoveStart}
+              // onMoveEnd={props.handleMoveEnd}
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(appthis.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(props.state, geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
@@ -93,7 +93,7 @@ const Map = ({ appthis }) => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={appthis.handleCountryClick}
+                      onClick={props.handleCountryClick}
                       fill="white"
                       stroke="black"
                       strokeWidth={0.05}
@@ -115,8 +115,8 @@ const Map = ({ appthis }) => {
                   );
                 })}
               </Geographies>
-              <Markers>{ appthis.regionEllipses() }</Markers>
-              <Markers>{ (currentMap !== 'world') && appthis.countryLabels() }</Markers>
+              <Markers>{ props.regionEllipses() }</Markers>
+              <Markers>{ (currentMap !== 'world') && props.countryLabels() }</Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>
