@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Radio, Form } from 'semantic-ui-react';
 import { choroParams } from '../helpers/choroplethFunctions';
+import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 
 const choroToggles = ['None', 'Population', 'Area', 'Gini', 'Density'];
@@ -68,14 +69,16 @@ class ChoroplethToggles extends Component {
     if (checkedChoropleth !== 'None') {
       legend = this.createLegend();
     }
+    const radioSize = isMobile ? 'mini' : 'small';
 
     return (
-      <ChoroplethTogglesStyles show={open}>
+      <ChoroplethTogglesStyles show={open} isMobile={isMobile}>
         <Button
           className="drawer-button"
           icon={open ? 'toggle on' : 'toggle off'}
           circular
           toggle
+          size={radioSize}
           active={open}
           onClick={this.openDrawer}
           content={open ? 'Choropleth Toggles' : null}
@@ -83,12 +86,14 @@ class ChoroplethToggles extends Component {
         />
 
         <div className="choropanel">
-          <h3>Choropleth Toggles</h3>
+          <p>Choropleth Toggles</p>
           <Form>
             {choroToggles.map(toggle => (
               <div className="choropanel-toggles" key={toggle}>
                 <Radio
                   toggle
+                  fitted
+                  size={radioSize}
                   label={toggle}
                   value={toggle}
                   checked={checkedChoropleth === toggle}
