@@ -23,7 +23,7 @@ import loadPaths from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
-
+import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import Map from './Map';
 
 class App extends Component {
@@ -267,9 +267,9 @@ class App extends Component {
           closeQuiz={this.handleQuizClose}
         />
 
-        <div
-          className="dropDownSelections"
-          style={quiz ? { top: '-5em' } : null}
+        <DropdownSelectionStyles
+          quiz={quiz}
+          isMobile={isMobile}
         >
           <CountrySearch
             projection={this.projection}
@@ -277,7 +277,7 @@ class App extends Component {
             mapRefresh={(arg) => { this.handleMapRefresh(arg); }}
           />
           <RegionButtons regionFunc={this.handleRegionSelect} />
-        </div>
+        </DropdownSelectionStyles>
 
         <StatusBar
           status={{ quiz, quizGuesses, quizAnswers }}
