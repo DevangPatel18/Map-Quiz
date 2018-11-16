@@ -51,18 +51,11 @@ class QuizBox extends Component {
   }
 
   handleLabelToggle(marker) {
-    const { setToggle, loadData, quizData } = this.props;
-    const { fetchRequests, currentMap, markerToggle } = quizData;
+    const { setToggle, quizData } = this.props;
+    const { markerToggle } = quizData;
     const parentMarker =
       markerToggle === '' || marker !== markerToggle ? marker : '';
-    if (
-      parentMarker === 'capital' &&
-      !fetchRequests.includes(`${currentMap}capital`)
-    ) {
-      loadData('click_capital', true);
-    } else {
-      setToggle(parentMarker);
-    }
+    setToggle(parentMarker);
   }
 
   handleRegionMenu(display) {

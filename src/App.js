@@ -183,7 +183,7 @@ class App extends Component {
   handleQuiz(quizType) {
     const { currentMap, fetchRequests } = this.state;
     if (
-      quizType === 'click_name' ||
+      quizType !== 'type_name' ||
       fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))
     ) {
       this.handleQuizState(quizType);
@@ -281,9 +281,6 @@ class App extends Component {
           handleAnswer={this.handleAnswer}
           setToggle={marker => {
             this.setState({ markerToggle: marker });
-          }}
-          loadData={(...args) => {
-            this.handleQuizDataLoad(...args);
           }}
           setQuizRegions={obj => {
             this.setQuizRegions(obj);
