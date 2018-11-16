@@ -19,7 +19,7 @@ import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
-import loadPaths from './components/loadPaths';
+import { loadPaths, loadData } from './components/loadPaths';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -97,6 +97,7 @@ class App extends Component {
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
     this.loadPaths = loadPaths.bind(this);
+    this.loadData = loadData.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.setQuizRegions = this.setQuizRegions.bind(this);
@@ -105,8 +106,8 @@ class App extends Component {
 
   componentDidMount() {
     this.loadPaths();
-    window.addEventListener("orientationchange", this.toggleOrientation);
-    window.addEventListener("resize", this.adjustMapSize);
+    window.addEventListener('orientationchange', this.toggleOrientation);
+    window.addEventListener('resize', this.adjustMapSize);
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -115,14 +116,14 @@ class App extends Component {
       const dimensions = height > width ? [310, 551] : [980, 551];
       this.setState({ dimensions });
     } else {
-      this.adjustMapSize()
+      this.adjustMapSize();
     }
   }
 
   componentWillUnmount() {
     WheelReact.clearTimeout();
-    window.removeEventListener("orientationchange", this.toggleOrientation);
-    window.removeEventListener("resize", this.adjustMapSize);
+    window.removeEventListener('orientationchange', this.toggleOrientation);
+    window.removeEventListener('resize', this.adjustMapSize);
   }
 
   projection() {
@@ -145,11 +146,11 @@ class App extends Component {
     const ratio = width / height;
     let newDimensions;
     if (ratio > 1.43) {
-      newDimensions = [980, 551]
-    } else if (ratio > .85) {
-      newDimensions = [645, 551]
+      newDimensions = [980, 551];
+    } else if (ratio > 0.85) {
+      newDimensions = [645, 551];
     } else {
-      newDimensions = [420, 551]
+      newDimensions = [420, 551];
     }
     if (newDimensions[0] !== dimensions[0]) {
       this.handleMapRefresh({ dimensions: newDimensions });
@@ -181,8 +182,10 @@ class App extends Component {
 
   handleQuiz(quizType) {
     const { currentMap, fetchRequests } = this.state;
-    if ((quizType === 'click_name')
-      || fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))) {
+    if (
+      quizType === 'click_name' ||
+      fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))
+    ) {
       this.handleQuizState(quizType);
     } else {
       this.handleQuizDataLoad(quizType);
@@ -202,35 +205,41 @@ class App extends Component {
   }
 
   handleMapRefresh(args) {
-    this.setState({ ...args, disableOptimization: true },
-      () => { this.setState({ disableOptimization: false }); });
+    this.setState({ ...args, disableOptimization: true }, () => {
+      this.setState({ disableOptimization: false });
+    });
   }
 
   setQuizRegions(value = null, checked = null) {
-    this.setState(
-      prevState => {
-        let checkedRegions = {...prevState.checkedRegions};
-        if (value) {
-          checkedRegions[value] = !checkedRegions[value];
-        }
-
-        const filterRegions = Object.keys(checkedRegions)
-          .filter(region => checkedRegions[region])
-          .map(region => alpha3CodesSov[region])
-          .reduce((a,b) => a.concat(b), []);
-        return { checkedRegions, filterRegions };
+    this.setState(prevState => {
+      let checkedRegions = { ...prevState.checkedRegions };
+      if (value) {
+        checkedRegions[value] = !checkedRegions[value];
       }
-    );
+
+      const filterRegions = Object.keys(checkedRegions)
+        .filter(region => checkedRegions[region])
+        .map(region => alpha3CodesSov[region])
+        .reduce((a, b) => a.concat(b), []);
+      return { checkedRegions, filterRegions };
+    });
   }
 
   setChoropleth(choroplethType) {
-    this.handleMapRefresh({choropleth: choroplethType});
+    this.handleMapRefresh({ choropleth: choroplethType });
   }
 
   render() {
     const {
-      quiz, quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-      selectedProperties, fetchRequests, currentMap, markerToggle,
+      quiz,
+      quizAnswers,
+      quizGuesses,
+      geographyPaths,
+      activeQuestionNum,
+      selectedProperties,
+      fetchRequests,
+      currentMap,
+      markerToggle,
       checkedRegions,
     } = this.state;
 
@@ -241,10 +250,10 @@ class App extends Component {
         {!quiz && (
           <header className="App-header">
             <h1 className="App-title">Map Quiz</h1>
-          </header>)
-        }
+          </header>
+        )}
 
-        {isMobile && <MobileMessage/>}
+        {isMobile && <MobileMessage />}
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
@@ -255,47 +264,58 @@ class App extends Component {
         </div>
 
         <QuizBox
-          handleQuiz={(quizType) => { this.handleQuiz(quizType); }}
+          handleQuiz={quizType => {
+            this.handleQuiz(quizType);
+          }}
           quizData={{
-            quizAnswers, quizGuesses, geographyPaths, activeQuestionNum,
-            fetchRequests, currentMap, markerToggle, checkedRegions, quiz,
+            quizAnswers,
+            quizGuesses,
+            geographyPaths,
+            activeQuestionNum,
+            fetchRequests,
+            currentMap,
+            markerToggle,
+            checkedRegions,
+            quiz,
           }}
           handleAnswer={this.handleAnswer}
-          setToggle={(marker) => { this.setState({ markerToggle: marker }); }}
-          loadData={(...args) => { this.handleQuizDataLoad(...args); }}
-          setQuizRegions={(obj) => { this.setQuizRegions(obj)}}
+          setToggle={marker => {
+            this.setState({ markerToggle: marker });
+          }}
+          loadData={(...args) => {
+            this.handleQuizDataLoad(...args);
+          }}
+          setQuizRegions={obj => {
+            this.setQuizRegions(obj);
+          }}
           closeQuiz={this.handleQuizClose}
         />
 
-        <DropdownSelectionStyles
-          quiz={quiz}
-          isMobile={isMobile}
-        >
+        <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
           <CountrySearch
             projection={this.projection}
             state={this.state}
-            mapRefresh={(arg) => { this.handleMapRefresh(arg); }}
+            mapRefresh={arg => {
+              this.handleMapRefresh(arg);
+            }}
           />
           <RegionButtons regionFunc={this.handleRegionSelect} />
         </DropdownSelectionStyles>
 
-        <StatusBar
-          status={{ quiz, quizGuesses, quizAnswers }}
-        />
+        <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />
 
-        <InfoTab
-          country={selectedProperties}
-          geoPaths={geographyPaths}
-        />
+        <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
 
-        <ChoroplethToggles
-          setChoropleth={this.setChoropleth}
-        />
+        <ChoroplethToggles setChoropleth={this.setChoropleth} />
 
         <div {...WheelReact.events}>
           <Map props={this} />
         </div>
-        <footer><div style={footerStyle}>Copyright © 2018 Devang Patel. All rights reserved.</div></footer>
+        <footer>
+          <div style={footerStyle}>
+            Copyright © 2018 Devang Patel. All rights reserved.
+          </div>
+        </footer>
       </div>
     );
   }

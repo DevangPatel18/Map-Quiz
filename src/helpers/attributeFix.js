@@ -1,8 +1,7 @@
 import { moroccoGeo, westernSaharaGeo } from './borderUpdate'
 
 // Change entries of data object
-const DataFix = (geoPath, data, capitalMarkers) => {
-  const geographyPath = geoPath;
+const DataFix = (data, capitalMarkers) => {
   const countryData = data;
   const capitalMarkersData = capitalMarkers;
 
@@ -73,49 +72,6 @@ const DataFix = (geoPath, data, capitalMarkers) => {
     countryData.find(x => x.alpha3Code === obj.alpha)[obj.attribute] = obj.value;
   });
 
-  // Create geography paths for regions of France
-  const france = geographyPath.find(x => x.id === '250');
-  const frenchguiana = JSON.parse(JSON.stringify(france));
-  const guadeloupe = JSON.parse(JSON.stringify(france));
-  const martinique = JSON.parse(JSON.stringify(france));
-  const mayotte = JSON.parse(JSON.stringify(france));
-  const reunion = JSON.parse(JSON.stringify(france));
-  frenchguiana.id = '254';
-  guadeloupe.id = '312';
-  martinique.id = '474';
-  mayotte.id = '175';
-  reunion.id = '638';
-
-  // Create geography path for Bonaire
-  const netherlands = geographyPath.find(x => x.id === '528');
-  const bonaire = JSON.parse(JSON.stringify(netherlands));
-  bonaire.id = '535';
-
-  // Set numericCode for Christmas Island
-  geographyPath[98].id = '162';
-  const cocos = JSON.parse(JSON.stringify(geographyPath[98]));
-  cocos.id = '166';
-
-  // Create geography path for Svalbard
-  const norway = geographyPath.find(x => x.id === '578');
-  const svalbard = JSON.parse(JSON.stringify(norway));
-  svalbard.id = '744';
-
-  // Create geography path for Tokelau
-  const newzealand = geographyPath.find(x => x.id === '554');
-  const tokelau = JSON.parse(JSON.stringify(newzealand));
-  tokelau.id = '772';
-
-  geographyPath.push(
-    frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, cocos, svalbard, tokelau,
-  );
-
-  // Remove Ashmore Reef to prevent extra Australia label
-  geographyPath.splice(11, 1);
-
-  // Set numericCode for Kosovo
-  geographyPath[117].id = '999';
-
   // Add capitals for Overseas regions
   const extraCapitals = [
     { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
@@ -146,11 +102,76 @@ const DataFix = (geoPath, data, capitalMarkers) => {
   };
 
   Object.keys(overseasRegions).forEach((countryAlpha) => {
-    // for (const regionAlpha of overseasRegions[countryAlpha]) {
     overseasRegions[countryAlpha].forEach((regionAlpha) => {
       countryData.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
     });
   });
+}
+
+const GeoPathsMod = (geoPath) => {
+  const geographyPath = geoPath;
+
+  // Create geography paths for regions of France
+  const france = geographyPath.find(x => x.id === '250');
+  const frenchguiana = JSON.parse(JSON.stringify(france));
+  const guadeloupe = JSON.parse(JSON.stringify(france));
+  const martinique = JSON.parse(JSON.stringify(france));
+  const mayotte = JSON.parse(JSON.stringify(france));
+  const reunion = JSON.parse(JSON.stringify(france));
+  frenchguiana.id = '254';
+  guadeloupe.id = '312';
+  martinique.id = '474';
+  mayotte.id = '175';
+  reunion.id = '638';
+
+  const franceCoords = france.geometry.coordinates.splice(0, 7);
+  reunion.geometry.coordinates = [franceCoords[0]];
+  mayotte.geometry.coordinates = [franceCoords[1]];
+  frenchguiana.geometry.coordinates = [franceCoords[2]];
+  martinique.geometry.coordinates = [franceCoords[3]];
+  guadeloupe.geometry.coordinates = franceCoords.slice(4);
+
+  // Create geography path for Bonaire
+  const netherlands = geographyPath.find(x => x.id === '528');
+  const bonaire = JSON.parse(JSON.stringify(netherlands));
+  bonaire.id = '535';
+
+  const coordsNLD = netherlands.geometry.coordinates.splice(0, 3);
+  bonaire.geometry.coordinates = coordsNLD;
+
+  // Create geography path for Cocos and set numericCode for Christmas Island 
+  geographyPath[98].id = '162';
+  const cocos = JSON.parse(JSON.stringify(geographyPath[98]));
+  cocos.id = '166';
+
+  const coordsCXR = geographyPath[98].geometry.coordinates.splice(0, 2);
+  cocos.geometry.coordinates = coordsCXR;
+
+  // Create geography path for Svalbard
+  const norway = geographyPath.find(x => x.id === '578');
+  const svalbard = JSON.parse(JSON.stringify(norway));
+  svalbard.id = '744';
+
+  const coordsNOR = norway.geometry.coordinates.splice(22, 10);
+  svalbard.geometry.coordinates = coordsNOR;
+
+  // Create geography path for Tokelau
+  const newzealand = geographyPath.find(x => x.id === '554');
+  const tokelau = JSON.parse(JSON.stringify(newzealand));
+  tokelau.id = '772';
+
+  const coordsNZL = newzealand.geometry.coordinates.splice(11, 2);
+  tokelau.geometry.coordinates = coordsNZL;
+
+  geographyPath.push(
+    frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, svalbard, cocos, tokelau,
+  );
+
+  // Remove Ashmore Reef to prevent extra Australia label
+  geographyPath.splice(11, 1);
+
+  // Set numericCode for Kosovo
+  geographyPath[117].id = '999';
 
   // Update borders for Morocco and Western Sahara
   geographyPath.find(x => x.id === "732").geometry = westernSaharaGeo;
@@ -214,31 +235,4 @@ const CapitalMarkersFix = (capitalMarkers) => {
   });
 };
 
-function SeparateRegions(data) {
-  const countryData = data;
-  // Separate France into regions
-  const coordsFRA = countryData.find(x => x.properties.alpha3Code === 'FRA').geometry.coordinates.splice(0, 7);
-  countryData.find(x => x.properties.alpha3Code === 'REU').geometry.coordinates = [coordsFRA[0]];
-  countryData.find(x => x.properties.alpha3Code === 'MYT').geometry.coordinates = [coordsFRA[1]];
-  countryData.find(x => x.properties.alpha3Code === 'GUF').geometry.coordinates = [coordsFRA[2]];
-  countryData.find(x => x.properties.alpha3Code === 'MTQ').geometry.coordinates = [coordsFRA[3]];
-  countryData.find(x => x.properties.alpha3Code === 'GLP').geometry.coordinates = coordsFRA.slice(4);
-
-  // Separate Netherlands into regions
-  const coordsNLD = countryData.find(x => x.properties.alpha3Code === 'NLD').geometry.coordinates.splice(0, 3);
-  countryData.find(x => x.properties.alpha3Code === 'BES').geometry.coordinates = coordsNLD;
-
-  // Separate Cocos from Christmas
-  const coordsCXR = countryData.find(x => x.properties.alpha3Code === 'CXR').geometry.coordinates.splice(0, 2);
-  countryData.find(x => x.properties.alpha3Code === 'CCK').geometry.coordinates = coordsCXR;
-
-  // Separate Svalbard from Norway
-  const coordsNOR = countryData.find(x => x.properties.alpha3Code === 'NOR').geometry.coordinates.splice(22, 10);
-  countryData.find(x => x.properties.alpha3Code === 'SJM').geometry.coordinates = coordsNOR;
-
-  // Separate Tokelau from New Zealand
-  const coordsNZL = countryData.find(x => x.properties.alpha3Code === 'NZL').geometry.coordinates.splice(11, 2);
-  countryData.find(x => x.properties.alpha3Code === 'TKL').geometry.coordinates = coordsNZL;
-}
-
-export { DataFix, CountryMarkersFix, CapitalMarkersFix, SeparateRegions };
+export { DataFix, CountryMarkersFix, CapitalMarkersFix, GeoPathsMod };
