@@ -286,7 +286,6 @@ class App extends Component {
         <InfoTab
           country={selectedProperties}
           geoPaths={geographyPaths}
-          loadData={(geo) => { this.handleInfoTabLoad(geo); }}
         />
 
         <ChoroplethToggles

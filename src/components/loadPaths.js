@@ -16,7 +16,7 @@ export default function loadPaths() {
     }
     response.json().then(worldData => {
       fetch(
-        'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini'
+        'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;'
       ).then(restCountries => {
         if (restCountries.status !== 200) {
           console.log(`There was a problem: ${restCountries.status}`);
@@ -38,6 +38,7 @@ export default function loadPaths() {
             'area',
             'population',
             'gini',
+            'flag',
           ];
 
           DataFix(data, restData, capitalMarkers);
