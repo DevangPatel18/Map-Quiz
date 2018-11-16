@@ -106,17 +106,15 @@ class QuizBox extends Component {
 
   start() {
     const { handleQuiz } = this.props;
-    const { time, timerOn, quizType } = this.state;
+    const { quizType } = this.state;
 
     handleQuiz(quizType);
-    if (!timerOn) {
-      this.setState({ timerOn: true });
-      const x = Date.now() - time;
-      this.timer = setInterval(
-        () => this.setState({ time: Date.now() - x }),
-        1000
-      );
-    }
+    this.setState({ timerOn: true, time: 0 });
+    const x = Date.now();
+    this.timer = setInterval(
+      () => this.setState({ time: Date.now() - x }),
+      1000
+    );
   }
 
   render() {
@@ -135,6 +133,10 @@ class QuizBox extends Component {
     const formSize = isMobile ? 'mini' : 'small';
     const pauseStyle =
       quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
+
+    if (quizGuesses.length === quizAnswers.length) {
+      clearInterval(this.timer);
+    }
 
     if (!quiz) {
       return (
@@ -219,6 +221,7 @@ class QuizBox extends Component {
           quizType={quizType}
           quizData={quizData}
           handleAnswer={handleAnswer}
+          startQuiz={this.start}
         />
         <div className="statusBar-timerButtons">
           <Button

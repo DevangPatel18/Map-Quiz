@@ -13,6 +13,7 @@ class QuestionBox extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFinalDialog = this.handleFinalDialog.bind(this);
   }
 
   handleChange(event) {
@@ -29,9 +30,32 @@ class QuestionBox extends Component {
     }
   }
 
+  handleFinalDialog() {
+    const { quizData, startQuiz } = this.props;
+    const { quizGuesses, quizAnswers } = quizData;
+
+    const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
+    const finalText = `Your score is ${score} / ${
+      quizAnswers.length
+    } or ${Math.round((score / quizAnswers.length) * 100)}%`;
+    return (
+      <div>
+        <div>{finalText}</div>
+        <div>
+          <Button
+            onClick={() => startQuiz()}
+            size="large"
+            compact
+            content="RESTART"
+          />
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { userGuess } = this.state;
-    const { quizData, quizType, handleAnswer } = this.props;
+    const { quizData, quizType } = this.props;
     const { quizAnswers, geographyPaths, activeQuestionNum } = quizData;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
@@ -85,7 +109,7 @@ class QuestionBox extends Component {
         </QuizPrompt>
       );
     }
-    return <QuizPrompt>{handleAnswer()}</QuizPrompt>;
+    return <QuizPrompt>{this.handleFinalDialog()}</QuizPrompt>;
   }
 }
 
