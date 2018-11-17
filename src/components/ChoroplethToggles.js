@@ -86,6 +86,9 @@ class ChoroplethToggles extends Component {
         />
 
         <div className="choropanel">
+          <div className="close-button" onClick={this.openDrawer}>
+            ✖
+          </div>
           <p>Choropleth Toggles</p>
           <Form>
             {choroToggles.map(toggle => (

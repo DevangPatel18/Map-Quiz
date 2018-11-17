@@ -28,6 +28,15 @@ const ChoroplethTogglesStyles = styled.div`
       transform: ${props =>
         props.isMobile ? 'translateY(-20%) scale(.7)' : 'scale(1)'};
     }
+
+    .close-button {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      border-top-right-radius: 1rem;
+      margin: 3px 8px;
+      cursor: pointer;
+    }
   }
 
   .choropanel-toggles {
