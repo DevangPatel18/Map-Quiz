@@ -4,9 +4,9 @@
 
 .App-header {
   position: absolute;
-  top: .25em;
-  left: .5em;
-  color: rgba(0,0,0,.6);
+  top: 0.25em;
+  left: 0.5em;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .App-title {
@@ -14,7 +14,7 @@
 }
 
 *:focus {
-    outline: none;
+  outline: none;
 }
 
 footer {
@@ -28,17 +28,15 @@ footer {
 .mapLabel {
   font-family: Roboto, sans-serif;
   fill: white;
-  font-size: .75em;
+  font-size: 0.75em;
   font-weight: 600;
-  text-shadow: 1px 1px 1px black,
-    -1px 1px 1px black,
-    1px -1px 1px black,
+  text-shadow: 1px 1px 1px black, -1px 1px 1px black, 1px -1px 1px black,
     -1px -1px 1px black;
 }
 
 .caribSelector {
   stroke: black;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .caribSelector:hover {
@@ -46,35 +44,22 @@ footer {
 }
 
 .dropFade {
-  animation: dropFade .2s;
+  animation: dropFade 0.2s;
 }
 
 @keyframes dropFade {
   from {
     opacity: 0;
-    transform: translateY(-.5rem);
+    transform: translateY(-0.5rem);
   }
   to {
     opacity: 1;
   }
 }
 
-.regionButtons {
-  position: relative;
-  top: 1em;
-  width: 220px;
-}
-
 .App .ui.fluid.selection .default.text {
   color: black;
   font-weight: bolder;
-}
-
-.countrySearch {
-  position: relative;
-  top: 1em;
-  right: 1em;
-  width: 20em;
 }
 
 .zoomButtons {
@@ -84,12 +69,4 @@ footer {
   display: flex;
   flex-direction: column;
   z-index: 4;
-}
-
-.dropDownSelections {
-  position: absolute;
-  top: 0;
-  right: 1em;
-  transition: all .5s;
-  display: flex;
 }

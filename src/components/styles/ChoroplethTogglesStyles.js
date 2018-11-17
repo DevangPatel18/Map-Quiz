@@ -11,17 +11,36 @@ const ChoroplethTogglesStyles = styled.div`
   .choropanel {
     display: ${props => (props.show ? 'block' : 'none')};
     position: absolute;
-    padding: 1.7em;
+    padding: ${props => (props.isMobile ? '0.8em' : '1.7em')};
+    height: ${props => (props.isMobile ? '220px' : 'auto')};
     border-radius: 1rem;
     top: 30%;
     transform: translateX(-50%);
     left: 50%;
     background: rgba(0, 0, 0, 0.5);
     color: white;
+
+    p {
+      font-size: ${props => (props.isMobile ? '1.1em' : '1.5em')};
+    }
+
+    form {
+      transform: ${props =>
+        props.isMobile ? 'translateY(-20%) scale(.7)' : 'scale(1)'};
+    }
+
+    .close-button {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      border-top-right-radius: 1rem;
+      margin: 3px 8px;
+      cursor: pointer;
+    }
   }
 
   .choropanel-toggles {
-    padding: 1em 0;
+    padding: ${props => (props.isMobile ? '0.5em 0' : '1em 0')};
   }
 
   .ui.toggle.checkbox {
@@ -30,6 +49,7 @@ const ChoroplethTogglesStyles = styled.div`
     border-radius: 2em;
     width: 11em;
     font-weight: 600;
+    /* font-size: .8em */
   }
 
   .chorolegend {
@@ -37,6 +57,7 @@ const ChoroplethTogglesStyles = styled.div`
     bottom: 1em;
     left: 1em;
     padding: 1em;
+    font-size: ${props => (props.isMobile ? '0.5em' : '1em')};
     background: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 1rem;
@@ -50,6 +71,8 @@ const ChoroplethTogglesStyles = styled.div`
     .legendItem {
       display: flex;
       flex-direction: row;
+      line-height: 1.5em;
+      /* line-height: ${props => (props.isMobile ? '1.4em' : '2em')}; */
     }
 
     .legendColor {

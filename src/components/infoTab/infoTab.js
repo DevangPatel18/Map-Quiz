@@ -3,15 +3,11 @@ import { isMobile } from 'react-device-detect';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
 const InfoTab = props => {
-  const { country, geoPaths, loadData } = props;
+  const { country, geoPaths } = props;
   if (Object.keys(country).length === 0) {
     return null;
   }
   const { name, capital, population, area, regionOf } = country;
-  if (!capital) {
-    loadData(country);
-    return null;
-  }
   const capitalStr = `Capital: ${capital}`;
   const populationStr = `Population: ${population.toLocaleString()}`;
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
