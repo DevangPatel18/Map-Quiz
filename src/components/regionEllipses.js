@@ -2,7 +2,7 @@ import React from 'react';
 import { Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import ColorPicker from './colorPicker';
-import { ellipseDim, labelDist } from '../helpers/markerParams';
+import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
 
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
@@ -36,12 +36,33 @@ export default function regionEllipses() {
     .filter(filterFN)
     .map((country) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
+      let ccx;
+      let ccy;
+      let llx;
+      let lly;
       const { alpha3Code } = country.properties;
       if (currentMap === 'Caribbean') {
         marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
         dx = 20;
         dy = -20;
         [dx, dy] = labelDist(dx, dy, alpha3Code);
+        ccx = dx;
+        ccy = dy;
+        llx = dx;
+        lly = dy;
+
+        if(!labelist.includes(alpha3Code)) {
+          ccx = dx*.8
+          ccy = dy*.8
+          llx = dx*.65
+          lly = dy*.65
+        } else {
+          ccx = dx*.93
+          ccy = dy*.93
+          llx = dx*.88
+          lly = dy*.88
+        }
+
       } else {
         marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
         const path = geoPath().projection(this.projection());
@@ -91,16 +112,16 @@ export default function regionEllipses() {
             <line
               x1="0"
               y1="0"
-              x2={dx.toString()}
-              y2={dy.toString()}
+              x2={llx.toString()}
+              y2={lly.toString()}
               stroke="black"
               strokeWidth={0.3}
             />
           )}
           {currentMap === 'Caribbean' ? (
             <circle
-              cx={dx / 2}
-              cy={dy / 2}
+              cx={ccx}
+              cy={ccy}
               r={4}
               fill={defaultColor}
               className="caribSelector"
