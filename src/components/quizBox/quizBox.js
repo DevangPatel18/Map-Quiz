@@ -222,6 +222,7 @@ class QuizBox extends Component {
           quizData={quizData}
           handleAnswer={handleAnswer}
           startQuiz={this.start}
+          closeQuiz={this.close}
         />
         <div className="statusBar-timerButtons">
           <Button

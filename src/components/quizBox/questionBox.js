@@ -31,7 +31,7 @@ class QuestionBox extends Component {
   }
 
   handleFinalDialog() {
-    const { quizData, startQuiz } = this.props;
+    const { quizData, startQuiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers } = quizData;
 
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
@@ -42,6 +42,13 @@ class QuestionBox extends Component {
       <div>
         <div>{finalText}</div>
         <div>
+          <Button
+            onClick={() => closeQuiz()}
+            size="large"
+            compact
+            content="CANCEL"
+            style={{marginRight: '1rem'}}
+          />
           <Button
             onClick={() => startQuiz()}
             size="large"
