@@ -35,6 +35,7 @@ class App extends Component {
       defaultCenter: [10, 0],
       zoom: 1,
       defaultZoom: 1,
+      zoomFactor: 2,
       scale: 210,
       dimensions: [980, 551],
       geographyPaths: [],
@@ -114,7 +115,7 @@ class App extends Component {
 
     if (isMobile) {
       const dimensions = height > width ? [310, 551] : [980, 551];
-      this.setState({ dimensions });
+      this.setState({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
@@ -240,6 +241,7 @@ class App extends Component {
       currentMap,
       markerToggle,
       checkedRegions,
+      zoomFactor,
     } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -256,8 +258,8 @@ class App extends Component {
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
-            <Button onClick={() => this.handleZoom(2)} icon="plus" />
-            <Button onClick={() => this.handleZoom(0.5)} icon="minus" />
+            <Button onClick={() => this.handleZoom(zoomFactor)} icon="plus" />
+            <Button onClick={() => this.handleZoom(1/zoomFactor)} icon="minus" />
             <Button onClick={this.handleReset} icon="undo" />
           </Button.Group>
         </div>
