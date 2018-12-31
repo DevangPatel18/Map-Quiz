@@ -62,7 +62,7 @@ const Map = ({ props }) => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(props.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.state, geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
@@ -96,7 +96,7 @@ const Map = ({ props }) => {
                       onClick={props.handleCountryClick}
                       fill="white"
                       stroke="black"
-                      strokeWidth={0.05}
+                      strokeWidth={strokeWidth}
                       style={{
                         default: {
                           fill: defaultColor,

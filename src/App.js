@@ -211,18 +211,17 @@ class App extends Component {
   }
 
   setQuizRegions(value = null, checked = null) {
-    this.setState(prevState => {
-      let checkedRegions = { ...prevState.checkedRegions };
-      if (value) {
-        checkedRegions[value] = !checkedRegions[value];
-      }
+    let { checkedRegions } = this.state;
+    if (value) {
+      checkedRegions[value] = !checkedRegions[value];
+    }
 
-      const filterRegions = Object.keys(checkedRegions)
-        .filter(region => checkedRegions[region])
-        .map(region => alpha3CodesSov[region])
-        .reduce((a, b) => a.concat(b), []);
-      return { checkedRegions, filterRegions };
-    });
+    const filterRegions = Object.keys(checkedRegions)
+      .filter(region => checkedRegions[region])
+      .map(region => alpha3CodesSov[region])
+      .reduce((a, b) => a.concat(b), []);
+
+    this.handleMapRefresh({ checkedRegions, filterRegions });
   }
 
   setChoropleth(choroplethType) {
