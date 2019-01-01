@@ -24,6 +24,7 @@ import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
+import DirectionPad from './components/DirectionPad';
 import Map from './Map';
 
 class App extends Component {
@@ -259,7 +260,10 @@ class App extends Component {
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
             <Button onClick={() => this.handleZoom(zoomFactor)} icon="plus" />
-            <Button onClick={() => this.handleZoom(1/zoomFactor)} icon="minus" />
+            <Button
+              onClick={() => this.handleZoom(1 / zoomFactor)}
+              icon="minus"
+            />
             <Button onClick={this.handleReset} icon="undo" />
           </Button.Group>
         </div>
@@ -305,6 +309,8 @@ class App extends Component {
         <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
+
+        <DirectionPad />
 
         <div {...WheelReact.events}>
           <Map props={this} />
