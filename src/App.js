@@ -317,7 +317,8 @@ class App extends Component {
         </div>
         <footer>
           <div style={footerStyle}>
-            Copyright © 2018 Devang Patel. All rights reserved.
+            Copyright © {new Date().getFullYear()} Devang Patel. All rights
+            reserved.
           </div>
         </footer>
       </div>
