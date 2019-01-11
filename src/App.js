@@ -104,6 +104,7 @@ class App extends Component {
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.setQuizRegions = this.setQuizRegions.bind(this);
     this.setChoropleth = this.setChoropleth.bind(this);
+    this.handleMapMove = this.handleMapMove.bind(this);
   }
 
   componentDidMount() {
@@ -212,6 +213,27 @@ class App extends Component {
     });
   }
 
+  handleMapMove(direction) {
+    let { center } = this.state;
+    const step = 5;
+    switch (direction) {
+      case 'up':
+        center = [center[0], center[1] + step];
+        break;
+      case 'down':
+        center = [center[0], center[1] - step];
+        break;
+      case 'left':
+        center = [center[0] - step, center[1]];
+        break;
+      case 'right':
+        center = [center[0] + step, center[1]];
+        break;
+      default:
+    }
+    this.handleMapRefresh({ center });
+  }
+
   setQuizRegions(value = null, checked = null) {
     let { checkedRegions } = this.state;
     if (value) {
@@ -310,15 +332,14 @@ class App extends Component {
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
 
-        <DirectionPad />
+        <DirectionPad handleMapMove={this.handleMapMove} />
 
         <div {...WheelReact.events}>
           <Map props={this} />
         </div>
         <footer>
           <div style={footerStyle}>
-            Copyright © {new Date().getFullYear()} Devang Patel. All rights
-            reserved.
+            Copyright © 2018 Devang Patel. All rights reserved.
           </div>
         </footer>
       </div>
