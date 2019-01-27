@@ -116,7 +116,12 @@ const Map = ({ props }) => {
                 })}
               </Geographies>
               <Markers>{ props.regionEllipses() }</Markers>
-              <Markers>{ (currentMap !== 'world') && props.countryLabels() }</Markers>
+              <Markers>
+              {
+                // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
+                (currentMap !== 'world') && props.countryLabels()
+              }
+              </Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>
