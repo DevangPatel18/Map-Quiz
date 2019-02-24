@@ -27,10 +27,7 @@ const ColorPicker = (state, geo) => {
     const geoQuizIdx = quizAnswers.indexOf(alpha3Code);
 
     // Fills country with name input request as yellow
-    if (
-      disableInfoClick &&
-      quizAnswers[activeQuestionNum] === alpha3Code
-    ) {
+    if (disableInfoClick && quizAnswers[activeQuestionNum] === alpha3Code) {
       defaultColor = 'rgb(255, 255, 0)';
       hoverColor = 'rgb(255, 255, 0)';
     }
@@ -47,18 +44,12 @@ const ColorPicker = (state, geo) => {
     }
 
     // Fills incorrect country clicks red
-    if (
-      !disableInfoClick &&
-      alpha3Code !== quizAnswers[activeQuestionNum]
-    ) {
+    if (!disableInfoClick && alpha3Code !== quizAnswers[activeQuestionNum]) {
       pressedColor = 'rgb(255, 69, 0)';
     }
 
     // Fills correct country clicks green
-    if (
-      !disableInfoClick &&
-      alpha3Code === quizAnswers[activeQuestionNum]
-    ) {
+    if (!disableInfoClick && alpha3Code === quizAnswers[activeQuestionNum]) {
       pressedColor = 'rgb(94, 237, 94)';
     }
 
@@ -70,15 +61,20 @@ const ColorPicker = (state, geo) => {
   }
 
   let render = true;
+  let strokeWidth = 0.05;
+  let onQuiz = filterRegions.indexOf(alpha3Code) !== -1;
   if (currentMap !== 'world') {
-    render = filterRegions.indexOf(alpha3Code) !== -1;
+    render = onQuiz;
+  } else {
+    defaultColor = !onQuiz ? 'rgba(105, 105, 105, .05)' : defaultColor;
+    strokeWidth = !onQuiz ? 0.01 : strokeWidth;
   }
 
   if (choropleth !== 'None' && !quiz) {
     defaultColor = choroplethColor(choropleth, geo, defaultColor);
   }
 
-  return { defaultColor, hoverColor, pressedColor, render };
+  return { defaultColor, hoverColor, pressedColor, render, strokeWidth };
 };
 
 export default ColorPicker;

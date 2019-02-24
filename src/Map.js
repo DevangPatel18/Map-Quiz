@@ -62,7 +62,7 @@ const Map = ({ props }) => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render } = ColorPicker(props.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.state, geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
@@ -96,7 +96,7 @@ const Map = ({ props }) => {
                       onClick={props.handleCountryClick}
                       fill="white"
                       stroke="black"
-                      strokeWidth={0.05}
+                      strokeWidth={strokeWidth}
                       style={{
                         default: {
                           fill: defaultColor,
@@ -116,7 +116,12 @@ const Map = ({ props }) => {
                 })}
               </Geographies>
               <Markers>{ props.regionEllipses() }</Markers>
-              <Markers>{ (currentMap !== 'world') && props.countryLabels() }</Markers>
+              <Markers>
+              {
+                // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
+                (currentMap !== 'world') && props.countryLabels()
+              }
+              </Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>

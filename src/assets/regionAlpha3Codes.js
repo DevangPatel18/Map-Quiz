@@ -11,13 +11,13 @@ const alpha3Codes = {
 
 const alpha3CodesSov = {
   'North & Central America': alpha3Codes['North & Central America'],
-  'South America': alpha3Codes['South America'].slice(0, -1),
+  'South America': alpha3Codes['South America'],
   Caribbean: alpha3Codes.Caribbean.filter(x => 
     !["ABW", "AIA", "BLM", "CUW", "CYM", "MAF", "MSR", "PRI", "SXM", "TCA", "VGB", "VIR", "GLP", "MTQ", "BES"].includes(x)),
   Africa: alpha3Codes.Africa.filter(x =>
-    !["MYT", "REU", "ESH"].includes(x)),
-  Europe: alpha3Codes.Europe.filter(x => !["KOS"].includes(x)),
-  Asia: alpha3Codes.Asia.filter(x => !["TWN", "RUS"].includes(x)),
+    !["MYT", "REU"].includes(x)),
+  Europe: alpha3Codes.Europe,
+  Asia: alpha3Codes.Asia.filter(x => !["RUS"].includes(x)),
   Oceania: alpha3Codes.Oceania.filter(x => 
     !["ASM", "GUM", "MNP", "NCL", "NFK", "WLF", "COK", "PYF", "PCN", "NIU", "TKL"].includes(x)),
 }

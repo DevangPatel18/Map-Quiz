@@ -50,6 +50,9 @@ const DataFix = (data, capitalMarkers) => {
     { alpha: 'SHN', attribute: 'name', value: 'St Helena, Ascension and Tristan da Cunha' },
     { alpha: 'SPM', attribute: 'name', value: 'St Pierre and Miquelon' },
     { alpha: 'VCT', attribute: 'name', value: 'St Vincent and the Grenadines' },
+    // Update Country names 
+    { alpha: 'SWZ', attribute: 'name', value: 'Eswatini' },
+    { alpha: 'MKD', attribute: 'name', value: 'North Macedonia' },
     // Set null areas (data based on Wikipedia)
     { alpha: 'PSE', attribute: 'area', value: 6220 },
     { alpha: 'SGS', attribute: 'area', value: 3903 },

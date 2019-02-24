@@ -24,6 +24,7 @@ import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
+import DirectionPad from './components/DirectionPad';
 import Map from './Map';
 
 class App extends Component {
@@ -35,6 +36,7 @@ class App extends Component {
       defaultCenter: [10, 0],
       zoom: 1,
       defaultZoom: 1,
+      zoomFactor: 2,
       scale: 210,
       dimensions: [980, 551],
       geographyPaths: [],
@@ -102,6 +104,7 @@ class App extends Component {
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.setQuizRegions = this.setQuizRegions.bind(this);
     this.setChoropleth = this.setChoropleth.bind(this);
+    this.handleMapMove = this.handleMapMove.bind(this);
   }
 
   componentDidMount() {
@@ -114,7 +117,7 @@ class App extends Component {
 
     if (isMobile) {
       const dimensions = height > width ? [310, 551] : [980, 551];
-      this.setState({ dimensions });
+      this.setState({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
@@ -210,19 +213,39 @@ class App extends Component {
     });
   }
 
-  setQuizRegions(value = null, checked = null) {
-    this.setState(prevState => {
-      let checkedRegions = { ...prevState.checkedRegions };
-      if (value) {
-        checkedRegions[value] = !checkedRegions[value];
-      }
+  handleMapMove(direction) {
+    let { center } = this.state;
+    const step = 5;
+    switch (direction) {
+      case 'up':
+        center = [center[0], center[1] + step];
+        break;
+      case 'down':
+        center = [center[0], center[1] - step];
+        break;
+      case 'left':
+        center = [center[0] - step, center[1]];
+        break;
+      case 'right':
+        center = [center[0] + step, center[1]];
+        break;
+      default:
+    }
+    this.handleMapRefresh({ center });
+  }
 
-      const filterRegions = Object.keys(checkedRegions)
-        .filter(region => checkedRegions[region])
-        .map(region => alpha3CodesSov[region])
-        .reduce((a, b) => a.concat(b), []);
-      return { checkedRegions, filterRegions };
-    });
+  setQuizRegions(value = null) {
+    let checkedRegions = { ...this.state.checkedRegions };
+    if (value) {
+      checkedRegions[value] = !checkedRegions[value];
+    }
+
+    const filterRegions = Object.keys(checkedRegions)
+      .filter(region => checkedRegions[region])
+      .map(region => alpha3CodesSov[region])
+      .reduce((a, b) => a.concat(b), []);
+
+    this.handleMapRefresh({ checkedRegions, filterRegions });
   }
 
   setChoropleth(choroplethType) {
@@ -241,6 +264,7 @@ class App extends Component {
       currentMap,
       markerToggle,
       checkedRegions,
+      zoomFactor,
     } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -257,8 +281,11 @@ class App extends Component {
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
-            <Button onClick={() => this.handleZoom(2)} icon="plus" />
-            <Button onClick={() => this.handleZoom(0.5)} icon="minus" />
+            <Button onClick={() => this.handleZoom(zoomFactor)} icon="plus" />
+            <Button
+              onClick={() => this.handleZoom(1 / zoomFactor)}
+              icon="minus"
+            />
             <Button onClick={this.handleReset} icon="undo" />
           </Button.Group>
         </div>
@@ -304,6 +331,8 @@ class App extends Component {
         <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
+
+        <DirectionPad handleMapMove={this.handleMapMove} />
 
         <div {...WheelReact.events}>
           <Map props={this} />
