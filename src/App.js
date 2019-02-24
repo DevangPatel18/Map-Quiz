@@ -234,8 +234,8 @@ class App extends Component {
     this.handleMapRefresh({ center });
   }
 
-  setQuizRegions(value = null, checked = null) {
-    let { checkedRegions } = this.state;
+  setQuizRegions(value = null) {
+    let checkedRegions = { ...this.state.checkedRegions };
     if (value) {
       checkedRegions[value] = !checkedRegions[value];
     }
