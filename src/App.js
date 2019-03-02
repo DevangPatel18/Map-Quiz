@@ -3,6 +3,7 @@ import WheelReact from 'wheel-react';
 import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
@@ -347,4 +348,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  ...state,
+});
+
+export default connect(mapStateToProps)(App);
