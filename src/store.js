@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import rootReducer from './reducers';
 const middleware = [thunk];
 
 const windowGlobal = typeof window !== 'undefined' && window;
@@ -9,7 +10,7 @@ const devtools = windowGlobal.devToolsExtension
   : f => f;
 
 const store = createStore(
-  f => f,
+  rootReducer,
   compose(
     applyMiddleware(...middleware),
     devtools
