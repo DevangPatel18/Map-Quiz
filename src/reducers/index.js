@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import mapReducer from './mapReducers';
+
 export default combineReducers({
-  testObj: () => ({ testKey: 'testing message' }),
+  map: mapReducer,
 });
