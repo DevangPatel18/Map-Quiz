@@ -22,7 +22,8 @@ async function loadPaths() {
   // Remove Antarctica and invalid iso codes
   data = data.filter(x => (+x.id !== 10 ? 1 : 0));
 
-  GeoPathsMod(data);
+  // Create geopaths for external regions and other changes
+  data = GeoPathsMod(data);
 
   this.setState({
     geographyPaths: data,
@@ -33,7 +34,7 @@ async function loadPaths() {
 
 async function loadData() {
   let data = [...this.state.geographyPaths].map(a => ({ ...a }));
-  const restData = await fetch(
+  let restData = await fetch(
     'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;'
   ).then(restCountries => {
     if (restCountries.status !== 200) {
@@ -44,9 +45,9 @@ async function loadData() {
   });
 
   let countryMarkers = [];
-  const capitalMarkers = [];
+  let capitalMarkers = [];
 
-  DataFix(restData, capitalMarkers);
+  [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
 
   data
     .filter(x => (+x.id !== -99 ? 1 : 0))
@@ -93,8 +94,8 @@ async function loadData() {
     markerOffset: 0,
   }));
 
-  CountryMarkersFix(countryMarkers);
-  CapitalMarkersFix(capitalMarkers);
+  countryMarkers = CountryMarkersFix(countryMarkers);
+  capitalMarkers = CapitalMarkersFix(capitalMarkers);
 
   this.handleMapRefresh({
     geographyPaths: data,
