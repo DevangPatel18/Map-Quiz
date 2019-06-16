@@ -4,6 +4,7 @@ import {
   DISABLE_OPT,
   RECENTER_MAP,
   SET_MAP,
+  LOAD_DATA,
 } from '../actions/types';
 
 const initialState = {
@@ -29,6 +30,16 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
+    case LOAD_DATA:
+      return {
+        ...state,
+        disableOptimization: true,
+      };
+    case DISABLE_OPT:
+      return {
+        ...state,
+        disableOptimization: false,
+      };
     default:
       return state;
   }
