@@ -6,10 +6,8 @@ import {
   Geography,
   Markers,
 } from 'react-simple-maps';
-import {
-  Motion,
-  spring,
-} from 'react-motion';
+import { Motion, spring } from 'react-motion';
+import { connect } from 'react-redux';
 import ColorPicker from './components/colorPicker';
 
 const doubleClick = false;
@@ -21,10 +19,11 @@ const Map = ({ props }) => {
     zoom,
     scale,
     dimensions,
-    geographyPaths,
     disableOptimization,
     currentMap,
   } = props.state;
+
+  const { geographyPaths } = props.props.data
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -130,4 +129,8 @@ const Map = ({ props }) => {
   );
 };
 
-export default Map;
+const mapStateToProps = state => ({
+  data: state.data
+})
+
+export default connect(mapStateToProps)(Map);

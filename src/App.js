@@ -20,7 +20,7 @@ import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
-import { loadPaths, loadData } from './components/loadPaths';
+import { loadPaths, loadData } from './actions/dataActions';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -99,8 +99,6 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
-    this.loadPaths = loadPaths.bind(this);
-    this.loadData = loadData.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.setQuizRegions = this.setQuizRegions.bind(this);
@@ -108,8 +106,9 @@ class App extends Component {
     this.handleMapMove = this.handleMapMove.bind(this);
   }
 
-  componentDidMount() {
-    this.loadPaths();
+  async componentDidMount() {
+    await this.props.loadPaths();
+    this.props.loadData();
     window.addEventListener('orientationchange', this.toggleOrientation);
     window.addEventListener('resize', this.adjustMapSize);
 
@@ -349,7 +348,10 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  ...state,
+  data: state.data,
 });
 
-export default connect(mapStateToProps)(App);
+export default connect(
+  mapStateToProps,
+  { loadPaths, loadData }
+)(App);

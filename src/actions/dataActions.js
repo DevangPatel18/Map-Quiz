@@ -1,6 +1,17 @@
 import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT } from './types';
+import { feature } from 'topojson-client';
+import {
+  DataFix,
+  CountryMarkersFix,
+  CapitalMarkersFix,
+  GeoPathsMod,
+} from '../helpers/attributeFix';
+import { geoPath } from 'd3-geo';
+import capitalData from '../assets/country_capitals';
+import projection from '../helpers/projection';
+import store from '../store';
 
-export const loadPaths = async () => dispatch => {
+export const loadPaths = () => async dispatch => {
   const worldData = await fetch('/world-50m.json').then(response => {
     if (response.status !== 200) {
       console.log(`There was a problem: ${response.status}`);
@@ -17,11 +28,11 @@ export const loadPaths = async () => dispatch => {
   // Create geopaths for external regions and other changes
   data = GeoPathsMod(data);
 
-  dispatch({type: LOAD_PATHS, geographyPaths: data})
-}
+  dispatch({ type: LOAD_PATHS, geographyPaths: data });
+};
 
-export const loadData = async geoPaths => dispatch => {
-  let data = [...geoPaths].map(a => ({ ...a }));
+export const loadData = () => async dispatch => {
+  let data = store.getState().data.geographyPaths.map(a => ({ ...a }));
   let restData = await fetch(
     'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;'
   ).then(restCountries => {
@@ -68,11 +79,8 @@ export const loadData = async geoPaths => dispatch => {
 
   data.forEach(x => {
     const { alpha3Code } = x.properties;
-    const path = geoPath().projection(this.projection());
-    countryMarkers.push([
-      this.projection().invert(path.centroid(x)),
-      alpha3Code,
-    ]);
+    const path = geoPath().projection(projection());
+    countryMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
   });
 
   countryMarkers = countryMarkers.map(array => ({
@@ -90,7 +98,7 @@ export const loadData = async geoPaths => dispatch => {
     geographyPaths: data,
     countryMarkers,
     capitalMarkers,
-  })
+  });
 
-  dispatch({ type: DISABLE_OPT })
-}
+  dispatch({ type: DISABLE_OPT });
+};
