@@ -9,6 +9,7 @@ import {
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import ColorPicker from './components/colorPicker';
+import RegionEllipses from './components/regionEllipses'
 
 const doubleClick = false;
 
@@ -114,7 +115,7 @@ const Map = ({ props }) => {
                   );
                 })}
               </Geographies>
-              <Markers>{ props.regionEllipses() }</Markers>
+              <Markers><RegionEllipses props={props}/></Markers>
               <Markers>
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
