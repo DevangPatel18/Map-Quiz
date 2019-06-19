@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { geoPath } from 'd3-geo';
+import { connect } from 'react-redux';
+import projection from '../helpers/projection';
 
-export default class CountrySearch extends Component {
+class CountrySearch extends Component {
   render() {
-    const { projection, state, mapRefresh } = this.props;
-    const {
-      geographyPaths, currentMap, filterRegions, countryMarkers, dimensions,
-    } = state;
+    const { state, mapRefresh } = this.props;
+    const { currentMap, filterRegions, dimensions } = state;
+    const { geographyPaths, countryMarkers } = this.props.data
+    
     let countries = geographyPaths;
     if (currentMap !== 'world') {
       countries = countries.filter(x => filterRegions.includes(x.properties.alpha3Code));
@@ -71,3 +73,9 @@ export default class CountrySearch extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  data: state.data
+})
+
+export default connect(mapStateToProps)(CountrySearch)

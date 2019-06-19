@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
+import store from '../../store';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -63,7 +64,8 @@ class QuestionBox extends Component {
   render() {
     const { userGuess } = this.state;
     const { quizData, quizType } = this.props;
-    const { quizAnswers, geographyPaths, activeQuestionNum } = quizData;
+    const { quizAnswers, activeQuestionNum } = quizData;
+    const { geographyPaths } = store.getState().data;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
     let text;

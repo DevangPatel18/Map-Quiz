@@ -40,7 +40,6 @@ class App extends Component {
       zoomFactor: 2,
       scale: 210,
       dimensions: [980, 551],
-      geographyPaths: [],
       selectedProperties: '',
       disableOptimization: false,
       filterRegions: [],
@@ -257,7 +256,6 @@ class App extends Component {
       quiz,
       quizAnswers,
       quizGuesses,
-      geographyPaths,
       activeQuestionNum,
       selectedProperties,
       fetchRequests,
@@ -297,7 +295,6 @@ class App extends Component {
           quizData={{
             quizAnswers,
             quizGuesses,
-            geographyPaths,
             activeQuestionNum,
             fetchRequests,
             currentMap,
@@ -317,7 +314,6 @@ class App extends Component {
 
         <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
           <CountrySearch
-            projection={this.projection}
             state={this.state}
             mapRefresh={arg => {
               this.handleMapRefresh(arg);
@@ -328,7 +324,7 @@ class App extends Component {
 
         <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />
 
-        <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
+        <InfoTab country={selectedProperties} />
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
 

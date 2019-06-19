@@ -1,9 +1,11 @@
 import React from 'react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
 const InfoTab = props => {
-  const { country, geoPaths } = props;
+  const { country } = props;
+  const { geographyPaths } = props.data;
   if (Object.keys(country).length === 0) {
     return null;
   }
@@ -13,8 +15,9 @@ const InfoTab = props => {
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
   let regionOfStr;
   if (regionOf) {
-    const regionName = geoPaths.find(x => x.properties.alpha3Code === regionOf)
-      .properties.name;
+    const regionName = geographyPaths.find(
+      x => x.properties.alpha3Code === regionOf
+    ).properties.name;
     regionOfStr = `Region of ${regionName}`;
   }
   return (
@@ -31,4 +34,8 @@ const InfoTab = props => {
   );
 };
 
-export default InfoTab;
+const mapStateToProps = state => ({
+  data: state.data,
+});
+
+export default connect(mapStateToProps)(InfoTab);

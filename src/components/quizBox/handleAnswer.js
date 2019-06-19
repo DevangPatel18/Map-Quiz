@@ -1,4 +1,5 @@
 import removeDiacritics from '../../helpers/removeDiacritics';
+import store from '../../store';
 
 const simple = str =>
   removeDiacritics(str.toLowerCase())
@@ -11,8 +12,8 @@ export default function handleAnswer(userGuess = null) {
     quizAnswers,
     activeQuestionNum,
     quizType,
-    geographyPaths,
   } = this.state;
+  const { geographyPaths } = store.getState().data;
 
   if (userGuess) {
     let result;
