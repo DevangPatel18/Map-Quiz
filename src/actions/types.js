@@ -1,6 +1,6 @@
 // Map actions
-export const CONTINENT_SELECT = 'CONTINENT_SELECT';
 export const REGION_SELECT = 'REGION_SELECT';
+export const SET_REGION_CHECKBOX = 'SET_REGION_CHECKBOX';
 export const DISABLE_OPT = 'DISABLE_OPT';
 export const RECENTER_MAP = 'RECENTER_MAP';
 export const SET_MAP = 'SET_MAP';

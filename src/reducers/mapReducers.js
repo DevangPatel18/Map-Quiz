@@ -1,5 +1,5 @@
 import {
-  CONTINENT_SELECT,
+  SET_REGION_CHECKBOX,
   REGION_SELECT,
   DISABLE_OPT,
   RECENTER_MAP,
@@ -35,6 +35,14 @@ export default function(state = initialState, action) {
         ...state,
         disableOptimization: true,
       };
+    case SET_REGION_CHECKBOX:
+      const { checkedRegions, filterRegions } = action
+      return {
+        ...state,
+        disableOptimization: true,
+        checkedRegions,
+        filterRegions,
+      }
     case DISABLE_OPT:
       return {
         ...state,
