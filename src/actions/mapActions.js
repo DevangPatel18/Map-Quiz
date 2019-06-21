@@ -1,6 +1,10 @@
-import { SET_REGION_CHECKBOX, DISABLE_OPT } from './types';
+import { REGION_SELECT, SET_REGION_CHECKBOX, DISABLE_OPT } from './types';
 import store from '../store';
-import { alpha3CodesSov } from '../assets/regionAlpha3Codes';
+import {
+  alpha3Codes,
+  mapConfig,
+  alpha3CodesSov,
+} from '../assets/regionAlpha3Codes';
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -15,4 +19,25 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
   await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
   dispatch({ type: DISABLE_OPT });
+};
+
+export const regionSelect = regionName => async dispatch => {
+  const { center, zoom } = mapConfig[regionName];
+  const map = {
+    zoom,
+    center,
+    defaultZoom: zoom,
+    defaultCenter: center,
+    currentMap: regionName,
+    filterRegions: alpha3Codes[regionName],
+    markerToggle: '',
+  };
+  const quiz = {
+    selectedProperties: '',
+  };
+  await dispatch({ type: REGION_SELECT, map, quiz });
+  dispatch({ type: DISABLE_OPT });
+  if (regionName === 'World') {
+    setRegionCheckbox();
+  }
 };

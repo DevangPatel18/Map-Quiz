@@ -45,6 +45,12 @@ export default function(state = initialState, action) {
         checkedRegions,
         filterRegions,
       };
+    case REGION_SELECT:
+      return {
+        ...state,
+        ...action.map,
+        disableOptimization: true,
+      };
     case DISABLE_OPT:
       return {
         ...state,
