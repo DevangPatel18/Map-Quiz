@@ -5,6 +5,7 @@ import {
   RECENTER_MAP,
   SET_MAP,
   LOAD_DATA,
+  LOAD_PATHS,
 } from '../actions/types';
 
 const initialState = {
@@ -31,18 +32,19 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case LOAD_DATA:
+    case LOAD_PATHS:
       return {
         ...state,
         disableOptimization: true,
       };
     case SET_REGION_CHECKBOX:
-      const { checkedRegions, filterRegions } = action
+      const { checkedRegions, filterRegions } = action;
       return {
         ...state,
         disableOptimization: true,
         checkedRegions,
         filterRegions,
-      }
+      };
     case DISABLE_OPT:
       return {
         ...state,

@@ -21,11 +21,11 @@ const Map = ({ props }) => {
     zoom,
     scale,
     dimensions,
-    disableOptimization,
     currentMap,
   } = props.state;
 
   const { geographyPaths } = props.props.data
+  const { disableOptimization } = props.props.map
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -132,7 +132,8 @@ const Map = ({ props }) => {
 };
 
 const mapStateToProps = state => ({
-  data: state.data
+  data: state.data,
+  map: state.map
 })
 
 export default connect(mapStateToProps)(Map);

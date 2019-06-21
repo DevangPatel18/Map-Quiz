@@ -28,7 +28,8 @@ export const loadPaths = () => async dispatch => {
   // Create geopaths for external regions and other changes
   data = GeoPathsMod(data);
 
-  dispatch({ type: LOAD_PATHS, geographyPaths: data });
+  await dispatch({ type: LOAD_PATHS, geographyPaths: data });
+  dispatch({ type: DISABLE_OPT });
 };
 
 export const loadData = () => async dispatch => {
@@ -93,7 +94,7 @@ export const loadData = () => async dispatch => {
   countryMarkers = CountryMarkersFix(countryMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
 
-  dispatch({
+  await dispatch({
     type: LOAD_DATA,
     geographyPaths: data,
     countryMarkers,

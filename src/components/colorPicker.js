@@ -1,4 +1,5 @@
 import { choroplethColor } from '../helpers/choroplethFunctions';
+import store from '../store';
 
 const ColorPicker = (state, geo) => {
   const {
@@ -8,10 +9,10 @@ const ColorPicker = (state, geo) => {
     quizAnswers,
     disableInfoClick,
     activeQuestionNum,
-    filterRegions,
     currentMap,
     choropleth,
   } = state;
+  const { filterRegions } = store.getState().map;
   const isSelected = selectedProperties === geo.properties;
   const { alpha3Code } = geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';
