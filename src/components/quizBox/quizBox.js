@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Form, Radio, Modal } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles';
 import TimerStyles from '../styles/TimerStyles';
 import msToTime from '../../helpers/msToTime';
+import { setRegionCheckbox } from '../../actions/mapActions';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -63,8 +65,8 @@ class QuizBox extends Component {
   }
 
   handleCheckBox(e) {
-    const { setQuizRegions, quizData } = this.props;
-    const { checkedRegions } = quizData;
+    const { setRegionCheckbox, quizData } = this.props;
+    const { checkedRegions } = this.props.map;
     const { value, checked } = e.target;
     // check if nothing is selected
     const nothing = Object.keys(checkedRegions)
@@ -72,7 +74,7 @@ class QuizBox extends Component {
       .every(region => !checkedRegions[region]);
 
     if (!(!checked && nothing)) {
-      setQuizRegions(value, checked);
+      setRegionCheckbox(value);
     }
   }
 
@@ -123,11 +125,11 @@ class QuizBox extends Component {
     const {
       markerToggle,
       currentMap,
-      checkedRegions,
       quiz,
       quizGuesses,
       quizAnswers,
     } = quizData;
+    const { checkedRegions } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -266,4 +268,11 @@ class QuizBox extends Component {
   }
 }
 
-export default QuizBox;
+const mapStateToProps = state => ({
+  map: state.map,
+});
+
+export default connect(
+  mapStateToProps,
+  { setRegionCheckbox }
+)(QuizBox);

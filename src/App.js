@@ -21,6 +21,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
+import { setRegionCheckbox } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -100,7 +101,6 @@ class App extends Component {
     this.countryLabels = countryLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.setQuizRegions = this.setQuizRegions.bind(this);
     this.setChoropleth = this.setChoropleth.bind(this);
     this.handleMapMove = this.handleMapMove.bind(this);
   }
@@ -108,6 +108,7 @@ class App extends Component {
   async componentDidMount() {
     await this.props.loadPaths();
     this.props.loadData();
+    this.props.setRegionCheckbox();
     window.addEventListener('orientationchange', this.toggleOrientation);
     window.addEventListener('resize', this.adjustMapSize);
 
@@ -261,7 +262,6 @@ class App extends Component {
       fetchRequests,
       currentMap,
       markerToggle,
-      checkedRegions,
       zoomFactor,
     } = this.state;
 
@@ -299,15 +299,11 @@ class App extends Component {
             fetchRequests,
             currentMap,
             markerToggle,
-            checkedRegions,
             quiz,
           }}
           handleAnswer={this.handleAnswer}
           setToggle={marker => {
             this.setState({ markerToggle: marker });
-          }}
-          setQuizRegions={obj => {
-            this.setQuizRegions(obj);
           }}
           closeQuiz={this.handleQuizClose}
         />
@@ -345,9 +341,10 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   data: state.data,
+  map: state.map,
 });
 
 export default connect(
   mapStateToProps,
-  { loadPaths, loadData }
+  { loadPaths, loadData, setRegionCheckbox }
 )(App);

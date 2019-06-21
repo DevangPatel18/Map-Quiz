@@ -2,10 +2,10 @@ import { SET_REGION_CHECKBOX, DISABLE_OPT } from './types';
 import store from '../store';
 import { alpha3CodesSov } from '../assets/regionAlpha3Codes';
 
-export const setRegionCheckbox = data => dispatch => {
+export const setRegionCheckbox = regionName => dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
-  if (data) {
-    checkedRegions[data] = !checkedRegions[data];
+  if (regionName) {
+    checkedRegions[regionName] = !checkedRegions[regionName];
   }
 
   const filterRegions = Object.keys(checkedRegions)
