@@ -1,5 +1,5 @@
 const alpha3Codes = {
-  world: [],
+  World: [],
   'North & Central America': ['CAN', 'USA', 'BLZ', 'CRI', 'GTM', 'HND', 'MEX', 'NIC', 'PAN', 'SLV'],
   'South America': ['ARG', 'BOL', 'BRA', 'CHL', 'COL', 'ECU', 'GUY', 'PER', 'PRY', 'SUR', 'URY', 'VEN', 'GUF'],
   Caribbean: ['ABW', 'AIA', 'ATG', 'BHS', 'BLM', 'BRB', 'CUB', 'CUW', 'CYM', 'DMA', 'DOM', 'GRD', 'HTI', 'JAM', 'KNA', 'LCA', 'MAF', 'MSR', 'PRI', 'SXM', 'TCA', 'TTO', 'VCT', 'VGB', 'VIR', 'GLP', 'MTQ', 'BES'],
@@ -23,7 +23,7 @@ const alpha3CodesSov = {
 }
 
 const mapConfig = {
-  world: { center: [10, 0], zoom: 1 },
+  World: { center: [10, 0], zoom: 1 },
   'North & Central America': { center: [-95, 30], zoom: 2.5 },
   'South America': { center: [-65, -28], zoom: 1.9 },
   Caribbean: { center: [-70, 17], zoom: 8.5 },

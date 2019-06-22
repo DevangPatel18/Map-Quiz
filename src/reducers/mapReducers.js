@@ -18,6 +18,7 @@ const initialState = {
   dimensions: [980, 551],
   disableOptimization: false,
   filterRegions: [],
+  currentMap: 'World',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,

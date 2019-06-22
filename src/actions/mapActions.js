@@ -38,6 +38,12 @@ export const regionSelect = regionName => async dispatch => {
   await dispatch({ type: REGION_SELECT, map, quiz });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
-    setRegionCheckbox();
+    const { checkedRegions } = store.getState().map;
+    const filterRegions = Object.keys(checkedRegions)
+      .filter(region => checkedRegions[region])
+      .map(region => alpha3CodesSov[region])
+      .reduce((a, b) => a.concat(b), []);
+    await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
+    dispatch({ type: DISABLE_OPT });
   }
 };

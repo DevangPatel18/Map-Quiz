@@ -1,5 +1,7 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { regionSelect } from '../actions/mapActions';
 import '../App.css';
 
 const regions = [
@@ -13,28 +15,21 @@ const regions = [
   { text: 'Oceania', value: 'Oceania' },
 ];
 
-const RegionButtons = props => (
+const RegionButtons = ({ regionSelect }) => (
   <div className="regionButtons">
     <Dropdown
       placeholder="Select Region Quiz"
       fluid
       selection
       options={regions}
-      onChange={(e) => {
-        switch (e.target.innerText) {
-          case 'World': props.regionFunc('world'); break;
-          case 'North & Central America': props.regionFunc('North & Central America'); break;
-          case 'South America': props.regionFunc('South America'); break;
-          case 'Caribbean': props.regionFunc('Caribbean'); break;
-          case 'Africa': props.regionFunc('Africa'); break;
-          case 'Europe': props.regionFunc('Europe'); break;
-          case 'Asia': props.regionFunc('Asia'); break;
-          case 'Oceania': props.regionFunc('Oceania'); break;
-          default:
-        }
+      onChange={e => {
+        regionSelect(e.target.innerText);
       }}
     />
   </div>
 );
 
-export default RegionButtons;
+export default connect(
+  null,
+  { regionSelect }
+)(RegionButtons);

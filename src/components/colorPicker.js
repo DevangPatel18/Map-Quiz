@@ -9,10 +9,9 @@ const ColorPicker = (state, geo) => {
     quizAnswers,
     disableInfoClick,
     activeQuestionNum,
-    currentMap,
     choropleth,
   } = state;
-  const { filterRegions } = store.getState().map;
+  const { filterRegions, currentMap } = store.getState().map;
   const isSelected = selectedProperties === geo.properties;
   const { alpha3Code } = geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';
@@ -64,7 +63,7 @@ const ColorPicker = (state, geo) => {
   let render = true;
   let strokeWidth = 0.05;
   let onQuiz = filterRegions.indexOf(alpha3Code) !== -1;
-  if (currentMap !== 'world') {
+  if (currentMap !== 'World') {
     render = onQuiz;
   } else {
     defaultColor = !onQuiz ? 'rgba(105, 105, 105, .05)' : defaultColor;

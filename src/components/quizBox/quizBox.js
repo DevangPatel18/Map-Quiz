@@ -164,7 +164,7 @@ class QuizBox extends Component {
                 </Form.Field>
               ))}
             </Form>
-            {currentMap === 'world' && (
+            {currentMap === 'World' && (
               <Button
                 toggle
                 compact
@@ -175,7 +175,7 @@ class QuizBox extends Component {
                 onClick={this.handleRegionMenu}
               />
             )}
-            {currentMap !== 'world' && (
+            {currentMap !== 'World' && (
               <div className="App-quiz-toggle">
                 <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
                 <Button.Group size={formSize} compact>
@@ -199,7 +199,7 @@ class QuizBox extends Component {
             )}
           </div>
 
-          {currentMap === 'world' && (
+          {currentMap === 'World' && (
             <Form className="fmRegionSelect">
               {checkedRegionsLabels.map(region => (
                 <Form.Field

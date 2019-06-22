@@ -26,13 +26,13 @@ const RegionEllipses = ({props}) => {
 
   let filterFN;
 
-  if (currentMap !== 'world') {
+  if (currentMap !== 'World') {
     filterFN = x => x.properties.area < minArea;
   } else {
     filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
   }
 
-  const show = !(currentMap === 'world' && !quiz);
+  const show = !(currentMap === 'World' && !quiz);
   return show && geographyPaths
     .filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)

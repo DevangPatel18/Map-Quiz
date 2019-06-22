@@ -15,7 +15,6 @@ import {
 } from './components/quizBox/handleQuizDataLoad';
 import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
-import handleRegionSelect from './components/handleRegionSelect';
 import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
@@ -50,7 +49,7 @@ class App extends Component {
       quizType: null,
       activeQuestionNum: null,
       disableInfoClick: false,
-      currentMap: 'world',
+      currentMap: 'World',
       countryMarkers: [],
       capitalMarkers: [],
       fetchRequests: [],
@@ -91,7 +90,6 @@ class App extends Component {
     this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
     this.handleQuizState = handleQuizState.bind(this);
     this.handleCountryClick = handleCountryClick.bind(this);
-    this.handleRegionSelect = handleRegionSelect.bind(this);
     this.handleQuiz = this.handleQuiz.bind(this);
     this.handleAnswer = handleAnswer.bind(this);
     this.handleQuizClose = this.handleQuizClose.bind(this);
@@ -315,7 +313,7 @@ class App extends Component {
               this.handleMapRefresh(arg);
             }}
           />
-          <RegionButtons regionFunc={this.handleRegionSelect} />
+          <RegionButtons />
         </DropdownSelectionStyles>
 
         <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />

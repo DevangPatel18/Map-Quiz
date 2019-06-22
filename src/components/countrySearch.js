@@ -11,7 +11,7 @@ class CountrySearch extends Component {
     const { geographyPaths, countryMarkers } = this.props.data
     
     let countries = geographyPaths;
-    if (currentMap !== 'world') {
+    if (currentMap !== 'World') {
       countries = countries.filter(x => filterRegions.includes(x.properties.alpha3Code));
     }
 

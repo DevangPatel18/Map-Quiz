@@ -22,10 +22,10 @@ const Map = ({ props }) => {
     scale,
     dimensions,
     currentMap,
-  } = props.state;
+    disableOptimization,
+  } = props.props.map;
 
   const { geographyPaths } = props.props.data
-  const { disableOptimization } = props.props.map
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -120,7 +120,7 @@ const Map = ({ props }) => {
               <Markers>
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'world') && <CountryLabels props={props} />
+                (currentMap !== 'World') && <CountryLabels props={props} />
               }
               </Markers>
             </ZoomableGroup>
