@@ -1,5 +1,8 @@
+import { geoPath } from 'd3-geo';
+import projection from '../helpers/projection';
 import {
   REGION_SELECT,
+  COUNTRY_SELECT,
   SET_REGION_CHECKBOX,
   DISABLE_OPT,
   ZOOM_MAP,
@@ -56,6 +59,27 @@ export const regionSelect = regionName => async dispatch => {
     });
     dispatch({ type: DISABLE_OPT });
   }
+};
+
+export const countrySelect = geographyPath => dispatch => {
+  const { countryMarkers } = store.getState().data;
+  const { dimensions } = store.getState().map;
+  const { properties } = geographyPath;
+
+  const center = countryMarkers.find(
+    x => x.alpha3Code === properties.alpha3Code
+  ).coordinates;
+
+  const path = geoPath().projection(projection());
+  const bounds = path.bounds(geographyPath);
+  const width = bounds[1][0] - bounds[0][0];
+  const height = bounds[1][1] - bounds[0][1];
+  let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
+
+  zoom = properties.alpha3Code === 'USA' ? zoom * 6 : zoom;
+
+  zoom = Math.min(zoom, 64);
+  dispatch({ type: COUNTRY_SELECT, properties, center, zoom });
 };
 
 export const zoomMap = factor => dispatch => {

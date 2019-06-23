@@ -1,6 +1,7 @@
 import {
   SET_REGION_CHECKBOX,
   REGION_SELECT,
+  COUNTRY_SELECT,
   DISABLE_OPT,
   ZOOM_MAP,
   RECENTER_MAP,
@@ -52,6 +53,12 @@ export default function(state = initialState, action) {
         ...state,
         ...action.map,
         disableOptimization: true,
+      };
+    case COUNTRY_SELECT:
+      return {
+        ...state,
+        zoom: action.zoom,
+        center: action.center,
       };
     case DISABLE_OPT:
       return {

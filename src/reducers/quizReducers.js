@@ -4,6 +4,7 @@ import {
   QUIZ_CLOSE,
   COUNTRY_CLICK,
   REGION_SELECT,
+  COUNTRY_SELECT,
 } from '../actions/types';
 
 const initialState = {
@@ -22,6 +23,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         ...action.quiz,
+      };
+    case COUNTRY_SELECT:
+      return {
+        ...state,
+        selectedProperties: action.selectedProperties,
       };
     default:
       return state;
