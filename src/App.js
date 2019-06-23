@@ -20,7 +20,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
-import { setRegionCheckbox } from './actions/mapActions';
+import { setRegionCheckbox, zoomMap, recenterMap } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -75,17 +75,15 @@ class App extends Component {
       },
       up: () => {
         // console.log('wheel up detected.');
-        this.handleZoom(0.5);
+        this.props.zoomMap(0.5);
       },
       down: () => {
         // console.log('wheel down detected.');
-        this.handleZoom(2);
+        this.props.zoomMap(2);
       },
     });
 
     this.projection = this.projection.bind(this);
-    this.handleZoom = this.handleZoom.bind(this);
-    this.handleReset = this.handleReset.bind(this);
     this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
     this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
     this.handleQuizState = handleQuizState.bind(this);
@@ -156,21 +154,6 @@ class App extends Component {
     if (newDimensions[0] !== dimensions[0]) {
       this.handleMapRefresh({ dimensions: newDimensions });
     }
-  }
-
-  handleZoom(x) {
-    const { zoom } = this.state;
-    this.setState({
-      zoom: zoom * x,
-    });
-  }
-
-  handleReset() {
-    const { defaultCenter, defaultZoom } = this.state;
-    this.setState({
-      center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
-      zoom: defaultZoom,
-    });
   }
 
   handleMoveStart(currentCenter) {
@@ -277,12 +260,15 @@ class App extends Component {
 
         <div className="zoomButtons">
           <Button.Group size="tiny" basic vertical>
-            <Button onClick={() => this.handleZoom(zoomFactor)} icon="plus" />
             <Button
-              onClick={() => this.handleZoom(1 / zoomFactor)}
+              onClick={() => this.props.zoomMap(zoomFactor)}
+              icon="plus"
+            />
+            <Button
+              onClick={() => this.props.zoomMap(1 / zoomFactor)}
               icon="minus"
             />
-            <Button onClick={this.handleReset} icon="undo" />
+            <Button onClick={this.props.recenterMap} icon="undo" />
           </Button.Group>
         </div>
 
@@ -344,5 +330,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { loadPaths, loadData, setRegionCheckbox }
+  { loadPaths, loadData, setRegionCheckbox, zoomMap, recenterMap }
 )(App);

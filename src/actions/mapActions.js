@@ -1,4 +1,10 @@
-import { REGION_SELECT, SET_REGION_CHECKBOX, DISABLE_OPT } from './types';
+import {
+  REGION_SELECT,
+  SET_REGION_CHECKBOX,
+  DISABLE_OPT,
+  ZOOM_MAP,
+  RECENTER_MAP,
+} from './types';
 import store from '../store';
 import {
   alpha3Codes,
@@ -43,7 +49,25 @@ export const regionSelect = regionName => async dispatch => {
       .filter(region => checkedRegions[region])
       .map(region => alpha3CodesSov[region])
       .reduce((a, b) => a.concat(b), []);
-    await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
+    await dispatch({
+      type: SET_REGION_CHECKBOX,
+      checkedRegions,
+      filterRegions,
+    });
     dispatch({ type: DISABLE_OPT });
   }
+};
+
+export const zoomMap = factor => dispatch => {
+  const { zoom } = store.getState().map;
+  dispatch({ type: ZOOM_MAP, zoom: zoom * factor });
+};
+
+export const recenterMap = () => dispatch => {
+  const { defaultCenter, defaultZoom } = store.getState().map;
+  dispatch({
+    type: RECENTER_MAP,
+    center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
+    zoom: defaultZoom,
+  });
 };
