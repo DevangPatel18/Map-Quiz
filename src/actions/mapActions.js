@@ -79,7 +79,7 @@ export const countrySelect = geographyPath => dispatch => {
   zoom = properties.alpha3Code === 'USA' ? zoom * 6 : zoom;
 
   zoom = Math.min(zoom, 64);
-  dispatch({ type: COUNTRY_SELECT, properties, center, zoom });
+  dispatch({ type: COUNTRY_SELECT, selectedProperties: properties, center, zoom });
 };
 
 export const zoomMap = factor => dispatch => {

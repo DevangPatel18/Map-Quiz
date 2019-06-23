@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
 const InfoTab = props => {
-  const { country } = props;
+  const { selectedProperties } = props.quiz;
   const { geographyPaths } = props.data;
-  if (Object.keys(country).length === 0) {
+  if (Object.keys(selectedProperties).length === 0) {
     return null;
   }
-  const { name, capital, population, area, regionOf } = country;
+  const { name, capital, population, area, regionOf } = selectedProperties;
   const capitalStr = `Capital: ${capital}`;
   const populationStr = `Population: ${population.toLocaleString()}`;
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
@@ -22,7 +22,7 @@ const InfoTab = props => {
   }
   return (
     <InfoTabStyles isMobile={isMobile}>
-      <img className="infoTab-flag" src={country.flag} alt="" />
+      <img className="infoTab-flag" src={selectedProperties.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>
         <li>{capitalStr}</li>
@@ -36,6 +36,7 @@ const InfoTab = props => {
 
 const mapStateToProps = state => ({
   data: state.data,
+  quiz: state.quiz,
 });
 
 export default connect(mapStateToProps)(InfoTab);

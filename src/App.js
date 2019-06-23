@@ -299,7 +299,7 @@ class App extends Component {
 
         <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />
 
-        <InfoTab country={selectedProperties} />
+        <InfoTab />
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
 
