@@ -293,12 +293,7 @@ class App extends Component {
         />
 
         <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
-          <CountrySearch
-            state={this.state}
-            mapRefresh={arg => {
-              this.handleMapRefresh(arg);
-            }}
-          />
+          <CountrySearch />
           <RegionButtons />
         </DropdownSelectionStyles>
 

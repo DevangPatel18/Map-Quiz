@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react';
-import { geoPath } from 'd3-geo';
 import { connect } from 'react-redux';
-import projection from '../helpers/projection';
+import { countrySelect } from '../actions/mapActions';
 
 class CountrySearch extends Component {
   render() {
-    const { state, mapRefresh } = this.props;
-    const { currentMap, filterRegions, dimensions } = state;
-    const { geographyPaths, countryMarkers } = this.props.data
+    const { map, data, countrySelect } = this.props;
+    const { currentMap, filterRegions, dimensions } = map;
+    const { geographyPaths, countryMarkers } = data;
     
     let countries = geographyPaths;
     if (currentMap !== 'World') {
@@ -47,25 +46,7 @@ class CountrySearch extends Component {
 
             if (!geography) { return; }
 
-            const selectedProperties = geography.properties;
-
-            const center = countryMarkers
-              .find(x => x.alpha3Code === selectedProperties.alpha3Code)
-              .coordinates;
-
-            const path = geoPath().projection(projection());
-            const bounds = path.bounds(geography);
-            const width = bounds[1][0] - bounds[0][0];
-            const height = bounds[1][1] - bounds[0][1];
-            let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
-
-            zoom = selectedProperties.alpha3Code === 'USA' ? zoom * 6 : zoom;
-
-            zoom = Math.min(zoom, 64);
-
-            mapRefresh({
-              selectedProperties, center, zoom, viewInfoDiv: true,
-            });
+            countrySelect(geography);
           }}
         />
 
@@ -75,7 +56,11 @@ class CountrySearch extends Component {
 }
 
 const mapStateToProps = state => ({
-  data: state.data
-})
+  data: state.data,
+  map: state.map,
+});
 
-export default connect(mapStateToProps)(CountrySearch)
+export default connect(
+  mapStateToProps,
+  { countrySelect }
+)(CountrySearch);
