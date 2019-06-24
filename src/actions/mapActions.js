@@ -61,7 +61,7 @@ export const regionSelect = regionName => async dispatch => {
   }
 };
 
-export const countrySelect = geographyPath => dispatch => {
+export const countrySelect = geographyPath => async dispatch => {
   const { countryMarkers } = store.getState().data;
   const { dimensions } = store.getState().map;
   const { properties } = geographyPath;
@@ -79,7 +79,13 @@ export const countrySelect = geographyPath => dispatch => {
   zoom = properties.alpha3Code === 'USA' ? zoom * 6 : zoom;
 
   zoom = Math.min(zoom, 64);
-  dispatch({ type: COUNTRY_SELECT, selectedProperties: properties, center, zoom });
+  await dispatch({
+    type: COUNTRY_SELECT,
+    selectedProperties: properties,
+    center,
+    zoom,
+  });
+  dispatch({ type: DISABLE_OPT });
 };
 
 export const zoomMap = factor => dispatch => {

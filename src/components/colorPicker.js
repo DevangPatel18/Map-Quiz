@@ -4,7 +4,6 @@ import store from '../store';
 const ColorPicker = (state, geo) => {
   const {
     quiz,
-    selectedProperties,
     quizGuesses,
     quizAnswers,
     disableInfoClick,
@@ -12,6 +11,7 @@ const ColorPicker = (state, geo) => {
     choropleth,
   } = state;
   const { filterRegions, currentMap } = store.getState().map;
+  const { selectedProperties } = store.getState().quiz;
   const isSelected = selectedProperties === geo.properties;
   const { alpha3Code } = geo.properties;
   let defaultColor = 'rgba(105, 105, 105, .3)';

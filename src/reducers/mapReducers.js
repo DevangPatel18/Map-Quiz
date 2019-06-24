@@ -59,6 +59,7 @@ export default function(state = initialState, action) {
         ...state,
         zoom: action.zoom,
         center: action.center,
+        disableOptimization: true,
       };
     case DISABLE_OPT:
       return {
