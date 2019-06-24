@@ -12,6 +12,6 @@ export const LOAD_PATHS = 'LOAD_PATHS';
 export const LOAD_DATA = 'LOAD_DATA';
 // Quiz actions
 export const QUIZ_STATE = 'QUIZ_STATE';
-export const QUIZ_ANSWER = 'QUIZ_ANSWER';
+export const CLICK_ANSWER = 'CLICK_ANSWER';
 export const QUIZ_CLOSE = 'QUIZ_CLOSE';
 export const COUNTRY_CLICK = 'COUNTRY_CLICK';
