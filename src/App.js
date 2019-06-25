@@ -20,7 +20,12 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
-import { setRegionCheckbox, zoomMap, recenterMap } from './actions/mapActions';
+import {
+  setRegionCheckbox,
+  zoomMap,
+  recenterMap,
+  setMap,
+} from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -102,9 +107,16 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    await this.props.loadPaths();
-    this.props.loadData();
-    this.props.setRegionCheckbox();
+    const {
+      loadPaths,
+      loadData,
+      setRegionCheckbox,
+      setMap,
+      adjustMapSize,
+    } = this.props;
+    await loadPaths();
+    await loadData();
+    setRegionCheckbox();
     window.addEventListener('orientationchange', this.toggleOrientation);
     window.addEventListener('resize', this.adjustMapSize);
 
@@ -113,7 +125,7 @@ class App extends Component {
 
     if (isMobile) {
       const dimensions = height > width ? [310, 551] : [980, 551];
-      this.setState({ dimensions, zoomFactor: 1.5 });
+      setMap({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
@@ -133,13 +145,15 @@ class App extends Component {
   }
 
   toggleOrientation() {
-    const { dimensions } = this.state;
+    const { map, setMap } = this.props;
+    const { dimensions, zoomFactor } = map;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
-    this.handleMapRefresh({ dimensions: newDimensions });
+    setMap({ dimensions: newDimensions, zoomFactor });
   }
 
   adjustMapSize() {
-    const { dimensions } = this.state;
+    const { map, setMap } = this.props;
+    const { dimensions } = map;
     const width = window.innerWidth;
     const height = window.innerHeight;
     const ratio = width / height;
@@ -152,7 +166,7 @@ class App extends Component {
       newDimensions = [420, 551];
     }
     if (newDimensions[0] !== dimensions[0]) {
-      this.handleMapRefresh({ dimensions: newDimensions });
+      setMap({ dimensions: newDimensions, zoomFactor: 2 });
     }
   }
 
@@ -325,5 +339,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { loadPaths, loadData, setRegionCheckbox, zoomMap, recenterMap }
+  { loadPaths, loadData, setRegionCheckbox, zoomMap, recenterMap, setMap }
 )(App);
