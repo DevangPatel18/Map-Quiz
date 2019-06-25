@@ -103,7 +103,6 @@ class App extends Component {
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.setChoropleth = this.setChoropleth.bind(this);
-    this.handleMapMove = this.handleMapMove.bind(this);
   }
 
   async componentDidMount() {
@@ -208,27 +207,6 @@ class App extends Component {
     });
   }
 
-  handleMapMove(direction) {
-    let { center } = this.state;
-    const step = 5;
-    switch (direction) {
-      case 'up':
-        center = [center[0], center[1] + step];
-        break;
-      case 'down':
-        center = [center[0], center[1] - step];
-        break;
-      case 'left':
-        center = [center[0] - step, center[1]];
-        break;
-      case 'right':
-        center = [center[0] + step, center[1]];
-        break;
-      default:
-    }
-    this.handleMapRefresh({ center });
-  }
-
   setQuizRegions(value = null) {
     let checkedRegions = { ...this.state.checkedRegions };
     if (value) {
@@ -317,7 +295,7 @@ class App extends Component {
 
         <ChoroplethToggles setChoropleth={this.setChoropleth} />
 
-        <DirectionPad handleMapMove={this.handleMapMove} />
+        <DirectionPad />
 
         <div {...WheelReact.events}>
           <Map props={this} />
@@ -339,5 +317,12 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { loadPaths, loadData, setRegionCheckbox, zoomMap, recenterMap, setMap }
+  {
+    loadPaths,
+    loadData,
+    setRegionCheckbox,
+    zoomMap,
+    recenterMap,
+    setMap,
+  }
 )(App);
