@@ -81,6 +81,13 @@ export default function(state = initialState, action) {
         center: action.center,
         zoom: action.zoom,
       };
+    case SET_MAP:
+      return {
+        ...state,
+        dimensions: action.dimensions,
+        zoomFactor: action.zoomFactor,
+        disableOptimization: true,
+      };
     default:
       return state;
   }

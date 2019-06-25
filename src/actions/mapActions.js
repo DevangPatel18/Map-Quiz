@@ -7,6 +7,7 @@ import {
   DISABLE_OPT,
   ZOOM_MAP,
   RECENTER_MAP,
+  SET_MAP,
 } from './types';
 import store from '../store';
 import {
@@ -100,4 +101,13 @@ export const recenterMap = () => dispatch => {
     center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
     zoom: defaultZoom,
   });
+};
+
+export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
+  await dispatch({
+    type: SET_MAP,
+    dimensions,
+    zoomFactor,
+  });
+  dispatch({ type: DISABLE_OPT });
 };
