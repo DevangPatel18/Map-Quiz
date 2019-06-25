@@ -8,6 +8,8 @@ import {
   SET_MAP,
   LOAD_DATA,
   LOAD_PATHS,
+  COUNTRY_CLICK,
+  CLICK_ANSWER,
 } from '../actions/types';
 
 const initialState = {
@@ -36,6 +38,8 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case LOAD_DATA:
     case LOAD_PATHS:
+    case COUNTRY_CLICK:
+    case CLICK_ANSWER:
       return {
         ...state,
         disableOptimization: true,

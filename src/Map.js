@@ -8,13 +8,15 @@ import {
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
+import { countryClick } from './actions/quizActions';
 import ColorPicker from './components/colorPicker';
 import RegionEllipses from './components/regionEllipses'
 import CountryLabels from './components/countryLabels'
 
 const doubleClick = false;
 
-const Map = ({ props }) => {
+const Map = props => {
+  const { map, data, countryClick } = props
   const {
     defaultZoom,
     center,
@@ -23,9 +25,9 @@ const Map = ({ props }) => {
     dimensions,
     currentMap,
     disableOptimization,
-  } = props.props.map;
+  } = map;
 
-  const { geographyPaths } = props.props.data
+  const { geographyPaths } = data
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -43,7 +45,7 @@ const Map = ({ props }) => {
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => props._wrapper = wrapper}
+          ref={wrapper => props.props._wrapper = wrapper}
           onDoubleClick={doubleClick ? props.handleDoubleClick : null}
         >
           <ComposableMap
@@ -63,7 +65,7 @@ const Map = ({ props }) => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.props.state, geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
@@ -94,7 +96,7 @@ const Map = ({ props }) => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={props.handleCountryClick}
+                      onClick={countryClick}
                       fill="white"
                       stroke="black"
                       strokeWidth={strokeWidth}
@@ -116,11 +118,11 @@ const Map = ({ props }) => {
                   );
                 })}
               </Geographies>
-              <Markers><RegionEllipses props={props}/></Markers>
+              <Markers><RegionEllipses props={props.props}/></Markers>
               <Markers>
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'World') && <CountryLabels props={props} />
+                (currentMap !== 'World') && <CountryLabels props={props.props} />
               }
               </Markers>
             </ZoomableGroup>
@@ -136,4 +138,7 @@ const mapStateToProps = state => ({
   map: state.map
 })
 
-export default connect(mapStateToProps)(Map);
+export default connect(
+  mapStateToProps,
+  { countryClick }
+)(Map);
