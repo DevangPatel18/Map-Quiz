@@ -8,6 +8,7 @@ import {
   ZOOM_MAP,
   RECENTER_MAP,
   SET_MAP,
+  MOVE_CENTER,
 } from './types';
 import store from '../store';
 import {
@@ -108,6 +109,32 @@ export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
     type: SET_MAP,
     dimensions,
     zoomFactor,
+  });
+  dispatch({ type: DISABLE_OPT });
+};
+
+export const moveMap = direction => async dispatch => {
+  const { center } = store.getState().map;
+  let newCenter;
+  const step = 5;
+  switch (direction) {
+    case 'up':
+      newCenter = [center[0], center[1] + step];
+      break;
+    case 'down':
+      newCenter = [center[0], center[1] - step];
+      break;
+    case 'left':
+      newCenter = [center[0] - step, center[1]];
+      break;
+    case 'right':
+      newCenter = [center[0] + step, center[1]];
+      break;
+    default:
+  }
+  await dispatch({
+    type: MOVE_CENTER,
+    center: newCenter,
   });
   dispatch({ type: DISABLE_OPT });
 };

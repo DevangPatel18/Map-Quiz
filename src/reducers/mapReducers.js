@@ -10,6 +10,7 @@ import {
   LOAD_PATHS,
   COUNTRY_CLICK,
   CLICK_ANSWER,
+  MOVE_CENTER,
 } from '../actions/types';
 
 const initialState = {
@@ -87,6 +88,11 @@ export default function(state = initialState, action) {
         dimensions: action.dimensions,
         zoomFactor: action.zoomFactor,
         disableOptimization: true,
+      };
+    case MOVE_CENTER:
+      return {
+        ...state,
+        center: action.center,
       };
     default:
       return state;
