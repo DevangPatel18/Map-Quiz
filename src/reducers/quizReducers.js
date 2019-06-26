@@ -1,5 +1,5 @@
 import {
-  QUIZ_STATE,
+  SET_QUIZ_STATE,
   CLICK_ANSWER,
   QUIZ_CLOSE,
   COUNTRY_CLICK,
@@ -36,6 +36,22 @@ export default function(state = initialState, action) {
         selectedProperties: action.selectedProperties,
         quizGuesses: action.quizGuesses,
         activeQuestionNum: action.activeQuestionNum,
+      };
+    case SET_QUIZ_STATE:
+      return {
+        ...state,
+        ...action.quiz,
+      };
+    case QUIZ_CLOSE:
+      return {
+        ...state,
+        quizAnswers: [],
+        quizGuesses: [],
+        quiz: false,
+        quizType: null,
+        activeQuestionNum: null,
+        disableInfoClick: false,
+        selectedProperties: '',
       };
     default:
       return state;

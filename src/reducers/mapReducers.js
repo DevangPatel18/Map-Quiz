@@ -11,6 +11,8 @@ import {
   COUNTRY_CLICK,
   CLICK_ANSWER,
   MOVE_CENTER,
+  SET_QUIZ_STATE,
+  QUIZ_CLOSE,
 } from '../actions/types';
 
 const initialState = {
@@ -41,6 +43,8 @@ export default function(state = initialState, action) {
     case LOAD_PATHS:
     case COUNTRY_CLICK:
     case CLICK_ANSWER:
+    case SET_QUIZ_STATE:
+    case QUIZ_CLOSE:
       return {
         ...state,
         disableOptimization: true,

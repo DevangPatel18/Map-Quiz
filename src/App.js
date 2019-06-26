@@ -7,12 +7,7 @@ import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
-import handleAnswer from './components/quizBox/handleAnswer';
 import handleInfoTabLoad from './components/infoTab/handleInfoTabLoad';
-import {
-  handleQuizDataLoad,
-  handleQuizState,
-} from './components/quizBox/handleQuizDataLoad';
 import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
 import CountrySearch from './components/countrySearch';
@@ -90,12 +85,7 @@ class App extends Component {
 
     this.projection = this.projection.bind(this);
     this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
-    this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
-    this.handleQuizState = handleQuizState.bind(this);
     this.handleCountryClick = handleCountryClick.bind(this);
-    this.handleQuiz = this.handleQuiz.bind(this);
-    this.handleAnswer = handleAnswer.bind(this);
-    this.handleQuizClose = this.handleQuizClose.bind(this);
     this.handleMapRefresh = this.handleMapRefresh.bind(this);
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
@@ -177,30 +167,6 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleQuiz(quizType) {
-    const { currentMap, fetchRequests } = this.state;
-    if (
-      quizType !== 'type_name' ||
-      fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))
-    ) {
-      this.handleQuizState(quizType);
-    } else {
-      this.handleQuizDataLoad(quizType);
-    }
-  }
-
-  handleQuizClose() {
-    this.handleMapRefresh({
-      quizAnswers: [],
-      quizGuesses: [],
-      quiz: false,
-      quizType: null,
-      activeQuestionNum: null,
-      disableInfoClick: false,
-      selectedProperties: '',
-    });
-  }
-
   handleMapRefresh(args) {
     this.setState({ ...args, disableOptimization: true }, () => {
       this.setState({ disableOptimization: false });
@@ -265,9 +231,6 @@ class App extends Component {
         </div>
 
         <QuizBox
-          handleQuiz={quizType => {
-            this.handleQuiz(quizType);
-          }}
           quizData={{
             quizAnswers,
             quizGuesses,
@@ -277,11 +240,6 @@ class App extends Component {
             markerToggle,
             quiz,
           }}
-          handleAnswer={this.handleAnswer}
-          setToggle={marker => {
-            this.setState({ markerToggle: marker });
-          }}
-          closeQuiz={this.handleQuizClose}
         />
 
         <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>

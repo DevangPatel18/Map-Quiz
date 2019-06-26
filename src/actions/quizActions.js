@@ -1,11 +1,38 @@
 import {
-  QUIZ_STATE,
+  SET_QUIZ_STATE,
   CLICK_ANSWER,
   QUIZ_CLOSE,
   COUNTRY_CLICK,
   DISABLE_OPT,
 } from './types';
 import store from '../store';
+
+export const initializeQuiz = quizType => async dispatch => {
+  const { filterRegions } = this.state;
+  const quizAnswers = [...filterRegions];
+  quizAnswers.reduce((dum1, dum2, i) => {
+    const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
+    [quizAnswers[i], quizAnswers[j]] = [quizAnswers[j], quizAnswers[i]];
+    return quizAnswers;
+  }, quizAnswers);
+
+  const quiz = {
+    quizAnswers,
+    quizType,
+    quiz: true,
+    activeQuestionNum: 0,
+    quizGuesses: [],
+    selectedProperties: '',
+    disableInfoClick: quizType.split('_')[0] === 'type',
+  };
+  await dispatch({ type: SET_QUIZ_STATE, quiz });
+  dispatch({ type: DISABLE_OPT });
+};
+
+export const closeQuiz = async dispatch => {
+  await dispatch({ type: QUIZ_CLOSE });
+  dispatch({ type: DISABLE_OPT });
+};
 
 export const countryClick = geographyPath => async dispatch => {
   const {
