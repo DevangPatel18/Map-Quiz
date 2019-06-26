@@ -1,6 +1,7 @@
 import {
   SET_QUIZ_STATE,
-  CLICK_ANSWER,
+  QUIZ_ANSWER,
+  TEXT_ANSWER,
   QUIZ_CLOSE,
   COUNTRY_CLICK,
   REGION_SELECT,
@@ -30,7 +31,7 @@ export default function(state = initialState, action) {
         ...state,
         selectedProperties: action.selectedProperties,
       };
-    case CLICK_ANSWER:
+    case QUIZ_ANSWER:
       return {
         ...state,
         selectedProperties: action.selectedProperties,

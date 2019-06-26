@@ -9,7 +9,7 @@ import {
   LOAD_DATA,
   LOAD_PATHS,
   COUNTRY_CLICK,
-  CLICK_ANSWER,
+  QUIZ_ANSWER,
   MOVE_CENTER,
   SET_QUIZ_STATE,
   QUIZ_CLOSE,
@@ -42,7 +42,7 @@ export default function(state = initialState, action) {
     case LOAD_DATA:
     case LOAD_PATHS:
     case COUNTRY_CLICK:
-    case CLICK_ANSWER:
+    case QUIZ_ANSWER:
     case SET_QUIZ_STATE:
     case QUIZ_CLOSE:
       return {
