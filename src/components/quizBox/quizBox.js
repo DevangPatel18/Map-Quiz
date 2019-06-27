@@ -7,6 +7,7 @@ import QuizMenu from '../styles/QuizMenuStyles';
 import TimerStyles from '../styles/TimerStyles';
 import msToTime from '../../helpers/msToTime';
 import { setRegionCheckbox } from '../../actions/mapActions';
+import { startQuiz } from '../../actions/quizActions';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -53,8 +54,8 @@ class QuizBox extends Component {
   }
 
   handleLabelToggle(marker) {
-    const { setToggle, quizData } = this.props;
-    const { markerToggle } = quizData;
+    const { setToggle, map } = this.props;
+    const { markerToggle } = map;
     const parentMarker =
       markerToggle === '' || marker !== markerToggle ? marker : '';
     setToggle(parentMarker);
@@ -65,8 +66,8 @@ class QuizBox extends Component {
   }
 
   handleCheckBox(e) {
-    const { setRegionCheckbox, quizData } = this.props;
-    const { checkedRegions } = this.props.map;
+    const { setRegionCheckbox, map } = this.props;
+    const { checkedRegions } = map;
     const { value, checked } = e.target;
     // check if nothing is selected
     const nothing = Object.keys(checkedRegions)
@@ -107,10 +108,10 @@ class QuizBox extends Component {
   }
 
   start() {
-    const { handleQuiz } = this.props;
+    const { startQuiz } = this.props;
     const { quizType } = this.state;
 
-    handleQuiz(quizType);
+    startQuiz(quizType);
     this.setState({ timerOn: true, time: 0 });
     const x = Date.now();
     this.timer = setInterval(
@@ -121,15 +122,8 @@ class QuizBox extends Component {
 
   render() {
     const { quizType, regionMenu, time, open } = this.state;
-    const { quizData, handleAnswer } = this.props;
-    const {
-      markerToggle,
-      currentMap,
-      quiz,
-      quizGuesses,
-      quizAnswers,
-    } = quizData;
-    const { checkedRegions } = this.props.map;
+    const { markerToggle, quiz, quizGuesses, quizAnswers } = this.props.quiz;
+    const { checkedRegions, currentMap } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -219,13 +213,7 @@ class QuizBox extends Component {
     }
     return (
       <TimerStyles mobile={isMobile}>
-        <QuestionBox
-          quizType={quizType}
-          quizData={quizData}
-          handleAnswer={handleAnswer}
-          startQuiz={this.start}
-          closeQuiz={this.close}
-        />
+        <QuestionBox />
         <div className="statusBar-timerButtons">
           <Button
             size="mini"
@@ -270,9 +258,10 @@ class QuizBox extends Component {
 
 const mapStateToProps = state => ({
   map: state.map,
+  quiz: state.quiz,
 });
 
 export default connect(
   mapStateToProps,
-  { setRegionCheckbox }
+  { setRegionCheckbox, startQuiz }
 )(QuizBox);

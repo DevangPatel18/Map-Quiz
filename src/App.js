@@ -230,17 +230,7 @@ class App extends Component {
           </Button.Group>
         </div>
 
-        <QuizBox
-          quizData={{
-            quizAnswers,
-            quizGuesses,
-            activeQuestionNum,
-            fetchRequests,
-            currentMap,
-            markerToggle,
-            quiz,
-          }}
-        />
+        <QuizBox />
 
         <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
           <CountrySearch />

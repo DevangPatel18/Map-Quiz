@@ -13,8 +13,8 @@ const simple = str =>
     .replace(/\u002D/g, ' ')
     .replace(/[^\w\s]/g, '');
 
-export const initializeQuiz = quizType => async dispatch => {
-  const { filterRegions } = this.state;
+export const startQuiz = quizType => async dispatch => {
+  const { filterRegions } = store.getState().map;
   const quizAnswers = [...filterRegions];
   quizAnswers.reduce((dum1, dum2, i) => {
     const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
@@ -35,7 +35,7 @@ export const initializeQuiz = quizType => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const closeQuiz = async dispatch => {
+export const closeQuiz = () => async dispatch => {
   await dispatch({ type: QUIZ_CLOSE });
   dispatch({ type: DISABLE_OPT });
 };

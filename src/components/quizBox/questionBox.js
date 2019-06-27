@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
-import store from '../../store';
+import {
+  startQuiz,
+  closeQuiz,
+  answerQuiz,
+} from '../../actions/quizActions';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -23,17 +28,17 @@ class QuestionBox extends Component {
 
   handleSubmit(event) {
     const { userGuess } = this.state;
-    const { handleAnswer } = this.props;
+    const { answerQuiz } = this.props;
     event.preventDefault();
     if (userGuess.length !== 0) {
-      handleAnswer(userGuess);
+      answerQuiz(userGuess);
       this.setState({ userGuess: '' });
     }
   }
 
   handleFinalDialog() {
-    const { quizData, startQuiz, closeQuiz } = this.props;
-    const { quizGuesses, quizAnswers } = quizData;
+    const { quiz, startQuiz, closeQuiz } = this.props;
+    const { quizGuesses, quizAnswers, quizType } = quiz;
 
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
@@ -48,10 +53,10 @@ class QuestionBox extends Component {
             size="large"
             compact
             content="CANCEL"
-            style={{marginRight: '1rem'}}
+            style={{ marginRight: '1rem' }}
           />
           <Button
-            onClick={() => startQuiz()}
+            onClick={() => startQuiz(quizType)}
             size="large"
             compact
             content="RESTART"
@@ -63,9 +68,8 @@ class QuestionBox extends Component {
 
   render() {
     const { userGuess } = this.state;
-    const { quizData, quizType } = this.props;
-    const { quizAnswers, activeQuestionNum } = quizData;
-    const { geographyPaths } = store.getState().data;
+    const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
+    const { geographyPaths } = this.props.data;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
     let text;
@@ -122,4 +126,12 @@ class QuestionBox extends Component {
   }
 }
 
-export default QuestionBox;
+const mapStateToProps = state => ({
+  data: state.data,
+  quiz: state.quiz,
+});
+
+export default connect(
+  mapStateToProps,
+  { startQuiz, closeQuiz, answerQuiz }
+)(QuestionBox);
