@@ -13,6 +13,7 @@ import {
   MOVE_CENTER,
   SET_QUIZ_STATE,
   QUIZ_CLOSE,
+  SET_CHOROPLETH,
 } from '../actions/types';
 
 const initialState = {
@@ -35,6 +36,7 @@ const initialState = {
     Asia: true,
     Oceania: true,
   },
+  choropleth: 'None',
 };
 
 export default function(state = initialState, action) {
@@ -97,6 +99,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         center: action.center,
+      };
+    case SET_CHOROPLETH:
+      return {
+        ...state,
+        choropleth: action.choropleth,
+        disableOptimization: true,
       };
     default:
       return state;

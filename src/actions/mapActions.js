@@ -9,6 +9,7 @@ import {
   RECENTER_MAP,
   SET_MAP,
   MOVE_CENTER,
+  SET_CHOROPLETH,
 } from './types';
 import store from '../store';
 import {
@@ -136,5 +137,10 @@ export const moveMap = direction => async dispatch => {
     type: MOVE_CENTER,
     center: newCenter,
   });
+  dispatch({ type: DISABLE_OPT });
+};
+
+export const setChoropleth = choropleth => async dispatch => {
+  await dispatch({ type: SET_CHOROPLETH, choropleth });
   dispatch({ type: DISABLE_OPT });
 };
