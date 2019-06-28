@@ -63,7 +63,6 @@ class App extends Component {
         Asia: true,
         Oceania: true,
       },
-      choropleth: 'None',
     };
 
     WheelReact.config({
@@ -92,7 +91,6 @@ class App extends Component {
     this.countryLabels = countryLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.setChoropleth = this.setChoropleth.bind(this);
   }
 
   async componentDidMount() {
@@ -187,10 +185,6 @@ class App extends Component {
     this.handleMapRefresh({ checkedRegions, filterRegions });
   }
 
-  setChoropleth(choroplethType) {
-    this.handleMapRefresh({ choropleth: choroplethType });
-  }
-
   render() {
     const {
       quiz,
@@ -241,7 +235,7 @@ class App extends Component {
 
         <InfoTab />
 
-        <ChoroplethToggles setChoropleth={this.setChoropleth} />
+        <ChoroplethToggles />
 
         <DirectionPad />
 

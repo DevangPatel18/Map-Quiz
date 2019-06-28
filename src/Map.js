@@ -65,7 +65,7 @@ const Map = props => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.props.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
