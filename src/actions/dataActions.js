@@ -35,7 +35,7 @@ export const loadPaths = () => async dispatch => {
 export const loadData = () => async dispatch => {
   let data = store.getState().data.geographyPaths.map(a => ({ ...a }));
   let restData = await fetch(
-    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;'
+    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;altSpellings;translations'
   ).then(restCountries => {
     if (restCountries.status !== 200) {
       console.log(`There was a problem: ${restCountries.status}`);
@@ -55,6 +55,10 @@ export const loadData = () => async dispatch => {
       const countryData = restData.find(c => +c.numericCode === +geography.id);
 
       geography.properties = countryData;
+      geography.properties.spellings = [
+        ...countryData.altSpellings,
+        ...Object.values(countryData.translations),
+      ];
 
       geography.properties.density =
         geography.properties.population / geography.properties.area;
