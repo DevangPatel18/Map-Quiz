@@ -15,6 +15,7 @@ import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
+import { countryClick } from './actions/quizActions';
 import {
   setRegionCheckbox,
   zoomMap,
@@ -185,6 +186,10 @@ class App extends Component {
     this.handleMapRefresh({ checkedRegions, filterRegions });
   }
 
+  markerClick = geographyPath => {
+    this.props.countryClick(geographyPath);
+  };
+
   render() {
     const {
       quiz,
@@ -240,7 +245,7 @@ class App extends Component {
         <DirectionPad />
 
         <div {...WheelReact.events}>
-          <Map props={this} />
+          <Map oldProps={this} />
         </div>
         <footer>
           <div style={footerStyle}>
@@ -255,6 +260,7 @@ class App extends Component {
 const mapStateToProps = state => ({
   data: state.data,
   map: state.map,
+  quiz: state.quiz,
 });
 
 export default connect(
@@ -266,5 +272,6 @@ export default connect(
     zoomMap,
     recenterMap,
     setMap,
+    countryClick,
   }
 )(App);

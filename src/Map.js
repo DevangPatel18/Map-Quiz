@@ -45,7 +45,7 @@ const Map = props => {
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => props.props._wrapper = wrapper}
+          ref={wrapper => props.oldProps._wrapper = wrapper}
           onDoubleClick={doubleClick ? props.handleDoubleClick : null}
         >
           <ComposableMap
@@ -118,11 +118,11 @@ const Map = props => {
                   );
                 })}
               </Geographies>
-              <Markers><RegionEllipses props={props.props}/></Markers>
+              {props.oldProps.regionEllipses()}
               <Markers>
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'World') && <CountryLabels props={props.props} />
+                // (currentMap !== 'World') && <CountryLabels props={props.props} />
               }
               </Markers>
             </ZoomableGroup>

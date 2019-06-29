@@ -1,5 +1,5 @@
 import React from 'react';
-import { Marker } from 'react-simple-maps';
+import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { connect } from 'react-redux';
 import ColorPicker from './colorPicker';
@@ -9,9 +9,10 @@ import projection from "../helpers/projection";
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
-const RegionEllipses = ({props}) => {
-  const { currentMap, filterRegions, zoom, quiz } = props.state;
-  const { geographyPaths, capitalMarkers, countryMarkers } = props.props.data
+export default function regionEllipses() {
+  const { currentMap, filterRegions, zoom } = this.props.map;
+  const { quiz } = this.props.quiz;
+  const { geographyPaths, capitalMarkers, countryMarkers } = this.props.data;
   let minArea;
   switch (currentMap) {
     case 'Caribbean':
@@ -33,8 +34,8 @@ const RegionEllipses = ({props}) => {
   }
 
   const show = !(currentMap === 'World' && !quiz);
-  return show && geographyPaths
-    .filter(x => filterRegions.includes(x.properties.alpha3Code))
+  return show && <Markers> 
+    {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)
     .map((country) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
@@ -90,7 +91,7 @@ const RegionEllipses = ({props}) => {
         heightMain *= zoom;
         rotate = `rotate(${angleMain})`;
       }
-      const { defaultColor, hoverColor, pressedColor } = ColorPicker(props.state, country);
+      const { defaultColor, hoverColor, pressedColor } = ColorPicker(country);
       return (
         <Marker
           key={alpha3Code}
@@ -127,7 +128,7 @@ const RegionEllipses = ({props}) => {
               r={4}
               fill={defaultColor}
               className="caribSelector"
-              onClick={() => { props.handleCountryClick(country); }}
+              onClick={() => this.markerClick(country)}
             />
           ) : (
             <ellipse
@@ -138,16 +139,11 @@ const RegionEllipses = ({props}) => {
               rx={widthMain}
               ry={heightMain}
               transform={rotate}
-              onClick={() => { props.handleCountryClick(country); }}
+              onClick={() => this.markerClick(country)}
             />
           )}
         </Marker>
       );
-    });
+    })}
+  </Markers>
 }
-
-const mapStateToProps = state => ({
-  data: state.data
-})
-
-export default connect(mapStateToProps)(RegionEllipses)
