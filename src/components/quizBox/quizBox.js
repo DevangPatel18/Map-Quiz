@@ -7,7 +7,7 @@ import QuizMenu from '../styles/QuizMenuStyles';
 import TimerStyles from '../styles/TimerStyles';
 import msToTime from '../../helpers/msToTime';
 import { setRegionCheckbox } from '../../actions/mapActions';
-import { startQuiz } from '../../actions/quizActions';
+import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -54,11 +54,11 @@ class QuizBox extends Component {
   }
 
   handleLabelToggle(marker) {
-    const { setToggle, map } = this.props;
-    const { markerToggle } = map;
+    const { setLabel, quiz } = this.props;
+    const { markerToggle } = quiz;
     const parentMarker =
       markerToggle === '' || marker !== markerToggle ? marker : '';
-    setToggle(parentMarker);
+    setLabel(parentMarker);
   }
 
   handleRegionMenu(display) {
@@ -263,5 +263,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setRegionCheckbox, startQuiz }
+  { setRegionCheckbox, startQuiz, closeQuiz, setLabel }
 )(QuizBox);
