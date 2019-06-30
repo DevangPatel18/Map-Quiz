@@ -4,6 +4,7 @@ import {
   QUIZ_CLOSE,
   COUNTRY_CLICK,
   DISABLE_OPT,
+  SET_LABEL,
 } from './types';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
@@ -111,4 +112,9 @@ export const answerQuiz = (userGuess = null) => async dispatch => {
     });
     dispatch({ type: DISABLE_OPT });
   }
+};
+
+export const setLabel = (markerToggle = '') => async dispatch => {
+  await dispatch({ type: SET_LABEL, markerToggle });
+  dispatch({ type: DISABLE_OPT });
 };

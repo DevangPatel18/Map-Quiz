@@ -14,6 +14,7 @@ import {
   SET_QUIZ_STATE,
   QUIZ_CLOSE,
   SET_CHOROPLETH,
+  SET_LABEL,
 } from '../actions/types';
 
 const initialState = {
@@ -47,6 +48,7 @@ export default function(state = initialState, action) {
     case QUIZ_ANSWER:
     case SET_QUIZ_STATE:
     case QUIZ_CLOSE:
+    case SET_LABEL:
       return {
         ...state,
         disableOptimization: true,

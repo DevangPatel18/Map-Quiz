@@ -5,6 +5,7 @@ import {
   COUNTRY_CLICK,
   REGION_SELECT,
   COUNTRY_SELECT,
+  SET_LABEL,
 } from '../actions/types';
 
 const initialState = {
@@ -53,6 +54,11 @@ export default function(state = initialState, action) {
         activeQuestionNum: null,
         disableInfoClick: false,
         selectedProperties: '',
+      };
+    case SET_LABEL:
+      return {
+        ...state,
+        markerToggle: action.markerToggle,
       };
     default:
       return state;

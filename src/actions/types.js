@@ -17,3 +17,4 @@ export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';
 export const QUIZ_CLOSE = 'QUIZ_CLOSE';
 export const COUNTRY_CLICK = 'COUNTRY_CLICK';
+export const SET_LABEL = 'SET_LABEL';
