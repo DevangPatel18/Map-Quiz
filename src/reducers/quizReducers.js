@@ -15,6 +15,7 @@ const initialState = {
   quizGuesses: [],
   selectedProperties: '',
   disableInfoClick: false,
+  markerToggle: '',
 };
 
 export default function(state = initialState, action) {

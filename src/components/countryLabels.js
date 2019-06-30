@@ -1,19 +1,17 @@
 import React from 'react';
-import { Marker } from 'react-simple-maps';
-import { connect } from 'react-redux';
+import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
 
-const CountryLabels = ({ props }) => {
+export default function countryLabels() {
   const {
     quiz,
     quizGuesses,
     quizType,
     quizAnswers,
-    currentMap,
     markerToggle,
-    filterRegions,
-  } = props.state;
-  const { countryMarkers, capitalMarkers } = props.props.data;
+  } = this.props.quiz;
+  const { countryMarkers, capitalMarkers } = this.props.data;
+  const { currentMap, filterRegions } = this.props.map;
 
   let display = true;
   let markerArray;
@@ -27,9 +25,8 @@ const CountryLabels = ({ props }) => {
   } else {
     display = false;
   }
-  return (
-    display &&
-    markerArray.map((alpha3Code, i) => {
+  return display && <Markers>
+    {markerArray.map((alpha3Code, i) => {
       let marker;
       let markerName;
       let textAnchor;
@@ -63,8 +60,7 @@ const CountryLabels = ({ props }) => {
           textAnchor = labelAnchors[alpha3Code];
         }
       }
-      return (
-        markerDisplay && (
+      return markerDisplay && (
           <Marker
             key={alpha3Code}
             marker={marker}
@@ -97,13 +93,6 @@ const CountryLabels = ({ props }) => {
             </text>
           </Marker>
         )
-      );
-    })
-  );
+    })}
+  </Markers>
 }
-
-const mapStateToProps = state => ({
-  data: state.data,
-});
-
-export default connect(mapStateToProps)(CountryLabels);
