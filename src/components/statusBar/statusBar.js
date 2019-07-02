@@ -1,11 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Progress } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import StatusBarStyles from '../styles/StatusBarStyles';
 
 const StatusBar = props => {
-  const { status } = props;
-  const { quiz, quizGuesses, quizAnswers } = status;
+  const { quiz, quizGuesses, quizAnswers } = props.quiz;
   const percentComp = quiz
     ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
     : '';
@@ -31,4 +31,8 @@ const StatusBar = props => {
   );
 };
 
-export default StatusBar;
+const mapStateToProps = state => ({
+  quiz: state.quiz,
+});
+
+export default connect(mapStateToProps)(StatusBar);

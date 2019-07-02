@@ -236,7 +236,7 @@ class App extends Component {
           <RegionButtons />
         </DropdownSelectionStyles>
 
-        <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />
+        <StatusBar />
 
         <InfoTab />
 
