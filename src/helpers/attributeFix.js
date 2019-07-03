@@ -69,6 +69,10 @@ const DataFix = ({data, capitalMarkers}) => {
     // Resolve Holy See capital name conflict with Italy, and change name to common designation
     { alpha: 'VAT', attribute: 'capital', value: 'Vatican City' },
     { alpha: 'VAT', attribute: 'name', value: 'Vatican City' },
+    // Update capital names
+    { alpha: 'KAZ', attribute: 'capital', value: 'Nursultan' },
+    { alpha: 'BDI', attribute: 'capital', value: 'Gitega' },
+    { alpha: 'SWZ', attribute: 'capital', value: 'Mbabane' },
   ];
 
   dataCorrections.forEach((obj) => {
