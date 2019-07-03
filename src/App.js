@@ -191,17 +191,8 @@ class App extends Component {
   };
 
   render() {
-    const {
-      quiz,
-      quizAnswers,
-      quizGuesses,
-      activeQuestionNum,
-      selectedProperties,
-      fetchRequests,
-      currentMap,
-      markerToggle,
-      zoomFactor,
-    } = this.state;
+    const { quiz } = this.props.quiz;
+    const { zoomFactor } = this.props.map;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
@@ -231,7 +222,7 @@ class App extends Component {
 
         <QuizBox />
 
-        <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
+        <DropdownSelectionStyles>
           <CountrySearch />
           <RegionButtons />
         </DropdownSelectionStyles>
