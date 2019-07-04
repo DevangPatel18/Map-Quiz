@@ -1,7 +1,6 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
-import { connect } from 'react-redux';
 import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
 import projection from "../helpers/projection";

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { countrySelect } from '../actions/mapActions';
 
 const CountrySearch = ({ map, data, countrySelect }) => {
-  const { currentMap, filterRegions, dimensions } = map;
-  const { geographyPaths, countryMarkers } = data;
+  const { currentMap, filterRegions } = map;
+  const { geographyPaths } = data;
 
   let countries = geographyPaths;
   if (currentMap !== 'World') {

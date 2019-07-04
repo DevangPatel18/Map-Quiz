@@ -4,14 +4,11 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
-  Markers,
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { countryClick } from './actions/quizActions';
 import ColorPicker from './components/colorPicker';
-import RegionEllipses from './components/regionEllipses'
-import CountryLabels from './components/countryLabels'
 
 const doubleClick = false;
 
