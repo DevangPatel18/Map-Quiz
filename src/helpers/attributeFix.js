@@ -247,7 +247,7 @@ const CapitalMarkersFix = (capitalMarkers) => {
   let idx;
 
   capitalFix.forEach(fix => {
-    idx = capitalMarkersData.find(x => x.alpha3Code === fix[0])
+    idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0])
     capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
   });
 

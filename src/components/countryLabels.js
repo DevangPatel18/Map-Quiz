@@ -39,6 +39,7 @@ export default function countryLabels() {
         } else if (testing === 'capital') {
           marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
         }
+        if(!marker) return null
         markerName = marker.name;
         textAnchor = 'middle';
         dx = 0;
