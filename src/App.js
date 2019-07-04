@@ -29,39 +29,6 @@ class App extends Component {
   constructor() {
     super();
 
-    this.state = {
-      center: [10, 0],
-      defaultCenter: [10, 0],
-      zoom: 1,
-      defaultZoom: 1,
-      zoomFactor: 2,
-      scale: 210,
-      dimensions: [980, 551],
-      selectedProperties: '',
-      disableOptimization: false,
-      filterRegions: [],
-      quizAnswers: [],
-      quizGuesses: [],
-      quiz: false,
-      quizType: null,
-      activeQuestionNum: null,
-      disableInfoClick: false,
-      currentMap: 'World',
-      countryMarkers: [],
-      capitalMarkers: [],
-      fetchRequests: [],
-      markerToggle: '',
-      checkedRegions: {
-        'North & Central America': true,
-        'South America': true,
-        Caribbean: true,
-        Europe: true,
-        Africa: true,
-        Asia: true,
-        Oceania: true,
-      },
-    };
-
     WheelReact.config({
       left: () => {
         // console.log('wheel left detected.');
@@ -87,12 +54,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const {
-      loadPaths,
-      loadData,
-      setRegionCheckbox,
-      setMap,
-    } = this.props;
+    const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
     await loadPaths();
     await loadData();
     setRegionCheckbox();
