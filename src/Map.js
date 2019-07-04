@@ -10,8 +10,6 @@ import { connect } from 'react-redux';
 import { countryClick } from './actions/quizActions';
 import ColorPicker from './components/colorPicker';
 
-const doubleClick = false;
-
 const Map = props => {
   const { map, data, countryClick, app } = props
   const {
@@ -43,7 +41,7 @@ const Map = props => {
       {({ zoom, x, y }) => (
         <div
           ref={wrapper => app._wrapper = wrapper}
-          onDoubleClick={doubleClick ? props.handleDoubleClick : null}
+          // onDoubleClick={app.handleDoubleClick}
         >
           <ComposableMap
             projectionConfig={{ scale, rotation }}
