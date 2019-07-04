@@ -200,7 +200,7 @@ class App extends Component {
         <DirectionPad />
 
         <div {...WheelReact.events}>
-          <Map oldProps={this} />
+          <Map app={this} />
         </div>
         <footer>
           <div style={footerStyle}>

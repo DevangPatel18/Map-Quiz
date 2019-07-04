@@ -16,7 +16,7 @@ import CountryLabels from './components/countryLabels'
 const doubleClick = false;
 
 const Map = props => {
-  const { map, data, countryClick } = props
+  const { map, data, countryClick, app } = props
   const {
     defaultZoom,
     center,
@@ -45,7 +45,7 @@ const Map = props => {
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => props.oldProps._wrapper = wrapper}
+          ref={wrapper => app._wrapper = wrapper}
           onDoubleClick={doubleClick ? props.handleDoubleClick : null}
         >
           <ComposableMap
@@ -60,8 +60,8 @@ const Map = props => {
             <ZoomableGroup
               center={[x, y]}
               zoom={zoom}
-              // onMoveStart={props.handleMoveStart}
-              // onMoveEnd={props.handleMoveEnd}
+              // onMoveStart={app.handleMoveStart}
+              // onMoveEnd={app.handleMoveEnd}
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
@@ -118,10 +118,10 @@ const Map = props => {
                   );
                 })}
               </Geographies>
-              {props.oldProps.regionEllipses()}
+              {app.regionEllipses()}
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'World') && props.oldProps.countryLabels()
+                (currentMap !== 'World') && app.countryLabels()
               }
             </ZoomableGroup>
           </ComposableMap>
