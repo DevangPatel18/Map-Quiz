@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
-import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
-import handleInfoTabLoad from './components/infoTab/handleInfoTabLoad';
-import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
 import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
@@ -23,7 +20,6 @@ import {
   setMap,
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
-import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
@@ -83,10 +79,6 @@ class App extends Component {
       },
     });
 
-    this.projection = this.projection.bind(this);
-    this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
-    this.handleCountryClick = handleCountryClick.bind(this);
-    this.handleMapRefresh = this.handleMapRefresh.bind(this);
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
@@ -100,7 +92,6 @@ class App extends Component {
       loadData,
       setRegionCheckbox,
       setMap,
-      adjustMapSize,
     } = this.props;
     await loadPaths();
     await loadData();
@@ -123,13 +114,6 @@ class App extends Component {
     WheelReact.clearTimeout();
     window.removeEventListener('orientationchange', this.toggleOrientation);
     window.removeEventListener('resize', this.adjustMapSize);
-  }
-
-  projection() {
-    const { dimensions, scale } = this.state;
-    return geoTimes()
-      .translate(dimensions.map(x => x / 2))
-      .scale(scale);
   }
 
   toggleOrientation() {
@@ -164,26 +148,6 @@ class App extends Component {
 
   handleMoveEnd(newCenter) {
     // console.log("New center: ", newCenter)
-  }
-
-  handleMapRefresh(args) {
-    this.setState({ ...args, disableOptimization: true }, () => {
-      this.setState({ disableOptimization: false });
-    });
-  }
-
-  setQuizRegions(value = null) {
-    let checkedRegions = { ...this.state.checkedRegions };
-    if (value) {
-      checkedRegions[value] = !checkedRegions[value];
-    }
-
-    const filterRegions = Object.keys(checkedRegions)
-      .filter(region => checkedRegions[region])
-      .map(region => alpha3CodesSov[region])
-      .reduce((a, b) => a.concat(b), []);
-
-    this.handleMapRefresh({ checkedRegions, filterRegions });
   }
 
   markerClick = geographyPath => {
