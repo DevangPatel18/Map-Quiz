@@ -46,6 +46,7 @@ export const regionSelect = regionName => async dispatch => {
   };
   const quiz = {
     selectedProperties: '',
+    markerToggle: '',
   };
   await dispatch({ type: REGION_SELECT, map, quiz });
   dispatch({ type: DISABLE_OPT });
