@@ -153,7 +153,7 @@ class App extends Component {
           <RegionButtons />
         </DropdownSelectionStyles>
 
-        <StatusBar />
+        {quiz && <StatusBar />}
 
         <InfoTab />
 
