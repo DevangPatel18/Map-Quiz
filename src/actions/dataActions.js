@@ -56,6 +56,7 @@ export const loadData = () => async dispatch => {
 
       geography.properties = countryData;
       geography.properties.spellings = [
+        countryData.name,
         ...countryData.altSpellings,
         ...Object.values(countryData.translations),
       ];
