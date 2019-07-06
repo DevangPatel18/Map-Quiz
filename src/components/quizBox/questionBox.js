@@ -3,11 +3,7 @@ import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
-import {
-  startQuiz,
-  closeQuiz,
-  answerQuiz,
-} from '../../actions/quizActions';
+import { startQuiz, closeQuiz, answerQuiz } from '../../actions/quizActions';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -20,6 +16,7 @@ class QuestionBox extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinalDialog = this.handleFinalDialog.bind(this);
+    this.handleRestartQuiz = this.handleRestartQuiz.bind(this);
   }
 
   handleChange(event) {
@@ -36,8 +33,14 @@ class QuestionBox extends Component {
     }
   }
 
+  async handleRestartQuiz(quizType) {
+    const { startQuiz, closeQuiz } = this.props;
+    await closeQuiz();
+    startQuiz(quizType);
+  }
+
   handleFinalDialog() {
-    const { quiz, startQuiz, closeQuiz } = this.props;
+    const { quiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers, quizType } = quiz;
 
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
@@ -56,7 +59,7 @@ class QuestionBox extends Component {
             style={{ marginRight: '1rem' }}
           />
           <Button
-            onClick={() => startQuiz(quizType)}
+            onClick={() => this.handleRestartQuiz(quizType)}
             size="large"
             compact
             content="RESTART"

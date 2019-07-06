@@ -17,12 +17,21 @@ class StatusBar extends Component {
       timerOn: false,
     };
 
+    this.start = this.start.bind(this);
     this.pause = this.pause.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.close = this.close.bind(this);
   }
 
   componentDidMount() {
+    this.start();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  start() {
     this.setState({ timerOn: true, time: 0 });
     const x = Date.now();
     this.timer = setInterval(
