@@ -10,19 +10,19 @@ const DirectionPad = props => {
     <DirectionPadStyles>
       <div className="b" />
       <div className="up">
-        <Button icon="arrow up" onClick={() => moveMap('up')} />
+        <Button icon="arrow up" inverted onClick={() => moveMap('up')} />
       </div>
       <div className="b" />
       <div className="left">
-        <Button icon="arrow left" onClick={() => moveMap('left')} />
+        <Button icon="arrow left" inverted onClick={() => moveMap('left')} />
       </div>
       <div className="b" />
       <div className="right">
-        <Button icon="arrow right" onClick={() => moveMap('right')} />
+        <Button icon="arrow right" inverted onClick={() => moveMap('right')} />
       </div>
       <div className="b" />
       <div className="down">
-        <Button icon="arrow down" onClick={() => moveMap('down')} />
+        <Button icon="arrow down" inverted onClick={() => moveMap('down')} />
       </div>
       <div className="b" />
     </DirectionPadStyles>
