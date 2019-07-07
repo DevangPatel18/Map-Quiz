@@ -103,7 +103,7 @@ class StatusBar extends Component {
                 size="mini"
                 compact
                 inverted
-                color="blue"
+                color="yellow"
                 icon="pause"
                 onClick={this.pause}
                 style={pauseStyle}
