@@ -133,16 +133,18 @@ class App extends Component {
         {isMobile && <MobileMessage />}
 
         <div className="zoomButtons">
-          <Button.Group size="tiny" basic vertical>
+          <Button.Group size="tiny" vertical>
             <Button
               onClick={() => this.props.zoomMap(zoomFactor)}
               icon="plus"
+              inverted
             />
             <Button
               onClick={() => this.props.zoomMap(1 / zoomFactor)}
               icon="minus"
+              inverted
             />
-            <Button onClick={this.props.recenterMap} icon="undo" />
+            <Button onClick={this.props.recenterMap} icon="undo" inverted />
           </Button.Group>
         </div>
 
