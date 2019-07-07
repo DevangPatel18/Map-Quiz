@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 
 const DropdownSelectionStyles = styled.div`
   position: absolute;
@@ -7,7 +9,7 @@ const DropdownSelectionStyles = styled.div`
   transition: all 0.5s;
   display: flex;
   transform-origin: top right;
-  transform: ${props => (props.isMobile ? 'scale(0.7)' : 'scale(1)')};
+  transform: ${isMobile ? 'scale(0.7)' : 'scale(1)'};
   align-items: flex-end;
 
   @media (orientation: portrait) and (max-width: 500px), (max-width: 660px) {
@@ -25,4 +27,9 @@ const DropdownSelectionStyles = styled.div`
   }
 `;
 
-export default DropdownSelectionStyles;
+const mapStateToProps = state => {
+  const { quiz } = state.quiz;
+  return { quiz };
+};
+
+export default connect(mapStateToProps)(DropdownSelectionStyles);

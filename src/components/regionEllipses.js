@@ -1,15 +1,17 @@
 import React from 'react';
-import { Marker } from 'react-simple-maps';
+import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
+import projection from "../helpers/projection";
 
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
+
 export default function regionEllipses() {
-  const {
-    currentMap, geographyPaths, filterRegions, capitalMarkers, countryMarkers, zoom, quiz,
-  } = this.state;
+  const { currentMap, filterRegions, zoom } = this.props.map;
+  const { quiz } = this.props.quiz;
+  const { geographyPaths, capitalMarkers, countryMarkers } = this.props.data;
   let minArea;
   switch (currentMap) {
     case 'Caribbean':
@@ -24,15 +26,15 @@ export default function regionEllipses() {
 
   let filterFN;
 
-  if (currentMap !== 'world') {
+  if (currentMap !== 'World') {
     filterFN = x => x.properties.area < minArea;
   } else {
     filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
   }
 
-  const show = !(currentMap === 'world' && !quiz);
-  return show && geographyPaths
-    .filter(x => filterRegions.includes(x.properties.alpha3Code))
+  const show = !(currentMap === 'World' && !quiz);
+  return show && <Markers> 
+    {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)
     .map((country) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
@@ -65,7 +67,7 @@ export default function regionEllipses() {
 
       } else {
         marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
-        const path = geoPath().projection(this.projection());
+        const path = geoPath().projection(projection());
         if (Object.keys(ellipseDim).includes(alpha3Code)) {
           const { width, height, angle } = ellipseDim[alpha3Code];
           widthMain = width;
@@ -88,7 +90,7 @@ export default function regionEllipses() {
         heightMain *= zoom;
         rotate = `rotate(${angleMain})`;
       }
-      const { defaultColor, hoverColor, pressedColor } = ColorPicker(this.state, country);
+      const { defaultColor, hoverColor, pressedColor } = ColorPicker(country);
       return (
         <Marker
           key={alpha3Code}
@@ -125,7 +127,7 @@ export default function regionEllipses() {
               r={4}
               fill={defaultColor}
               className="caribSelector"
-              onClick={() => { this.handleCountryClick(country); }}
+              onClick={() => this.markerClick(country)}
             />
           ) : (
             <ellipse
@@ -136,10 +138,11 @@ export default function regionEllipses() {
               rx={widthMain}
               ry={heightMain}
               transform={rotate}
-              onClick={() => { this.handleCountryClick(country); }}
+              onClick={() => this.markerClick(country)}
             />
           )}
         </Marker>
       );
-    });
+    })}
+  </Markers>
 }

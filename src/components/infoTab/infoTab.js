@@ -1,25 +1,28 @@
 import React from 'react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
 const InfoTab = props => {
-  const { country, geoPaths } = props;
-  if (Object.keys(country).length === 0) {
+  const { selectedProperties } = props.quiz;
+  const { geographyPaths } = props.data;
+  if (Object.keys(selectedProperties).length === 0) {
     return null;
   }
-  const { name, capital, population, area, regionOf } = country;
+  const { name, capital, population, area, regionOf } = selectedProperties;
   const capitalStr = `Capital: ${capital}`;
   const populationStr = `Population: ${population.toLocaleString()}`;
   const areaStr = area ? `Area: ${area.toLocaleString()} km` : 'N/A';
   let regionOfStr;
   if (regionOf) {
-    const regionName = geoPaths.find(x => x.properties.alpha3Code === regionOf)
-      .properties.name;
+    const regionName = geographyPaths.find(
+      x => x.properties.alpha3Code === regionOf
+    ).properties.name;
     regionOfStr = `Region of ${regionName}`;
   }
   return (
     <InfoTabStyles isMobile={isMobile}>
-      <img className="infoTab-flag" src={country.flag} alt="" />
+      <img className="infoTab-flag" src={selectedProperties.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>
         <li>{capitalStr}</li>
@@ -31,4 +34,9 @@ const InfoTab = props => {
   );
 };
 
-export default InfoTab;
+const mapStateToProps = state => ({
+  data: state.data,
+  quiz: state.quiz,
+});
+
+export default connect(mapStateToProps)(InfoTab);

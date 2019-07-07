@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Form, Radio, Modal } from 'semantic-ui-react';
+import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles';
-import TimerStyles from '../styles/TimerStyles';
-import msToTime from '../../helpers/msToTime';
+import { setRegionCheckbox } from '../../actions/mapActions';
+import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
 
 const quizOptions = [
   { label: 'Click Country', value: 'click_name' },
@@ -31,19 +32,13 @@ class QuizBox extends Component {
     this.state = {
       quizType: 'click_name',
       regionMenu: false,
-      open: false,
-      time: 0,
-      timerOn: false,
     };
     this.handleQuizChange = this.handleQuizChange.bind(this);
     this.handleLabelToggle = this.handleLabelToggle.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
     this.handleRegionMenu = this.handleRegionMenu.bind(this);
 
-    this.pause = this.pause.bind(this);
-    this.closeModal = this.closeModal.bind(this);
     this.start = this.start.bind(this);
-    this.close = this.close.bind(this);
   }
 
   handleQuizChange(event, { value }) {
@@ -51,11 +46,11 @@ class QuizBox extends Component {
   }
 
   handleLabelToggle(marker) {
-    const { setToggle, quizData } = this.props;
-    const { markerToggle } = quizData;
+    const { setLabel, quiz } = this.props;
+    const { markerToggle } = quiz;
     const parentMarker =
       markerToggle === '' || marker !== markerToggle ? marker : '';
-    setToggle(parentMarker);
+    setLabel(parentMarker);
   }
 
   handleRegionMenu(display) {
@@ -63,8 +58,8 @@ class QuizBox extends Component {
   }
 
   handleCheckBox(e) {
-    const { setQuizRegions, quizData } = this.props;
-    const { checkedRegions } = quizData;
+    const { setRegionCheckbox, map } = this.props;
+    const { checkedRegions } = map;
     const { value, checked } = e.target;
     // check if nothing is selected
     const nothing = Object.keys(checkedRegions)
@@ -72,71 +67,24 @@ class QuizBox extends Component {
       .every(region => !checkedRegions[region]);
 
     if (!(!checked && nothing)) {
-      setQuizRegions(value, checked);
-    }
-  }
-
-  pause() {
-    const { timerOn } = this.state;
-    if (timerOn) {
-      clearInterval(this.timer);
-      this.setState({ timerOn: false, open: true });
-    }
-  }
-
-  close() {
-    const { closeQuiz } = this.props;
-    closeQuiz();
-    clearInterval(this.timer);
-    this.setState({ time: 0, timerOn: false });
-  }
-
-  closeModal() {
-    const { timerOn, time } = this.state;
-    if (!timerOn) {
-      this.setState({ timerOn: true, open: false }, () => {
-        const x = Date.now() - time;
-        this.timer = setInterval(
-          () => this.setState({ time: Date.now() - x }),
-          1000
-        );
-      });
+      setRegionCheckbox(value);
     }
   }
 
   start() {
-    const { handleQuiz } = this.props;
+    const { startQuiz } = this.props;
     const { quizType } = this.state;
 
-    handleQuiz(quizType);
-    this.setState({ timerOn: true, time: 0 });
-    const x = Date.now();
-    this.timer = setInterval(
-      () => this.setState({ time: Date.now() - x }),
-      1000
-    );
+    startQuiz(quizType);
   }
 
   render() {
-    const { quizType, regionMenu, time, open } = this.state;
-    const { quizData, handleAnswer } = this.props;
-    const {
-      markerToggle,
-      currentMap,
-      checkedRegions,
-      quiz,
-      quizGuesses,
-      quizAnswers,
-    } = quizData;
+    const { quizType, regionMenu } = this.state;
+    const { markerToggle, quiz } = this.props.quiz;
+    const { checkedRegions, currentMap } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
-    const pauseStyle =
-      quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
-
-    if (quizGuesses.length === quizAnswers.length) {
-      clearInterval(this.timer);
-    }
 
     if (!quiz) {
       return (
@@ -162,7 +110,7 @@ class QuizBox extends Component {
                 </Form.Field>
               ))}
             </Form>
-            {currentMap === 'world' && (
+            {currentMap === 'World' && (
               <Button
                 toggle
                 compact
@@ -173,7 +121,7 @@ class QuizBox extends Component {
                 onClick={this.handleRegionMenu}
               />
             )}
-            {currentMap !== 'world' && (
+            {currentMap !== 'World' && (
               <div className="App-quiz-toggle">
                 <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
                 <Button.Group size={formSize} compact>
@@ -197,7 +145,7 @@ class QuizBox extends Component {
             )}
           </div>
 
-          {currentMap === 'world' && (
+          {currentMap === 'World' && (
             <Form className="fmRegionSelect">
               {checkedRegionsLabels.map(region => (
                 <Form.Field
@@ -215,55 +163,16 @@ class QuizBox extends Component {
         </QuizMenu>
       );
     }
-    return (
-      <TimerStyles mobile={isMobile}>
-        <QuestionBox
-          quizType={quizType}
-          quizData={quizData}
-          handleAnswer={handleAnswer}
-          startQuiz={this.start}
-          closeQuiz={this.close}
-        />
-        <div className="statusBar-timerButtons">
-          <Button
-            size="mini"
-            compact
-            inverted
-            color="red"
-            className="statusBar-stop"
-            icon="stop"
-            onClick={this.close}
-          />
-          <Button
-            size="mini"
-            compact
-            inverted
-            color="blue"
-            icon="pause"
-            onClick={this.pause}
-            style={pauseStyle}
-          />
-        </div>
-        <p className="statusBar-timer">{msToTime(time)}</p>
-        <Modal
-          basic
-          dimmer="blurring"
-          open={open}
-          onClose={this.closeModal}
-          closeOnDimmerClick={false}
-          style={{ textAlign: 'center' }}
-        >
-          <Button
-            inverted
-            color="green"
-            size="massive"
-            content="Resume"
-            onClick={this.closeModal}
-          />
-        </Modal>
-      </TimerStyles>
-    );
+    return <QuestionBox />;
   }
 }
 
-export default QuizBox;
+const mapStateToProps = state => ({
+  map: state.map,
+  quiz: state.quiz,
+});
+
+export default connect(
+  mapStateToProps,
+  { setRegionCheckbox, startQuiz, closeQuiz, setLabel }
+)(QuizBox);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Marker } from 'react-simple-maps';
+import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
 
 export default function countryLabels() {
@@ -8,12 +8,10 @@ export default function countryLabels() {
     quizGuesses,
     quizType,
     quizAnswers,
-    countryMarkers,
-    capitalMarkers,
-    currentMap,
     markerToggle,
-    filterRegions,
-  } = this.state;
+  } = this.props.quiz;
+  const { countryMarkers, capitalMarkers } = this.props.data;
+  const { currentMap, filterRegions } = this.props.map;
 
   let display = true;
   let markerArray;
@@ -27,9 +25,8 @@ export default function countryLabels() {
   } else {
     display = false;
   }
-  return (
-    display &&
-    markerArray.map((alpha3Code, i) => {
+  return display && <Markers>
+    {markerArray.map((alpha3Code, i) => {
       let marker;
       let markerName;
       let textAnchor;
@@ -42,6 +39,7 @@ export default function countryLabels() {
         } else if (testing === 'capital') {
           marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
         }
+        if(!marker) return null
         markerName = marker.name;
         textAnchor = 'middle';
         dx = 0;
@@ -63,8 +61,7 @@ export default function countryLabels() {
           textAnchor = labelAnchors[alpha3Code];
         }
       }
-      return (
-        markerDisplay && (
+      return markerDisplay && (
           <Marker
             key={alpha3Code}
             marker={marker}
@@ -97,7 +94,6 @@ export default function countryLabels() {
             </text>
           </Marker>
         )
-      );
-    })
-  );
+    })}
+  </Markers>
 }

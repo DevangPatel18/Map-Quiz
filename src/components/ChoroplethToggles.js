@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Radio, Form } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import { choroParams } from '../helpers/choroplethFunctions';
 import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
+import { setChoropleth } from '../actions/mapActions';
 
 const choroToggles = ['None', 'Population', 'Area', 'Gini', 'Density'];
 
@@ -11,7 +13,6 @@ class ChoroplethToggles extends Component {
     super();
     this.state = {
       open: false,
-      checkedChoropleth: 'None',
     };
 
     this.openDrawer = this.openDrawer.bind(this);
@@ -24,13 +25,12 @@ class ChoroplethToggles extends Component {
 
   setRadio(e, { value }) {
     const { setChoropleth } = this.props;
-    this.setState({ checkedChoropleth: value });
     setChoropleth(value);
   }
 
   createLegend() {
-    const { checkedChoropleth } = this.state;
-    const { scaleFunc, bounds, units } = choroParams[checkedChoropleth];
+    const { choropleth } = this.props.map;
+    const { scaleFunc, bounds, units } = choroParams[choropleth];
     let legendsMap;
     const grouped = bounds.length > 2;
 
@@ -55,8 +55,8 @@ class ChoroplethToggles extends Component {
     ));
 
     legendsMap.unshift(
-      <div key={checkedChoropleth} className="legendTitle">
-        {checkedChoropleth}
+      <div key={choropleth} className="legendTitle">
+        {choropleth}
         {units ? ` - ${units}` : ''}
       </div>
     );
@@ -64,9 +64,10 @@ class ChoroplethToggles extends Component {
   }
 
   render() {
-    const { open, checkedChoropleth } = this.state;
+    const { open } = this.state;
+    const { choropleth } = this.props.map;
     let legend;
-    if (checkedChoropleth !== 'None') {
+    if (choropleth !== 'None') {
       legend = this.createLegend();
     }
     const radioSize = isMobile ? 'mini' : 'small';
@@ -78,6 +79,7 @@ class ChoroplethToggles extends Component {
           icon={open ? 'toggle on' : 'toggle off'}
           circular
           toggle
+          inverted
           size={radioSize}
           active={open}
           onClick={this.openDrawer}
@@ -99,7 +101,7 @@ class ChoroplethToggles extends Component {
                   size={radioSize}
                   label={toggle}
                   value={toggle}
-                  checked={checkedChoropleth === toggle}
+                  checked={choropleth === toggle}
                   onChange={this.setRadio}
                 />
               </div>
@@ -107,12 +109,17 @@ class ChoroplethToggles extends Component {
           </Form>
         </div>
 
-        {checkedChoropleth !== 'None' && (
-          <div className="chorolegend">{legend}</div>
-        )}
+        {choropleth !== 'None' && <div className="chorolegend">{legend}</div>}
       </ChoroplethTogglesStyles>
     );
   }
 }
 
-export default ChoroplethToggles;
+const mapStateToProps = state => ({
+  map: state.map,
+});
+
+export default connect(
+  mapStateToProps,
+  { setChoropleth }
+)(ChoroplethToggles);

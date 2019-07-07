@@ -1,9 +1,9 @@
 import { moroccoGeo, westernSaharaGeo } from './borderUpdate'
 
 // Change entries of data object
-const DataFix = (data, capitalMarkers) => {
-  const countryData = data;
-  const capitalMarkersData = capitalMarkers;
+const DataFix = ({data, capitalMarkers}) => {
+  let countryData = data.slice();
+  let capitalMarkersData = capitalMarkers.slice();
 
   // Add missing country variants
   countryData.find(x => x.alpha3Code === 'COG').altSpellings = ['Republic of the Congo'];
@@ -69,6 +69,10 @@ const DataFix = (data, capitalMarkers) => {
     // Resolve Holy See capital name conflict with Italy, and change name to common designation
     { alpha: 'VAT', attribute: 'capital', value: 'Vatican City' },
     { alpha: 'VAT', attribute: 'name', value: 'Vatican City' },
+    // Update capital names
+    { alpha: 'KAZ', attribute: 'capital', value: 'Nursultan' },
+    { alpha: 'BDI', attribute: 'capital', value: 'Gitega' },
+    { alpha: 'SWZ', attribute: 'capital', value: 'Mbabane' },
   ];
 
   dataCorrections.forEach((obj) => {
@@ -109,10 +113,12 @@ const DataFix = (data, capitalMarkers) => {
       countryData.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
     });
   });
+
+  return [countryData, capitalMarkersData]
 }
 
 const GeoPathsMod = (geoPath) => {
-  const geographyPath = geoPath;
+  const geographyPath = geoPath.slice();
 
   // Create geography paths for regions of France
   const france = geographyPath.find(x => x.id === '250');
@@ -179,11 +185,13 @@ const GeoPathsMod = (geoPath) => {
   // Update borders for Morocco and Western Sahara
   geographyPath.find(x => x.id === "732").geometry = westernSaharaGeo;
   geographyPath.find(x => x.id === "504").geometry = moroccoGeo;
+
+  return geographyPath
 };
 
 // Change positioning of country labels
-const CountryMarkersFix = (centroids) => {
-  const centroidsData = centroids;
+const CountryMarkersFix = centroids => {
+  const centroidsData = centroids.slice();
 
   const centroidsFix = [
     // Americas coordinates
@@ -203,17 +211,20 @@ const CountryMarkersFix = (centroids) => {
     ['WLF', -10], ['ASM', 10],
   ];
 
-  centroidsFix.forEach((fix) => {
-    if (Array.isArray(fix[1])) {
-      centroidsData.find(x => x.alpha3Code === fix[0]).coordinates = fix[1];
-    } else {
-      centroidsData.find(x => x.alpha3Code === fix[0]).markerOffset = fix[1];
-    }
+  let keyChange; 
+  let idx;
+
+  centroidsFix.forEach(fix => {
+    keyChange = Array.isArray(fix[1]) ? 'coordinates' : 'markerOffset';
+    idx = centroidsData.findIndex(x => x.alpha3Code === fix[0]);
+    centroidsData.splice(idx, 1, {...centroidsData[idx], [keyChange]: fix[1]})
   });
+
+  return centroidsData;
 };
 
 const CapitalMarkersFix = (capitalMarkers) => {
-  const capitalMarkersData = capitalMarkers;
+  const capitalMarkersData = capitalMarkers.slice();
 
   const capitalFix = [
     // Caribbean capital markers fix
@@ -233,9 +244,14 @@ const CapitalMarkersFix = (capitalMarkers) => {
     ['GUM', 13], ['KIR', 13], ['ASM', 13], ['WLF', -10], ['WSM', -3],
   ];
 
-  capitalFix.forEach((fix) => {
-    capitalMarkersData.find(x => x.alpha3Code === fix[0]).markerOffset = fix[1];
+  let idx;
+
+  capitalFix.forEach(fix => {
+    idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0])
+    capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
   });
+
+  return capitalMarkersData;
 };
 
 export { DataFix, CountryMarkersFix, CapitalMarkersFix, GeoPathsMod };

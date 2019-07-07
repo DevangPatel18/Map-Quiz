@@ -1,3 +1,4 @@
+import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT } from './types';
 import { feature } from 'topojson-client';
 import {
   DataFix,
@@ -5,10 +6,12 @@ import {
   CapitalMarkersFix,
   GeoPathsMod,
 } from '../helpers/attributeFix';
-import capitalData from '../assets/country_capitals';
 import { geoPath } from 'd3-geo';
+import capitalData from '../assets/country_capitals';
+import projection from '../helpers/projection';
+import store from '../store';
 
-async function loadPaths() {
+export const loadPaths = () => async dispatch => {
   const worldData = await fetch('/world-50m.json').then(response => {
     if (response.status !== 200) {
       console.log(`There was a problem: ${response.status}`);
@@ -22,19 +25,17 @@ async function loadPaths() {
   // Remove Antarctica and invalid iso codes
   data = data.filter(x => (+x.id !== 10 ? 1 : 0));
 
-  GeoPathsMod(data);
+  // Create geopaths for external regions and other changes
+  data = GeoPathsMod(data);
 
-  this.setState({
-    geographyPaths: data,
-  });
+  await dispatch({ type: LOAD_PATHS, geographyPaths: data });
+  dispatch({ type: DISABLE_OPT });
+};
 
-  this.loadData();
-}
-
-async function loadData() {
-  let data = [...this.state.geographyPaths].map(a => ({ ...a }));
-  const restData = await fetch(
-    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;'
+export const loadData = () => async dispatch => {
+  let data = store.getState().data.geographyPaths.map(a => ({ ...a }));
+  let restData = await fetch(
+    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;altSpellings;translations'
   ).then(restCountries => {
     if (restCountries.status !== 200) {
       console.log(`There was a problem: ${restCountries.status}`);
@@ -44,9 +45,9 @@ async function loadData() {
   });
 
   let countryMarkers = [];
-  const capitalMarkers = [];
+  let capitalMarkers = [];
 
-  DataFix(restData, capitalMarkers);
+  [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
 
   data
     .filter(x => (+x.id !== -99 ? 1 : 0))
@@ -54,6 +55,11 @@ async function loadData() {
       const countryData = restData.find(c => +c.numericCode === +geography.id);
 
       geography.properties = countryData;
+      geography.properties.spellings = [
+        countryData.name,
+        ...countryData.altSpellings,
+        ...Object.values(countryData.translations),
+      ];
 
       geography.properties.density =
         geography.properties.population / geography.properties.area;
@@ -79,11 +85,8 @@ async function loadData() {
 
   data.forEach(x => {
     const { alpha3Code } = x.properties;
-    const path = geoPath().projection(this.projection());
-    countryMarkers.push([
-      this.projection().invert(path.centroid(x)),
-      alpha3Code,
-    ]);
+    const path = geoPath().projection(projection());
+    countryMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
   });
 
   countryMarkers = countryMarkers.map(array => ({
@@ -93,16 +96,15 @@ async function loadData() {
     markerOffset: 0,
   }));
 
-  CountryMarkersFix(countryMarkers);
-  CapitalMarkersFix(capitalMarkers);
+  countryMarkers = CountryMarkersFix(countryMarkers);
+  capitalMarkers = CapitalMarkersFix(capitalMarkers);
 
-  this.handleMapRefresh({
+  await dispatch({
+    type: LOAD_DATA,
     geographyPaths: data,
     countryMarkers,
     capitalMarkers,
   });
 
-  this.setQuizRegions();
-}
-
-export { loadPaths, loadData };
+  dispatch({ type: DISABLE_OPT });
+};

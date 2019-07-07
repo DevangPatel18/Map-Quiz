@@ -1,27 +1,25 @@
 import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
-import { geoTimes } from 'd3-geo-projection';
 import { Button } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
+import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
-import handleAnswer from './components/quizBox/handleAnswer';
-import handleInfoTabLoad from './components/infoTab/handleInfoTabLoad';
-import {
-  handleQuizDataLoad,
-  handleQuizState,
-} from './components/quizBox/handleQuizDataLoad';
-import handleCountryClick from './components/handleCountryClick';
 import handleDoubleClick from './components/handleDoubleClick';
-import handleRegionSelect from './components/handleRegionSelect';
 import CountrySearch from './components/countrySearch';
 import regionEllipses from './components/regionEllipses';
 import countryLabels from './components/countryLabels';
 import StatusBar from './components/statusBar/statusBar';
-import { loadPaths, loadData } from './components/loadPaths';
+import { loadPaths, loadData } from './actions/dataActions';
+import { countryClick } from './actions/quizActions';
+import {
+  setRegionCheckbox,
+  zoomMap,
+  recenterMap,
+  setMap,
+} from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
-import { alpha3CodesSov } from './assets/regionAlpha3Codes';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
@@ -30,41 +28,6 @@ import Map from './Map';
 class App extends Component {
   constructor() {
     super();
-
-    this.state = {
-      center: [10, 0],
-      defaultCenter: [10, 0],
-      zoom: 1,
-      defaultZoom: 1,
-      zoomFactor: 2,
-      scale: 210,
-      dimensions: [980, 551],
-      geographyPaths: [],
-      selectedProperties: '',
-      disableOptimization: false,
-      filterRegions: [],
-      quizAnswers: [],
-      quizGuesses: [],
-      quiz: false,
-      quizType: null,
-      activeQuestionNum: null,
-      disableInfoClick: false,
-      currentMap: 'world',
-      countryMarkers: [],
-      capitalMarkers: [],
-      fetchRequests: [],
-      markerToggle: '',
-      checkedRegions: {
-        'North & Central America': true,
-        'South America': true,
-        Caribbean: true,
-        Europe: true,
-        Africa: true,
-        Asia: true,
-        Oceania: true,
-      },
-      choropleth: 'None',
-    };
 
     WheelReact.config({
       left: () => {
@@ -75,40 +38,26 @@ class App extends Component {
       },
       up: () => {
         // console.log('wheel up detected.');
-        this.handleZoom(0.5);
+        this.props.zoomMap(0.5);
       },
       down: () => {
         // console.log('wheel down detected.');
-        this.handleZoom(2);
+        this.props.zoomMap(2);
       },
     });
 
-    this.projection = this.projection.bind(this);
-    this.handleZoom = this.handleZoom.bind(this);
-    this.handleReset = this.handleReset.bind(this);
-    this.handleInfoTabLoad = handleInfoTabLoad.bind(this);
-    this.handleQuizDataLoad = handleQuizDataLoad.bind(this);
-    this.handleQuizState = handleQuizState.bind(this);
-    this.handleCountryClick = handleCountryClick.bind(this);
-    this.handleRegionSelect = handleRegionSelect.bind(this);
-    this.handleQuiz = this.handleQuiz.bind(this);
-    this.handleAnswer = handleAnswer.bind(this);
-    this.handleQuizClose = this.handleQuizClose.bind(this);
-    this.handleMapRefresh = this.handleMapRefresh.bind(this);
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
-    this.loadPaths = loadPaths.bind(this);
-    this.loadData = loadData.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.setQuizRegions = this.setQuizRegions.bind(this);
-    this.setChoropleth = this.setChoropleth.bind(this);
-    this.handleMapMove = this.handleMapMove.bind(this);
   }
 
-  componentDidMount() {
-    this.loadPaths();
+  async componentDidMount() {
+    const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
+    await loadPaths();
+    await loadData();
+    setRegionCheckbox();
     window.addEventListener('orientationchange', this.toggleOrientation);
     window.addEventListener('resize', this.adjustMapSize);
 
@@ -117,7 +66,7 @@ class App extends Component {
 
     if (isMobile) {
       const dimensions = height > width ? [310, 551] : [980, 551];
-      this.setState({ dimensions, zoomFactor: 1.5 });
+      setMap({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
@@ -129,21 +78,16 @@ class App extends Component {
     window.removeEventListener('resize', this.adjustMapSize);
   }
 
-  projection() {
-    const { dimensions, scale } = this.state;
-    return geoTimes()
-      .translate(dimensions.map(x => x / 2))
-      .scale(scale);
-  }
-
   toggleOrientation() {
-    const { dimensions } = this.state;
+    const { map, setMap } = this.props;
+    const { dimensions, zoomFactor } = map;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
-    this.handleMapRefresh({ dimensions: newDimensions });
+    setMap({ dimensions: newDimensions, zoomFactor });
   }
 
   adjustMapSize() {
-    const { dimensions } = this.state;
+    const { map, setMap } = this.props;
+    const { dimensions } = map;
     const width = window.innerWidth;
     const height = window.innerHeight;
     const ratio = width / height;
@@ -156,23 +100,8 @@ class App extends Component {
       newDimensions = [420, 551];
     }
     if (newDimensions[0] !== dimensions[0]) {
-      this.handleMapRefresh({ dimensions: newDimensions });
+      setMap({ dimensions: newDimensions, zoomFactor: 2 });
     }
-  }
-
-  handleZoom(x) {
-    const { zoom } = this.state;
-    this.setState({
-      zoom: zoom * x,
-    });
-  }
-
-  handleReset() {
-    const { defaultCenter, defaultZoom } = this.state;
-    this.setState({
-      center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
-      zoom: defaultZoom,
-    });
   }
 
   handleMoveStart(currentCenter) {
@@ -183,89 +112,13 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleQuiz(quizType) {
-    const { currentMap, fetchRequests } = this.state;
-    if (
-      quizType !== 'type_name' ||
-      fetchRequests.includes(currentMap.concat(quizType.split('_')[1]))
-    ) {
-      this.handleQuizState(quizType);
-    } else {
-      this.handleQuizDataLoad(quizType);
-    }
-  }
-
-  handleQuizClose() {
-    this.handleMapRefresh({
-      quizAnswers: [],
-      quizGuesses: [],
-      quiz: false,
-      quizType: null,
-      activeQuestionNum: null,
-      disableInfoClick: false,
-      selectedProperties: '',
-    });
-  }
-
-  handleMapRefresh(args) {
-    this.setState({ ...args, disableOptimization: true }, () => {
-      this.setState({ disableOptimization: false });
-    });
-  }
-
-  handleMapMove(direction) {
-    let { center } = this.state;
-    const step = 5;
-    switch (direction) {
-      case 'up':
-        center = [center[0], center[1] + step];
-        break;
-      case 'down':
-        center = [center[0], center[1] - step];
-        break;
-      case 'left':
-        center = [center[0] - step, center[1]];
-        break;
-      case 'right':
-        center = [center[0] + step, center[1]];
-        break;
-      default:
-    }
-    this.handleMapRefresh({ center });
-  }
-
-  setQuizRegions(value = null) {
-    let checkedRegions = { ...this.state.checkedRegions };
-    if (value) {
-      checkedRegions[value] = !checkedRegions[value];
-    }
-
-    const filterRegions = Object.keys(checkedRegions)
-      .filter(region => checkedRegions[region])
-      .map(region => alpha3CodesSov[region])
-      .reduce((a, b) => a.concat(b), []);
-
-    this.handleMapRefresh({ checkedRegions, filterRegions });
-  }
-
-  setChoropleth(choroplethType) {
-    this.handleMapRefresh({ choropleth: choroplethType });
-  }
+  markerClick = geographyPath => {
+    this.props.countryClick(geographyPath);
+  };
 
   render() {
-    const {
-      quiz,
-      quizAnswers,
-      quizGuesses,
-      geographyPaths,
-      activeQuestionNum,
-      selectedProperties,
-      fetchRequests,
-      currentMap,
-      markerToggle,
-      checkedRegions,
-      zoomFactor,
-    } = this.state;
+    const { quiz } = this.props.quiz;
+    const { zoomFactor } = this.props.map;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
@@ -280,62 +133,38 @@ class App extends Component {
         {isMobile && <MobileMessage />}
 
         <div className="zoomButtons">
-          <Button.Group size="tiny" basic vertical>
-            <Button onClick={() => this.handleZoom(zoomFactor)} icon="plus" />
+          <Button.Group size="tiny" vertical>
             <Button
-              onClick={() => this.handleZoom(1 / zoomFactor)}
-              icon="minus"
+              onClick={() => this.props.zoomMap(zoomFactor)}
+              icon="plus"
+              inverted
             />
-            <Button onClick={this.handleReset} icon="undo" />
+            <Button
+              onClick={() => this.props.zoomMap(1 / zoomFactor)}
+              icon="minus"
+              inverted
+            />
+            <Button onClick={this.props.recenterMap} icon="undo" inverted />
           </Button.Group>
         </div>
 
-        <QuizBox
-          handleQuiz={quizType => {
-            this.handleQuiz(quizType);
-          }}
-          quizData={{
-            quizAnswers,
-            quizGuesses,
-            geographyPaths,
-            activeQuestionNum,
-            fetchRequests,
-            currentMap,
-            markerToggle,
-            checkedRegions,
-            quiz,
-          }}
-          handleAnswer={this.handleAnswer}
-          setToggle={marker => {
-            this.setState({ markerToggle: marker });
-          }}
-          setQuizRegions={obj => {
-            this.setQuizRegions(obj);
-          }}
-          closeQuiz={this.handleQuizClose}
-        />
+        <QuizBox />
 
-        <DropdownSelectionStyles quiz={quiz} isMobile={isMobile}>
-          <CountrySearch
-            projection={this.projection}
-            state={this.state}
-            mapRefresh={arg => {
-              this.handleMapRefresh(arg);
-            }}
-          />
-          <RegionButtons regionFunc={this.handleRegionSelect} />
+        <DropdownSelectionStyles>
+          <CountrySearch />
+          <RegionButtons />
         </DropdownSelectionStyles>
 
-        <StatusBar status={{ quiz, quizGuesses, quizAnswers }} />
+        {quiz && <StatusBar />}
 
-        <InfoTab country={selectedProperties} geoPaths={geographyPaths} />
+        <InfoTab />
 
-        <ChoroplethToggles setChoropleth={this.setChoropleth} />
+        <ChoroplethToggles />
 
-        <DirectionPad handleMapMove={this.handleMapMove} />
+        <DirectionPad />
 
         <div {...WheelReact.events}>
-          <Map props={this} />
+          <Map app={this} />
         </div>
         <footer>
           <div style={footerStyle}>
@@ -347,4 +176,21 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  data: state.data,
+  map: state.map,
+  quiz: state.quiz,
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    loadPaths,
+    loadData,
+    setRegionCheckbox,
+    zoomMap,
+    recenterMap,
+    setMap,
+    countryClick,
+  }
+)(App);

@@ -4,27 +4,25 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
-  Markers,
 } from 'react-simple-maps';
-import {
-  Motion,
-  spring,
-} from 'react-motion';
+import { Motion, spring } from 'react-motion';
+import { connect } from 'react-redux';
+import { countryClick } from './actions/quizActions';
 import ColorPicker from './components/colorPicker';
 
-const doubleClick = false;
-
-const Map = ({ props }) => {
+const Map = props => {
+  const { map, data, countryClick, app } = props
   const {
     defaultZoom,
     center,
     zoom,
     scale,
     dimensions,
-    geographyPaths,
-    disableOptimization,
     currentMap,
-  } = props.state;
+    disableOptimization,
+  } = map;
+
+  const { geographyPaths } = data
 
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
@@ -42,8 +40,8 @@ const Map = ({ props }) => {
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => props._wrapper = wrapper}
-          onDoubleClick={doubleClick ? props.handleDoubleClick : null}
+          ref={wrapper => app._wrapper = wrapper}
+          // onDoubleClick={app.handleDoubleClick}
         >
           <ComposableMap
             projectionConfig={{ scale, rotation }}
@@ -57,12 +55,12 @@ const Map = ({ props }) => {
             <ZoomableGroup
               center={[x, y]}
               zoom={zoom}
-              // onMoveStart={props.handleMoveStart}
-              // onMoveEnd={props.handleMoveEnd}
+              // onMoveStart={app.handleMoveStart}
+              // onMoveEnd={app.handleMoveEnd}
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
-                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(props.state, geography);
+                  const { defaultColor, hoverColor, pressedColor, render, strokeWidth } = ColorPicker(geography);
                   let orientation;
                   switch (dimensions[0]) {
                     case 980:
@@ -93,7 +91,7 @@ const Map = ({ props }) => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={props.handleCountryClick}
+                      onClick={countryClick}
                       fill="white"
                       stroke="black"
                       strokeWidth={strokeWidth}
@@ -115,13 +113,11 @@ const Map = ({ props }) => {
                   );
                 })}
               </Geographies>
-              <Markers>{ props.regionEllipses() }</Markers>
-              <Markers>
+              {app.regionEllipses()}
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'world') && props.countryLabels()
+                (currentMap !== 'World') && app.countryLabels()
               }
-              </Markers>
             </ZoomableGroup>
           </ComposableMap>
         </div>
@@ -130,4 +126,12 @@ const Map = ({ props }) => {
   );
 };
 
-export default Map;
+const mapStateToProps = state => ({
+  data: state.data,
+  map: state.map
+})
+
+export default connect(
+  mapStateToProps,
+  { countryClick }
+)(Map);

@@ -1,0 +1,66 @@
+import {
+  SET_QUIZ_STATE,
+  QUIZ_ANSWER,
+  QUIZ_CLOSE,
+  COUNTRY_CLICK,
+  REGION_SELECT,
+  COUNTRY_SELECT,
+  SET_LABEL,
+} from '../actions/types';
+
+const initialState = {
+  quizAnswers: [],
+  quizType: null,
+  quiz: false,
+  activeQuestionNum: null,
+  quizGuesses: [],
+  selectedProperties: '',
+  disableInfoClick: false,
+  markerToggle: '',
+};
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case REGION_SELECT:
+      return {
+        ...state,
+        ...action.quiz,
+      };
+    case COUNTRY_SELECT:
+    case COUNTRY_CLICK:
+      return {
+        ...state,
+        selectedProperties: action.selectedProperties,
+      };
+    case QUIZ_ANSWER:
+      return {
+        ...state,
+        selectedProperties: action.selectedProperties,
+        quizGuesses: action.quizGuesses,
+        activeQuestionNum: action.activeQuestionNum,
+      };
+    case SET_QUIZ_STATE:
+      return {
+        ...state,
+        ...action.quiz,
+      };
+    case QUIZ_CLOSE:
+      return {
+        ...state,
+        quizAnswers: [],
+        quizGuesses: [],
+        quiz: false,
+        quizType: null,
+        activeQuestionNum: null,
+        disableInfoClick: false,
+        selectedProperties: '',
+      };
+    case SET_LABEL:
+      return {
+        ...state,
+        markerToggle: action.markerToggle,
+      };
+    default:
+      return state;
+  }
+}
