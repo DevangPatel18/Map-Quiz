@@ -79,6 +79,7 @@ class ChoroplethToggles extends Component {
           icon={open ? 'toggle on' : 'toggle off'}
           circular
           toggle
+          inverted
           size={radioSize}
           active={open}
           onClick={this.openDrawer}

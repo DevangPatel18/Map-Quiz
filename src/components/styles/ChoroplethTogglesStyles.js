@@ -4,7 +4,7 @@ const ChoroplethTogglesStyles = styled.div`
   .ui.icon.circular.button.toggle.drawer-button {
     position: absolute;
     left: 1em;
-    top: 50%;
+    bottom: 1em;
     transform: translateY(-50%);
   }
 
@@ -54,7 +54,7 @@ const ChoroplethTogglesStyles = styled.div`
 
   .chorolegend {
     position: absolute;
-    bottom: 1em;
+    bottom: 6rem;
     left: 1em;
     padding: 1em;
     font-size: ${props => (props.isMobile ? '0.5em' : '1em')};
