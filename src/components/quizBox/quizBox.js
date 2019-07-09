@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
@@ -163,7 +162,7 @@ class QuizBox extends Component {
         </QuizMenu>
       );
     }
-    return <QuestionBox />;
+    return null;
   }
 }
 

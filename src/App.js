@@ -23,6 +23,7 @@ import MobileMessage from './components/mobileMessage';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
+import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
 
 class App extends Component {
@@ -149,6 +150,8 @@ class App extends Component {
         </div>
 
         <QuizBox />
+
+        {quiz && <QuestionBox />}
 
         <DropdownSelectionStyles>
           <CountrySearch />
