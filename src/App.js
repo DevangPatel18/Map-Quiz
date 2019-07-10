@@ -194,7 +194,7 @@ class App extends Component {
         <Sidebar
           animation="overlay"
           vertical="true"
-          visible={this.state.menuOpen}
+          visible={quiz ? false : menuOpen}
           direction="right"
         >
           <QuizBox />
