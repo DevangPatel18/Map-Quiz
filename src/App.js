@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
-import { Button } from 'semantic-ui-react';
+import { Button, Sidebar } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
@@ -30,6 +30,10 @@ class App extends Component {
   constructor() {
     super();
 
+    this.state = {
+      menuOpen: true,
+    };
+
     WheelReact.config({
       left: () => {
         // console.log('wheel left detected.');
@@ -52,6 +56,7 @@ class App extends Component {
     this.countryLabels = countryLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
+    this.handleMenu = this.handleMenu.bind(this);
   }
 
   async componentDidMount() {
@@ -117,9 +122,14 @@ class App extends Component {
     this.props.countryClick(geographyPath);
   };
 
+  handleMenu() {
+    this.setState({ menuOpen: !this.state.menuOpen });
+  }
+
   render() {
     const { quiz } = this.props.quiz;
     const { zoomFactor } = this.props.map;
+    const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
@@ -149,8 +159,6 @@ class App extends Component {
           </Button.Group>
         </div>
 
-        <QuizBox />
-
         {quiz && <QuestionBox />}
 
         <DropdownSelectionStyles>
@@ -165,6 +173,32 @@ class App extends Component {
         <ChoroplethToggles />
 
         <DirectionPad />
+
+        <Button
+          icon="arrow alternate circle left"
+          circular
+          inverted
+          style={{
+            position: 'absolute',
+            margin: '0',
+            right: '0',
+            top: '50%',
+            transform: `translate(-1rem, -50%) ${
+              menuOpen ? 'rotate(0.5turn)' : ''
+            }`,
+            transition: 'all 0.3s ease-in-out',
+            zIndex: '200',
+          }}
+          onClick={this.handleMenu}
+        />
+        <Sidebar
+          animation="overlay"
+          vertical="true"
+          visible={this.state.menuOpen}
+          direction="right"
+        >
+          <QuizBox />
+        </Sidebar>
 
         <div {...WheelReact.events}>
           <Map app={this} />

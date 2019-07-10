@@ -2,15 +2,12 @@ import styled from 'styled-components';
 
 const QuizMenu = styled.div`
   font-size: ${props => (props.isMobile ? '5px' : '16px')};
-  position: absolute;
-  top: 110px;
-  right: 14px;
   padding: 1.7em;
-  min-width: 100px;
-  min-height: 130px;
-  border-radius: 1rem 0 1rem 1rem;
   background: rgba(0, 0, 0, 0.5);
+  height: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: row-reverse;
 
   .ui.button.regionDrawer {
