@@ -128,7 +128,7 @@ class App extends Component {
 
   render() {
     const { quiz } = this.props.quiz;
-    const { zoomFactor } = this.props.map;
+    const { zoomFactor, currentMap } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -196,6 +196,15 @@ class App extends Component {
           vertical="true"
           visible={quiz ? false : menuOpen}
           direction="right"
+          width={
+            isMobile
+              ? currentMap === 'World'
+                ? null
+                : 'thin'
+              : currentMap === 'World'
+              ? 'wide'
+              : null
+          }
         >
           <QuizBox />
         </Sidebar>
