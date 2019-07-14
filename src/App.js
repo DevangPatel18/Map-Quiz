@@ -161,11 +161,6 @@ class App extends Component {
 
         {quiz && <QuestionBox />}
 
-        <DropdownSelectionStyles>
-          <CountrySearch />
-          <RegionButtons />
-        </DropdownSelectionStyles>
-
         {quiz && <StatusBar />}
 
         <InfoTab />
@@ -205,7 +200,14 @@ class App extends Component {
               ? 'wide'
               : null
           }
+          style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+          }}
         >
+          <DropdownSelectionStyles>
+            <RegionButtons />
+            <CountrySearch />
+          </DropdownSelectionStyles>
           <QuizBox />
         </Sidebar>
 

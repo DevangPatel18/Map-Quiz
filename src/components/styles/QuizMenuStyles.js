@@ -3,8 +3,6 @@ import styled from 'styled-components';
 const QuizMenu = styled.div`
   font-size: ${props => (props.isMobile ? '5px' : '16px')};
   padding: 1.7em;
-  background: rgba(0, 0, 0, 0.5);
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
