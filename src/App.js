@@ -61,11 +61,6 @@ class App extends Component {
 
   async componentDidMount() {
     const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
-    await loadPaths();
-    await loadData();
-    setRegionCheckbox();
-    window.addEventListener('orientationchange', this.toggleOrientation);
-    window.addEventListener('resize', this.adjustMapSize);
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -76,6 +71,12 @@ class App extends Component {
     } else {
       this.adjustMapSize();
     }
+
+    await loadPaths();
+    await loadData();
+    setRegionCheckbox();
+    window.addEventListener('orientationchange', this.toggleOrientation);
+    window.addEventListener('resize', this.adjustMapSize);
   }
 
   componentWillUnmount() {
