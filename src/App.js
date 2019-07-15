@@ -171,18 +171,16 @@ class App extends Component {
         <DirectionPad />
 
         <Button
-          icon="arrow alternate circle left"
+          icon="sidebar"
           circular
           inverted
           style={{
             position: 'absolute',
             margin: '0',
-            right: '0',
-            top: '50%',
-            transform: `translate(-1rem, -50%) ${
-              menuOpen ? 'rotate(0.5turn)' : ''
-            }`,
+            right: '1em',
+            top: '1em',
             transition: 'all 0.3s ease-in-out',
+            visibility: quiz ? 'hidden' : 'visible',
             zIndex: '200',
           }}
           onClick={this.handleMenu}
@@ -203,6 +201,7 @@ class App extends Component {
           }
           style={{
             background: 'rgba(0, 0, 0, 0.5)',
+            paddingTop: '50px',
           }}
         >
           <DropdownSelectionStyles>
