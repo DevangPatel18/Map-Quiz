@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import WheelReact from 'wheel-react';
-import { Button, Sidebar } from 'semantic-ui-react';
+import { Button, Sidebar, Tab } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
@@ -25,6 +25,29 @@ import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
+
+const panes = [
+  {
+    menuItem: 'Quiz',
+    render: () => (
+      <Tab.Pane attached={false}>
+        <DropdownSelectionStyles>
+          <RegionButtons />
+          <CountrySearch />
+        </DropdownSelectionStyles>
+        <QuizBox />
+      </Tab.Pane>
+    ),
+  },
+  {
+    menuItem: 'Choropleth',
+    render: () => (
+      <Tab.Pane attached={false}>
+        <ChoroplethToggles />
+      </Tab.Pane>
+    ),
+  },
+];
 
 class App extends Component {
   constructor() {
@@ -166,8 +189,6 @@ class App extends Component {
 
         <InfoTab />
 
-        <ChoroplethToggles />
-
         <DirectionPad />
 
         <Button
@@ -201,14 +222,9 @@ class App extends Component {
           }
           style={{
             background: 'rgba(0, 0, 0, 0.5)',
-            paddingTop: '50px',
           }}
         >
-          <DropdownSelectionStyles>
-            <RegionButtons />
-            <CountrySearch />
-          </DropdownSelectionStyles>
-          <QuizBox />
+          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
         </Sidebar>
 
         <div {...WheelReact.events}>

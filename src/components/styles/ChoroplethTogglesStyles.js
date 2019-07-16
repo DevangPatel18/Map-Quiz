@@ -9,16 +9,9 @@ const ChoroplethTogglesStyles = styled.div`
   }
 
   .choropanel {
-    display: ${props => (props.show ? 'block' : 'none')};
-    position: absolute;
-    padding: ${props => (props.isMobile ? '0.8em' : '1.7em')};
-    height: ${props => (props.isMobile ? '220px' : 'auto')};
-    border-radius: 1rem;
-    top: 30%;
-    transform: translateX(-50%);
-    left: 50%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0, 0);
     color: white;
+    margin: 0 auto;
 
     p {
       font-size: ${props => (props.isMobile ? '1.1em' : '1.5em')};

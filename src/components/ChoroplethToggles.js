@@ -74,23 +74,7 @@ class ChoroplethToggles extends Component {
 
     return (
       <ChoroplethTogglesStyles show={open} isMobile={isMobile}>
-        <Button
-          className="drawer-button"
-          icon={open ? 'toggle on' : 'toggle off'}
-          circular
-          toggle
-          inverted
-          size={radioSize}
-          active={open}
-          onClick={this.openDrawer}
-          content={open ? 'Choropleth Toggles' : null}
-          labelPosition={open ? 'left' : null}
-        />
-
         <div className="choropanel">
-          <div className="close-button" onClick={this.openDrawer}>
-            ✖
-          </div>
           <p>Choropleth Toggles</p>
           <Form>
             {choroToggles.map(toggle => (
