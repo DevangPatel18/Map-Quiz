@@ -25,6 +25,7 @@ import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
+import TabStyles from './components/styles/TabStyles';
 
 const panes = [
   {
@@ -40,7 +41,7 @@ const panes = [
     ),
   },
   {
-    menuItem: 'Choropleth',
+    menuItem: 'Choro.',
     render: () => (
       <Tab.Pane attached={false}>
         <ChoroplethToggles />
@@ -224,7 +225,7 @@ class App extends Component {
             background: 'rgba(0, 0, 0, 0.5)',
           }}
         >
-          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+          <TabStyles menu={{ secondary: true, pointing: true }} panes={panes} />
         </Sidebar>
 
         <div {...WheelReact.events}>
