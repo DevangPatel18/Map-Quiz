@@ -1,39 +1,27 @@
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 const ChoroplethTogglesStyles = styled.div`
+  color: white;
+  margin: 0 auto;
+
+  p {
+    font-size: ${isMobile ? '1.1em' : '1.5em'};
+  }
+
+  form {
+    transform: ${isMobile ? 'translateY(-20%) scale(.7)' : 'scale(1)'};
+  }
+
+  .choropanel-toggles {
+    padding: ${isMobile ? '0.5em 0' : '1em 0'};
+  }
+
   .ui.icon.circular.button.toggle.drawer-button {
     position: absolute;
     left: 1em;
     bottom: 1em;
     transform: translateY(-50%);
-  }
-
-  .choropanel {
-    background: rgba(0, 0, 0, 0, 0);
-    color: white;
-    margin: 0 auto;
-
-    p {
-      font-size: ${props => (props.isMobile ? '1.1em' : '1.5em')};
-    }
-
-    form {
-      transform: ${props =>
-        props.isMobile ? 'translateY(-20%) scale(.7)' : 'scale(1)'};
-    }
-
-    .close-button {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      border-top-right-radius: 1rem;
-      margin: 3px 8px;
-      cursor: pointer;
-    }
-  }
-
-  .choropanel-toggles {
-    padding: ${props => (props.isMobile ? '0.5em 0' : '1em 0')};
   }
 
   .ui.toggle.checkbox {
@@ -42,7 +30,6 @@ const ChoroplethTogglesStyles = styled.div`
     border-radius: 2em;
     width: 11em;
     font-weight: 600;
-    /* font-size: .8em */
   }
 `;
 
