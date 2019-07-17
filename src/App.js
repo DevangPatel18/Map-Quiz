@@ -101,7 +101,11 @@ class App extends Component {
     await loadData();
     setRegionCheckbox();
     window.addEventListener('orientationchange', this.toggleOrientation);
-    window.addEventListener('resize', this.adjustMapSize);
+
+    // Disable on mobile due to keyboard triggering resize
+    if (!isMobile) {
+      window.addEventListener('resize', this.adjustMapSize);
+    }
   }
 
   componentWillUnmount() {
