@@ -193,7 +193,7 @@ class App extends Component {
 
         <DirectionPad />
 
-        <ChoroplethLegend />
+        {!quiz && <ChoroplethLegend />}
 
         <Button
           icon="sidebar"
