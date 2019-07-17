@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 const InfoTabStyles = styled.div`
   position: absolute;
+  z-index: 2;
   left: 14px;
   top: 182px;
   text-align: left;
