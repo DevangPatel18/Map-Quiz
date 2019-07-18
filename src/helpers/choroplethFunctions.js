@@ -1,12 +1,12 @@
 import {
   scaleSequential,
-  interpolateBlues,
+  interpolateReds,
   interpolateOranges,
   interpolatePiYG,
   interpolatePurples,
 } from 'd3';
 
-const popScale = scaleSequential(interpolateBlues).domain([0, 10]);
+const popScale = scaleSequential(interpolateReds).domain([0, 10]);
 const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
 const giniScale = scaleSequential(interpolatePiYG).domain([70, 20]);
 const densityScale = scaleSequential(interpolatePurples).domain([0, 7]);
