@@ -52,7 +52,7 @@ class QuizBox extends Component {
     setLabel(parentMarker);
   }
 
-  handleRegionMenu(display) {
+  handleRegionMenu() {
     this.setState({ regionMenu: !this.state.regionMenu });
   }
 
@@ -79,14 +79,14 @@ class QuizBox extends Component {
 
   render() {
     const { quizType, regionMenu } = this.state;
-    const { markerToggle, quiz } = this.props.quiz;
+    const { markerToggle } = this.props.quiz;
     const { checkedRegions, currentMap } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
 
     return (
-      <QuizMenu isMobile={isMobile} regionMenu={regionMenu}>
+      <QuizMenu regionMenu={regionMenu}>
         <div>
           <Button size={formSize} onClick={this.start} className="startButton">
             START QUIZ
