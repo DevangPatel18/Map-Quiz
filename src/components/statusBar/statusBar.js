@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Button, Modal } from 'semantic-ui-react';
-import { isMobile } from 'react-device-detect';
 import StatusBarStyles from '../styles/StatusBarStyles';
 import { startQuiz, closeQuiz } from '../../actions/quizActions';
 import msToTime from '../../helpers/msToTime';
@@ -87,8 +86,8 @@ class StatusBar extends Component {
 
     return (
       <div>
-        <StatusBarStyles quiz={quiz} mobile={isMobile}>
-          <TimerStyles mobile={isMobile}>
+        <StatusBarStyles quiz={quiz}>
+          <TimerStyles>
             <div className="statusBar-timerButtons">
               <Button
                 size="mini"

@@ -82,7 +82,7 @@ class QuestionBox extends Component {
         text = `Enter the ${testing} of the highlighted country`;
         const inputSize = isMobile ? 'mini' : 'small';
         return (
-          <QuizPrompt isMobile={isMobile} typeTest={typeTest}>
+          <QuizPrompt typeTest={typeTest}>
             <div className="qInputText">{text}</div>
             <form onSubmit={this.handleSubmit}>
               <Input

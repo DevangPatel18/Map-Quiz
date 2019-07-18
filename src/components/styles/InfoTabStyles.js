@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 const InfoTabStyles = styled.div`
   position: absolute;
@@ -6,7 +7,7 @@ const InfoTabStyles = styled.div`
   left: 14px;
   top: 182px;
   text-align: left;
-  font-size: ${props => (props.isMobile ? '9px' : '14px')};
+  font-size: ${isMobile ? '9px' : '14px'};
 
   .infoTab-flag {
     display: block;
