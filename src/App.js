@@ -200,9 +200,9 @@ class App extends Component {
         {!quiz && <ChoroplethLegend />}
 
         <Button
-          icon="sidebar"
+          icon={menuOpen ? 'close' : 'sidebar'}
           circular
-          inverted
+          inverted={!menuOpen}
           style={{
             position: 'absolute',
             margin: '0',
