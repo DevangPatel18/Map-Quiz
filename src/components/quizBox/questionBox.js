@@ -46,11 +46,11 @@ class QuestionBox extends Component {
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
       quizAnswers.length
-    } or ${Math.round((score / quizAnswers.length) * 100)}%`;
+    } (${Math.round((score / quizAnswers.length) * 100)}%)`;
     return (
       <div>
         <div>{finalText}</div>
-        <div>
+        <div style={{ display: 'flex' }}>
           <Button
             onClick={() => closeQuiz()}
             size="large"

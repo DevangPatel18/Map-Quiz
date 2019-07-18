@@ -25,7 +25,7 @@ const QuizPrompt = styled.div`
     `}
 
   div {
-    padding: 0.3em;
+    padding: 0.5em 0.3em;
   }
 
   .qInputText {
