@@ -42,7 +42,7 @@ const panes = [
     ),
   },
   {
-    menuItem: 'Choro.',
+    menuItem: 'Choropleth',
     render: () => (
       <Tab.Pane attached={false}>
         <ChoroplethToggles />
@@ -219,15 +219,7 @@ class App extends Component {
           vertical="true"
           visible={quiz ? false : menuOpen}
           direction="right"
-          width={
-            isMobile
-              ? currentMap === 'World'
-                ? null
-                : 'thin'
-              : currentMap === 'World'
-              ? 'wide'
-              : null
-          }
+          width={!isMobile && currentMap === 'World' ? 'wide' : null}
           style={{
             background: 'rgba(0, 0, 0, 0.5)',
           }}
