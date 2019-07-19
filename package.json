@@ -19,8 +19,7 @@
     "semantic-ui-css": "^2.3.3",
     "semantic-ui-react": "^0.82.4",
     "styled-components": "^4.3.2",
-    "topojson-client": "^3.0.0",
-    "wheel-react": "^1.0.3"
+    "topojson-client": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

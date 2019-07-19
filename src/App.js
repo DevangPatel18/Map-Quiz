@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import WheelReact from 'wheel-react';
 import { Button, Sidebar, Tab } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
@@ -59,29 +58,13 @@ class App extends Component {
       menuOpen: true,
     };
 
-    WheelReact.config({
-      left: () => {
-        // console.log('wheel left detected.');
-      },
-      right: () => {
-        // console.log('wheel right detected.');
-      },
-      up: () => {
-        // console.log('wheel up detected.');
-        this.props.zoomMap(0.5);
-      },
-      down: () => {
-        // console.log('wheel down detected.');
-        this.props.zoomMap(2);
-      },
-    });
-
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.handleMenu = this.handleMenu.bind(this);
+    this.handleWheel = this.handleWheel.bind(this);
   }
 
   async componentDidMount() {
@@ -109,7 +92,6 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    WheelReact.clearTimeout();
     window.removeEventListener('orientationchange', this.toggleOrientation);
     window.removeEventListener('resize', this.adjustMapSize);
   }
@@ -137,6 +119,15 @@ class App extends Component {
     }
     if (newDimensions[0] !== dimensions[0]) {
       setMap({ dimensions: newDimensions, zoomFactor: 2 });
+    }
+  }
+
+  handleWheel(event) {
+    if (event.deltaY > 0) {
+      this.props.zoomMap(0.5);
+    }
+    if (event.deltaY < 0) {
+      this.props.zoomMap(2);
     }
   }
 
@@ -235,9 +226,7 @@ class App extends Component {
           <TabStyles menu={{ secondary: true, pointing: true }} panes={panes} />
         </Sidebar>
 
-        <div {...WheelReact.events}>
-          <Map app={this} />
-        </div>
+        <Map app={this} />
         <footer>
           <div style={footerStyle}>
             Copyright © 2018 Devang Patel. All rights reserved.
