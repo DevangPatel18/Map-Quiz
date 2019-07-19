@@ -1,5 +1,4 @@
 import React from 'react';
-import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
@@ -21,7 +20,7 @@ const InfoTab = props => {
     regionOfStr = `Region of ${regionName}`;
   }
   return (
-    <InfoTabStyles isMobile={isMobile}>
+    <InfoTabStyles>
       <img className="infoTab-flag" src={selectedProperties.flag} alt="" />
       <div className="infoTab-desc">
         <li>{name}</li>

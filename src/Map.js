@@ -40,7 +40,7 @@ const Map = props => {
     >
       {({ zoom, x, y }) => (
         <div
-          ref={wrapper => app._wrapper = wrapper}
+          onWheel={app.handleWheel}
           // onDoubleClick={app.handleDoubleClick}
         >
           <ComposableMap

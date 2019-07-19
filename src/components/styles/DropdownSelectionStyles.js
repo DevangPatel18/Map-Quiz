@@ -1,29 +1,33 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 
 const DropdownSelectionStyles = styled.div`
-  position: absolute;
-  top: ${props => (props.quiz ? '-8em' : '0em')};
-  right: 1em;
   transition: all 0.5s;
   display: flex;
-  transform-origin: top right;
-  transform: ${isMobile ? 'scale(0.7)' : 'scale(1)'};
+  transform-origin: center center;
   align-items: flex-end;
+  flex-direction: column;
 
-  @media (orientation: portrait) and (max-width: 500px), (max-width: 660px) {
-    flex-direction: column-reverse;
-  }
+  ${isMobile &&
+    css`
+      .ui.selection.dropdown {
+        font-size: 0.8em;
+
+        .menu > .item {
+          font-size: 0.8em;
+        }
+      }
+    `}
 
   .countrySearch {
-    margin-top: 1em;
-    width: 280px;
+    padding: 1em;
+    width: 100%;
   }
 
   .regionButtons {
-    margin: 1em 0 0 1em;
-    width: 220px;
+    padding: 1em;
+    width: 100%;
   }
 `;
 

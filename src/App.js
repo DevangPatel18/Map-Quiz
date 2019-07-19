@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import WheelReact from 'wheel-react';
-import { Button } from 'semantic-ui-react';
+import { Button, Sidebar, Tab } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
@@ -21,45 +20,55 @@ import {
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import ChoroplethToggles from './components/ChoroplethToggles';
+import ChoroplethLegend from './components/ChoroplethLegend';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
+import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
+import TabStyles from './components/styles/TabStyles';
+
+const panes = [
+  {
+    menuItem: 'Quiz',
+    render: () => (
+      <Tab.Pane attached={false}>
+        <DropdownSelectionStyles>
+          <RegionButtons />
+          <CountrySearch />
+        </DropdownSelectionStyles>
+        <QuizBox />
+      </Tab.Pane>
+    ),
+  },
+  {
+    menuItem: 'Choropleth',
+    render: () => (
+      <Tab.Pane attached={false}>
+        <ChoroplethToggles />
+      </Tab.Pane>
+    ),
+  },
+];
 
 class App extends Component {
   constructor() {
     super();
 
-    WheelReact.config({
-      left: () => {
-        // console.log('wheel left detected.');
-      },
-      right: () => {
-        // console.log('wheel right detected.');
-      },
-      up: () => {
-        // console.log('wheel up detected.');
-        this.props.zoomMap(0.5);
-      },
-      down: () => {
-        // console.log('wheel down detected.');
-        this.props.zoomMap(2);
-      },
-    });
+    this.state = {
+      menuOpen: true,
+    };
 
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.countryLabels = countryLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
+    this.handleMenu = this.handleMenu.bind(this);
+    this.handleWheel = this.handleWheel.bind(this);
   }
 
   async componentDidMount() {
     const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
-    await loadPaths();
-    await loadData();
-    setRegionCheckbox();
-    window.addEventListener('orientationchange', this.toggleOrientation);
-    window.addEventListener('resize', this.adjustMapSize);
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -70,10 +79,19 @@ class App extends Component {
     } else {
       this.adjustMapSize();
     }
+
+    await loadPaths();
+    await loadData();
+    setRegionCheckbox();
+    window.addEventListener('orientationchange', this.toggleOrientation);
+
+    // Disable on mobile due to keyboard triggering resize
+    if (!isMobile) {
+      window.addEventListener('resize', this.adjustMapSize);
+    }
   }
 
   componentWillUnmount() {
-    WheelReact.clearTimeout();
     window.removeEventListener('orientationchange', this.toggleOrientation);
     window.removeEventListener('resize', this.adjustMapSize);
   }
@@ -104,6 +122,15 @@ class App extends Component {
     }
   }
 
+  handleWheel(event) {
+    if (event.deltaY > 0) {
+      this.props.zoomMap(0.5);
+    }
+    if (event.deltaY < 0) {
+      this.props.zoomMap(2);
+    }
+  }
+
   handleMoveStart(currentCenter) {
     // console.log("Current center: ", currentCenter)
   }
@@ -116,9 +143,14 @@ class App extends Component {
     this.props.countryClick(geographyPath);
   };
 
+  handleMenu() {
+    this.setState({ menuOpen: !this.state.menuOpen });
+  }
+
   render() {
     const { quiz } = this.props.quiz;
-    const { zoomFactor } = this.props.map;
+    const { zoomFactor, currentMap } = this.props.map;
+    const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
 
@@ -138,34 +170,63 @@ class App extends Component {
               onClick={() => this.props.zoomMap(zoomFactor)}
               icon="plus"
               inverted
+              aria-label="map zoom in"
             />
             <Button
               onClick={() => this.props.zoomMap(1 / zoomFactor)}
               icon="minus"
               inverted
+              aria-label="map zoom out"
             />
-            <Button onClick={this.props.recenterMap} icon="undo" inverted />
+            <Button
+              onClick={this.props.recenterMap}
+              icon="undo"
+              inverted
+              aria-label="map zoom reset"
+            />
           </Button.Group>
         </div>
 
-        <QuizBox />
-
-        <DropdownSelectionStyles>
-          <CountrySearch />
-          <RegionButtons />
-        </DropdownSelectionStyles>
+        {quiz && <QuestionBox />}
 
         {quiz && <StatusBar />}
 
         <InfoTab />
 
-        <ChoroplethToggles />
-
         <DirectionPad />
 
-        <div {...WheelReact.events}>
-          <Map app={this} />
-        </div>
+        {!quiz && <ChoroplethLegend />}
+
+        <Button
+          icon={menuOpen ? 'close' : 'sidebar'}
+          circular
+          inverted={!menuOpen}
+          style={{
+            position: 'absolute',
+            margin: '0',
+            right: '1em',
+            top: '1em',
+            transition: 'all 0.3s ease-in-out',
+            visibility: quiz ? 'hidden' : 'visible',
+            zIndex: '200',
+          }}
+          onClick={this.handleMenu}
+          aria-label="sidebar button"
+        />
+        <Sidebar
+          animation="overlay"
+          vertical="true"
+          visible={quiz ? false : menuOpen}
+          direction="right"
+          width={!isMobile && currentMap === 'World' ? 'wide' : null}
+          style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <TabStyles menu={{ secondary: true, pointing: true }} panes={panes} />
+        </Sidebar>
+
+        <Map app={this} />
         <footer>
           <div style={footerStyle}>
             Copyright © 2018 Devang Patel. All rights reserved.

@@ -39,6 +39,7 @@ const CountrySearch = ({ map, data, countrySelect }) => {
   return (
     <div className="countrySearch">
       <Dropdown
+        aria-label="user country search"
         placeholder="Select Country"
         fluid
         search

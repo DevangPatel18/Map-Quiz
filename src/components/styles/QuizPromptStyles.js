@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 const QuizPrompt = styled.div`
   position: absolute;
@@ -13,7 +14,7 @@ const QuizPrompt = styled.div`
   z-index: 2;
 
   ${props =>
-    props.isMobile &&
+    isMobile &&
     props.typeTest &&
     css`
       font-size: 11px;
@@ -22,14 +23,13 @@ const QuizPrompt = styled.div`
       top: auto;
       bottom: 0.5em;
     `}
-    
+
   div {
-    padding: 0.3em;
+    padding: 0.5em 0.3em;
   }
 
   .qInputText {
-    ${props =>
-      props.isMobile &&
+    ${isMobile &&
       css`
         padding: 0.1em 0.3em;
       `};
@@ -61,7 +61,7 @@ const QuizPrompt = styled.div`
 
   .ui.small.button {
     margin-left: 0.3em;
-    padding: ${props => (props.isMobile ? '5px 0.5em' : '12.7px 0.5em')};
+    padding: ${isMobile ? '5px 0.5em' : '12.7px 0.5em'};
   }
 
   button.ui.button {

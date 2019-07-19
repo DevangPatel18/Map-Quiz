@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import QuestionBox from './questionBox';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
@@ -53,7 +52,7 @@ class QuizBox extends Component {
     setLabel(parentMarker);
   }
 
-  handleRegionMenu(display) {
+  handleRegionMenu() {
     this.setState({ regionMenu: !this.state.regionMenu });
   }
 
@@ -80,90 +79,93 @@ class QuizBox extends Component {
 
   render() {
     const { quizType, regionMenu } = this.state;
-    const { markerToggle, quiz } = this.props.quiz;
+    const { markerToggle } = this.props.quiz;
     const { checkedRegions, currentMap } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
 
-    if (!quiz) {
-      return (
-        <QuizMenu isMobile={isMobile} regionMenu={regionMenu}>
-          <div>
-            <Button
-              size={formSize}
-              onClick={this.start}
-              className="startButton"
-            >
-              START QUIZ
-            </Button>
-            <Form size={formSize}>
-              {quizOptions.map(form => (
-                <Form.Field key={form.value}>
-                  <Radio
-                    label={form.label}
-                    value={form.value}
-                    name="quiz"
-                    checked={quizType === form.value}
-                    onChange={this.handleQuizChange}
-                  />
-                </Form.Field>
-              ))}
-            </Form>
-            {currentMap === 'World' && (
-              <Button
-                toggle
-                compact
-                active={regionMenu}
-                content="Toggle Quiz Regions"
-                size={formSize}
-                className="regionDrawer"
-                onClick={this.handleRegionMenu}
-              />
-            )}
-            {currentMap !== 'World' && (
-              <div className="App-quiz-toggle">
-                <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
-                <Button.Group size={formSize} compact>
-                  <Button
-                    toggle
-                    active={countryLabel}
-                    onClick={() => this.handleLabelToggle('name')}
-                  >
-                    {'Country'}
-                  </Button>
-                  <Button.Or />
-                  <Button
-                    toggle
-                    active={capitalLabel}
-                    onClick={() => this.handleLabelToggle('capital')}
-                  >
-                    {'Capital'}
-                  </Button>
-                </Button.Group>
-              </div>
-            )}
-          </div>
-
-          {currentMap === 'World' && (
-            <Form className="fmRegionSelect">
-              {checkedRegionsLabels.map(region => (
-                <Form.Field
-                  label={region}
-                  value={region}
-                  key={region}
-                  control="input"
-                  type="checkbox"
-                  checked={checkedRegions[region]}
-                  onChange={this.handleCheckBox}
+    return (
+      <QuizMenu regionMenu={regionMenu}>
+        <div>
+          <Button
+            size={formSize}
+            onClick={this.start}
+            className="startButton"
+            aria-label="start quiz"
+          >
+            START QUIZ
+          </Button>
+          <Form size={formSize}>
+            {quizOptions.map(form => (
+              <Form.Field key={form.value}>
+                <Radio
+                  aria-label={form.label}
+                  label={form.label}
+                  value={form.value}
+                  name="quiz"
+                  checked={quizType === form.value}
+                  onChange={this.handleQuizChange}
                 />
-              ))}
-            </Form>
+              </Form.Field>
+            ))}
+          </Form>
+          {currentMap === 'World' && (
+            <Button
+              toggle
+              compact
+              active={regionMenu}
+              content="Toggle Quiz Regions"
+              aria-label="Toggle Quiz Regions"
+              size={formSize}
+              className="regionDrawer"
+              onClick={this.handleRegionMenu}
+            />
           )}
-        </QuizMenu>
-      );
-    }
-    return <QuestionBox />;
+          {currentMap !== 'World' && (
+            <div className="App-quiz-toggle">
+              <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
+              <Button.Group size={formSize} compact>
+                <Button
+                  toggle
+                  active={countryLabel}
+                  onClick={() => this.handleLabelToggle('name')}
+                  aria-label="toggle region names"
+                >
+                  {'Country'}
+                </Button>
+                <Button.Or aria-label="or" />
+                <Button
+                  toggle
+                  active={capitalLabel}
+                  onClick={() => this.handleLabelToggle('capital')}
+                  aria-label="toggle region capitals"
+                >
+                  {'Capital'}
+                </Button>
+              </Button.Group>
+            </div>
+          )}
+        </div>
+
+        {currentMap === 'World' && (
+          <Form className="fmRegionSelect">
+            {checkedRegionsLabels.map(region => (
+              <Form.Field
+                aria-label={region}
+                label={region}
+                value={region}
+                key={region}
+                control="input"
+                type="checkbox"
+                checked={checkedRegions[region]}
+                onChange={this.handleCheckBox}
+              />
+            ))}
+          </Form>
+        )}
+      </QuizMenu>
+    );
   }
 }
 

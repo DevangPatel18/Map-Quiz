@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 const StatusBarStyles = styled.div`
   position: absolute;
@@ -17,7 +18,7 @@ const StatusBarStyles = styled.div`
   }
 
   .statusBar-ratio {
-    font-size: ${props => (props.mobile ? '12px' : '17px')};
+    font-size: ${isMobile ? '12px' : '17px'};
     color: white;
     font-weight: bolder;
     text-shadow: 2px 2px 4px black;

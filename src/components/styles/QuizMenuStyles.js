@@ -1,16 +1,12 @@
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 const QuizMenu = styled.div`
-  font-size: ${props => (props.isMobile ? '5px' : '16px')};
-  position: absolute;
-  top: 110px;
-  right: 14px;
+  font-size: ${isMobile ? '5px' : '16px'};
   padding: 1.7em;
-  min-width: 100px;
-  min-height: 130px;
-  border-radius: 1rem 0 1rem 1rem;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: row-reverse;
 
   .ui.button.regionDrawer {
@@ -30,21 +26,21 @@ const QuizMenu = styled.div`
   &&& label:hover,
   &&& .checked label {
     color: white;
-    font-size: ${props => (props.isMobile ? '.8em' : '1.1em')};
+    font-size: ${isMobile ? '.8em' : '1.1em'};
   }
 
   &&&& .fmRegionSelect label,
   &&&& .fmRegionSelect label:hover,
   &&&& .fmRegionSelect .checked label {
     color: white;
-    font-size: ${props => (props.isMobile ? '.6em' : '.9em')};
+    font-size: ${isMobile ? '.6em' : '.9em'};
   }
 
   && .fmRegionSelect {
     display: ${props => (props.regionMenu ? 'flex' : 'none')};
     flex-direction: column;
     justify-content: center;
-    margin-right: ${props => (props.isMobile ? '.6em' : '1.9em')};
+    margin-right: ${isMobile ? '.6em' : '1.9em'};
     width: auto;
 
     .field {
@@ -75,7 +71,7 @@ const QuizMenu = styled.div`
 
   .form {
     text-align: left;
-    width: ${props => (props.isMobile ? '130px' : '160px')};
+    width: ${isMobile ? '130px' : '160px'};
   }
 
   .ui.mini.form .field {

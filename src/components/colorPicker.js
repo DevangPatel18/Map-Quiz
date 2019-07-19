@@ -74,7 +74,7 @@ const ColorPicker = geo => {
   }
 
   if (choropleth !== 'None' && !quiz) {
-    defaultColor = choroplethColor(choropleth, geo, defaultColor);
+    defaultColor = choroplethColor(choropleth, geo);
   }
 
   return { defaultColor, hoverColor, pressedColor, render, strokeWidth };

@@ -22,9 +22,7 @@ const RegionButtons = ({ regionSelect }) => (
       fluid
       selection
       options={regions}
-      onChange={e => {
-        regionSelect(e.target.innerText);
-      }}
+      onChange={(e, data) => regionSelect(data.value)}
     />
   </div>
 );

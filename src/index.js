@@ -7,6 +7,7 @@ import './App.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import 'semantic-ui-css/semantic.min.css';
+require('default-passive-events');
 
 ReactDOM.render(
   <Provider store={store}>

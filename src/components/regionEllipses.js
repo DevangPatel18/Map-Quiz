@@ -1,6 +1,7 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
+import { isMobile } from 'react-device-detect';
 import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
 import projection from "../helpers/projection";
@@ -124,7 +125,7 @@ export default function regionEllipses() {
             <circle
               cx={ccx}
               cy={ccy}
-              r={4}
+              r={isMobile ? 12 : 4}
               fill={defaultColor}
               className="caribSelector"
               onClick={() => this.markerClick(country)}

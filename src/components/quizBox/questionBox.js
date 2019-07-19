@@ -46,23 +46,25 @@ class QuestionBox extends Component {
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
       quizAnswers.length
-    } or ${Math.round((score / quizAnswers.length) * 100)}%`;
+    } (${Math.round((score / quizAnswers.length) * 100)}%)`;
     return (
       <div>
         <div>{finalText}</div>
-        <div>
+        <div style={{ display: 'flex' }}>
           <Button
             onClick={() => closeQuiz()}
             size="large"
             compact
             content="CANCEL"
             style={{ marginRight: '1rem' }}
+            aria-label="cancel quiz"
           />
           <Button
             onClick={() => this.handleRestartQuiz(quizType)}
             size="large"
             compact
             content="RESTART"
+            aria-label="restart quiz"
           />
         </div>
       </div>
@@ -82,18 +84,24 @@ class QuestionBox extends Component {
         text = `Enter the ${testing} of the highlighted country`;
         const inputSize = isMobile ? 'mini' : 'small';
         return (
-          <QuizPrompt isMobile={isMobile} typeTest={typeTest}>
+          <QuizPrompt typeTest={typeTest}>
             <div className="qInputText">{text}</div>
             <form onSubmit={this.handleSubmit}>
               <Input
                 type="text"
+                aria-label="user guess"
                 autoFocus
                 size={inputSize}
                 value={userGuess}
                 onChange={this.handleChange}
               />
               <div>
-                <Button type="submit" size="small" compact>
+                <Button
+                  type="submit"
+                  size="small"
+                  aria-label="submit answer"
+                  compact
+                >
                   Submit
                 </Button>
               </div>
