@@ -89,6 +89,7 @@ class QuestionBox extends Component {
             <form onSubmit={this.handleSubmit}>
               <Input
                 type="text"
+                aria-label="user guess"
                 autoFocus
                 size={inputSize}
                 value={userGuess}

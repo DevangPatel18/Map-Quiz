@@ -100,6 +100,7 @@ class QuizBox extends Component {
             {quizOptions.map(form => (
               <Form.Field key={form.value}>
                 <Radio
+                  aria-label={form.label}
                   label={form.label}
                   value={form.value}
                   name="quiz"
@@ -151,6 +152,7 @@ class QuizBox extends Component {
           <Form className="fmRegionSelect">
             {checkedRegionsLabels.map(region => (
               <Form.Field
+                aria-label={region}
                 label={region}
                 value={region}
                 key={region}
