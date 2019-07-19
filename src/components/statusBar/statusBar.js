@@ -97,6 +97,7 @@ class StatusBar extends Component {
                 className="statusBar-stop"
                 icon="stop"
                 onClick={this.close}
+                aria-label="stop quiz"
               />
               <Button
                 size="mini"
@@ -106,6 +107,7 @@ class StatusBar extends Component {
                 icon="pause"
                 onClick={this.pause}
                 style={pauseStyle}
+                aria-label="pause quiz"
               />
             </div>
           </TimerStyles>
@@ -134,6 +136,7 @@ class StatusBar extends Component {
             size="massive"
             content="Resume"
             onClick={this.closeModal}
+            aria-label="resume quiz"
           />
         </Modal>
       </div>

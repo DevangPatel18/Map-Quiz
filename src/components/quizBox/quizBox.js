@@ -88,7 +88,12 @@ class QuizBox extends Component {
     return (
       <QuizMenu regionMenu={regionMenu}>
         <div>
-          <Button size={formSize} onClick={this.start} className="startButton">
+          <Button
+            size={formSize}
+            onClick={this.start}
+            className="startButton"
+            aria-label="start quiz"
+          >
             START QUIZ
           </Button>
           <Form size={formSize}>
@@ -110,6 +115,7 @@ class QuizBox extends Component {
               compact
               active={regionMenu}
               content="Toggle Quiz Regions"
+              aria-label="Toggle Quiz Regions"
               size={formSize}
               className="regionDrawer"
               onClick={this.handleRegionMenu}
@@ -123,14 +129,16 @@ class QuizBox extends Component {
                   toggle
                   active={countryLabel}
                   onClick={() => this.handleLabelToggle('name')}
+                  aria-label="toggle region names"
                 >
                   {'Country'}
                 </Button>
-                <Button.Or />
+                <Button.Or aria-label="or" />
                 <Button
                   toggle
                   active={capitalLabel}
                   onClick={() => this.handleLabelToggle('capital')}
+                  aria-label="toggle region capitals"
                 >
                   {'Capital'}
                 </Button>

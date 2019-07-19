@@ -57,12 +57,14 @@ class QuestionBox extends Component {
             compact
             content="CANCEL"
             style={{ marginRight: '1rem' }}
+            aria-label="cancel quiz"
           />
           <Button
             onClick={() => this.handleRestartQuiz(quizType)}
             size="large"
             compact
             content="RESTART"
+            aria-label="restart quiz"
           />
         </div>
       </div>
@@ -93,7 +95,12 @@ class QuestionBox extends Component {
                 onChange={this.handleChange}
               />
               <div>
-                <Button type="submit" size="small" compact>
+                <Button
+                  type="submit"
+                  size="small"
+                  aria-label="submit answer"
+                  compact
+                >
                   Submit
                 </Button>
               </div>

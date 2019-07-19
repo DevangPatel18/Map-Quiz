@@ -179,13 +179,20 @@ class App extends Component {
               onClick={() => this.props.zoomMap(zoomFactor)}
               icon="plus"
               inverted
+              aria-label="map zoom in"
             />
             <Button
               onClick={() => this.props.zoomMap(1 / zoomFactor)}
               icon="minus"
               inverted
+              aria-label="map zoom out"
             />
-            <Button onClick={this.props.recenterMap} icon="undo" inverted />
+            <Button
+              onClick={this.props.recenterMap}
+              icon="undo"
+              inverted
+              aria-label="map zoom reset"
+            />
           </Button.Group>
         </div>
 
@@ -213,6 +220,7 @@ class App extends Component {
             zIndex: '200',
           }}
           onClick={this.handleMenu}
+          aria-label="sidebar button"
         />
         <Sidebar
           animation="overlay"
