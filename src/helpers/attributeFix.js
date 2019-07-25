@@ -1,4 +1,4 @@
-import { moroccoGeo, westernSaharaGeo } from './borderUpdate'
+import { moroccoGeo, westernSaharaGeo, tuvaluGeo } from './borderUpdate'
 
 // Change entries of data object
 const DataFix = ({data, capitalMarkers}) => {
@@ -172,8 +172,13 @@ const GeoPathsMod = (geoPath) => {
   const coordsNZL = newzealand.geometry.coordinates.splice(11, 2);
   tokelau.geometry.coordinates = coordsNZL;
 
+  // Create geography path for Tuvalu from existing arbitrary geography object
+  const tuvalu = JSON.parse(JSON.stringify(geographyPath[0]));
+  tuvalu.id = '798';
+  tuvalu.geometry = tuvaluGeo
+
   geographyPath.push(
-    frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, svalbard, cocos, tokelau,
+    frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, svalbard, cocos, tokelau, tuvalu
   );
 
   // Remove Ashmore Reef to prevent extra Australia label
@@ -198,7 +203,7 @@ const CountryMarkersFix = centroids => {
     ['CAN', [-100, 55]], ['USA', [-100, 40]], ['CHL', [-73, -39]],
     // Oceania coordinates
     ['FJI', [177.5, -18]], ['KIR', [189, -1]], ['MHL', [169, 8.5]], ['FSM', [151, 7.5]], ['MNP', [145.5, 16.5]],
-    ['SLB', [161.6, -9.75]], ['VUT', [168.5, -17]], ['NCL', [163.8, -20.9]], ['PLW', [133, 6]],
+    ['SLB', [161.6, -9.75]], ['VUT', [168.5, -17]], ['NCL', [163.8, -20.9]], ['PLW', [133, 6]], ['TUV', [178.5, -8.4]],
     // South America and Africa marker offsets
     ['SUR', -10], ['GUY', -15], ['DOM', 10], ['GMB', 3], ['GNB', 5], ['GIN', 5], ['SLE', 5], ['LBR', 5],
     ['NGA', -5], ['CIV', 22], ['GHA', 10], ['TGO', 5], ['CAF', 5], ['CMR', 10], ['COD', -17], ['COG', 10],

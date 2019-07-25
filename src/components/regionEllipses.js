@@ -6,7 +6,7 @@ import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
 import projection from "../helpers/projection";
 
-const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
+const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TUV', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
