@@ -1,4 +1,5 @@
 import { geoPath } from 'd3-geo';
+import { actions } from 'redux-tooltip';
 import projection from '../helpers/projection';
 import {
   REGION_SELECT,
@@ -17,6 +18,8 @@ import {
   mapConfig,
   alpha3CodesSov,
 } from '../assets/regionAlpha3Codes';
+
+const { show, hide } = actions;
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -144,4 +147,19 @@ export const moveMap = direction => async dispatch => {
 export const setChoropleth = choropleth => async dispatch => {
   await dispatch({ type: SET_CHOROPLETH, choropleth });
   dispatch({ type: DISABLE_OPT });
+};
+
+export const tooltipMove = (geography, evt) => dispatch => {
+  const x = evt.clientX;
+  const y = evt.clientY + window.pageYOffset;
+  dispatch(
+    show({
+      origin: { x, y },
+      content: geography.properties.name,
+    })
+  );
+};
+
+export const tooltipLeave = () => dispatch => {
+  dispatch(hide());
 };
