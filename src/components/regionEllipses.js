@@ -91,10 +91,19 @@ export default function regionEllipses() {
         heightMain *= zoom;
         rotate = `rotate(${angleMain})`;
       }
+
+      const mouseHandlers = quiz
+        ? {}
+        : {
+            onMouseMove: (marker, evt) => this.props.tooltipMove(country, evt),
+            onMouseLeave: this.props.tooltipLeave,
+          };
+
       const { defaultColor, hoverColor, pressedColor } = ColorPicker(country);
       return (
         <Marker
           key={alpha3Code}
+          {...mouseHandlers}
           marker={marker}
           style={currentMap !== 'Caribbean' && {
             default: {
