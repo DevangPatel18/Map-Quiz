@@ -17,6 +17,8 @@ import {
   zoomMap,
   recenterMap,
   setMap,
+  tooltipMove,
+  tooltipLeave,
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import ChoroplethToggles from './components/ChoroplethToggles';
@@ -253,5 +255,7 @@ export default connect(
     recenterMap,
     setMap,
     countryClick,
+    tooltipMove,
+    tooltipLeave,
   }
 )(App);

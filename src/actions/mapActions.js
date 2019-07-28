@@ -1,4 +1,5 @@
 import { geoPath } from 'd3-geo';
+import { actions } from 'redux-tooltip';
 import projection from '../helpers/projection';
 import {
   REGION_SELECT,
@@ -10,6 +11,7 @@ import {
   SET_MAP,
   MOVE_CENTER,
   SET_CHOROPLETH,
+  TOGGLE_TOOLTIP,
 } from './types';
 import store from '../store';
 import {
@@ -17,6 +19,8 @@ import {
   mapConfig,
   alpha3CodesSov,
 } from '../assets/regionAlpha3Codes';
+
+const { show, hide } = actions;
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -143,5 +147,34 @@ export const moveMap = direction => async dispatch => {
 
 export const setChoropleth = choropleth => async dispatch => {
   await dispatch({ type: SET_CHOROPLETH, choropleth });
+  dispatch({ type: DISABLE_OPT });
+};
+
+export const tooltipMove = (geography, evt) => dispatch => {
+  const { choropleth } = store.getState().map;
+  let content = geography.properties.name;
+  if (choropleth !== 'None') {
+    content += ` - ${
+      geography.properties[choropleth]
+        ? geography.properties[choropleth].toLocaleString('us-US')
+        : 'N/A'
+    }`;
+  }
+  const x = evt.clientX;
+  const y = evt.clientY + window.pageYOffset;
+  dispatch(
+    show({
+      origin: { x, y },
+      content,
+    })
+  );
+};
+
+export const tooltipLeave = () => dispatch => {
+  dispatch(hide());
+};
+
+export const tooltipToggle = () => async dispatch => {
+  await dispatch({ type: TOGGLE_TOOLTIP });
   dispatch({ type: DISABLE_OPT });
 };

@@ -3,7 +3,7 @@ import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import QuizMenu from '../styles/QuizMenuStyles';
-import { setRegionCheckbox } from '../../actions/mapActions';
+import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
 
 const quizOptions = [
@@ -80,7 +80,7 @@ class QuizBox extends Component {
   render() {
     const { quizType, regionMenu } = this.state;
     const { markerToggle } = this.props.quiz;
-    const { checkedRegions, currentMap } = this.props.map;
+    const { checkedRegions, currentMap, tooltip } = this.props.map;
     const countryLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -146,6 +146,18 @@ class QuizBox extends Component {
               </Button.Group>
             </div>
           )}
+
+          <div style={{ marginTop: '2rem' }}>
+            <Radio
+              slider
+              fitted
+              size={formSize}
+              label={`Tooltip`}
+              checked={tooltip}
+              onChange={this.props.tooltipToggle}
+              style={{}}
+            />
+          </div>
         </div>
 
         {currentMap === 'World' && (
@@ -176,5 +188,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setRegionCheckbox, startQuiz, closeQuiz, setLabel }
+  { setRegionCheckbox, startQuiz, closeQuiz, setLabel, tooltipToggle }
 )(QuizBox);

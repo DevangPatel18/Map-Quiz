@@ -6,11 +6,11 @@ import ColorPicker from './colorPicker';
 import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
 import projection from "../helpers/projection";
 
-const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TON', 'WSM'];
+const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TUV', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
-  const { currentMap, filterRegions, zoom } = this.props.map;
+  const { currentMap, filterRegions, tooltip } = this.props.map;
   const { quiz } = this.props.quiz;
   const { geographyPaths, capitalMarkers, countryMarkers } = this.props.data;
   let minArea;
@@ -44,7 +44,8 @@ export default function regionEllipses() {
       let llx;
       let lly;
       const { alpha3Code } = country.properties;
-      if (currentMap === 'Caribbean') {
+      const caribbeanMap = currentMap === 'Caribbean'
+      if (caribbeanMap) {
         marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
         dx = 20;
         dy = -20;
@@ -87,16 +88,23 @@ export default function regionEllipses() {
           angleMain = 0;
         }
 
-        widthMain *= zoom;
-        heightMain *= zoom;
         rotate = `rotate(${angleMain})`;
       }
+
+      const mouseHandlers = !tooltip || quiz
+        ? {}
+        : {
+            onMouseMove: (marker, evt) => this.props.tooltipMove(country, evt),
+            onMouseLeave: this.props.tooltipLeave,
+          };
+
       const { defaultColor, hoverColor, pressedColor } = ColorPicker(country);
       return (
         <Marker
           key={alpha3Code}
+          {...mouseHandlers}
           marker={marker}
-          style={currentMap !== 'Caribbean' && {
+          style={!caribbeanMap && {
             default: {
               fill: defaultColor,
               transition: 'fill .5s',
@@ -110,8 +118,9 @@ export default function regionEllipses() {
               transition: 'fill .5s',
             },
           }}
+          preserveMarkerAspect={caribbeanMap}
         >
-          {currentMap === 'Caribbean' && (
+          {caribbeanMap && (
             <line
               x1="0"
               y1="0"
@@ -121,7 +130,7 @@ export default function regionEllipses() {
               strokeWidth={0.3}
             />
           )}
-          {currentMap === 'Caribbean' ? (
+          {caribbeanMap ? (
             <circle
               cx={ccx}
               cy={ccy}

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Tooltip } from 'redux-tooltip';
 import {
   ComposableMap,
   ZoomableGroup,
@@ -8,10 +10,14 @@ import {
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { countryClick } from './actions/quizActions';
+import { tooltipMove, tooltipLeave } from './actions/mapActions';
 import ColorPicker from './components/colorPicker';
 
+// Required for proper functioning of redux-tooltip
+React.PropTypes = PropTypes;
+
 const Map = props => {
-  const { map, data, countryClick, app } = props
+  const { map, data, countryClick, app, tooltipMove, tooltipLeave } = props
   const {
     defaultZoom,
     center,
@@ -20,10 +26,20 @@ const Map = props => {
     dimensions,
     currentMap,
     disableOptimization,
+    tooltip,
   } = map;
 
   const { geographyPaths } = data
 
+  const { quiz } = props.quiz;
+
+  const mouseHandlers = !tooltip || quiz
+    ? {}
+    : {
+        onMouseMove: tooltipMove,
+        onMouseLeave: tooltipLeave,
+      };
+    
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
   return (
     <Motion
@@ -92,6 +108,7 @@ const Map = props => {
                       geography={geography}
                       projection={projection}
                       onClick={countryClick}
+                      {...mouseHandlers}
                       fill="white"
                       stroke="black"
                       strokeWidth={strokeWidth}
@@ -120,6 +137,7 @@ const Map = props => {
               }
             </ZoomableGroup>
           </ComposableMap>
+          <Tooltip />
         </div>
       )}
     </Motion>
@@ -128,10 +146,11 @@ const Map = props => {
 
 const mapStateToProps = state => ({
   data: state.data,
-  map: state.map
+  map: state.map,
+  quiz: state.quiz,
 })
 
 export default connect(
   mapStateToProps,
-  { countryClick }
+  { countryClick, tooltipMove, tooltipLeave }
 )(Map);

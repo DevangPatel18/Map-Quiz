@@ -61,8 +61,9 @@ export const loadData = () => async dispatch => {
         ...Object.values(countryData.translations),
       ];
 
-      geography.properties.density =
-        geography.properties.population / geography.properties.area;
+      geography.properties.density = parseInt(
+        geography.properties.population / geography.properties.area
+      );
 
       const captemp = capitalData.find(
         capital => capital.CountryCode === countryData.alpha2Code

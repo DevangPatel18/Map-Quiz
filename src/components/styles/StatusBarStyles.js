@@ -13,8 +13,7 @@ const StatusBarStyles = styled.div`
 
   .statusBar-progress {
     position: relative;
-    padding-top: 1rem;
-    width: 50%;
+    width: 45%;
   }
 
   .statusBar-ratio {
