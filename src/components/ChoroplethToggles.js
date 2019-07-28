@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 import { setChoropleth } from '../actions/mapActions';
 
-const choroToggles = ['None', 'Population', 'Area', 'Gini', 'Density'];
+const choroToggles = ['None', 'population', 'area', 'gini', 'density'];
 
 class ChoroplethToggles extends Component {
   constructor() {
@@ -39,7 +39,7 @@ class ChoroplethToggles extends Component {
                 toggle
                 fitted
                 size={radioSize}
-                label={toggle}
+                label={`${toggle[0].toUpperCase()}${toggle.slice(1)}`}
                 value={toggle}
                 checked={choropleth === toggle}
                 onChange={this.setRadio}

@@ -150,12 +150,21 @@ export const setChoropleth = choropleth => async dispatch => {
 };
 
 export const tooltipMove = (geography, evt) => dispatch => {
+  const { choropleth } = store.getState().map;
+  let content = geography.properties.name;
+  if (choropleth !== 'None') {
+    content += ` - ${
+      geography.properties[choropleth]
+        ? geography.properties[choropleth].toLocaleString('us-US')
+        : 'N/A'
+    }`;
+  }
   const x = evt.clientX;
   const y = evt.clientY + window.pageYOffset;
   dispatch(
     show({
       origin: { x, y },
-      content: geography.properties.name,
+      content,
     })
   );
 };
