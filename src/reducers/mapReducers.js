@@ -1,3 +1,4 @@
+import { isMobile } from 'react-device-detect';
 import {
   SET_REGION_CHECKBOX,
   REGION_SELECT,
@@ -15,6 +16,7 @@ import {
   QUIZ_CLOSE,
   SET_CHOROPLETH,
   SET_LABEL,
+  TOGGLE_TOOLTIP,
 } from '../actions/types';
 
 const initialState = {
@@ -38,6 +40,7 @@ const initialState = {
     Oceania: true,
   },
   choropleth: 'None',
+  tooltip: !isMobile,
 };
 
 export default function(state = initialState, action) {
@@ -106,6 +109,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         choropleth: action.choropleth,
+        disableOptimization: true,
+      };
+    case TOGGLE_TOOLTIP:
+      return {
+        ...state,
+        tooltip: !state.tooltip,
         disableOptimization: true,
       };
     default:

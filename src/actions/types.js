@@ -8,6 +8,7 @@ export const ZOOM_MAP = 'ZOOM_MAP';
 export const SET_MAP = 'SET_MAP';
 export const MOVE_CENTER = 'MOVE_CENTER';
 export const SET_CHOROPLETH = 'SET_CHOROPLETH';
+export const TOGGLE_TOOLTIP = 'TOGGLE_TOOLTIP';
 // Data actions
 export const INFO_TAB = 'INFO_TAB';
 export const LOAD_PATHS = 'LOAD_PATHS';

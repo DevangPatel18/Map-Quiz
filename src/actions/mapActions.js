@@ -11,6 +11,7 @@ import {
   SET_MAP,
   MOVE_CENTER,
   SET_CHOROPLETH,
+  TOGGLE_TOOLTIP,
 } from './types';
 import store from '../store';
 import {
@@ -171,4 +172,9 @@ export const tooltipMove = (geography, evt) => dispatch => {
 
 export const tooltipLeave = () => dispatch => {
   dispatch(hide());
+};
+
+export const tooltipToggle = () => async dispatch => {
+  await dispatch({ type: TOGGLE_TOOLTIP });
+  dispatch({ type: DISABLE_OPT });
 };
