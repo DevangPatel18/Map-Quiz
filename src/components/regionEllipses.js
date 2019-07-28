@@ -10,7 +10,7 @@ const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI'
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
-  const { currentMap, filterRegions } = this.props.map;
+  const { currentMap, filterRegions, tooltip } = this.props.map;
   const { quiz } = this.props.quiz;
   const { geographyPaths, capitalMarkers, countryMarkers } = this.props.data;
   let minArea;
@@ -91,7 +91,7 @@ export default function regionEllipses() {
         rotate = `rotate(${angleMain})`;
       }
 
-      const mouseHandlers = quiz
+      const mouseHandlers = !tooltip || quiz
         ? {}
         : {
             onMouseMove: (marker, evt) => this.props.tooltipMove(country, evt),

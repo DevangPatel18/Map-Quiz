@@ -77,6 +77,14 @@ const QuizMenu = styled.div`
   .ui.mini.form .field {
     margin: 0.2em;
   }
+
+  .ui.slider.checkbox {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 1em;
+    border-radius: 2em;
+    width: 11em;
+    font-weight: 600;
+  }
 `;
 
 export default QuizMenu;

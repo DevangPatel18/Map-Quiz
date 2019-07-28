@@ -26,13 +26,14 @@ const Map = props => {
     dimensions,
     currentMap,
     disableOptimization,
+    tooltip,
   } = map;
 
   const { geographyPaths } = data
 
   const { quiz } = props.quiz;
 
-  const mouseHandlers = quiz
+  const mouseHandlers = !tooltip || quiz
     ? {}
     : {
         onMouseMove: tooltipMove,
