@@ -8,6 +8,7 @@ const InfoTabStyles = styled.div`
   top: 182px;
   text-align: left;
   font-size: ${isMobile ? '9px' : '14px'};
+  display: ${props => (props.infoTabShow ? 'block' : 'none')};
 
   .infoTab-flag {
     display: block;

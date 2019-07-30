@@ -8,15 +8,24 @@ import {
   SET_LABEL,
 } from '../actions/types';
 
+const emptySelectedProperties = {
+  name: '',
+  capital: '',
+  population: '',
+  area: '',
+  regionOf: '',
+};
+
 const initialState = {
   quizAnswers: [],
   quizType: null,
   quiz: false,
   activeQuestionNum: null,
   quizGuesses: [],
-  selectedProperties: '',
+  selectedProperties: emptySelectedProperties,
   disableInfoClick: false,
   markerToggle: '',
+  infoTabShow: false,
 };
 
 export default function(state = initialState, action) {
@@ -25,12 +34,20 @@ export default function(state = initialState, action) {
       return {
         ...state,
         ...action.quiz,
+        selectedProperties: emptySelectedProperties,
+        infoTabShow: false,
       };
     case COUNTRY_SELECT:
+      return {
+        ...state,
+        selectedProperties: action.selectedProperties,
+        infoTabShow: true,
+      };
     case COUNTRY_CLICK:
       return {
         ...state,
         selectedProperties: action.selectedProperties,
+        infoTabShow: action.infoTabShow,
       };
     case QUIZ_ANSWER:
       return {
@@ -38,11 +55,14 @@ export default function(state = initialState, action) {
         selectedProperties: action.selectedProperties,
         quizGuesses: action.quizGuesses,
         activeQuestionNum: action.activeQuestionNum,
+        infoTabShow: action.infoTabShow,
       };
     case SET_QUIZ_STATE:
       return {
         ...state,
         ...action.quiz,
+        selectedProperties: emptySelectedProperties,
+        infoTabShow: false,
       };
     case QUIZ_CLOSE:
       return {
@@ -53,7 +73,8 @@ export default function(state = initialState, action) {
         quizType: null,
         activeQuestionNum: null,
         disableInfoClick: false,
-        selectedProperties: '',
+        selectedProperties: emptySelectedProperties,
+        infoTabShow: false,
       };
     case SET_LABEL:
       return {

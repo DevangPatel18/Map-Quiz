@@ -8,6 +8,7 @@ import {
 } from './types';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
+import infoTab from '../components/infoTab/infoTab';
 
 const simple = str =>
   removeDiacritics(str.toLowerCase())
@@ -48,6 +49,7 @@ export const countryClick = geographyPath => async dispatch => {
     quizGuesses,
     quizAnswers,
     selectedProperties,
+    infoTabShow,
   } = store.getState().quiz;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
@@ -58,20 +60,34 @@ export const countryClick = geographyPath => async dispatch => {
     ) {
       const result =
         geoProperties.alpha3Code === quizAnswers[activeQuestionNum];
-      newSelectedProperties = result ? geoProperties : '';
+      newSelectedProperties = result ? geoProperties : selectedProperties;
       await dispatch({
         type: QUIZ_ANSWER,
         selectedProperties: newSelectedProperties,
         quizGuesses: [...quizGuesses, result],
         activeQuestionNum: activeQuestionNum + 1,
+        infoTabShow: false,
+      });
+      await dispatch({
+        type: COUNTRY_CLICK,
+        selectedProperties: newSelectedProperties,
+        infoTabShow: result,
       });
       dispatch({ type: DISABLE_OPT });
     } else {
       newSelectedProperties =
-        selectedProperties.name !== geoProperties.name ? geoProperties : '';
+        selectedProperties.name !== geoProperties.name
+          ? geoProperties
+          : selectedProperties;
+      await dispatch({
+        type: COUNTRY_CLICK,
+        selectedProperties: selectedProperties,
+        infoTabShow: false,
+      });
       await dispatch({
         type: COUNTRY_CLICK,
         selectedProperties: newSelectedProperties,
+        infoTabShow: selectedProperties === geoProperties ? !infoTabShow : true,
       });
       dispatch({ type: DISABLE_OPT });
     }
