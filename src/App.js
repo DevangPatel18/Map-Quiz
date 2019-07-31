@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TransitionMotion, spring } from 'react-motion';
 import { Button, Sidebar, Tab } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
@@ -28,6 +29,8 @@ import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
 import TabStyles from './components/styles/TabStyles';
+
+const MOTIONCONFIG = { stiffness: 300, damping: 15 };
 
 const panes = [
   {
@@ -150,11 +153,12 @@ class App extends Component {
   }
 
   render() {
-    const { quiz, selectedProperties } = this.props.quiz;
+    const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
     const { zoomFactor, currentMap } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
+    const infoArray = [selectedProperties];
 
     return (
       <div className="App">
@@ -193,7 +197,40 @@ class App extends Component {
 
         {quiz && <StatusBar />}
 
-        <InfoTab countryData={selectedProperties} />
+        <TransitionMotion
+          defaultStyles={infoArray.map(infoProp => ({
+            key: infoProp.name,
+            style: { x: -100, opacity: 0 },
+            data: infoProp,
+          }))}
+          styles={infoArray.map(infoProp => ({
+            key: infoProp.name,
+            style: {
+              x: spring(infoTabShow ? 15 : -100, MOTIONCONFIG),
+              opacity: spring(infoTabShow ? 1 : 0, MOTIONCONFIG),
+            },
+            data: infoProp,
+          }))}
+        >
+          {interpolatedStyles => (
+            <div>
+              {interpolatedStyles.map(config => (
+                <div
+                  key={config.key}
+                  style={{
+                    position: 'absolute',
+                    zIndex: '2',
+                    left: `${config.style.x}px`,
+                    top: '182px',
+                    opacity: `${config.style.opacity}`,
+                  }}
+                >
+                  <InfoTab countryData={config.data} />
+                </div>
+              ))}
+            </div>
+          )}
+        </TransitionMotion>
 
         <DirectionPad />
 

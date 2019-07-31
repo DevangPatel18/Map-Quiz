@@ -8,7 +8,6 @@ import {
 } from './types';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
-import infoTab from '../components/infoTab/infoTab';
 
 const simple = str =>
   removeDiacritics(str.toLowerCase())
@@ -75,20 +74,24 @@ export const countryClick = geographyPath => async dispatch => {
       });
       dispatch({ type: DISABLE_OPT });
     } else {
-      newSelectedProperties =
-        selectedProperties.name !== geoProperties.name
-          ? geoProperties
-          : selectedProperties;
-      await dispatch({
-        type: COUNTRY_CLICK,
-        selectedProperties: selectedProperties,
-        infoTabShow: false,
-      });
-      await dispatch({
-        type: COUNTRY_CLICK,
-        selectedProperties: newSelectedProperties,
-        infoTabShow: selectedProperties === geoProperties ? !infoTabShow : true,
-      });
+      if (geoProperties.name !== selectedProperties.name) {
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties: geoProperties,
+          infoTabShow: false,
+        });
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties: geoProperties,
+          infoTabShow: true,
+        });
+      } else {
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties,
+          infoTabShow: !infoTabShow,
+        });
+      }
       dispatch({ type: DISABLE_OPT });
     }
   }
