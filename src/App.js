@@ -150,7 +150,7 @@ class App extends Component {
   }
 
   render() {
-    const { quiz } = this.props.quiz;
+    const { quiz, selectedProperties } = this.props.quiz;
     const { zoomFactor, currentMap } = this.props.map;
     const { menuOpen } = this.state;
 
@@ -193,7 +193,7 @@ class App extends Component {
 
         {quiz && <StatusBar />}
 
-        <InfoTab />
+        <InfoTab countryData={selectedProperties} />
 
         <DirectionPad />
 
