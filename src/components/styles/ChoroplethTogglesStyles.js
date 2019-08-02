@@ -24,12 +24,18 @@ const ChoroplethTogglesStyles = styled.div`
     transform: translateY(-50%);
   }
 
-  .ui.toggle.checkbox {
+  .ui.toggle.checkbox,
+  .ui.slider.checkbox {
     background: rgba(255, 255, 255, 0.5);
     padding: 0.5em;
     border-radius: 2em;
     width: 11em;
     font-weight: 600;
+  }
+
+  .ui.slider.checkbox {
+    width: 13em;
+    padding: 1em;
   }
 `;
 

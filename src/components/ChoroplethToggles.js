@@ -26,13 +26,13 @@ class ChoroplethToggles extends Component {
   }
 
   render() {
-    const { choropleth } = this.props.map;
+    const { choropleth, sliderToggle } = this.props.map;
     const radioSize = isMobile ? 'mini' : 'small';
 
     return (
       <ChoroplethTogglesStyles>
         <p>Choropleth Toggles</p>
-        <Form>
+        <Form style={{ margin: '2rem' }}>
           {choroToggles.map(toggle => (
             <div className="choropanel-toggles" key={toggle}>
               <Radio
@@ -47,6 +47,18 @@ class ChoroplethToggles extends Component {
             </div>
           ))}
         </Form>
+
+        {choropleth === 'population' && (
+          <Radio
+            slider
+            fitted
+            size={radioSize}
+            label={`Toggle slider`}
+            checked={sliderToggle}
+            // onChange={}
+            style={{}}
+          />
+        )}
       </ChoroplethTogglesStyles>
     );
   }

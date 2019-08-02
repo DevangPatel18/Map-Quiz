@@ -41,6 +41,7 @@ const initialState = {
   },
   choropleth: 'None',
   tooltip: !isMobile,
+  sliderToggle: false,
 };
 
 export default function(state = initialState, action) {
