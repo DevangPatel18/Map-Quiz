@@ -9,7 +9,7 @@ const InfoTab = props => {
   let { name, capital, population, area, regionOf } = countryData;
   let regionOfStr = '';
   population = population ? `${population.toLocaleString()}` : 'N/A';
-  area = area ? `${area.toLocaleString()}²` : 'N/A';
+  area = area ? `${area.toLocaleString()} km²` : 'N/A';
   if (regionOf) {
     const regionName = geographyPaths.find(
       x => x.properties.alpha3Code === regionOf
