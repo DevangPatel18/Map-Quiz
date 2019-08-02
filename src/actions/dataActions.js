@@ -45,7 +45,7 @@ export const loadData = () => async dispatch => {
     return restCountries.json();
   });
 
-  let popData;
+  let populationData = {};
 
   await fetch('popdata.csv')
     .then(response => response.text())
@@ -53,8 +53,8 @@ export const loadData = () => async dispatch => {
       Papa.parse(csvtext, {
         header: true,
         skipEmptyLines: true,
-        complete: result => {
-          popData = result.data;
+        step: row => {
+          populationData[row.data['Country Code']] = row.data;
         },
       });
     });
@@ -77,12 +77,11 @@ export const loadData = () => async dispatch => {
       ];
 
       // Update population to 2018 figures
-      let popRecord = popData.find(
-        obj => obj['Country Code'] === countryData.alpha3Code
-      );
 
-      if (popRecord) {
-        geography.properties.population = parseInt(popRecord['2018']);
+      if (populationData[countryData.alpha3Code]) {
+        geography.properties.population = parseInt(
+          populationData[countryData.alpha3Code]['2018']
+        );
       }
 
       geography.properties.density = parseInt(
@@ -129,6 +128,7 @@ export const loadData = () => async dispatch => {
     geographyPaths: data,
     countryMarkers,
     capitalMarkers,
+    populationData,
   });
 
   dispatch({ type: DISABLE_OPT });
