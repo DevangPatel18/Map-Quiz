@@ -24,6 +24,7 @@ import {
 import MobileMessage from './components/mobileMessage';
 import ChoroplethToggles from './components/ChoroplethToggles';
 import ChoroplethLegend from './components/ChoroplethLegend';
+import ChoroplethSlider from './components/ChoroplethSlider';
 import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
@@ -235,6 +236,8 @@ class App extends Component {
         <DirectionPad />
 
         {!quiz && <ChoroplethLegend />}
+
+        {!quiz && <ChoroplethSlider />}
 
         <Button
           icon={menuOpen ? 'close' : 'sidebar'}
