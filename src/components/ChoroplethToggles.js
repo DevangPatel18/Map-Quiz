@@ -3,7 +3,7 @@ import { Radio, Form } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
-import { setChoropleth } from '../actions/mapActions';
+import { setChoropleth, sliderSet } from '../actions/mapActions';
 
 const choroToggles = ['None', 'population', 'area', 'gini', 'density'];
 
@@ -21,12 +21,16 @@ class ChoroplethToggles extends Component {
   }
 
   setRadio(e, { value }) {
-    const { setChoropleth } = this.props;
+    const { setChoropleth, sliderSet } = this.props;
     setChoropleth(value);
+    if (value !== 'population') {
+      sliderSet(false);
+    }
   }
 
   render() {
-    const { choropleth, sliderToggle } = this.props.map;
+    const { sliderSet } = this.props;
+    const { choropleth, slider } = this.props.map;
     const radioSize = isMobile ? 'mini' : 'small';
 
     return (
@@ -54,8 +58,8 @@ class ChoroplethToggles extends Component {
             fitted
             size={radioSize}
             label={`Toggle slider`}
-            checked={sliderToggle}
-            // onChange={}
+            checked={slider}
+            onChange={() => sliderSet(!slider)}
             style={{}}
           />
         )}
@@ -70,5 +74,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setChoropleth }
+  { setChoropleth, sliderSet }
 )(ChoroplethToggles);

@@ -12,6 +12,7 @@ import {
   MOVE_CENTER,
   SET_CHOROPLETH,
   TOGGLE_TOOLTIP,
+  TOGGLE_SLIDER,
 } from './types';
 import store from '../store';
 import {
@@ -177,4 +178,8 @@ export const tooltipLeave = () => dispatch => {
 export const tooltipToggle = () => async dispatch => {
   await dispatch({ type: TOGGLE_TOOLTIP });
   dispatch({ type: DISABLE_OPT });
+};
+
+export const sliderSet = value => dispatch => {
+  dispatch({ type: TOGGLE_SLIDER, value });
 };

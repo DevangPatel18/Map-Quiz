@@ -155,7 +155,7 @@ class App extends Component {
 
   render() {
     const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
-    const { zoomFactor, currentMap } = this.props.map;
+    const { zoomFactor, currentMap, slider } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -237,7 +237,7 @@ class App extends Component {
 
         {!quiz && <ChoroplethLegend />}
 
-        {!quiz && <ChoroplethSlider />}
+        {!quiz && slider && <ChoroplethSlider />}
 
         <Button
           icon={menuOpen ? 'close' : 'sidebar'}

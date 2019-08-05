@@ -17,6 +17,7 @@ import {
   SET_CHOROPLETH,
   SET_LABEL,
   TOGGLE_TOOLTIP,
+  TOGGLE_SLIDER,
 } from '../actions/types';
 
 const initialState = {
@@ -41,7 +42,7 @@ const initialState = {
   },
   choropleth: 'None',
   tooltip: !isMobile,
-  sliderToggle: false,
+  slider: false,
 };
 
 export default function(state = initialState, action) {
@@ -117,6 +118,11 @@ export default function(state = initialState, action) {
         ...state,
         tooltip: !state.tooltip,
         disableOptimization: true,
+      };
+    case TOGGLE_SLIDER:
+      return {
+        ...state,
+        slider: action.value,
       };
     default:
       return state;
