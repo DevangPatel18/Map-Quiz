@@ -15,6 +15,7 @@ import {
   SET_QUIZ_STATE,
   QUIZ_CLOSE,
   SET_CHOROPLETH,
+  SET_CHORO_YEAR,
   SET_LABEL,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
@@ -43,6 +44,7 @@ const initialState = {
   choropleth: 'None',
   tooltip: !isMobile,
   slider: false,
+  sliderYear: 2018,
 };
 
 export default function(state = initialState, action) {
@@ -112,6 +114,11 @@ export default function(state = initialState, action) {
         ...state,
         choropleth: action.choropleth,
         disableOptimization: true,
+      };
+    case SET_CHORO_YEAR:
+      return {
+        ...state,
+        sliderYear: action.value,
       };
     case TOGGLE_TOOLTIP:
       return {
