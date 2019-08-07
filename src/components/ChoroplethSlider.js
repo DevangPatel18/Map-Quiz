@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ChoroplethSliderStyles from './styles/ChoroplethSliderStyles';
+import ChoroplethSliderStyles, {
+  SliderTickStyles,
+} from './styles/ChoroplethSliderStyles';
 import { setChoroYear } from '../actions/mapActions';
 
 const ChoroplethSlider = props => {
@@ -17,6 +19,10 @@ const ChoroplethSlider = props => {
         name="choroplethSlider"
         onChange={e => setChoroYear(e.target.value)}
       />
+      <div style={{ position: 'relative' }}>
+        <SliderTickStyles left={'0.75rem'}>1960</SliderTickStyles>
+        <SliderTickStyles left={'calc(100% - 0.75rem)'}>2018</SliderTickStyles>
+      </div>
     </ChoroplethSliderStyles>
   );
 };

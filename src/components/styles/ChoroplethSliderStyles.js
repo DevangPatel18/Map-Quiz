@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const ChoroplethSliderStyles = styled.div`
   position: absolute;
-  bottom: 2rem;
+  bottom: 3rem;
   width: 50%;
   left: 50%;
   transform: translateX(-50%);
@@ -23,6 +23,16 @@ const ChoroplethSliderStyles = styled.div`
       cursor: pointer;
     }
   }
+`;
+
+export const SliderTickStyles = styled.span`
+  position: absolute;
+  top: 5px;
+  left: ${props => props.left};
+  transform: translateX(-50%);
+  color: white;
+  font-weight: bolder;
+  text-shadow: 0 0 5px black;
 `;
 
 export default ChoroplethSliderStyles;
