@@ -35,4 +35,14 @@ export const SliderTickStyles = styled.span`
   text-shadow: 0 0 5px black;
 `;
 
+export const SliderYearStyles = styled.span`
+  position: absolute;
+  right: 0;
+  transform: translate3d(120%, -24px, 0);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-weight: bolder;  
+`
+
 export default ChoroplethSliderStyles;
