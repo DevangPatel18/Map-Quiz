@@ -10,6 +10,7 @@ import { geoPath } from 'd3-geo';
 import capitalData from '../assets/country_capitals';
 import projection from '../helpers/projection';
 import store from '../store';
+import Papa from 'papaparse';
 
 export const loadPaths = () => async dispatch => {
   const worldData = await fetch('/world-50m.json').then(response => {
@@ -44,6 +45,20 @@ export const loadData = () => async dispatch => {
     return restCountries.json();
   });
 
+  let populationData = {};
+
+  await fetch('popdata.csv')
+    .then(response => response.text())
+    .then(csvtext => {
+      Papa.parse(csvtext, {
+        header: true,
+        skipEmptyLines: true,
+        step: row => {
+          populationData[row.data['Country Code']] = row.data;
+        },
+      });
+    });
+
   let countryMarkers = [];
   let capitalMarkers = [];
 
@@ -60,6 +75,14 @@ export const loadData = () => async dispatch => {
         ...countryData.altSpellings,
         ...Object.values(countryData.translations),
       ];
+
+      // Update population to 2018 figures
+
+      if (populationData[countryData.alpha3Code]) {
+        geography.properties.population = parseInt(
+          populationData[countryData.alpha3Code]['2018']
+        );
+      }
 
       geography.properties.density = parseInt(
         geography.properties.population / geography.properties.area
@@ -105,6 +128,7 @@ export const loadData = () => async dispatch => {
     geographyPaths: data,
     countryMarkers,
     capitalMarkers,
+    populationData,
   });
 
   dispatch({ type: DISABLE_OPT });

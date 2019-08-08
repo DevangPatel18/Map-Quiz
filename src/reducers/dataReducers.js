@@ -4,6 +4,7 @@ const initialState = {
   geographyPaths: [],
   countryMarkers: [],
   capitalMarkers: [],
+  populationData: {},
 };
 
 export default function(state = initialState, action) {
@@ -14,12 +15,18 @@ export default function(state = initialState, action) {
         geographyPaths: action.geographyPaths,
       };
     case LOAD_DATA:
-      const { geographyPaths, countryMarkers, capitalMarkers } = action;
+      const {
+        geographyPaths,
+        countryMarkers,
+        capitalMarkers,
+        populationData,
+      } = action;
       return {
         ...state,
         geographyPaths,
         countryMarkers,
         capitalMarkers,
+        populationData,
       };
     default:
       return state;

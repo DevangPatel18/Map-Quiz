@@ -11,7 +11,9 @@ import {
   SET_MAP,
   MOVE_CENTER,
   SET_CHOROPLETH,
+  SET_CHORO_YEAR,
   TOGGLE_TOOLTIP,
+  TOGGLE_SLIDER,
 } from './types';
 import store from '../store';
 import {
@@ -176,5 +178,14 @@ export const tooltipLeave = () => dispatch => {
 
 export const tooltipToggle = () => async dispatch => {
   await dispatch({ type: TOGGLE_TOOLTIP });
+  dispatch({ type: DISABLE_OPT });
+};
+
+export const sliderSet = value => dispatch => {
+  dispatch({ type: TOGGLE_SLIDER, value });
+};
+
+export const setChoroYear = value => async dispatch => {
+  await dispatch({ type: SET_CHORO_YEAR, value });
   dispatch({ type: DISABLE_OPT });
 };

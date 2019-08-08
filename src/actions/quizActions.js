@@ -48,6 +48,7 @@ export const countryClick = geographyPath => async dispatch => {
     quizGuesses,
     quizAnswers,
     selectedProperties,
+    infoTabShow,
   } = store.getState().quiz;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
@@ -58,21 +59,39 @@ export const countryClick = geographyPath => async dispatch => {
     ) {
       const result =
         geoProperties.alpha3Code === quizAnswers[activeQuestionNum];
-      newSelectedProperties = result ? geoProperties : '';
+      newSelectedProperties = result ? geoProperties : selectedProperties;
       await dispatch({
         type: QUIZ_ANSWER,
         selectedProperties: newSelectedProperties,
         quizGuesses: [...quizGuesses, result],
         activeQuestionNum: activeQuestionNum + 1,
+        infoTabShow: false,
       });
-      dispatch({ type: DISABLE_OPT });
-    } else {
-      newSelectedProperties =
-        selectedProperties.name !== geoProperties.name ? geoProperties : '';
       await dispatch({
         type: COUNTRY_CLICK,
         selectedProperties: newSelectedProperties,
+        infoTabShow: result,
       });
+      dispatch({ type: DISABLE_OPT });
+    } else {
+      if (geoProperties.name !== selectedProperties.name) {
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties: geoProperties,
+          infoTabShow: false,
+        });
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties: geoProperties,
+          infoTabShow: true,
+        });
+      } else {
+        await dispatch({
+          type: COUNTRY_CLICK,
+          selectedProperties,
+          infoTabShow: !infoTabShow,
+        });
+      }
       dispatch({ type: DISABLE_OPT });
     }
   }

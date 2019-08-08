@@ -13,9 +13,11 @@ const ColorPicker = geo => {
     disableInfoClick,
     activeQuestionNum,
     selectedProperties,
+    infoTabShow,
   } = store.getState().quiz;
   const { filterRegions, currentMap, choropleth } = store.getState().map;
-  const isSelected = selectedProperties === geo.properties;
+  const isSelected =
+    selectedProperties === geo.properties ? infoTabShow : false;
   const { alpha3Code } = geo.properties;
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';

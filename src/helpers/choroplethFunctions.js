@@ -5,6 +5,7 @@ import {
   interpolatePiYG,
   interpolatePurples,
 } from 'd3';
+import store from "../store";
 
 const popScale = scaleSequential(interpolateReds).domain([0, 10]);
 const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
@@ -37,9 +38,16 @@ const choroParams = {
 };
 
 const choroplethColor = (choropleth, geo) => {
+  const { slider, sliderYear } = store.getState().map;
+  const { populationData } = store.getState().data;
   const { scaleFunc, bounds } = choroParams[choropleth];
 
-  const choroplethNum = geo.properties[choropleth.toLowerCase()];
+  let choroplethNum;
+  if (slider && populationData[geo.properties.alpha3Code]) {
+    choroplethNum = populationData[geo.properties.alpha3Code][sliderYear];    
+  } else {
+    choroplethNum = geo.properties[choropleth.toLowerCase()];
+  }
 
   if (choroplethNum) {
     if (bounds.length > 2) {
