@@ -14,7 +14,7 @@ const InfoTab = props => {
     const regionName = geographyPaths.find(
       x => x.properties.alpha3Code === regionOf
     ).properties.name;
-    regionOfStr = `Region of ${regionName}`;
+    regionOfStr = `${regionName}`;
   }
   return (
     <InfoTabStyles infoTabShow={infoTabShow}>
