@@ -185,6 +185,7 @@ export const sliderSet = value => dispatch => {
   dispatch({ type: TOGGLE_SLIDER, value });
 };
 
-export const setChoroYear = value => dispatch => {
-  dispatch({ type: SET_CHORO_YEAR, value });
+export const setChoroYear = value => async dispatch => {
+  await dispatch({ type: SET_CHORO_YEAR, value });
+  dispatch({ type: DISABLE_OPT });
 };

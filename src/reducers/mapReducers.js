@@ -119,6 +119,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         sliderYear: action.value,
+        disableOptimization: true,
       };
     case TOGGLE_TOOLTIP:
       return {
