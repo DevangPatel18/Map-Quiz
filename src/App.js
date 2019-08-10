@@ -201,13 +201,13 @@ class App extends Component {
         <TransitionMotion
           defaultStyles={infoArray.map(infoProp => ({
             key: infoProp.name,
-            style: { x: -100, opacity: 0 },
+            style: { x: -230, opacity: 0 },
             data: infoProp,
           }))}
           styles={infoArray.map(infoProp => ({
             key: infoProp.name,
             style: {
-              x: spring(infoTabShow ? 15 : -100, MOTIONCONFIG),
+              x: spring(infoTabShow ? 15 : -230, MOTIONCONFIG),
               opacity: spring(infoTabShow ? 1 : 0, MOTIONCONFIG),
             },
             data: infoProp,
