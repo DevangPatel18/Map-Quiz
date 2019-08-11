@@ -30,12 +30,13 @@ import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
 import TabStyles from './components/styles/TabStyles';
+import About from './components/About';
 
 const MOTIONCONFIG = { stiffness: 300, damping: 15 };
 
 const panes = [
   {
-    menuItem: 'Quiz',
+    menuItem: { key: 'Quiz', content: 'Quiz' },
     render: () => (
       <Tab.Pane attached={false}>
         <DropdownSelectionStyles>
@@ -47,10 +48,18 @@ const panes = [
     ),
   },
   {
-    menuItem: 'Choropleth',
+    menuItem: { key: 'Choropleth', content: 'Choropleth' },
     render: () => (
       <Tab.Pane attached={false}>
         <ChoroplethToggles />
+      </Tab.Pane>
+    ),
+  },
+  {
+    menuItem: { key: 'About', icon: 'question circle outline' },
+    render: () => (
+      <Tab.Pane attached={false}>
+        <About />
       </Tab.Pane>
     ),
   },
