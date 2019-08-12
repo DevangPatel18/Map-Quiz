@@ -15,17 +15,21 @@ const ColorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
-  const { filterRegions, currentMap, choropleth } = store.getState().map;
+  const { filterRegions, currentMap, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
   const { alpha3Code } = geo.properties;
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
   let pressedColor = 'rgb(0, 70, 0)';
+  let strokeWidth = 0.05;
+  let strokeColor = 'black';
 
   if (isSelected) {
     defaultColor = 'rgb(0, 100, 0)';
     hoverColor = 'rgb(0, 100, 0)';
+    strokeWidth = 1 / defaultZoom;
+    strokeColor = PROMPT_COLOR;
   }
 
   if (quiz === true) {
@@ -66,7 +70,6 @@ const ColorPicker = geo => {
   }
 
   let render = true;
-  let strokeWidth = 0.05;
   let onQuiz = filterRegions.indexOf(alpha3Code) !== -1;
   if (currentMap !== 'World') {
     render = onQuiz;
@@ -79,7 +82,14 @@ const ColorPicker = geo => {
     defaultColor = choroplethColor(choropleth, geo);
   }
 
-  return { defaultColor, hoverColor, pressedColor, render, strokeWidth };
+  return {
+    defaultColor,
+    hoverColor,
+    pressedColor,
+    render,
+    strokeWidth,
+    strokeColor,
+  };
 };
 
 export default ColorPicker;
