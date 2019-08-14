@@ -11,10 +11,11 @@ const MessageStyle = styled.div`
 `;
 
 class MobileMessage extends Component {
-  state = { visible: true };
+  state = { visible: localStorage.getItem('disableMessage') ? false : true };
 
   handleDismiss = () => {
     this.setState({ visible: false });
+    localStorage.setItem('disableMessage', '***');
   };
 
   render() {
