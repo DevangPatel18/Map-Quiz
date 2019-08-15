@@ -153,14 +153,22 @@ export const setChoropleth = choropleth => async dispatch => {
 };
 
 export const tooltipMove = (geography, evt) => dispatch => {
-  const { choropleth } = store.getState().map;
-  let content = geography.properties.name;
+  const { choropleth, slider, sliderYear } = store.getState().map;
+  const { populationData } = store.getState().data;
+  const { name, alpha3Code } = geography.properties;
+  let content = name;
+  let contentData;
   if (choropleth !== 'None') {
-    content += ` - ${
-      geography.properties[choropleth]
-        ? geography.properties[choropleth].toLocaleString('us-US')
-        : 'N/A'
-    }`;
+    if (slider) {
+      contentData = populationData[alpha3Code]
+        ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
+        : 'N/A';
+    } else {
+      contentData = geography.properties[choropleth]
+        ? geography.properties[choropleth].toLocaleString()
+        : 'N/A';
+    }
+    content += ` - ${contentData}`;
   }
   const x = evt.clientX;
   const y = evt.clientY + window.pageYOffset;

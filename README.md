@@ -16,7 +16,14 @@ Map Quiz is a website that allows users to view country information and quiz the
 
 ## Built With
 
-- [Rest Countries API](https://restcountries.eu/) - Used for fetching country data
 - [Create React App](https://github.com/facebook/create-react-app) - Development environment
 - [React-Simple-Maps](https://github.com/zcreativelabs/react-simple-maps/) - Used for rendering map
 - [Semantic-UI-React](https://react.semantic-ui.com/) - Components for user interface
+
+## Data Sources
+
+- [Rest Countries API](https://restcountries.eu/) - Used for fetching country data
+- [World Atlas TopoJSON](https://github.com/topojson/world-atlas) - GeoJSON for world map
+- [Country GeoJSON Collection](https://github.com/LonnyGomes/CountryGeoJSONCollection) - GeoJSON for individual regions
+- [Techslides](http://techslides.com/list-of-countries-and-capitals) - Capital Coordinates
+- [The World Bank](https://www.worldbank.org/) - Population Data
