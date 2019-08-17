@@ -13,6 +13,7 @@ const regions = [
   { text: 'Europe', value: 'Europe' },
   { text: 'Asia', value: 'Asia' },
   { text: 'Oceania', value: 'Oceania' },
+  { text: 'United States of America', value: 'United States of America' },
 ];
 
 const RegionButtons = ({ regionSelect }) => (

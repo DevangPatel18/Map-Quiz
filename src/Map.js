@@ -41,6 +41,10 @@ const Map = props => {
       };
     
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
+
+  if (currentMap === 'United States of America') {
+    return null
+  }
   return (
     <Motion
       defaultStyle={{
