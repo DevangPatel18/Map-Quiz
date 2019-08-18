@@ -59,6 +59,12 @@ export const loadData = () => async dispatch => {
       });
     });
 
+  let usMap = await fetch(
+    'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson'
+  )
+    .then(response => response.json())
+    .then(featureCollection => featureCollection.features);
+
   let countryMarkers = [];
   let capitalMarkers = [];
 
@@ -129,6 +135,7 @@ export const loadData = () => async dispatch => {
     countryMarkers,
     capitalMarkers,
     populationData,
+    usMap,
   });
 
   dispatch({ type: DISABLE_OPT });

@@ -18,7 +18,9 @@ const ColorPicker = geo => {
   const { filterRegions, currentMap, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
-  const { alpha3Code, regionOf } = geo.properties;
+  const isWorldMap = currentMap !== 'United States of America'
+  const { alpha3Code, postal, regionOf } = geo.properties;
+  const regionID = isWorldMap ? alpha3Code : postal
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
   let pressedColor = 'rgb(0, 70, 0)';
@@ -33,10 +35,10 @@ const ColorPicker = geo => {
   }
 
   if (quiz === true) {
-    const geoQuizIdx = quizAnswers.indexOf(alpha3Code);
+    const geoQuizIdx = quizAnswers.indexOf(regionID);
 
     // Fills country with name input request as yellow
-    if (disableInfoClick && quizAnswers[activeQuestionNum] === alpha3Code) {
+    if (disableInfoClick && quizAnswers[activeQuestionNum] === regionID) {
       defaultColor = PROMPT_COLOR;
       hoverColor = PROMPT_COLOR;
     }
@@ -53,12 +55,12 @@ const ColorPicker = geo => {
     }
 
     // Fills incorrect country clicks red
-    if (!disableInfoClick && alpha3Code !== quizAnswers[activeQuestionNum]) {
+    if (!disableInfoClick && regionID !== quizAnswers[activeQuestionNum]) {
       pressedColor = WRONG_ANSWER_COLOR;
     }
 
     // Fills correct country clicks green
-    if (!disableInfoClick && alpha3Code === quizAnswers[activeQuestionNum]) {
+    if (!disableInfoClick && regionID === quizAnswers[activeQuestionNum]) {
       pressedColor = RIGHT_ANSWER_COLOR;
     }
 
@@ -70,7 +72,7 @@ const ColorPicker = geo => {
   }
 
   let render = true;
-  let onQuiz = filterRegions.includes(alpha3Code);
+  let onQuiz = filterRegions.includes(regionID);
   if (currentMap !== 'World') {
     render = onQuiz;
   } else {

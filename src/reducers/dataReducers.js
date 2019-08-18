@@ -20,6 +20,7 @@ export default function(state = initialState, action) {
         countryMarkers,
         capitalMarkers,
         populationData,
+        usMap,
       } = action;
       return {
         ...state,
@@ -27,6 +28,7 @@ export default function(state = initialState, action) {
         countryMarkers,
         capitalMarkers,
         populationData,
+        usMap,
       };
     default:
       return state;

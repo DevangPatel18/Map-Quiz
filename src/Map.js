@@ -29,7 +29,9 @@ const Map = props => {
     tooltip,
   } = map;
 
-  const { geographyPaths } = data
+  const isWorldMap = currentMap !== 'United States of America'
+
+  const geographyPaths = isWorldMap ? data.geographyPaths : data.usMap
 
   const { quiz } = props.quiz;
 
@@ -42,9 +44,6 @@ const Map = props => {
     
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
 
-  if (currentMap === 'United States of America') {
-    return null
-  }
   return (
     <Motion
       defaultStyle={{
@@ -108,6 +107,9 @@ const Map = props => {
                   if (currentMap === 'Oceania') {
                     key = `oceania-${i}-${orientation}`;
                     cacheId = `oceania-${i}-${orientation}`;
+                  } else if (currentMap === 'United States of America') {
+                    key = `usa-${i}-${orientation}`;
+                    cacheId = `usa-${i}-${orientation}`;
                   } else {
                     key = `geography-${i}-${orientation}`;
                     cacheId = `geography-${i}-${orientation}`;
