@@ -5,6 +5,7 @@ const initialState = {
   countryMarkers: [],
   capitalMarkers: [],
   populationData: {},
+  regionDataSets: {},
 };
 
 export default function(state = initialState, action) {
@@ -20,6 +21,7 @@ export default function(state = initialState, action) {
         countryMarkers,
         capitalMarkers,
         populationData,
+        regionDataSets,
         usMap,
       } = action;
       return {
@@ -28,6 +30,7 @@ export default function(state = initialState, action) {
         countryMarkers,
         capitalMarkers,
         populationData,
+        regionDataSets,
         usMap,
       };
     default:

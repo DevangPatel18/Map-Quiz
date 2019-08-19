@@ -34,7 +34,9 @@ export const loadPaths = () => async dispatch => {
 };
 
 export const loadData = () => async dispatch => {
-  let geographyPaths = store.getState().data.geographyPaths.map(a => ({ ...a }));
+  let geographyPaths = store
+    .getState()
+    .data.geographyPaths.map(a => ({ ...a }));
   let restData = await fetch(
     'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;altSpellings;translations'
   ).then(restCountries => {
@@ -120,7 +122,8 @@ export const loadData = () => async dispatch => {
   });
 
   countryMarkers = countryMarkers.map(array => ({
-    name: geographyPaths.find(x => x.properties.alpha3Code === array[1]).properties.name,
+    name: geographyPaths.find(x => x.properties.alpha3Code === array[1])
+      .properties.name,
     alpha3Code: array[1],
     coordinates: array[0],
     markerOffset: 0,
@@ -129,12 +132,21 @@ export const loadData = () => async dispatch => {
   countryMarkers = CountryMarkersFix(countryMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
 
+  const regionDataSets = {
+    World: {
+      geographyPaths,
+      countryMarkers,
+      capitalMarkers,
+    },
+  };
+
   await dispatch({
     type: LOAD_DATA,
     geographyPaths,
     countryMarkers,
     capitalMarkers,
     populationData,
+    regionDataSets,
     usMap,
   });
 
