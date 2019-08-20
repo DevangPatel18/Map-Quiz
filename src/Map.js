@@ -29,7 +29,7 @@ const Map = props => {
     tooltip,
   } = map;
 
-  const isWorldMap = currentMap !== 'United States of America'
+  const isUsaMap = currentMap === 'United States of America'
 
   const { geographyPaths } = data
 
@@ -43,6 +43,8 @@ const Map = props => {
       };
     
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
+  const mapProjection = isUsaMap ? 'mercator' : 'times';
+  const mapScale = isUsaMap ? 180 : scale;
 
   return (
     <Motion
@@ -63,7 +65,8 @@ const Map = props => {
           // onDoubleClick={app.handleDoubleClick}
         >
           <ComposableMap
-            projectionConfig={{ scale, rotation }}
+            projection={mapProjection}
+            projectionConfig={{ scale: mapScale, rotation }}
             width={dimensions[0]}
             height={dimensions[1]}
             style={{
