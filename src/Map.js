@@ -31,7 +31,7 @@ const Map = props => {
 
   const isWorldMap = currentMap !== 'United States of America'
 
-  const geographyPaths = isWorldMap ? data.geographyPaths : data.usMap
+  const { geographyPaths } = data
 
   const { quiz } = props.quiz;
 

@@ -15,6 +15,7 @@ export const TOGGLE_SLIDER = 'TOGGLE_SLIDER';
 export const INFO_TAB = 'INFO_TAB';
 export const LOAD_PATHS = 'LOAD_PATHS';
 export const LOAD_DATA = 'LOAD_DATA';
+export const LOAD_REGION_DATA = 'LOAD_REGION_DATA';
 // Quiz actions
 export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';

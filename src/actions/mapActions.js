@@ -14,6 +14,7 @@ import {
   SET_CHORO_YEAR,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
+  LOAD_REGION_DATA,
 } from './types';
 import store from '../store';
 import {
@@ -23,6 +24,22 @@ import {
 } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
+
+const WorldRegions = [
+  'World',
+  'North & Central America',
+  'South America',
+  'Caribbean',
+  'Africa',
+  'Europe',
+  'Asia',
+  'Oceania',
+];
+
+const geoPathLinks = {
+  'United States of America':
+    'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
+};
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -40,6 +57,9 @@ export const setRegionCheckbox = regionName => async dispatch => {
 };
 
 export const regionSelect = regionName => async dispatch => {
+  const { currentMap, checkedRegions } = store.getState().map;
+  const { regionDataSets } = store.getState().data;
+
   const { center, zoom } = mapConfig[regionName];
   const map = {
     zoom,
@@ -54,10 +74,45 @@ export const regionSelect = regionName => async dispatch => {
     selectedProperties: '',
     markerToggle: '',
   };
+
+  if (
+    !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
+  ) {
+    let regionDataSetKey = WorldRegions.includes(regionName)
+      ? 'World'
+      : regionName;
+    if (regionDataSets[regionDataSetKey]) {
+      const { geographyPaths, countryMarkers, capitalMarkers } = regionDataSets[
+        regionDataSetKey
+      ];
+      await dispatch({
+        type: LOAD_REGION_DATA,
+        geographyPaths,
+        countryMarkers,
+        capitalMarkers,
+        regionDataSets,
+      });
+    } else {
+      let newGeographyPaths = await fetch(geoPathLinks[regionDataSetKey])
+      .then(response => response.json())
+      .then(featureCollection => featureCollection.features);
+
+      let updatedRegionDataSets = {
+        ...regionDataSets,
+        [regionDataSetKey]: { geographyPaths: newGeographyPaths },
+      };
+
+      await dispatch({
+        type: LOAD_REGION_DATA,
+        geographyPaths: newGeographyPaths,
+        regionDataSets: updatedRegionDataSets,
+      });
+    }
+  }
+
   await dispatch({ type: REGION_SELECT, map, quiz });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
-    const { checkedRegions } = store.getState().map;
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
       .map(region => alpha3CodesSov[region])
