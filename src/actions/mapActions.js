@@ -1,5 +1,6 @@
 import { geoPath } from 'd3-geo';
 import { actions } from 'redux-tooltip';
+import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import {
   REGION_SELECT,
@@ -25,20 +26,15 @@ import {
 
 const { show, hide } = actions;
 
-const WorldRegions = [
-  'World',
-  'North & Central America',
-  'South America',
-  'Caribbean',
-  'Africa',
-  'Europe',
-  'Asia',
-  'Oceania',
-];
+const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
 
 const geoPathLinks = {
-  'United States of America':
-    'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
+  'United States of America': {
+    geoJSON:
+      'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566403979/Map%20Quiz/usData.csv',
+  },
 };
 
 export const setRegionCheckbox = regionName => async dispatch => {
@@ -93,7 +89,9 @@ export const regionSelect = regionName => async dispatch => {
         regionDataSets,
       });
     } else {
-      const newGeographyPaths = await fetch(geoPathLinks[regionDataSetKey])
+      const newGeographyPaths = await fetch(
+        geoPathLinks[regionDataSetKey].geoJSON
+      )
         .then(response => response.json())
         .then(featureCollection => featureCollection.features);
 
@@ -107,6 +105,25 @@ export const regionSelect = regionName => async dispatch => {
           markerOffset: 0,
         };
       });
+
+      await fetch(geoPathLinks[regionDataSetKey].data)
+        .then(response => response.text())
+        .then(csvtext => {
+          Papa.parse(csvtext, {
+            header: true,
+            skipEmptyLines: true,
+            step: row => {
+              let geo = newGeographyPaths.find(
+                obj => obj.properties.postal === row.data['regionID']
+              );
+              if (geo) {
+                geo.properties = { ...geo.properties, ...row.data };
+                geo.properties.area = parseInt(geo.properties.area);
+                geo.properties.population = parseInt(geo.properties.population);
+              }
+            },
+          });
+        });
 
       const updatedRegionDataSets = {
         ...regionDataSets,
