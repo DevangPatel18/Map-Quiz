@@ -78,7 +78,7 @@ export const regionSelect = regionName => async dispatch => {
   if (
     !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
   ) {
-    let regionDataSetKey = WorldRegions.includes(regionName)
+    const regionDataSetKey = WorldRegions.includes(regionName)
       ? 'World'
       : regionName;
     if (regionDataSets[regionDataSetKey]) {
@@ -93,18 +93,33 @@ export const regionSelect = regionName => async dispatch => {
         regionDataSets,
       });
     } else {
-      let newGeographyPaths = await fetch(geoPathLinks[regionDataSetKey])
-      .then(response => response.json())
-      .then(featureCollection => featureCollection.features);
+      const newGeographyPaths = await fetch(geoPathLinks[regionDataSetKey])
+        .then(response => response.json())
+        .then(featureCollection => featureCollection.features);
 
-      let updatedRegionDataSets = {
+      const newCountryMarkers = newGeographyPaths.map(x => {
+        const { name, postal } = x.properties;
+        const path = geoPath().projection(projection());
+        return {
+          name,
+          regionID: postal,
+          coordinates: projection().invert(path.centroid(x)),
+          markerOffset: 0,
+        };
+      });
+
+      const updatedRegionDataSets = {
         ...regionDataSets,
-        [regionDataSetKey]: { geographyPaths: newGeographyPaths },
+        [regionDataSetKey]: {
+          geographyPaths: newGeographyPaths,
+          countryMarkers: newCountryMarkers,
+        },
       };
 
       await dispatch({
         type: LOAD_REGION_DATA,
         geographyPaths: newGeographyPaths,
+        countryMarkers: newCountryMarkers,
         regionDataSets: updatedRegionDataSets,
       });
     }
