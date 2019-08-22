@@ -34,6 +34,8 @@ const geoPathLinks = {
       'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
     data:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566403979/Map%20Quiz/usData.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
   },
 };
 
@@ -125,11 +127,35 @@ export const regionSelect = regionName => async dispatch => {
           });
         });
 
+      const newCapitalMarkers = [];
+      await fetch(geoPathLinks[regionDataSetKey].capitalLatLng)
+        .then(response => response.text())
+        .then(csvtext => {
+          Papa.parse(csvtext, {
+            header: true,
+            skipEmptyLines: true,
+            step: row => {
+              let geo = newGeographyPaths.find(
+                obj => obj.properties.postal === row.data['regionID']
+              );
+              if (geo) {
+                newCapitalMarkers.push({
+                  name: geo.properties.capital,
+                  regionID: row.data['regionID'],
+                  coordinates: [+row.data['lng'], +row.data['lat']],
+                  markerOffset: -7,
+                });
+              }
+            },
+          });
+        });
+
       const updatedRegionDataSets = {
         ...regionDataSets,
         [regionDataSetKey]: {
           geographyPaths: newGeographyPaths,
           countryMarkers: newCountryMarkers,
+          capitalMarkers: newCapitalMarkers,
         },
       };
 
@@ -137,6 +163,7 @@ export const regionSelect = regionName => async dispatch => {
         type: LOAD_REGION_DATA,
         geographyPaths: newGeographyPaths,
         countryMarkers: newCountryMarkers,
+        capitalMarkers: newCapitalMarkers,
         regionDataSets: updatedRegionDataSets,
       });
     }
