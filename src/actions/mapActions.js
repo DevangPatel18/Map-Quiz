@@ -33,7 +33,7 @@ const geoPathLinks = {
     geoJSON:
       'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
     data:
-      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566403979/Map%20Quiz/usData.csv',
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566493791/Map%20Quiz/usData.csv',
     capitalLatLng:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
   },
