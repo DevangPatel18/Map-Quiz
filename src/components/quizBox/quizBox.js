@@ -5,13 +5,20 @@ import { connect } from 'react-redux';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
+import { alpha3Codes } from '../../assets/regionAlpha3Codes';
 
-const quizOptions = [
-  { label: 'Click Country', value: 'click_name' },
-  { label: 'Type Country', value: 'type_name' },
+const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
+
+const subDivisionTitle = {
+  'United States of America': 'State',
+};
+
+const generateQuizOptions = regionType => [
+  { label: `Click ${regionType}`, value: 'click_name' },
+  { label: `Type ${regionType}`, value: 'type_name' },
   { label: 'Click Capital', value: 'click_capital' },
   { label: 'Type Capital', value: 'type_capital' },
-  { label: 'Click Country from matching Flag', value: 'click_flag' },
+  { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
 ];
 
 const checkedRegionsLabels = [
@@ -85,6 +92,14 @@ class QuizBox extends Component {
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
 
+    const regionKey = WorldRegions.includes(currentMap)
+      ? 'alpha3Code'
+      : 'regionID';
+
+    const regionType =
+      regionKey === 'alpha3Code' ? 'Country' : subDivisionTitle[currentMap];
+    const quizOptions = generateQuizOptions(regionType);
+
     return (
       <QuizMenu regionMenu={regionMenu}>
         <div>
@@ -132,7 +147,7 @@ class QuizBox extends Component {
                   onClick={() => this.handleLabelToggle('name')}
                   aria-label="toggle region names"
                 >
-                  {'Country'}
+                  {regionType}
                 </Button>
                 <Button.Or aria-label="or" />
                 <Button
