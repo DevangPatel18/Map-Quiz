@@ -2,7 +2,7 @@ import {
   SET_QUIZ_STATE,
   QUIZ_ANSWER,
   QUIZ_CLOSE,
-  COUNTRY_CLICK,
+  REGION_CLICK,
   DISABLE_OPT,
   SET_LABEL,
 } from './types';
@@ -41,7 +41,7 @@ export const closeQuiz = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const countryClick = geographyPath => async dispatch => {
+export const regionClick = geographyPath => async dispatch => {
   const {
     disableInfoClick,
     activeQuestionNum,
@@ -69,7 +69,7 @@ export const countryClick = geographyPath => async dispatch => {
         infoTabShow: false,
       });
       await dispatch({
-        type: COUNTRY_CLICK,
+        type: REGION_CLICK,
         selectedProperties: newSelectedProperties,
         infoTabShow: result,
       });
@@ -77,18 +77,18 @@ export const countryClick = geographyPath => async dispatch => {
     } else {
       if (geoProperties.name !== selectedProperties.name) {
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties: geoProperties,
           infoTabShow: false,
         });
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties: geoProperties,
           infoTabShow: true,
         });
       } else {
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties,
           infoTabShow: !infoTabShow,
         });

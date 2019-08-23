@@ -61,7 +61,7 @@ export const loadData = () => async dispatch => {
       });
     });
 
-  let countryMarkers = [];
+  let regionMarkers = [];
   let capitalMarkers = [];
 
   [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
@@ -112,10 +112,10 @@ export const loadData = () => async dispatch => {
   geographyPaths.forEach(x => {
     const { alpha3Code } = x.properties;
     const path = geoPath().projection(projection());
-    countryMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
+    regionMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
   });
 
-  countryMarkers = countryMarkers.map(array => ({
+  regionMarkers = regionMarkers.map(array => ({
     name: geographyPaths.find(x => x.properties.alpha3Code === array[1])
       .properties.name,
     alpha3Code: array[1],
@@ -123,13 +123,13 @@ export const loadData = () => async dispatch => {
     markerOffset: 0,
   }));
 
-  countryMarkers = CountryMarkersFix(countryMarkers);
+  regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
 
   const regionDataSets = {
     World: {
       geographyPaths,
-      countryMarkers,
+      regionMarkers,
       capitalMarkers,
     },
   };
@@ -137,7 +137,7 @@ export const loadData = () => async dispatch => {
   await dispatch({
     type: LOAD_DATA,
     geographyPaths,
-    countryMarkers,
+    regionMarkers,
     capitalMarkers,
     populationData,
     regionDataSets,

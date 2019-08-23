@@ -2,7 +2,7 @@ import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
 
-export default function countryLabels() {
+export default function regionLabels() {
   const {
     quiz,
     quizGuesses,
@@ -10,7 +10,7 @@ export default function countryLabels() {
     quizAnswers,
     markerToggle,
   } = this.props.quiz;
-  const { countryMarkers, capitalMarkers } = this.props.data;
+  const { regionMarkers, capitalMarkers } = this.props.data;
   const { currentMap, filterRegions } = this.props.map;
 
   let display = true;
@@ -37,7 +37,7 @@ export default function countryLabels() {
       const markerDisplay = quiz ? quizGuesses[i] : true;
       if (markerDisplay) {
         if (testing === 'name' || testing === 'flag') {
-          marker = countryMarkers.find(x => (x[markerRegionID]) === regionID);
+          marker = regionMarkers.find(x => (x[markerRegionID]) === regionID);
         } else if (testing === 'capital') {
           marker = capitalMarkers.find(x => x[markerRegionID] === regionID);
         }

@@ -2,9 +2,9 @@ import {
   SET_QUIZ_STATE,
   QUIZ_ANSWER,
   QUIZ_CLOSE,
-  COUNTRY_CLICK,
+  REGION_CLICK,
+  CHANGE_MAP_VIEW,
   REGION_SELECT,
-  COUNTRY_SELECT,
   SET_LABEL,
 } from '../actions/types';
 
@@ -30,20 +30,20 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case REGION_SELECT:
+    case CHANGE_MAP_VIEW:
       return {
         ...state,
         ...action.quiz,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
-    case COUNTRY_SELECT:
+    case REGION_SELECT:
       return {
         ...state,
         selectedProperties: action.selectedProperties,
         infoTabShow: true,
       };
-    case COUNTRY_CLICK:
+    case REGION_CLICK:
       return {
         ...state,
         selectedProperties: action.selectedProperties,

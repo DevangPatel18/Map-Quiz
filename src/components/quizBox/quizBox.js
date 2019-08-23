@@ -88,7 +88,7 @@ class QuizBox extends Component {
     const { quizType, regionMenu } = this.state;
     const { markerToggle } = this.props.quiz;
     const { checkedRegions, currentMap, tooltip } = this.props.map;
-    const countryLabel = markerToggle === 'name';
+    const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
 
@@ -143,7 +143,7 @@ class QuizBox extends Component {
               <Button.Group size={formSize} compact>
                 <Button
                   toggle
-                  active={countryLabel}
+                  active={regionLabel}
                   onClick={() => this.handleLabelToggle('name')}
                   aria-label="toggle region names"
                 >

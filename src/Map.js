@@ -9,7 +9,7 @@ import {
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
-import { countryClick } from './actions/quizActions';
+import { regionClick } from './actions/quizActions';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
 import ColorPicker from './components/colorPicker';
 
@@ -17,7 +17,7 @@ import ColorPicker from './components/colorPicker';
 React.PropTypes = PropTypes;
 
 const Map = props => {
-  const { map, data, countryClick, app, tooltipMove, tooltipLeave } = props
+  const { map, data, regionClick, app, tooltipMove, tooltipLeave } = props
   const {
     defaultZoom,
     center,
@@ -123,7 +123,7 @@ const Map = props => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={countryClick}
+                      onClick={regionClick}
                       {...mouseHandlers}
                       fill="white"
                       stroke={strokeColor}
@@ -149,7 +149,7 @@ const Map = props => {
               {app.regionEllipses()}
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'World') && app.countryLabels()
+                (currentMap !== 'World') && app.regionLabels()
               }
             </ZoomableGroup>
           </ComposableMap>
@@ -168,5 +168,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { countryClick, tooltipMove, tooltipLeave }
+  { regionClick, tooltipMove, tooltipLeave }
 )(Map);

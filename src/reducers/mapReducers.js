@@ -1,15 +1,15 @@
 import { isMobile } from 'react-device-detect';
 import {
   SET_REGION_CHECKBOX,
+  CHANGE_MAP_VIEW,
   REGION_SELECT,
-  COUNTRY_SELECT,
   DISABLE_OPT,
   ZOOM_MAP,
   RECENTER_MAP,
   SET_MAP,
   LOAD_DATA,
   LOAD_PATHS,
-  COUNTRY_CLICK,
+  REGION_CLICK,
   QUIZ_ANSWER,
   MOVE_CENTER,
   SET_QUIZ_STATE,
@@ -51,7 +51,7 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case LOAD_DATA:
     case LOAD_PATHS:
-    case COUNTRY_CLICK:
+    case REGION_CLICK:
     case QUIZ_ANSWER:
     case SET_QUIZ_STATE:
     case QUIZ_CLOSE:
@@ -68,13 +68,13 @@ export default function(state = initialState, action) {
         checkedRegions,
         filterRegions,
       };
-    case REGION_SELECT:
+    case CHANGE_MAP_VIEW:
       return {
         ...state,
         ...action.map,
         disableOptimization: true,
       };
-    case COUNTRY_SELECT:
+    case REGION_SELECT:
       return {
         ...state,
         zoom: action.zoom,

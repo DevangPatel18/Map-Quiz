@@ -3,8 +3,8 @@ import { actions } from 'redux-tooltip';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import {
+  CHANGE_MAP_VIEW,
   REGION_SELECT,
-  COUNTRY_SELECT,
   SET_REGION_CHECKBOX,
   DISABLE_OPT,
   ZOOM_MAP,
@@ -80,13 +80,13 @@ export const regionSelect = regionName => async dispatch => {
       ? 'World'
       : regionName;
     if (regionDataSets[regionDataSetKey]) {
-      const { geographyPaths, countryMarkers, capitalMarkers } = regionDataSets[
+      const { geographyPaths, regionMarkers, capitalMarkers } = regionDataSets[
         regionDataSetKey
       ];
       await dispatch({
         type: LOAD_REGION_DATA,
         geographyPaths,
-        countryMarkers,
+        regionMarkers,
         capitalMarkers,
         regionDataSets,
       });
@@ -97,7 +97,7 @@ export const regionSelect = regionName => async dispatch => {
         .then(response => response.json())
         .then(featureCollection => featureCollection.features);
 
-      const newCountryMarkers = newGeographyPaths.map(x => {
+      const newRegionMarkers = newGeographyPaths.map(x => {
         const { name, postal } = x.properties;
         const path = geoPath().projection(projection());
         return {
@@ -156,7 +156,7 @@ export const regionSelect = regionName => async dispatch => {
         ...regionDataSets,
         [regionDataSetKey]: {
           geographyPaths: newGeographyPaths,
-          countryMarkers: newCountryMarkers,
+          regionMarkers: newRegionMarkers,
           capitalMarkers: newCapitalMarkers,
         },
       };
@@ -164,14 +164,14 @@ export const regionSelect = regionName => async dispatch => {
       await dispatch({
         type: LOAD_REGION_DATA,
         geographyPaths: newGeographyPaths,
-        countryMarkers: newCountryMarkers,
+        regionMarkers: newRegionMarkers,
         capitalMarkers: newCapitalMarkers,
         regionDataSets: updatedRegionDataSets,
       });
     }
   }
 
-  await dispatch({ type: REGION_SELECT, map, quiz });
+  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
@@ -187,13 +187,13 @@ export const regionSelect = regionName => async dispatch => {
   }
 };
 
-export const countrySelect = geographyPath => async dispatch => {
-  const { countryMarkers } = store.getState().data;
+export const regionZoom = geographyPath => async dispatch => {
+  const { regionMarkers } = store.getState().data;
   const { dimensions } = store.getState().map;
   const { properties } = geographyPath;
 
   const regionKey = properties.alpha3Code ? 'alpha3Code' : 'regionID';
-  const center = countryMarkers.find(
+  const center = regionMarkers.find(
     x => x[regionKey] === properties[regionKey]
   ).coordinates;
 
@@ -207,7 +207,7 @@ export const countrySelect = geographyPath => async dispatch => {
 
   zoom = Math.min(zoom, 64);
   await dispatch({
-    type: COUNTRY_SELECT,
+    type: REGION_SELECT,
     selectedProperties: properties,
     center,
     zoom,

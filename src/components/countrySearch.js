@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { countrySelect } from '../actions/mapActions';
+import { regionZoom } from '../actions/mapActions';
 
-const CountrySearch = ({ map, data, countrySelect }) => {
+const RegionSearch = ({ map, data, regionZoom }) => {
   const { currentMap, filterRegions } = map;
   const { geographyPaths } = data;
 
@@ -47,7 +47,7 @@ const CountrySearch = ({ map, data, countrySelect }) => {
     .sort((a, b) => (a.text > b.text ? 1 : -1));
 
   return (
-    <div className="countrySearch">
+    <div className="regionSearch">
       <Dropdown
         aria-label="user country search"
         placeholder="Select Country"
@@ -71,7 +71,7 @@ const CountrySearch = ({ map, data, countrySelect }) => {
             return;
           }
 
-          countrySelect(geography);
+          regionZoom(geography);
         }}
       />
     </div>
@@ -85,5 +85,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { countrySelect }
-)(CountrySearch);
+  { regionZoom }
+)(RegionSearch);

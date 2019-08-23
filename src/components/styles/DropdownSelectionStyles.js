@@ -20,7 +20,7 @@ const DropdownSelectionStyles = styled.div`
       }
     `}
 
-  .countrySearch {
+  .regionSearch {
     padding: 1em;
     width: 100%;
   }

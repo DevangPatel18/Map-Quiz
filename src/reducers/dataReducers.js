@@ -2,7 +2,7 @@ import { LOAD_PATHS, LOAD_DATA, LOAD_REGION_DATA } from '../actions/types';
 
 const initialState = {
   geographyPaths: [],
-  countryMarkers: [],
+  regionMarkers: [],
   capitalMarkers: [],
   populationData: {},
   regionDataSets: {},
@@ -11,7 +11,7 @@ const initialState = {
 export default function(state = initialState, action) {
   const {
     geographyPaths,
-    countryMarkers,
+    regionMarkers,
     capitalMarkers,
     populationData,
     regionDataSets,
@@ -28,7 +28,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         geographyPaths,
-        countryMarkers,
+        regionMarkers,
         capitalMarkers,
         populationData,
         regionDataSets,
@@ -38,7 +38,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         geographyPaths,
-        countryMarkers,
+        regionMarkers,
         capitalMarkers,
         regionDataSets,
       };
