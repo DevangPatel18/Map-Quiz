@@ -120,8 +120,10 @@ export const regionSelect = regionName => async dispatch => {
               );
               if (geo) {
                 geo.properties = { ...geo.properties, ...row.data };
-                geo.properties.area = parseInt(geo.properties.area);
-                geo.properties.population = parseInt(geo.properties.population);
+                const { area, population, name } = geo.properties;
+                geo.properties.area = +area;
+                geo.properties.population = +population;
+                geo.properties.spellings = [name];
               }
             },
           });

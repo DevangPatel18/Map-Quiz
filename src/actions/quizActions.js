@@ -57,8 +57,9 @@ export const countryClick = geographyPath => async dispatch => {
       activeQuestionNum === quizGuesses.length &&
       quizGuesses.length < quizAnswers.length
     ) {
+      const regionKey = geoProperties.alpha3Code ? 'alpha3Code' : 'regionID';
       const result =
-        geoProperties.alpha3Code === quizAnswers[activeQuestionNum];
+        geoProperties[regionKey] === quizAnswers[activeQuestionNum];
       newSelectedProperties = result ? geoProperties : selectedProperties;
       await dispatch({
         type: QUIZ_ANSWER,
@@ -108,9 +109,12 @@ export const answerQuiz = (userGuess = null) => async dispatch => {
 
   if (userGuess) {
     let result;
+    const regionKey = geographyPaths[1].properties.alpha3Code
+      ? 'alpha3Code'
+      : 'regionID';
 
     const answerProperties = geographyPaths.find(
-      geo => geo.properties.alpha3Code === quizAnswers[activeQuestionNum]
+      geo => geo.properties[regionKey] === quizAnswers[activeQuestionNum]
     ).properties;
 
     if (quizType.split('_')[1] === 'name') {

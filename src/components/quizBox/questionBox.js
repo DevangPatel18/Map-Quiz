@@ -110,8 +110,14 @@ class QuestionBox extends Component {
         );
       }
       const alpha = quizAnswers[activeQuestionNum];
-      const region = geographyPaths.find(x => x.properties.alpha3Code === alpha)
-        .properties[testing];
+
+      const region = geographyPaths.find(x => {
+        if (x.properties.alpha3Code) {
+          return x.properties.alpha3Code === alpha;
+        } else {
+          return x.properties.regionID === alpha;
+        }
+      }).properties[testing];
 
       if (testing === 'flag') {
         const flagHeight = isMobile ? '50px' : '100px';
