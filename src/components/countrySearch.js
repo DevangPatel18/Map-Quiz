@@ -7,32 +7,42 @@ const CountrySearch = ({ map, data, countrySelect }) => {
   const { currentMap, filterRegions } = map;
   const { geographyPaths } = data;
 
-  let countries = geographyPaths;
+  let mapRegions = geographyPaths;
+  const regionKey =
+    geographyPaths && geographyPaths[0] && geographyPaths[0].properties.regionID
+      ? 'regionID'
+      : 'alpha3Code';
   if (currentMap !== 'World') {
-    countries = countries.filter(x =>
-      filterRegions.includes(x.properties.alpha3Code)
+    mapRegions = mapRegions.filter(x =>
+      filterRegions.includes(x.properties[regionKey])
     );
   }
 
-  countries = countries
+  mapRegions = mapRegions
     .map(x => {
-      if (!x.properties.alpha2Code) {
-        return null;
+      let key;
+      let flag;
+      if (regionKey === 'alpha3Code') {
+        if (!x.properties.alpha2Code) {
+          return null;
+        }
+        key = x.properties.alpha2Code.toString().toLowerCase();
+        flag = { flag: key };
+      } else {
+        key = x.properties[regionKey];
       }
-      const y = x.properties.alpha2Code.toString().toLowerCase();
+
       return {
-        key: y,
-        flag: y,
+        key,
+        ...flag,
         text: x.properties.name,
-        value: x.properties.alpha3Code,
+        value: x.properties[regionKey],
       };
     })
     .filter(x => x !== null)
     .filter(
       x =>
-        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
-          x.key
-        )
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(x.key)
     )
     .sort((a, b) => (a.text > b.text ? 1 : -1));
 
@@ -44,12 +54,12 @@ const CountrySearch = ({ map, data, countrySelect }) => {
         fluid
         search
         selection
-        options={countries}
+        options={mapRegions}
         onChange={(e, d) => {
           let geography;
           if (e.code === 'Enter') {
             geography = geographyPaths.find(
-              x => x.properties.alpha3Code === d.value
+              x => x.properties[regionKey] === d.value
             );
           } else {
             geography = geographyPaths.find(
