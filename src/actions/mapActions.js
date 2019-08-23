@@ -192,8 +192,9 @@ export const countrySelect = geographyPath => async dispatch => {
   const { dimensions } = store.getState().map;
   const { properties } = geographyPath;
 
+  const regionKey = properties.alpha3Code ? 'alpha3Code' : 'regionID';
   const center = countryMarkers.find(
-    x => x.alpha3Code === properties.alpha3Code
+    x => x[regionKey] === properties[regionKey]
   ).coordinates;
 
   const path = geoPath().projection(projection());
@@ -202,7 +203,7 @@ export const countrySelect = geographyPath => async dispatch => {
   const height = bounds[1][1] - bounds[0][1];
   let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
 
-  zoom = properties.alpha3Code === 'USA' ? zoom * 6 : zoom;
+  zoom = properties[regionKey] === 'USA' ? zoom * 6 : zoom;
 
   zoom = Math.min(zoom, 64);
   await dispatch({
