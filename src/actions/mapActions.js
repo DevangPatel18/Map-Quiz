@@ -55,9 +55,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
 };
 
 export const regionSelect = regionName => async dispatch => {
-  const { currentMap, checkedRegions } = store.getState().map;
-  const { regionDataSets } = store.getState().data;
-
+  const { checkedRegions } = store.getState().map;
   const { center, zoom } = mapConfig[regionName];
   const map = {
     zoom,
@@ -72,6 +70,26 @@ export const regionSelect = regionName => async dispatch => {
     selectedProperties: '',
     markerToggle: '',
   };
+
+  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
+  dispatch({ type: DISABLE_OPT });
+  if (regionName === 'World') {
+    const filterRegions = Object.keys(checkedRegions)
+      .filter(region => checkedRegions[region])
+      .map(region => alpha3CodesSov[region])
+      .reduce((a, b) => a.concat(b), []);
+    await dispatch({
+      type: SET_REGION_CHECKBOX,
+      checkedRegions,
+      filterRegions,
+    });
+    dispatch({ type: DISABLE_OPT });
+  }
+};
+
+export const checkMapDataUpdate = regionName => async dispatch => {
+  const { currentMap } = store.getState().map;
+  const { regionDataSets } = store.getState().data;
 
   if (
     !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
@@ -170,21 +188,6 @@ export const regionSelect = regionName => async dispatch => {
       });
     }
   }
-
-  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
-  dispatch({ type: DISABLE_OPT });
-  if (regionName === 'World') {
-    const filterRegions = Object.keys(checkedRegions)
-      .filter(region => checkedRegions[region])
-      .map(region => alpha3CodesSov[region])
-      .reduce((a, b) => a.concat(b), []);
-    await dispatch({
-      type: SET_REGION_CHECKBOX,
-      checkedRegions,
-      filterRegions,
-    });
-    dispatch({ type: DISABLE_OPT });
-  }
 };
 
 export const regionZoom = geographyPath => async dispatch => {
@@ -193,9 +196,8 @@ export const regionZoom = geographyPath => async dispatch => {
   const { properties } = geographyPath;
 
   const regionKey = properties.alpha3Code ? 'alpha3Code' : 'regionID';
-  const center = regionMarkers.find(
-    x => x[regionKey] === properties[regionKey]
-  ).coordinates;
+  const center = regionMarkers.find(x => x[regionKey] === properties[regionKey])
+    .coordinates;
 
   const path = geoPath().projection(projection());
   const bounds = path.bounds(geographyPath);
