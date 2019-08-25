@@ -19,6 +19,7 @@ import {
   SET_LABEL,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
+  LOAD_REGION_DATA,
 } from '../actions/types';
 
 const initialState = {
@@ -32,6 +33,7 @@ const initialState = {
   disableOptimization: false,
   filterRegions: [],
   currentMap: 'World',
+  subRegionName: 'country',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,
@@ -132,6 +134,11 @@ export default function(state = initialState, action) {
         ...state,
         slider: action.value,
       };
+    case LOAD_REGION_DATA:
+      return {
+        ...state,
+        subRegionName: action.subRegionName,
+      }
     default:
       return state;
   }

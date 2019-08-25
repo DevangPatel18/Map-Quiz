@@ -36,6 +36,7 @@ const geoPathLinks = {
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566493791/Map%20Quiz/usData.csv',
     capitalLatLng:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
+    subRegionName: 'state',
   },
 };
 
@@ -98,15 +99,19 @@ export const checkMapDataUpdate = regionName => async dispatch => {
       ? 'World'
       : regionName;
     if (regionDataSets[regionDataSetKey]) {
-      const { geographyPaths, regionMarkers, capitalMarkers } = regionDataSets[
-        regionDataSetKey
-      ];
+      const {
+        geographyPaths,
+        regionMarkers,
+        capitalMarkers,
+        subRegionName,
+      } = regionDataSets[regionDataSetKey];
       await dispatch({
         type: LOAD_REGION_DATA,
         geographyPaths,
         regionMarkers,
         capitalMarkers,
         regionDataSets,
+        subRegionName,
       });
     } else {
       const newGeographyPaths = await fetch(
@@ -170,12 +175,15 @@ export const checkMapDataUpdate = regionName => async dispatch => {
           });
         });
 
+      const { subRegionName } = geoPathLinks[regionName];
+
       const updatedRegionDataSets = {
         ...regionDataSets,
         [regionDataSetKey]: {
           geographyPaths: newGeographyPaths,
           regionMarkers: newRegionMarkers,
           capitalMarkers: newCapitalMarkers,
+          subRegionName,
         },
       };
 
@@ -185,6 +193,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
         regionMarkers: newRegionMarkers,
         capitalMarkers: newCapitalMarkers,
         regionDataSets: updatedRegionDataSets,
+        subRegionName,
       });
     }
   }

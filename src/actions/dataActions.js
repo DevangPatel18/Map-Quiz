@@ -125,12 +125,14 @@ export const loadData = () => async dispatch => {
 
   regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
+  const subRegionName = 'country';
 
   const regionDataSets = {
     World: {
       geographyPaths,
       regionMarkers,
       capitalMarkers,
+      subRegionName,
     },
   };
 
@@ -141,6 +143,7 @@ export const loadData = () => async dispatch => {
     capitalMarkers,
     populationData,
     regionDataSets,
+    subRegionName,
   });
 
   dispatch({ type: DISABLE_OPT });
