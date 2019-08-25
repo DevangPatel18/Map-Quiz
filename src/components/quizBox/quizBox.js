@@ -5,13 +5,6 @@ import { connect } from 'react-redux';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
-import { alpha3Codes } from '../../assets/regionAlpha3Codes';
-
-const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
-
-const subDivisionTitle = {
-  'United States of America': 'State',
-};
 
 const generateQuizOptions = regionType => [
   { label: `Click ${regionType}`, value: 'click_name' },
@@ -30,6 +23,8 @@ const checkedRegionsLabels = [
   'Asia',
   'Oceania',
 ];
+
+const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 class QuizBox extends Component {
   constructor() {
@@ -87,18 +82,18 @@ class QuizBox extends Component {
   render() {
     const { quizType, regionMenu } = this.state;
     const { markerToggle } = this.props.quiz;
-    const { checkedRegions, currentMap, tooltip } = this.props.map;
+    const {
+      checkedRegions,
+      currentMap,
+      subRegionName,
+      tooltip,
+    } = this.props.map;
     const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
 
-    const regionKey = WorldRegions.includes(currentMap)
-      ? 'alpha3Code'
-      : 'regionID';
-
-    const regionType =
-      regionKey === 'alpha3Code' ? 'Country' : subDivisionTitle[currentMap];
-    const quizOptions = generateQuizOptions(regionType);
+    const subRegionNameCap = capitalize(subRegionName);
+    const quizOptions = generateQuizOptions(subRegionNameCap);
 
     return (
       <QuizMenu regionMenu={regionMenu}>
@@ -147,7 +142,7 @@ class QuizBox extends Component {
                   onClick={() => this.handleLabelToggle('name')}
                   aria-label="toggle region names"
                 >
-                  {regionType}
+                  {subRegionNameCap}
                 </Button>
                 <Button.Or aria-label="or" />
                 <Button
