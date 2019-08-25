@@ -75,13 +75,14 @@ class QuestionBox extends Component {
     const { userGuess } = this.state;
     const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
     const { geographyPaths } = this.props.data;
+    const { subRegionName } = this.props.map;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
     let text;
 
     if (activeQuestionNum !== quizAnswers.length) {
       if (typeTest) {
-        text = `Enter the ${testing} of the highlighted country`;
+        text = `Enter the ${testing} of the highlighted ${subRegionName}`;
         const inputSize = isMobile ? 'mini' : 'small';
         return (
           <QuizPrompt typeTest={typeTest}>
@@ -144,6 +145,7 @@ class QuestionBox extends Component {
 }
 
 const mapStateToProps = state => ({
+  map: state.map,
   data: state.data,
   quiz: state.quiz,
 });
