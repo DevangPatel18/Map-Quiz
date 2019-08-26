@@ -52,7 +52,8 @@ export default function(state = initialState, action) {
     case QUIZ_ANSWER:
       return {
         ...state,
-        selectedProperties: action.selectedProperties,
+        selectedProperties:
+          action.selectedProperties || emptySelectedProperties,
         quizGuesses: action.quizGuesses,
         activeQuestionNum: action.activeQuestionNum,
         infoTabShow: action.infoTabShow,
