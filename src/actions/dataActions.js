@@ -37,8 +37,22 @@ export const loadData = () => async dispatch => {
   let geographyPaths = store
     .getState()
     .data.geographyPaths.map(a => ({ ...a }));
+  const fields = [
+    'name',
+    'alpha3Code',
+    'alpha2Code',
+    'numericCode',
+    'area',
+    'population',
+    'gini',
+    'capital',
+    'flag',
+    'altSpellings',
+    'translations',
+  ];
+
   let restData = await fetch(
-    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;altSpellings;translations'
+    `https://restcountries.eu/rest/v2/all?fields=${fields.join(';')}`
   ).then(restCountries => {
     if (restCountries.status !== 200) {
       console.log(`There was a problem: ${restCountries.status}`);
