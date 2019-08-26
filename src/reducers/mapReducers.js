@@ -34,6 +34,7 @@ const initialState = {
   filterRegions: [],
   currentMap: 'World',
   subRegionName: 'country',
+  regionKey: 'alpha3Code',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,
@@ -135,10 +136,14 @@ export default function(state = initialState, action) {
         slider: action.value,
       };
     case LOAD_REGION_DATA:
+      const { subRegionName } = action;
+      const regionKey =
+        subRegionName === 'country' ? 'alpha3Code' : 'regionID';
       return {
         ...state,
-        subRegionName: action.subRegionName,
-      }
+        subRegionName,
+        regionKey,
+      };
     default:
       return state;
   }
