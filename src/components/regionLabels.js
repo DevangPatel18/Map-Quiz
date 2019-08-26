@@ -11,13 +11,11 @@ export default function regionLabels() {
     markerToggle,
   } = this.props.quiz;
   const { regionMarkers, capitalMarkers } = this.props.data;
-  const { currentMap, filterRegions } = this.props.map;
+  const { currentMap, filterRegions, regionKey } = this.props.map;
 
   let display = true;
   let markerArray;
   let testing;
-  const isUsaMap = currentMap === 'United States of America';
-  const markerRegionID = isUsaMap ? 'regionID' : 'alpha3Code';
   if (quiz) {
     markerArray = quizAnswers;
     testing = quizType.split('_')[1];
@@ -37,9 +35,9 @@ export default function regionLabels() {
       const markerDisplay = quiz ? quizGuesses[i] : true;
       if (markerDisplay) {
         if (testing === 'name' || testing === 'flag') {
-          marker = regionMarkers.find(x => (x[markerRegionID]) === regionID);
+          marker = regionMarkers.find(x => (x[regionKey]) === regionID);
         } else if (testing === 'capital') {
-          marker = capitalMarkers.find(x => x[markerRegionID] === regionID);
+          marker = capitalMarkers.find(x => x[regionKey] === regionID);
         }
         if(!marker) return null
         markerName = marker.name;
@@ -51,7 +49,7 @@ export default function regionLabels() {
           if (tinyCarib.includes(regionID)) {
             marker =
               testing !== 'capital'
-                ? capitalMarkers.find(x => x[markerRegionID] === regionID)
+                ? capitalMarkers.find(x => x[regionKey] === regionID)
                 : marker;
             dx = 20;
             dy = -20;

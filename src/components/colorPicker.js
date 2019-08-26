@@ -15,12 +15,12 @@ const ColorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
+  const { regionKey } = store.getState().map;
   const { filterRegions, currentMap, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
-  const isWorldMap = currentMap !== 'United States of America'
-  const { alpha3Code, postal, regionOf } = geo.properties;
-  const regionID = isWorldMap ? alpha3Code : postal
+  const { regionOf } = geo.properties;
+  const regionID = geo.properties[regionKey]
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
   let pressedColor = 'rgb(0, 70, 0)';

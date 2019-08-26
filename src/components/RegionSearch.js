@@ -4,14 +4,10 @@ import { connect } from 'react-redux';
 import { regionZoom } from '../actions/mapActions';
 
 const RegionSearch = ({ map, data, regionZoom }) => {
-  const { currentMap, filterRegions } = map;
+  const { currentMap, filterRegions, regionKey } = map;
   const { geographyPaths } = data;
 
   let mapRegions = geographyPaths;
-  const regionKey =
-    geographyPaths && geographyPaths[0] && geographyPaths[0].properties.regionID
-      ? 'regionID'
-      : 'alpha3Code';
   if (currentMap !== 'World') {
     mapRegions = mapRegions.filter(x =>
       filterRegions.includes(x.properties[regionKey])

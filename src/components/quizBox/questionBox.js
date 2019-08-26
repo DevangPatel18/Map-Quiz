@@ -75,7 +75,7 @@ class QuestionBox extends Component {
     const { userGuess } = this.state;
     const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
     const { geographyPaths } = this.props.data;
-    const { subRegionName } = this.props.map;
+    const { subRegionName, regionKey } = this.props.map;
     const [type, testing] = quizType.split('_');
     const typeTest = type === 'type';
     let text;
@@ -112,13 +112,8 @@ class QuestionBox extends Component {
       }
       const alpha = quizAnswers[activeQuestionNum];
 
-      const region = geographyPaths.find(x => {
-        if (x.properties.alpha3Code) {
-          return x.properties.alpha3Code === alpha;
-        } else {
-          return x.properties.regionID === alpha;
-        }
-      }).properties[testing];
+      const region = geographyPaths.find(x => x.properties[regionKey] === alpha)
+        .properties[testing];
 
       if (testing === 'flag') {
         const flagHeight = isMobile ? '50px' : '100px';

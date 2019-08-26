@@ -201,10 +201,9 @@ export const checkMapDataUpdate = regionName => async dispatch => {
 
 export const regionZoom = geographyPath => async dispatch => {
   const { regionMarkers } = store.getState().data;
-  const { dimensions } = store.getState().map;
+  const { dimensions, regionKey } = store.getState().map;
   const { properties } = geographyPath;
 
-  const regionKey = properties.alpha3Code ? 'alpha3Code' : 'regionID';
   const center = regionMarkers.find(x => x[regionKey] === properties[regionKey])
     .coordinates;
 

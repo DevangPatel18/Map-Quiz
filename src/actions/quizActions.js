@@ -50,6 +50,7 @@ export const regionClick = geographyPath => async dispatch => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
+  const { regionKey } = store.getState().map;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
   if (!disableInfoClick) {
@@ -57,7 +58,6 @@ export const regionClick = geographyPath => async dispatch => {
       activeQuestionNum === quizGuesses.length &&
       quizGuesses.length < quizAnswers.length
     ) {
-      const regionKey = geoProperties.alpha3Code ? 'alpha3Code' : 'regionID';
       const result =
         geoProperties[regionKey] === quizAnswers[activeQuestionNum];
       newSelectedProperties = result ? geoProperties : selectedProperties;
@@ -106,12 +106,10 @@ export const answerQuiz = (userGuess = null) => async dispatch => {
     quizType,
   } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
+  const { regionKey } = store.getState().map;
 
   if (userGuess) {
     let result;
-    const regionKey = geographyPaths[1].properties.alpha3Code
-      ? 'alpha3Code'
-      : 'regionID';
 
     const answerProperties = geographyPaths.find(
       geo => geo.properties[regionKey] === quizAnswers[activeQuestionNum]
