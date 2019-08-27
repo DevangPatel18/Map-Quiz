@@ -17,6 +17,8 @@ const About = () => {
         <p>
           {'Country Data: '}
           <a href="https://restcountries.eu/">REST Countries API</a>
+          {', '}
+          <a href="https://en.wikipedia.org/wiki/Main_Page">Wikipedia</a>
         </p>
         <p>
           {'Map Data: '}
@@ -27,12 +29,16 @@ const About = () => {
           <a href="https://github.com/LonnyGomes/CountryGeoJSONCollection">
             Country GeoJSON Collection
           </a>
+          {', '}
+          <a href="http://geojson.xyz/">geojson.xyz</a>
         </p>
         <p>
           {'Capital Coordinates: '}
           <a href="http://techslides.com/list-of-countries-and-capitals">
             Techslides
           </a>
+          {', '}
+          <a href="https://latitude.to/">latitude.to</a>
         </p>
         <p>
           {'Population Data: '}
