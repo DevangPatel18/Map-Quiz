@@ -22,6 +22,10 @@ import {
   LOAD_REGION_DATA,
 } from '../actions/types';
 
+const tooltipLocalStorage = localStorage.getItem('tooltip');
+const userTooltip =
+  tooltipLocalStorage !== null ? tooltipLocalStorage === 'true' : !isMobile;
+
 const initialState = {
   center: [10, 0],
   defaultCenter: [10, 0],
@@ -45,7 +49,7 @@ const initialState = {
     Oceania: true,
   },
   choropleth: 'None',
-  tooltip: !isMobile,
+  tooltip: userTooltip,
   slider: false,
   sliderYear: 2018,
 };
@@ -125,6 +129,7 @@ export default function(state = initialState, action) {
         disableOptimization: true,
       };
     case TOGGLE_TOOLTIP:
+      localStorage.setItem('tooltip', (!state.tooltip).toString());
       return {
         ...state,
         tooltip: !state.tooltip,
