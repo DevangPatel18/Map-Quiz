@@ -2,7 +2,7 @@ import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
 
-export default function countryLabels() {
+export default function regionLabels() {
   const {
     quiz,
     quizGuesses,
@@ -10,8 +10,8 @@ export default function countryLabels() {
     quizAnswers,
     markerToggle,
   } = this.props.quiz;
-  const { countryMarkers, capitalMarkers } = this.props.data;
-  const { currentMap, filterRegions } = this.props.map;
+  const { regionMarkers, capitalMarkers } = this.props.data;
+  const { currentMap, filterRegions, regionKey } = this.props.map;
 
   let display = true;
   let markerArray;
@@ -26,7 +26,7 @@ export default function countryLabels() {
     display = false;
   }
   return display && <Markers>
-    {markerArray.map((alpha3Code, i) => {
+    {markerArray.map((regionID, i) => {
       let marker;
       let markerName;
       let textAnchor;
@@ -35,9 +35,9 @@ export default function countryLabels() {
       const markerDisplay = quiz ? quizGuesses[i] : true;
       if (markerDisplay) {
         if (testing === 'name' || testing === 'flag') {
-          marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
+          marker = regionMarkers.find(x => (x[regionKey]) === regionID);
         } else if (testing === 'capital') {
-          marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
+          marker = capitalMarkers.find(x => x[regionKey] === regionID);
         }
         if(!marker) return null
         markerName = marker.name;
@@ -46,24 +46,24 @@ export default function countryLabels() {
         dy = marker ? marker.markerOffset : 0;
 
         if (currentMap === 'Caribbean') {
-          if (tinyCarib.includes(alpha3Code)) {
+          if (tinyCarib.includes(regionID)) {
             marker =
               testing !== 'capital'
-                ? capitalMarkers.find(x => x.alpha3Code === alpha3Code)
+                ? capitalMarkers.find(x => x[regionKey] === regionID)
                 : marker;
             dx = 20;
             dy = -20;
-            [dx, dy, textAnchor] = labelDist(dx, dy, alpha3Code);
+            [dx, dy, textAnchor] = labelDist(dx, dy, regionID);
           }
         }
 
-        if (Object.keys(labelAnchors).includes(alpha3Code)) {
-          textAnchor = labelAnchors[alpha3Code];
+        if (Object.keys(labelAnchors).includes(regionID)) {
+          textAnchor = labelAnchors[regionID];
         }
       }
       return markerDisplay && (
           <Marker
-            key={alpha3Code}
+            key={regionID}
             marker={marker}
             style={{
               default: { fill: '#FF5722' },

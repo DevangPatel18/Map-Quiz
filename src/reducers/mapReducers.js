@@ -1,15 +1,15 @@
 import { isMobile } from 'react-device-detect';
 import {
   SET_REGION_CHECKBOX,
+  CHANGE_MAP_VIEW,
   REGION_SELECT,
-  COUNTRY_SELECT,
   DISABLE_OPT,
   ZOOM_MAP,
   RECENTER_MAP,
   SET_MAP,
   LOAD_DATA,
   LOAD_PATHS,
-  COUNTRY_CLICK,
+  REGION_CLICK,
   QUIZ_ANSWER,
   MOVE_CENTER,
   SET_QUIZ_STATE,
@@ -19,7 +19,12 @@ import {
   SET_LABEL,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
+  LOAD_REGION_DATA,
 } from '../actions/types';
+
+const tooltipLocalStorage = localStorage.getItem('tooltip');
+const userTooltip =
+  tooltipLocalStorage !== null ? tooltipLocalStorage === 'true' : !isMobile;
 
 const initialState = {
   center: [10, 0],
@@ -32,6 +37,8 @@ const initialState = {
   disableOptimization: false,
   filterRegions: [],
   currentMap: 'World',
+  subRegionName: 'country',
+  regionKey: 'alpha3Code',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,
@@ -42,7 +49,7 @@ const initialState = {
     Oceania: true,
   },
   choropleth: 'None',
-  tooltip: !isMobile,
+  tooltip: userTooltip,
   slider: false,
   sliderYear: 2018,
 };
@@ -51,7 +58,7 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case LOAD_DATA:
     case LOAD_PATHS:
-    case COUNTRY_CLICK:
+    case REGION_CLICK:
     case QUIZ_ANSWER:
     case SET_QUIZ_STATE:
     case QUIZ_CLOSE:
@@ -68,13 +75,13 @@ export default function(state = initialState, action) {
         checkedRegions,
         filterRegions,
       };
-    case REGION_SELECT:
+    case CHANGE_MAP_VIEW:
       return {
         ...state,
         ...action.map,
         disableOptimization: true,
       };
-    case COUNTRY_SELECT:
+    case REGION_SELECT:
       return {
         ...state,
         zoom: action.zoom,
@@ -122,6 +129,7 @@ export default function(state = initialState, action) {
         disableOptimization: true,
       };
     case TOGGLE_TOOLTIP:
+      localStorage.setItem('tooltip', (!state.tooltip).toString());
       return {
         ...state,
         tooltip: !state.tooltip,
@@ -131,6 +139,15 @@ export default function(state = initialState, action) {
       return {
         ...state,
         slider: action.value,
+      };
+    case LOAD_REGION_DATA:
+      const { subRegionName } = action;
+      const regionKey =
+        subRegionName === 'country' ? 'alpha3Code' : 'regionID';
+      return {
+        ...state,
+        subRegionName,
+        regionKey,
       };
     default:
       return state;

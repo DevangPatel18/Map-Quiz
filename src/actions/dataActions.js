@@ -34,9 +34,25 @@ export const loadPaths = () => async dispatch => {
 };
 
 export const loadData = () => async dispatch => {
-  let data = store.getState().data.geographyPaths.map(a => ({ ...a }));
+  let geographyPaths = store
+    .getState()
+    .data.geographyPaths.map(a => ({ ...a }));
+  const fields = [
+    'name',
+    'alpha3Code',
+    'alpha2Code',
+    'numericCode',
+    'area',
+    'population',
+    'gini',
+    'capital',
+    'flag',
+    'altSpellings',
+    'translations',
+  ];
+
   let restData = await fetch(
-    'https://restcountries.eu/rest/v2/all?fields=name;alpha3Code;alpha2Code;numericCode;area;population;gini;capital;flag;altSpellings;translations'
+    `https://restcountries.eu/rest/v2/all?fields=${fields.join(';')}`
   ).then(restCountries => {
     if (restCountries.status !== 200) {
       console.log(`There was a problem: ${restCountries.status}`);
@@ -59,12 +75,12 @@ export const loadData = () => async dispatch => {
       });
     });
 
-  let countryMarkers = [];
+  let regionMarkers = [];
   let capitalMarkers = [];
 
   [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
 
-  data
+  geographyPaths
     .filter(x => (+x.id !== -99 ? 1 : 0))
     .forEach(geography => {
       const countryData = restData.find(c => +c.numericCode === +geography.id);
@@ -107,28 +123,41 @@ export const loadData = () => async dispatch => {
       }
     });
 
-  data.forEach(x => {
+  geographyPaths.forEach(x => {
     const { alpha3Code } = x.properties;
     const path = geoPath().projection(projection());
-    countryMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
+    regionMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
   });
 
-  countryMarkers = countryMarkers.map(array => ({
-    name: data.find(x => x.properties.alpha3Code === array[1]).properties.name,
+  regionMarkers = regionMarkers.map(array => ({
+    name: geographyPaths.find(x => x.properties.alpha3Code === array[1])
+      .properties.name,
     alpha3Code: array[1],
     coordinates: array[0],
     markerOffset: 0,
   }));
 
-  countryMarkers = CountryMarkersFix(countryMarkers);
+  regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
+  const subRegionName = 'country';
+
+  const regionDataSets = {
+    World: {
+      geographyPaths,
+      regionMarkers,
+      capitalMarkers,
+      subRegionName,
+    },
+  };
 
   await dispatch({
     type: LOAD_DATA,
-    geographyPaths: data,
-    countryMarkers,
+    geographyPaths,
+    regionMarkers,
     capitalMarkers,
     populationData,
+    regionDataSets,
+    subRegionName,
   });
 
   dispatch({ type: DISABLE_OPT });

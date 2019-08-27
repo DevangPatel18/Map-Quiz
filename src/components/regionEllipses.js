@@ -12,7 +12,7 @@ const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 export default function regionEllipses() {
   const { currentMap, filterRegions, tooltip } = this.props.map;
   const { quiz } = this.props.quiz;
-  const { geographyPaths, capitalMarkers, countryMarkers } = this.props.data;
+  const { geographyPaths, capitalMarkers, regionMarkers } = this.props.data;
   let minArea;
   switch (currentMap) {
     case 'Caribbean':
@@ -37,13 +37,13 @@ export default function regionEllipses() {
   return show && <Markers> 
     {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)
-    .map((country) => {
+    .map((region) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
       let ccx;
       let ccy;
       let llx;
       let lly;
-      const { alpha3Code } = country.properties;
+      const { alpha3Code } = region.properties;
       const caribbeanMap = currentMap === 'Caribbean'
       if (caribbeanMap) {
         marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
@@ -68,7 +68,7 @@ export default function regionEllipses() {
         }
 
       } else {
-        marker = countryMarkers.find(x => x.alpha3Code === alpha3Code);
+        marker = regionMarkers.find(x => x.alpha3Code === alpha3Code);
         const path = geoPath().projection(projection());
         if (Object.keys(ellipseDim).includes(alpha3Code)) {
           const { width, height, angle } = ellipseDim[alpha3Code];
@@ -76,7 +76,7 @@ export default function regionEllipses() {
           heightMain = height;
           angleMain = angle;
         } else {
-          const bounds = path.bounds(country);
+          const bounds = path.bounds(region);
           const originWidth = bounds[1][0] - bounds[0][0];
           const originHeight = bounds[1][1] - bounds[0][1];
           
@@ -94,11 +94,11 @@ export default function regionEllipses() {
       const mouseHandlers = !tooltip || quiz
         ? {}
         : {
-            onMouseMove: (marker, evt) => this.props.tooltipMove(country, evt),
+            onMouseMove: (marker, evt) => this.props.tooltipMove(region, evt),
             onMouseLeave: this.props.tooltipLeave,
           };
 
-      const { defaultColor, hoverColor, pressedColor } = ColorPicker(country);
+      const { defaultColor, hoverColor, pressedColor } = ColorPicker(region);
       return (
         <Marker
           key={alpha3Code}
@@ -137,7 +137,7 @@ export default function regionEllipses() {
               r={isMobile ? 12 : 4}
               fill={defaultColor}
               className="caribSelector"
-              onClick={() => this.markerClick(country)}
+              onClick={() => this.markerClick(region)}
             />
           ) : (
             <ellipse
@@ -148,7 +148,7 @@ export default function regionEllipses() {
               rx={widthMain}
               ry={heightMain}
               transform={rotate}
-              onClick={() => this.markerClick(country)}
+              onClick={() => this.markerClick(region)}
             />
           )}
         </Marker>

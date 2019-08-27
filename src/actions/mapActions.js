@@ -1,9 +1,15 @@
-import { geoPath } from 'd3-geo';
 import { actions } from 'redux-tooltip';
-import projection from '../helpers/projection';
 import {
+  getStatesForRegionSelect,
+  getGeographyPaths,
+  getRegionMarkers,
+  getCapitalMarkers,
+  getSubRegionName,
+  getGeoPathCenterAndZoom,
+} from '../helpers/mapActionHelpers';
+import {
+  CHANGE_MAP_VIEW,
   REGION_SELECT,
-  COUNTRY_SELECT,
   SET_REGION_CHECKBOX,
   DISABLE_OPT,
   ZOOM_MAP,
@@ -14,15 +20,14 @@ import {
   SET_CHORO_YEAR,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
+  LOAD_REGION_DATA,
 } from './types';
 import store from '../store';
-import {
-  alpha3Codes,
-  mapConfig,
-  alpha3CodesSov,
-} from '../assets/regionAlpha3Codes';
+import { alpha3Codes, alpha3CodesSov } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
+
+const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -40,24 +45,12 @@ export const setRegionCheckbox = regionName => async dispatch => {
 };
 
 export const regionSelect = regionName => async dispatch => {
-  const { center, zoom } = mapConfig[regionName];
-  const map = {
-    zoom,
-    center,
-    defaultZoom: zoom,
-    defaultCenter: center,
-    currentMap: regionName,
-    filterRegions: alpha3Codes[regionName],
-    markerToggle: '',
-  };
-  const quiz = {
-    selectedProperties: '',
-    markerToggle: '',
-  };
-  await dispatch({ type: REGION_SELECT, map, quiz });
+  const { checkedRegions } = store.getState().map;
+  const { map, quiz } = getStatesForRegionSelect(regionName);
+
+  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
-    const { checkedRegions } = store.getState().map;
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
       .map(region => alpha3CodesSov[region])
@@ -71,26 +64,67 @@ export const regionSelect = regionName => async dispatch => {
   }
 };
 
-export const countrySelect = geographyPath => async dispatch => {
-  const { countryMarkers } = store.getState().data;
-  const { dimensions } = store.getState().map;
+export const checkMapDataUpdate = regionName => async dispatch => {
+  const { currentMap } = store.getState().map;
+  const { regionDataSets } = store.getState().data;
+
+  if (
+    !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
+  ) {
+    const regionDataSetKey = WorldRegions.includes(regionName)
+      ? 'World'
+      : regionName;
+    if (regionDataSets[regionDataSetKey]) {
+      const {
+        geographyPaths,
+        regionMarkers,
+        capitalMarkers,
+        subRegionName,
+      } = regionDataSets[regionDataSetKey];
+      await dispatch({
+        type: LOAD_REGION_DATA,
+        geographyPaths,
+        regionMarkers,
+        capitalMarkers,
+        regionDataSets,
+        subRegionName,
+      });
+    } else {
+      const newGeographyPaths = await getGeographyPaths(regionDataSetKey);
+      const newRegionMarkers = getRegionMarkers(newGeographyPaths);
+      const newCapitalMarkers = await getCapitalMarkers(
+        newGeographyPaths,
+        regionDataSetKey
+      );
+      const subRegionName = getSubRegionName(regionName);
+
+      const updatedRegionDataSets = {
+        ...regionDataSets,
+        [regionDataSetKey]: {
+          geographyPaths: newGeographyPaths,
+          regionMarkers: newRegionMarkers,
+          capitalMarkers: newCapitalMarkers,
+          subRegionName,
+        },
+      };
+
+      await dispatch({
+        type: LOAD_REGION_DATA,
+        geographyPaths: newGeographyPaths,
+        regionMarkers: newRegionMarkers,
+        capitalMarkers: newCapitalMarkers,
+        regionDataSets: updatedRegionDataSets,
+        subRegionName,
+      });
+    }
+  }
+};
+
+export const regionZoom = geographyPath => async dispatch => {
   const { properties } = geographyPath;
-
-  const center = countryMarkers.find(
-    x => x.alpha3Code === properties.alpha3Code
-  ).coordinates;
-
-  const path = geoPath().projection(projection());
-  const bounds = path.bounds(geographyPath);
-  const width = bounds[1][0] - bounds[0][0];
-  const height = bounds[1][1] - bounds[0][1];
-  let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
-
-  zoom = properties.alpha3Code === 'USA' ? zoom * 6 : zoom;
-
-  zoom = Math.min(zoom, 64);
+  const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
-    type: COUNTRY_SELECT,
+    type: REGION_SELECT,
     selectedProperties: properties,
     center,
     zoom,

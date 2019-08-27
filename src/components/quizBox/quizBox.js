@@ -6,12 +6,12 @@ import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
 
-const quizOptions = [
-  { label: 'Click Country', value: 'click_name' },
-  { label: 'Type Country', value: 'type_name' },
+const generateQuizOptions = regionType => [
+  { label: `Click ${regionType}`, value: 'click_name' },
+  { label: `Type ${regionType}`, value: 'type_name' },
   { label: 'Click Capital', value: 'click_capital' },
   { label: 'Type Capital', value: 'type_capital' },
-  { label: 'Click Country from matching Flag', value: 'click_flag' },
+  { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
 ];
 
 const checkedRegionsLabels = [
@@ -23,6 +23,8 @@ const checkedRegionsLabels = [
   'Asia',
   'Oceania',
 ];
+
+const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 class QuizBox extends Component {
   constructor() {
@@ -80,10 +82,18 @@ class QuizBox extends Component {
   render() {
     const { quizType, regionMenu } = this.state;
     const { markerToggle } = this.props.quiz;
-    const { checkedRegions, currentMap, tooltip } = this.props.map;
-    const countryLabel = markerToggle === 'name';
+    const {
+      checkedRegions,
+      currentMap,
+      subRegionName,
+      tooltip,
+    } = this.props.map;
+    const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
+
+    const subRegionNameCap = capitalize(subRegionName);
+    const quizOptions = generateQuizOptions(subRegionNameCap);
 
     return (
       <QuizMenu regionMenu={regionMenu}>
@@ -128,11 +138,11 @@ class QuizBox extends Component {
               <Button.Group size={formSize} compact>
                 <Button
                   toggle
-                  active={countryLabel}
+                  active={regionLabel}
                   onClick={() => this.handleLabelToggle('name')}
                   aria-label="toggle region names"
                 >
-                  {'Country'}
+                  {subRegionNameCap}
                 </Button>
                 <Button.Or aria-label="or" />
                 <Button

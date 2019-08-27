@@ -11,7 +11,7 @@ const tinyCarib = ['tl', 'tr', 'br', 'bl']
   .reduce((acc, val) => acc.concat(val), []);
 const ellipseDim = {
   FJI: { width: 13, height: 18, angle: 0 },
-  KIR: { width: 55, height: 23, angle: 0 },
+  KIR: { width: 59, height: 23, angle: 3 },
   MHL: { width: 11, height: 13, angle: 0 },
   FSM: { width: 37, height: 9, angle: 10 },
   MNP: { width: 2, height: 8, angle: 7 },
@@ -21,7 +21,7 @@ const ellipseDim = {
   TON: { width: 3, height: 9, angle: 20 },
   PYF: { width: 30, height: 30, angle: 0 },
   PCN: { width: 8, height: 5, angle: 0 },
-  TUV: { width: 3, height: 7, angle: -65},
+  TUV: { width: 3, height: 10, angle: -45},
 };
 
 function labelDist(x, y, alpha3Code) {

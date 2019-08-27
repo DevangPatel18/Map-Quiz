@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
 const InfoTab = props => {
-  const { countryData } = props;
+  const { regionData } = props;
   const { infoTabShow } = props.quiz;
   const { geographyPaths } = props.data;
-  let { name, capital, population, area, regionOf } = countryData;
+  let { name, capital, population, area, regionOf } = regionData;
   let regionOfStr = '';
   population = population ? `${population.toLocaleString()}` : 'N/A';
   area = area ? `${area.toLocaleString()} km²` : 'N/A';
@@ -20,7 +20,7 @@ const InfoTab = props => {
     <InfoTabStyles infoTabShow={infoTabShow}>
       <img
         className="infoTab-flag"
-        src={countryData.flag}
+        src={regionData.flag}
         alt={`${name}-flag`}
       />
       <div className="infoTab-desc">

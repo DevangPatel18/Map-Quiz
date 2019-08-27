@@ -1,33 +1,31 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { regionSelect } from '../actions/mapActions';
+import { regionSelect, checkMapDataUpdate } from '../actions/mapActions';
+import { alpha3Codes } from '../assets/regionAlpha3Codes';
 import '../App.css';
 
-const regions = [
-  { text: 'World', value: 'World' },
-  { text: 'North & Central America', value: 'North & Central America' },
-  { text: 'South America', value: 'South America' },
-  { text: 'Caribbean', value: 'Caribbean' },
-  { text: 'Africa', value: 'Africa' },
-  { text: 'Europe', value: 'Europe' },
-  { text: 'Asia', value: 'Asia' },
-  { text: 'Oceania', value: 'Oceania' },
-];
+const regionOptions = Object.keys(alpha3Codes).map(regionText => ({
+  text: regionText,
+  value: regionText,
+}));
 
-const RegionButtons = ({ regionSelect }) => (
+const RegionButtons = ({ regionSelect, checkMapDataUpdate }) => (
   <div className="regionButtons">
     <Dropdown
       placeholder="Select Region Quiz"
       fluid
       selection
-      options={regions}
-      onChange={(e, data) => regionSelect(data.value)}
+      options={regionOptions}
+      onChange={(e, data) => {
+        checkMapDataUpdate(data.value);
+        regionSelect(data.value);
+      }}
     />
   </div>
 );
 
 export default connect(
   null,
-  { regionSelect }
+  { regionSelect, checkMapDataUpdate }
 )(RegionButtons);

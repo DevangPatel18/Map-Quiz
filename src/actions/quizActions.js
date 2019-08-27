@@ -2,7 +2,7 @@ import {
   SET_QUIZ_STATE,
   QUIZ_ANSWER,
   QUIZ_CLOSE,
-  COUNTRY_CLICK,
+  REGION_CLICK,
   DISABLE_OPT,
   SET_LABEL,
 } from './types';
@@ -41,7 +41,7 @@ export const closeQuiz = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const countryClick = geographyPath => async dispatch => {
+export const regionClick = geographyPath => async dispatch => {
   const {
     disableInfoClick,
     activeQuestionNum,
@@ -50,6 +50,7 @@ export const countryClick = geographyPath => async dispatch => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
+  const { regionKey } = store.getState().map;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
   if (!disableInfoClick) {
@@ -58,7 +59,7 @@ export const countryClick = geographyPath => async dispatch => {
       quizGuesses.length < quizAnswers.length
     ) {
       const result =
-        geoProperties.alpha3Code === quizAnswers[activeQuestionNum];
+        geoProperties[regionKey] === quizAnswers[activeQuestionNum];
       newSelectedProperties = result ? geoProperties : selectedProperties;
       await dispatch({
         type: QUIZ_ANSWER,
@@ -68,7 +69,7 @@ export const countryClick = geographyPath => async dispatch => {
         infoTabShow: false,
       });
       await dispatch({
-        type: COUNTRY_CLICK,
+        type: REGION_CLICK,
         selectedProperties: newSelectedProperties,
         infoTabShow: result,
       });
@@ -76,18 +77,18 @@ export const countryClick = geographyPath => async dispatch => {
     } else {
       if (geoProperties.name !== selectedProperties.name) {
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties: geoProperties,
           infoTabShow: false,
         });
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties: geoProperties,
           infoTabShow: true,
         });
       } else {
         await dispatch({
-          type: COUNTRY_CLICK,
+          type: REGION_CLICK,
           selectedProperties,
           infoTabShow: !infoTabShow,
         });
@@ -105,12 +106,13 @@ export const answerQuiz = (userGuess = null) => async dispatch => {
     quizType,
   } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
+  const { regionKey } = store.getState().map;
 
   if (userGuess) {
     let result;
 
     const answerProperties = geographyPaths.find(
-      geo => geo.properties.alpha3Code === quizAnswers[activeQuestionNum]
+      geo => geo.properties[regionKey] === quizAnswers[activeQuestionNum]
     ).properties;
 
     if (quizType.split('_')[1] === 'name') {

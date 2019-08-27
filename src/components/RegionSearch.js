@@ -1,55 +1,61 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { countrySelect } from '../actions/mapActions';
+import { regionZoom } from '../actions/mapActions';
 
-const CountrySearch = ({ map, data, countrySelect }) => {
-  const { currentMap, filterRegions } = map;
+const RegionSearch = ({ map, data, regionZoom }) => {
+  const { currentMap, filterRegions, regionKey } = map;
   const { geographyPaths } = data;
 
-  let countries = geographyPaths;
+  let mapRegions = geographyPaths;
   if (currentMap !== 'World') {
-    countries = countries.filter(x =>
-      filterRegions.includes(x.properties.alpha3Code)
+    mapRegions = mapRegions.filter(x =>
+      filterRegions.includes(x.properties[regionKey])
     );
   }
 
-  countries = countries
+  mapRegions = mapRegions
     .map(x => {
-      if (!x.properties.alpha2Code) {
-        return null;
+      let key;
+      let flag;
+      if (regionKey === 'alpha3Code') {
+        if (!x.properties.alpha2Code) {
+          return null;
+        }
+        key = x.properties.alpha2Code.toString().toLowerCase();
+        flag = { flag: key };
+      } else {
+        key = x.properties[regionKey];
       }
-      const y = x.properties.alpha2Code.toString().toLowerCase();
+
       return {
-        key: y,
-        flag: y,
+        key,
+        ...flag,
         text: x.properties.name,
-        value: x.properties.alpha3Code,
+        value: x.properties[regionKey],
       };
     })
     .filter(x => x !== null)
     .filter(
       x =>
-        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
-          x.key
-        )
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(x.key)
     )
     .sort((a, b) => (a.text > b.text ? 1 : -1));
 
   return (
-    <div className="countrySearch">
+    <div className="regionSearch">
       <Dropdown
         aria-label="user country search"
         placeholder="Select Country"
         fluid
         search
         selection
-        options={countries}
+        options={mapRegions}
         onChange={(e, d) => {
           let geography;
           if (e.code === 'Enter') {
             geography = geographyPaths.find(
-              x => x.properties.alpha3Code === d.value
+              x => x.properties[regionKey] === d.value
             );
           } else {
             geography = geographyPaths.find(
@@ -61,7 +67,7 @@ const CountrySearch = ({ map, data, countrySelect }) => {
             return;
           }
 
-          countrySelect(geography);
+          regionZoom(geography);
         }}
       />
     </div>
@@ -75,5 +81,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { countrySelect }
-)(CountrySearch);
+  { regionZoom }
+)(RegionSearch);

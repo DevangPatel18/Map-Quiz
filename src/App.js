@@ -7,12 +7,12 @@ import InfoTab from './components/infoTab/infoTab';
 import RegionButtons from './components/regionButtons';
 import QuizBox from './components/quizBox/quizBox';
 import handleDoubleClick from './components/handleDoubleClick';
-import CountrySearch from './components/countrySearch';
+import RegionSearch from './components/RegionSearch';
 import regionEllipses from './components/regionEllipses';
-import countryLabels from './components/countryLabels';
+import regionLabels from './components/regionLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
-import { countryClick } from './actions/quizActions';
+import { regionClick } from './actions/quizActions';
 import {
   setRegionCheckbox,
   zoomMap,
@@ -41,7 +41,7 @@ const panes = [
       <Tab.Pane attached={false}>
         <DropdownSelectionStyles>
           <RegionButtons />
-          <CountrySearch />
+          <RegionSearch />
         </DropdownSelectionStyles>
         <QuizBox />
       </Tab.Pane>
@@ -75,7 +75,7 @@ class App extends Component {
 
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
-    this.countryLabels = countryLabels.bind(this);
+    this.regionLabels = regionLabels.bind(this);
     this.toggleOrientation = this.toggleOrientation.bind(this);
     this.adjustMapSize = this.adjustMapSize.bind(this);
     this.handleMenu = this.handleMenu.bind(this);
@@ -155,7 +155,7 @@ class App extends Component {
   }
 
   markerClick = geographyPath => {
-    this.props.countryClick(geographyPath);
+    this.props.regionClick(geographyPath);
   };
 
   handleMenu() {
@@ -235,7 +235,7 @@ class App extends Component {
                     opacity: `${config.style.opacity}`,
                   }}
                 >
-                  <InfoTab countryData={config.data} />
+                  <InfoTab regionData={config.data} />
                 </div>
               ))}
             </div>
@@ -303,7 +303,7 @@ export default connect(
     zoomMap,
     recenterMap,
     setMap,
-    countryClick,
+    regionClick,
     tooltipMove,
     tooltipLeave,
   }

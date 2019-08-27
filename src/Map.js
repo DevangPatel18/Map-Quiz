@@ -9,7 +9,7 @@ import {
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
-import { countryClick } from './actions/quizActions';
+import { regionClick } from './actions/quizActions';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
 import ColorPicker from './components/colorPicker';
 
@@ -17,7 +17,7 @@ import ColorPicker from './components/colorPicker';
 React.PropTypes = PropTypes;
 
 const Map = props => {
-  const { map, data, countryClick, app, tooltipMove, tooltipLeave } = props
+  const { map, data, regionClick, app, tooltipMove, tooltipLeave } = props
   const {
     defaultZoom,
     center,
@@ -28,6 +28,8 @@ const Map = props => {
     disableOptimization,
     tooltip,
   } = map;
+
+  const isUsaMap = currentMap === 'United States of America'
 
   const { geographyPaths } = data
 
@@ -41,6 +43,9 @@ const Map = props => {
       };
     
   const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
+  const mapProjection = isUsaMap ? 'mercator' : 'times';
+  const mapScale = isUsaMap ? 180 : scale;
+
   return (
     <Motion
       defaultStyle={{
@@ -60,7 +65,8 @@ const Map = props => {
           // onDoubleClick={app.handleDoubleClick}
         >
           <ComposableMap
-            projectionConfig={{ scale, rotation }}
+            projection={mapProjection}
+            projectionConfig={{ scale: mapScale, rotation }}
             width={dimensions[0]}
             height={dimensions[1]}
             style={{
@@ -104,6 +110,9 @@ const Map = props => {
                   if (currentMap === 'Oceania') {
                     key = `oceania-${i}-${orientation}`;
                     cacheId = `oceania-${i}-${orientation}`;
+                  } else if (currentMap === 'United States of America') {
+                    key = `usa-${i}-${orientation}`;
+                    cacheId = `usa-${i}-${orientation}`;
                   } else {
                     key = `geography-${i}-${orientation}`;
                     cacheId = `geography-${i}-${orientation}`;
@@ -114,7 +123,7 @@ const Map = props => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={countryClick}
+                      onClick={regionClick}
                       {...mouseHandlers}
                       fill="white"
                       stroke={strokeColor}
@@ -140,7 +149,7 @@ const Map = props => {
               {app.regionEllipses()}
               {
                 // Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                (currentMap !== 'World') && app.countryLabels()
+                (currentMap !== 'World') && app.regionLabels()
               }
             </ZoomableGroup>
           </ComposableMap>
@@ -159,5 +168,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { countryClick, tooltipMove, tooltipLeave }
+  { regionClick, tooltipMove, tooltipLeave }
 )(Map);

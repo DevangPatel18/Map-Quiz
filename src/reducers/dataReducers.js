@@ -1,13 +1,23 @@
-import { LOAD_PATHS, LOAD_DATA } from '../actions/types';
+import { LOAD_PATHS, LOAD_DATA, LOAD_REGION_DATA } from '../actions/types';
 
 const initialState = {
   geographyPaths: [],
-  countryMarkers: [],
+  regionMarkers: [],
   capitalMarkers: [],
   populationData: {},
+  regionDataSets: {},
 };
 
 export default function(state = initialState, action) {
+  const {
+    geographyPaths,
+    regionMarkers,
+    capitalMarkers,
+    populationData,
+    regionDataSets,
+    usMap,
+  } = action;
+
   switch (action.type) {
     case LOAD_PATHS:
       return {
@@ -15,18 +25,22 @@ export default function(state = initialState, action) {
         geographyPaths: action.geographyPaths,
       };
     case LOAD_DATA:
-      const {
-        geographyPaths,
-        countryMarkers,
-        capitalMarkers,
-        populationData,
-      } = action;
       return {
         ...state,
         geographyPaths,
-        countryMarkers,
+        regionMarkers,
         capitalMarkers,
         populationData,
+        regionDataSets,
+        usMap,
+      };
+    case LOAD_REGION_DATA:
+      return {
+        ...state,
+        geographyPaths,
+        regionMarkers,
+        capitalMarkers,
+        regionDataSets,
       };
     default:
       return state;

@@ -15,10 +15,12 @@ const ColorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
+  const { regionKey } = store.getState().map;
   const { filterRegions, currentMap, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
-  const { alpha3Code } = geo.properties;
+  const { regionOf } = geo.properties;
+  const regionID = geo.properties[regionKey]
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
   let pressedColor = 'rgb(0, 70, 0)';
@@ -33,15 +35,15 @@ const ColorPicker = geo => {
   }
 
   if (quiz === true) {
-    const geoQuizIdx = quizAnswers.indexOf(alpha3Code);
+    const geoQuizIdx = quizAnswers.indexOf(regionID);
 
-    // Fills country with name input request as yellow
-    if (disableInfoClick && quizAnswers[activeQuestionNum] === alpha3Code) {
+    // Fills region with name input request as yellow
+    if (disableInfoClick && quizAnswers[activeQuestionNum] === regionID) {
       defaultColor = PROMPT_COLOR;
       hoverColor = PROMPT_COLOR;
     }
 
-    // Fills correct status of country name guess, green for correct and red for incorrect
+    // Fills correct status of region name guess, green for correct and red for incorrect
     if (disableInfoClick) {
       if (quizGuesses[geoQuizIdx] !== undefined) {
         const answer = quizGuesses[geoQuizIdx][1]
@@ -52,17 +54,17 @@ const ColorPicker = geo => {
       }
     }
 
-    // Fills incorrect country clicks red
-    if (!disableInfoClick && alpha3Code !== quizAnswers[activeQuestionNum]) {
+    // Fills incorrect region clicks red
+    if (!disableInfoClick && regionID !== quizAnswers[activeQuestionNum]) {
       pressedColor = WRONG_ANSWER_COLOR;
     }
 
-    // Fills correct country clicks green
-    if (!disableInfoClick && alpha3Code === quizAnswers[activeQuestionNum]) {
+    // Fills correct region clicks green
+    if (!disableInfoClick && regionID === quizAnswers[activeQuestionNum]) {
       pressedColor = RIGHT_ANSWER_COLOR;
     }
 
-    // Fills correct country click guesses as green
+    // Fills correct region click guesses as green
     if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
       defaultColor = RIGHT_ANSWER_COLOR;
       hoverColor = RIGHT_ANSWER_COLOR;
@@ -70,12 +72,12 @@ const ColorPicker = geo => {
   }
 
   let render = true;
-  let onQuiz = filterRegions.indexOf(alpha3Code) !== -1;
+  let onQuiz = filterRegions.includes(regionID);
   if (currentMap !== 'World') {
     render = onQuiz;
   } else {
-    defaultColor = !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
-    strokeWidth = !onQuiz ? 0.01 : strokeWidth;
+    defaultColor = !regionOf && !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
+    strokeWidth = !isSelected && !regionOf && !onQuiz ? 0.01 : strokeWidth;
   }
 
   if (choropleth !== 'None' && !quiz) {
