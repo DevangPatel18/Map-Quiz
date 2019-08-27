@@ -1,7 +1,13 @@
-import { geoPath } from 'd3-geo';
 import { actions } from 'redux-tooltip';
-import Papa from 'papaparse';
-import projection from '../helpers/projection';
+import {
+  getStatesForRegionSelect,
+  getGeographyPaths,
+  getRegionMarkers,
+  addRegionDataToGeographyPaths,
+  getCapitalMarkers,
+  getSubRegionName,
+  getGeoPathCenterAndZoom,
+} from '../helpers/mapActionHelpers';
 import {
   CHANGE_MAP_VIEW,
   REGION_SELECT,
@@ -18,27 +24,11 @@ import {
   LOAD_REGION_DATA,
 } from './types';
 import store from '../store';
-import {
-  alpha3Codes,
-  mapConfig,
-  alpha3CodesSov,
-} from '../assets/regionAlpha3Codes';
+import { alpha3Codes, alpha3CodesSov } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
 
 const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
-
-const geoPathLinks = {
-  'United States of America': {
-    geoJSON:
-      'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
-    data:
-      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566493791/Map%20Quiz/usData.csv',
-    capitalLatLng:
-      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
-    subRegionName: 'state',
-  },
-};
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -57,20 +47,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { center, zoom } = mapConfig[regionName];
-  const map = {
-    zoom,
-    center,
-    defaultZoom: zoom,
-    defaultCenter: center,
-    currentMap: regionName,
-    filterRegions: alpha3Codes[regionName],
-    markerToggle: '',
-  };
-  const quiz = {
-    selectedProperties: '',
-    markerToggle: '',
-  };
+  const { map, quiz } = getStatesForRegionSelect(regionName);
 
   await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
   dispatch({ type: DISABLE_OPT });
@@ -114,68 +91,14 @@ export const checkMapDataUpdate = regionName => async dispatch => {
         subRegionName,
       });
     } else {
-      const newGeographyPaths = await fetch(
-        geoPathLinks[regionDataSetKey].geoJSON
-      )
-        .then(response => response.json())
-        .then(featureCollection => featureCollection.features);
-
-      const newRegionMarkers = newGeographyPaths.map(x => {
-        const { name, postal } = x.properties;
-        const path = geoPath().projection(projection());
-        return {
-          name,
-          regionID: postal,
-          coordinates: projection().invert(path.centroid(x)),
-          markerOffset: 0,
-        };
-      });
-
-      await fetch(geoPathLinks[regionDataSetKey].data)
-        .then(response => response.text())
-        .then(csvtext => {
-          Papa.parse(csvtext, {
-            header: true,
-            skipEmptyLines: true,
-            step: row => {
-              let geo = newGeographyPaths.find(
-                obj => obj.properties.postal === row.data['regionID']
-              );
-              if (geo) {
-                geo.properties = { ...geo.properties, ...row.data };
-                const { area, population, name } = geo.properties;
-                geo.properties.area = +area;
-                geo.properties.population = +population;
-                geo.properties.spellings = [name];
-              }
-            },
-          });
-        });
-
-      const newCapitalMarkers = [];
-      await fetch(geoPathLinks[regionDataSetKey].capitalLatLng)
-        .then(response => response.text())
-        .then(csvtext => {
-          Papa.parse(csvtext, {
-            header: true,
-            skipEmptyLines: true,
-            step: row => {
-              let geo = newGeographyPaths.find(
-                obj => obj.properties.postal === row.data['regionID']
-              );
-              if (geo) {
-                newCapitalMarkers.push({
-                  name: geo.properties.capital,
-                  regionID: row.data['regionID'],
-                  coordinates: [+row.data['lng'], +row.data['lat']],
-                  markerOffset: -7,
-                });
-              }
-            },
-          });
-        });
-
-      const { subRegionName } = geoPathLinks[regionName];
+      const newGeographyPaths = await getGeographyPaths(regionDataSetKey);
+      const newRegionMarkers = getRegionMarkers(newGeographyPaths);
+      await addRegionDataToGeographyPaths(newGeographyPaths, regionDataSetKey);
+      const newCapitalMarkers = await getCapitalMarkers(
+        newGeographyPaths,
+        regionDataSetKey
+      );
+      const subRegionName = getSubRegionName(regionName);
 
       const updatedRegionDataSets = {
         ...regionDataSets,
@@ -200,22 +123,8 @@ export const checkMapDataUpdate = regionName => async dispatch => {
 };
 
 export const regionZoom = geographyPath => async dispatch => {
-  const { regionMarkers } = store.getState().data;
-  const { dimensions, regionKey } = store.getState().map;
   const { properties } = geographyPath;
-
-  const center = regionMarkers.find(x => x[regionKey] === properties[regionKey])
-    .coordinates;
-
-  const path = geoPath().projection(projection());
-  const bounds = path.bounds(geographyPath);
-  const width = bounds[1][0] - bounds[0][0];
-  const height = bounds[1][1] - bounds[0][1];
-  let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
-
-  zoom = properties[regionKey] === 'USA' ? zoom * 6 : zoom;
-
-  zoom = Math.min(zoom, 64);
+  const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
     type: REGION_SELECT,
     selectedProperties: properties,
