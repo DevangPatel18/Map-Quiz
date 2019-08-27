@@ -3,7 +3,6 @@ import {
   getStatesForRegionSelect,
   getGeographyPaths,
   getRegionMarkers,
-  addRegionDataToGeographyPaths,
   getCapitalMarkers,
   getSubRegionName,
   getGeoPathCenterAndZoom,
@@ -93,7 +92,6 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     } else {
       const newGeographyPaths = await getGeographyPaths(regionDataSetKey);
       const newRegionMarkers = getRegionMarkers(newGeographyPaths);
-      await addRegionDataToGeographyPaths(newGeographyPaths, regionDataSetKey);
       const newCapitalMarkers = await getCapitalMarkers(
         newGeographyPaths,
         regionDataSetKey

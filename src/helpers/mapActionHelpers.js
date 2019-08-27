@@ -34,10 +34,15 @@ export const getStatesForRegionSelect = regionName => {
   return { map, quiz };
 };
 
-export const getGeographyPaths = async regionName =>
-  await fetch(geoPathLinks[regionName].geoJSON)
+export const getGeographyPaths = async regionName => {
+  const geographyPaths = await fetch(geoPathLinks[regionName].geoJSON)
     .then(response => response.json())
     .then(featureCollection => featureCollection.features);
+
+  await addRegionDataToGeographyPaths(geographyPaths, regionName);
+
+  return geographyPaths;
+};
 
 export const getRegionMarkers = geographyPaths =>
   geographyPaths.map(x => {
