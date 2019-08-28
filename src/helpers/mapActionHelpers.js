@@ -128,3 +128,11 @@ export const getGeoPathCenterAndZoom = geographyPath => {
   zoom = Math.min(zoom, 64);
   return { center, zoom };
 };
+
+export const getNewRegionDataSet = async regionKey => {
+  const geographyPaths = await getGeographyPaths(regionKey);
+  const regionMarkers = getRegionMarkers(geographyPaths);
+  const capitalMarkers = await getCapitalMarkers(geographyPaths, regionKey);
+  const subRegionName = getSubRegionName(regionKey);
+  return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
+};
