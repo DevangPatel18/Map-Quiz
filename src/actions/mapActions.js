@@ -1,7 +1,7 @@
 import { actions } from 'redux-tooltip';
 import {
   getStatesForRegionSelect,
-  getNewRegionDataSet,
+  getUpdatedRegionDataSets,
   getGeoPathCenterAndZoom,
 } from '../helpers/mapActionHelpers';
 import {
@@ -73,22 +73,9 @@ export const checkMapDataUpdate = regionName => async dispatch => {
       ? 'World'
       : regionName;
     if (!regionDataSets[regionDataSetKey]) {
-      const {
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        subRegionName,
-      } = await getNewRegionDataSet(regionDataSetKey);
-
-      const updatedRegionDataSets = {
-        ...regionDataSets,
-        [regionDataSetKey]: {
-          geographyPaths,
-          regionMarkers,
-          capitalMarkers,
-          subRegionName,
-        },
-      };
+      const updatedRegionDataSets = await getUpdatedRegionDataSets(
+        regionDataSetKey
+      );
 
       await dispatch({
         type: ADD_REGION_DATA,
@@ -96,19 +83,11 @@ export const checkMapDataUpdate = regionName => async dispatch => {
       });
       regionDataSets = store.getState().data.regionDataSets;
     }
-    const {
-      geographyPaths,
-      regionMarkers,
-      capitalMarkers,
-      subRegionName,
-    } = regionDataSets[regionDataSetKey];
+    const regionDataSet = regionDataSets[regionDataSetKey];
 
     await dispatch({
       type: LOAD_REGION_DATA,
-      geographyPaths,
-      regionMarkers,
-      capitalMarkers,
-      subRegionName,
+      ...regionDataSet,
     });
   }
 };
