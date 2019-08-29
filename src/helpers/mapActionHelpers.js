@@ -136,3 +136,9 @@ export const getNewRegionDataSet = async regionKey => {
   const subRegionName = getSubRegionName(regionKey);
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
+
+export const getUpdatedRegionDataSets = async regionKey => {
+  const { regionDataSets } = store.getState().data;
+  const newRegionDataSet = await getNewRegionDataSet(regionKey);
+  return { ...regionDataSets, [regionKey]: newRegionDataSet };
+};
