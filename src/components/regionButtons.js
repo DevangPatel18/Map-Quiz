@@ -17,8 +17,8 @@ const RegionButtons = ({ regionSelect, checkMapDataUpdate }) => (
       fluid
       selection
       options={regionOptions}
-      onChange={(e, data) => {
-        checkMapDataUpdate(data.value);
+      onChange={async (e, data) => {
+        await checkMapDataUpdate(data.value);
         regionSelect(data.value);
       }}
     />

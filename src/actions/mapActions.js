@@ -18,6 +18,7 @@ import {
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
   LOAD_REGION_DATA,
+  ADD_REGION_DATA,
 } from './types';
 import store from '../store';
 import { alpha3Codes, alpha3CodesSov } from '../assets/regionAlpha3Codes';
@@ -63,7 +64,7 @@ export const regionSelect = regionName => async dispatch => {
 
 export const checkMapDataUpdate = regionName => async dispatch => {
   const { currentMap } = store.getState().map;
-  const { regionDataSets } = store.getState().data;
+  let { regionDataSets } = store.getState().data;
 
   if (
     !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
@@ -71,22 +72,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     const regionDataSetKey = WorldRegions.includes(regionName)
       ? 'World'
       : regionName;
-    if (regionDataSets[regionDataSetKey]) {
-      const {
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        subRegionName,
-      } = regionDataSets[regionDataSetKey];
-      await dispatch({
-        type: LOAD_REGION_DATA,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        regionDataSets,
-        subRegionName,
-      });
-    } else {
+    if (!regionDataSets[regionDataSetKey]) {
       const {
         geographyPaths,
         regionMarkers,
@@ -105,14 +91,25 @@ export const checkMapDataUpdate = regionName => async dispatch => {
       };
 
       await dispatch({
-        type: LOAD_REGION_DATA,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
+        type: ADD_REGION_DATA,
         regionDataSets: updatedRegionDataSets,
-        subRegionName,
       });
+      regionDataSets = store.getState().data.regionDataSets;
     }
+    const {
+      geographyPaths,
+      regionMarkers,
+      capitalMarkers,
+      subRegionName,
+    } = regionDataSets[regionDataSetKey];
+
+    await dispatch({
+      type: LOAD_REGION_DATA,
+      geographyPaths,
+      regionMarkers,
+      capitalMarkers,
+      subRegionName,
+    });
   }
 };
 
