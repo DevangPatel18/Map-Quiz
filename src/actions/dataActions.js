@@ -1,35 +1,26 @@
 import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT } from './types';
-import { feature } from 'topojson-client';
+import { geoPath } from 'd3-geo';
+import Papa from 'papaparse';
 import {
   DataFix,
   CountryMarkersFix,
   CapitalMarkersFix,
-  GeoPathsMod,
+  modifyWorldGeographyPaths,
 } from '../helpers/attributeFix';
-import { geoPath } from 'd3-geo';
 import capitalData from '../assets/country_capitals';
+import {
+  getWorldTopology,
+  getWorldGeographyPaths,
+} from '../helpers/dataActionHelpers';
 import projection from '../helpers/projection';
 import store from '../store';
-import Papa from 'papaparse';
 
 export const loadPaths = () => async dispatch => {
-  const worldData = await fetch('/world-50m.json').then(response => {
-    if (response.status !== 200) {
-      console.log(`There was a problem: ${response.status}`);
-      return;
-    }
-    return response.json();
-  });
+  const worldTopology = await getWorldTopology();
+  let geographyPaths = getWorldGeographyPaths(worldTopology);
+  geographyPaths = modifyWorldGeographyPaths(geographyPaths);
 
-  let data = feature(worldData, worldData.objects.countries).features;
-
-  // Remove Antarctica and invalid iso codes
-  data = data.filter(x => (+x.id !== 10 ? 1 : 0));
-
-  // Create geopaths for external regions and other changes
-  data = GeoPathsMod(data);
-
-  await dispatch({ type: LOAD_PATHS, geographyPaths: data });
+  await dispatch({ type: LOAD_PATHS, geographyPaths });
   dispatch({ type: DISABLE_OPT });
 };
 
