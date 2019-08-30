@@ -1,9 +1,8 @@
 import { moroccoGeo, westernSaharaGeo, tuvaluGeo } from './borderUpdate'
 
 // Change entries of data object
-const DataFix = ({data, capitalMarkers}) => {
+const DataFix = data => {
   let countryData = data.slice();
-  let capitalMarkersData = capitalMarkers.slice();
 
   // Add missing country variants
   countryData.find(x => x.alpha3Code === 'COG').altSpellings = ['Republic of the Congo'];
@@ -79,21 +78,6 @@ const DataFix = ({data, capitalMarkers}) => {
     countryData.find(x => x.alpha3Code === obj.alpha)[obj.attribute] = obj.value;
   });
 
-  // Add capitals for Overseas regions
-  const extraCapitals = [
-    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
-    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
-    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
-    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
-    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
-    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
-    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
-  ];
-
-  extraCapitals.forEach((capitalObj) => {
-    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
-  });
-
   // Add "Region of" designation for overseas regions
   const overseasRegions = {
     NZL: ['COK', 'NIU', 'TKL'],
@@ -114,7 +98,7 @@ const DataFix = ({data, capitalMarkers}) => {
     });
   });
 
-  return [countryData, capitalMarkersData]
+  return countryData
 }
 
 const modifyWorldGeographyPaths = (geoPath) => {
@@ -257,6 +241,21 @@ const CapitalMarkersFix = (capitalMarkers) => {
   capitalFix.forEach(fix => {
     idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0])
     capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
+  });
+
+  // Add capitals for Overseas regions
+  const extraCapitals = [
+    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
+    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
+    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
+    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
+    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
+    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
+    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
+  ];
+
+  extraCapitals.forEach((capitalObj) => {
+    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
   });
 
   return capitalMarkersData;

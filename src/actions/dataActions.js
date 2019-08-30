@@ -31,7 +31,7 @@ export const loadData = () => async dispatch => {
 
   let capitalMarkers = [];
 
-  [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
+  restData = DataFix(restData);
 
   geographyPaths
     .filter(x => (+x.id !== -99 ? 1 : 0))
