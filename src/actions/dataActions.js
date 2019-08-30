@@ -1,6 +1,4 @@
 import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT } from './types';
-import { geoPath } from 'd3-geo';
-import Papa from 'papaparse';
 import {
   DataFix,
   CountryMarkersFix,
@@ -11,9 +9,11 @@ import capitalData from '../assets/country_capitals';
 import {
   getWorldTopology,
   getWorldGeographyPaths,
+  copyWorldGeographyPaths,
+  getRestCountryData,
+  getPopulationData,
+  getRegionMarkers,
 } from '../helpers/dataActionHelpers';
-import projection from '../helpers/projection';
-import store from '../store';
 
 export const loadPaths = () => async dispatch => {
   const worldTopology = await getWorldTopology();
@@ -25,48 +25,10 @@ export const loadPaths = () => async dispatch => {
 };
 
 export const loadData = () => async dispatch => {
-  let geographyPaths = store
-    .getState()
-    .data.geographyPaths.map(a => ({ ...a }));
-  const fields = [
-    'name',
-    'alpha3Code',
-    'alpha2Code',
-    'numericCode',
-    'area',
-    'population',
-    'gini',
-    'capital',
-    'flag',
-    'altSpellings',
-    'translations',
-  ];
+  let geographyPaths = copyWorldGeographyPaths();
+  let restData = await getRestCountryData();
+  const populationData = await getPopulationData();
 
-  let restData = await fetch(
-    `https://restcountries.eu/rest/v2/all?fields=${fields.join(';')}`
-  ).then(restCountries => {
-    if (restCountries.status !== 200) {
-      console.log(`There was a problem: ${restCountries.status}`);
-      return;
-    }
-    return restCountries.json();
-  });
-
-  let populationData = {};
-
-  await fetch('popdata.csv')
-    .then(response => response.text())
-    .then(csvtext => {
-      Papa.parse(csvtext, {
-        header: true,
-        skipEmptyLines: true,
-        step: row => {
-          populationData[row.data['Country Code']] = row.data;
-        },
-      });
-    });
-
-  let regionMarkers = [];
   let capitalMarkers = [];
 
   [restData, capitalMarkers] = DataFix({ data: restData, capitalMarkers });
@@ -86,12 +48,12 @@ export const loadData = () => async dispatch => {
       // Update population to 2018 figures
 
       if (populationData[countryData.alpha3Code]) {
-        geography.properties.population = parseInt(
-          populationData[countryData.alpha3Code]['2018']
-        );
+        geography.properties.population = +populationData[
+          countryData.alpha3Code
+        ]['2018'];
       }
 
-      geography.properties.density = parseInt(
+      geography.properties.density = +(
         geography.properties.population / geography.properties.area
       );
 
@@ -114,41 +76,25 @@ export const loadData = () => async dispatch => {
       }
     });
 
-  geographyPaths.forEach(x => {
-    const { alpha3Code } = x.properties;
-    const path = geoPath().projection(projection());
-    regionMarkers.push([projection().invert(path.centroid(x)), alpha3Code]);
-  });
-
-  regionMarkers = regionMarkers.map(array => ({
-    name: geographyPaths.find(x => x.properties.alpha3Code === array[1])
-      .properties.name,
-    alpha3Code: array[1],
-    coordinates: array[0],
-    markerOffset: 0,
-  }));
+  let regionMarkers = getRegionMarkers(geographyPaths);
 
   regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
-  const subRegionName = 'country';
 
-  const regionDataSets = {
-    World: {
-      geographyPaths,
-      regionMarkers,
-      capitalMarkers,
-      subRegionName,
-    },
-  };
-
-  await dispatch({
-    type: LOAD_DATA,
+  const World = {
     geographyPaths,
     regionMarkers,
     capitalMarkers,
-    populationData,
+    subRegionName: 'country',
+  };
+
+  const regionDataSets = { World };
+
+  await dispatch({
+    type: LOAD_DATA,
+    ...World,
     regionDataSets,
-    subRegionName,
+    populationData,
   });
 
   dispatch({ type: DISABLE_OPT });
