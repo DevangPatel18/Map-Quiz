@@ -61,6 +61,17 @@ export const getPopulationData = async () => {
   return populationData;
 };
 
+export const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
+  geographyPaths
+    .filter(x => (+x.id !== -99 ? 1 : 0))
+    .forEach(geography => {
+      const { alpha3Code, area } = geography.properties;
+      if (populationData[alpha3Code]) {
+        geography.properties.population = +populationData[alpha3Code]['2018'];
+      }
+      geography.properties.density = +(geography.properties.population / area);
+    });
+
 export const getCapitalMarkers = geographyPaths =>
   geographyPaths
     .filter(x => (+x.id !== -99 ? 1 : 0))

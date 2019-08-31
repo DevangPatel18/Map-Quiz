@@ -13,6 +13,7 @@ import {
   getPopulationData,
   getRegionMarkers,
   getCapitalMarkers,
+  updatePopDataInGeoPaths,
 } from '../helpers/dataActionHelpers';
 
 export const loadPaths = () => async dispatch => {
@@ -41,19 +42,9 @@ export const loadData = () => async dispatch => {
         ...countryData.altSpellings,
         ...Object.values(countryData.translations),
       ];
-
-      // Update population to 2018 figures
-
-      if (populationData[countryData.alpha3Code]) {
-        geography.properties.population = +populationData[
-          countryData.alpha3Code
-        ]['2018'];
-      }
-
-      geography.properties.density = +(
-        geography.properties.population / geography.properties.area
-      );
     });
+
+  updatePopDataInGeoPaths(populationData, geographyPaths);
 
   let regionMarkers = getRegionMarkers(geographyPaths);
   let capitalMarkers = getCapitalMarkers(geographyPaths);
