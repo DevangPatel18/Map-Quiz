@@ -1,20 +1,10 @@
 import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT } from './types';
-import {
-  DataFix,
-  CountryMarkersFix,
-  CapitalMarkersFix,
-  modifyWorldGeographyPaths,
-} from '../helpers/attributeFix';
+import { modifyWorldGeographyPaths } from '../helpers/attributeFix';
 import {
   getWorldTopology,
   getWorldGeographyPaths,
-  copyWorldGeographyPaths,
-  getRestCountryData,
   getPopulationData,
-  getRegionMarkers,
-  getCapitalMarkers,
-  updatePopDataInGeoPaths,
-  addRestDataToGeoPaths,
+  getWorldDataSet,
 } from '../helpers/dataActionHelpers';
 
 export const loadPaths = () => async dispatch => {
@@ -27,32 +17,14 @@ export const loadPaths = () => async dispatch => {
 };
 
 export const loadData = () => async dispatch => {
-  let geographyPaths = copyWorldGeographyPaths();
-  let restData = await getRestCountryData();
   const populationData = await getPopulationData();
-  restData = DataFix(restData);
+  const worldDataSet = await getWorldDataSet(populationData);
 
-  addRestDataToGeoPaths(restData, geographyPaths);
-  updatePopDataInGeoPaths(populationData, geographyPaths);
-
-  let regionMarkers = getRegionMarkers(geographyPaths);
-  let capitalMarkers = getCapitalMarkers(geographyPaths);
-
-  regionMarkers = CountryMarkersFix(regionMarkers);
-  capitalMarkers = CapitalMarkersFix(capitalMarkers);
-
-  const World = {
-    geographyPaths,
-    regionMarkers,
-    capitalMarkers,
-    subRegionName: 'country',
-  };
-
-  const regionDataSets = { World };
+  const regionDataSets = { World: { ...worldDataSet } };
 
   await dispatch({
     type: LOAD_DATA,
-    ...World,
+    ...worldDataSet,
     regionDataSets,
     populationData,
   });

@@ -4,6 +4,11 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import store from '../store';
 import capitalData from '../assets/country_capitals';
+import {
+  DataFix,
+  CountryMarkersFix,
+  CapitalMarkersFix,
+} from '../helpers/attributeFix';
 
 const restDataFields = [
   'name',
@@ -117,3 +122,25 @@ export const getRegionMarkers = geographyPaths =>
       markerOffset: 0,
     };
   });
+
+export const getWorldDataSet = async populationData => {
+  let geographyPaths = copyWorldGeographyPaths();
+  let restData = await getRestCountryData();
+  restData = DataFix(restData);
+
+  addRestDataToGeoPaths(restData, geographyPaths);
+  updatePopDataInGeoPaths(populationData, geographyPaths);
+
+  let regionMarkers = getRegionMarkers(geographyPaths);
+  let capitalMarkers = getCapitalMarkers(geographyPaths);
+
+  regionMarkers = CountryMarkersFix(regionMarkers);
+  capitalMarkers = CapitalMarkersFix(capitalMarkers);
+
+  return {
+    geographyPaths,
+    regionMarkers,
+    capitalMarkers,
+    subRegionName: 'country',
+  };
+};
