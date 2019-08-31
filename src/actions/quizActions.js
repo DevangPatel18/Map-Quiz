@@ -6,6 +6,10 @@ import {
   DISABLE_OPT,
   SET_LABEL,
 } from './types';
+import {
+  generateAnswerArray,
+  generateQuizState,
+} from '../helpers/quizActionHelpers';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
 
@@ -16,22 +20,8 @@ const simple = str =>
 
 export const startQuiz = quizType => async dispatch => {
   const { filterRegions } = store.getState().map;
-  const quizAnswers = [...filterRegions];
-  quizAnswers.reduce((dum1, dum2, i) => {
-    const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
-    [quizAnswers[i], quizAnswers[j]] = [quizAnswers[j], quizAnswers[i]];
-    return quizAnswers;
-  }, quizAnswers);
-
-  const quiz = {
-    quizAnswers,
-    quizType,
-    quiz: true,
-    activeQuestionNum: 0,
-    quizGuesses: [],
-    selectedProperties: '',
-    disableInfoClick: quizType.split('_')[0] === 'type',
-  };
+  const quizAnswers = generateAnswerArray(filterRegions);
+  const quiz = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: SET_QUIZ_STATE, quiz });
   dispatch({ type: DISABLE_OPT });
 };
