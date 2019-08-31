@@ -5,7 +5,6 @@ import {
   CapitalMarkersFix,
   modifyWorldGeographyPaths,
 } from '../helpers/attributeFix';
-import capitalData from '../assets/country_capitals';
 import {
   getWorldTopology,
   getWorldGeographyPaths,
@@ -13,6 +12,7 @@ import {
   getRestCountryData,
   getPopulationData,
   getRegionMarkers,
+  getCapitalMarkers,
 } from '../helpers/dataActionHelpers';
 
 export const loadPaths = () => async dispatch => {
@@ -28,9 +28,6 @@ export const loadData = () => async dispatch => {
   let geographyPaths = copyWorldGeographyPaths();
   let restData = await getRestCountryData();
   const populationData = await getPopulationData();
-
-  let capitalMarkers = [];
-
   restData = DataFix(restData);
 
   geographyPaths
@@ -56,27 +53,10 @@ export const loadData = () => async dispatch => {
       geography.properties.density = +(
         geography.properties.population / geography.properties.area
       );
-
-      const captemp = capitalData.find(
-        capital => capital.CountryCode === countryData.alpha2Code
-      );
-
-      if (captemp) {
-        const capitalCoords = [
-          +captemp.CapitalLongitude,
-          +captemp.CapitalLatitude,
-        ];
-
-        capitalMarkers.push({
-          name: countryData.capital,
-          alpha3Code: countryData.alpha3Code,
-          coordinates: capitalCoords,
-          markerOffset: -7,
-        });
-      }
     });
 
   let regionMarkers = getRegionMarkers(geographyPaths);
+  let capitalMarkers = getCapitalMarkers(geographyPaths);
 
   regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);

@@ -3,6 +3,7 @@ import projection from './projection';
 import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import store from '../store';
+import capitalData from '../assets/country_capitals';
 
 const restDataFields = [
   'name',
@@ -59,6 +60,28 @@ export const getPopulationData = async () => {
     });
   return populationData;
 };
+
+export const getCapitalMarkers = geographyPaths =>
+  geographyPaths
+    .filter(x => (+x.id !== -99 ? 1 : 0))
+    .reduce((capitalMarkers, geography) => {
+      const { capital, alpha2Code, alpha3Code } = geography.properties;
+      const capObject = capitalData.find(
+        capitalObj => capitalObj.CountryCode === alpha2Code
+      );
+      if (capObject) {
+        capitalMarkers.push({
+          name: capital,
+          alpha3Code,
+          coordinates: [
+            +capObject.CapitalLongitude,
+            +capObject.CapitalLatitude,
+          ],
+          markerOffset: -7,
+        });
+      }
+      return capitalMarkers;
+    }, []);
 
 export const getRegionMarkers = geographyPaths =>
   geographyPaths.map(x => {
