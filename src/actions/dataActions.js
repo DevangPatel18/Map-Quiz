@@ -14,6 +14,7 @@ import {
   getRegionMarkers,
   getCapitalMarkers,
   updatePopDataInGeoPaths,
+  addRestDataToGeoPaths,
 } from '../helpers/dataActionHelpers';
 
 export const loadPaths = () => async dispatch => {
@@ -31,19 +32,7 @@ export const loadData = () => async dispatch => {
   const populationData = await getPopulationData();
   restData = DataFix(restData);
 
-  geographyPaths
-    .filter(x => (+x.id !== -99 ? 1 : 0))
-    .forEach(geography => {
-      const countryData = restData.find(c => +c.numericCode === +geography.id);
-
-      geography.properties = countryData;
-      geography.properties.spellings = [
-        countryData.name,
-        ...countryData.altSpellings,
-        ...Object.values(countryData.translations),
-      ];
-    });
-
+  addRestDataToGeoPaths(restData, geographyPaths);
   updatePopDataInGeoPaths(populationData, geographyPaths);
 
   let regionMarkers = getRegionMarkers(geographyPaths);

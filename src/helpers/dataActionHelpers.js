@@ -61,20 +61,32 @@ export const getPopulationData = async () => {
   return populationData;
 };
 
+const checkGeoPathValidId = geographyPath => +geographyPath.id !== -99;
+
+export const addRestDataToGeoPaths = (restData, geographyPaths) =>
+  geographyPaths.filter(checkGeoPathValidId).forEach(geography => {
+    const countryData = restData.find(c => +c.numericCode === +geography.id);
+
+    geography.properties = countryData;
+    geography.properties.spellings = [
+      countryData.name,
+      ...countryData.altSpellings,
+      ...Object.values(countryData.translations),
+    ];
+  });
+
 export const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
-  geographyPaths
-    .filter(x => (+x.id !== -99 ? 1 : 0))
-    .forEach(geography => {
-      const { alpha3Code, area } = geography.properties;
-      if (populationData[alpha3Code]) {
-        geography.properties.population = +populationData[alpha3Code]['2018'];
-      }
-      geography.properties.density = +(geography.properties.population / area);
-    });
+  geographyPaths.filter(checkGeoPathValidId).forEach(geography => {
+    const { alpha3Code, area } = geography.properties;
+    if (populationData[alpha3Code]) {
+      geography.properties.population = +populationData[alpha3Code]['2018'];
+    }
+    geography.properties.density = +(geography.properties.population / area);
+  });
 
 export const getCapitalMarkers = geographyPaths =>
   geographyPaths
-    .filter(x => (+x.id !== -99 ? 1 : 0))
+    .filter(checkGeoPathValidId)
     .reduce((capitalMarkers, geography) => {
       const { capital, alpha2Code, alpha3Code } = geography.properties;
       const capObject = capitalData.find(
