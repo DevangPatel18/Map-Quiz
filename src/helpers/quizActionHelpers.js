@@ -1,3 +1,5 @@
+import store from '../store';
+
 export const generateAnswerArray = filterRegions => {
   const quizAnswers = [...filterRegions];
   return quizAnswers.reduce((dum1, dum2, i) => {
@@ -16,3 +18,11 @@ export const generateQuizState = (quizAnswers, quizType) => ({
   selectedProperties: '',
   isTypeQuizActive: quizType.split('_')[0] === 'type',
 });
+
+export const checkIfQuizIncomplete = () => {
+  const { activeQuestionNum, quizGuesses, quizAnswers } = store.getState().quiz;
+  return (
+    activeQuestionNum === quizGuesses.length &&
+    quizGuesses.length < quizAnswers.length
+  );
+};

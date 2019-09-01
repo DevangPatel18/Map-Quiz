@@ -9,6 +9,7 @@ import {
 import {
   generateAnswerArray,
   generateQuizState,
+  checkIfQuizIncomplete,
 } from '../helpers/quizActionHelpers';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
@@ -44,10 +45,7 @@ export const regionClick = geographyPath => async dispatch => {
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
   if (!isTypeQuizActive) {
-    if (
-      activeQuestionNum === quizGuesses.length &&
-      quizGuesses.length < quizAnswers.length
-    ) {
+    if (checkIfQuizIncomplete()) {
       const result =
         geoProperties[regionKey] === quizAnswers[activeQuestionNum];
       newSelectedProperties = result ? geoProperties : selectedProperties;
