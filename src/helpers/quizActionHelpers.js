@@ -14,5 +14,5 @@ export const generateQuizState = (quizAnswers, quizType) => ({
   activeQuestionNum: 0,
   quizGuesses: [],
   selectedProperties: '',
-  disableInfoClick: quizType.split('_')[0] === 'type',
+  isTypeQuizActive: quizType.split('_')[0] === 'type',
 });

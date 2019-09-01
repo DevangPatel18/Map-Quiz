@@ -33,7 +33,7 @@ export const closeQuiz = () => async dispatch => {
 
 export const regionClick = geographyPath => async dispatch => {
   const {
-    disableInfoClick,
+    isTypeQuizActive,
     activeQuestionNum,
     quizGuesses,
     quizAnswers,
@@ -43,7 +43,7 @@ export const regionClick = geographyPath => async dispatch => {
   const { regionKey } = store.getState().map;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
-  if (!disableInfoClick) {
+  if (!isTypeQuizActive) {
     if (
       activeQuestionNum === quizGuesses.length &&
       quizGuesses.length < quizAnswers.length

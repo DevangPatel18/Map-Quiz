@@ -23,7 +23,7 @@ const initialState = {
   activeQuestionNum: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
-  disableInfoClick: false,
+  isTypeQuizActive: false,
   markerToggle: '',
   infoTabShow: false,
 };
@@ -73,7 +73,7 @@ export default function(state = initialState, action) {
         quiz: false,
         quizType: null,
         activeQuestionNum: null,
-        disableInfoClick: false,
+        isTypeQuizActive: false,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };

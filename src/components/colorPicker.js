@@ -10,7 +10,7 @@ const ColorPicker = geo => {
     quiz,
     quizGuesses,
     quizAnswers,
-    disableInfoClick,
+    isTypeQuizActive,
     activeQuestionNum,
     selectedProperties,
     infoTabShow,
@@ -38,13 +38,13 @@ const ColorPicker = geo => {
     const geoQuizIdx = quizAnswers.indexOf(regionID);
 
     // Fills region with name input request as yellow
-    if (disableInfoClick && quizAnswers[activeQuestionNum] === regionID) {
+    if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
       defaultColor = PROMPT_COLOR;
       hoverColor = PROMPT_COLOR;
     }
 
     // Fills correct status of region name guess, green for correct and red for incorrect
-    if (disableInfoClick) {
+    if (isTypeQuizActive) {
       if (quizGuesses[geoQuizIdx] !== undefined) {
         const answer = quizGuesses[geoQuizIdx][1]
           ? RIGHT_ANSWER_COLOR
@@ -55,12 +55,12 @@ const ColorPicker = geo => {
     }
 
     // Fills incorrect region clicks red
-    if (!disableInfoClick && regionID !== quizAnswers[activeQuestionNum]) {
+    if (!isTypeQuizActive && regionID !== quizAnswers[activeQuestionNum]) {
       pressedColor = WRONG_ANSWER_COLOR;
     }
 
     // Fills correct region clicks green
-    if (!disableInfoClick && regionID === quizAnswers[activeQuestionNum]) {
+    if (!isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]) {
       pressedColor = RIGHT_ANSWER_COLOR;
     }
 
