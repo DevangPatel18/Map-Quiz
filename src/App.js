@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { TransitionMotion, spring } from 'react-motion';
-import { Button } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
@@ -13,13 +12,13 @@ import { regionClick } from './actions/quizActions';
 import {
   setRegionCheckbox,
   zoomMap,
-  recenterMap,
   setMap,
   tooltipMove,
   tooltipLeave,
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
 import SidebarContainer from './components/SidebarContainer';
+import ZoomButtons from './components/ZoomButtons';
 import ChoroplethLegend from './components/ChoroplethLegend';
 import ChoroplethSlider from './components/ChoroplethSlider';
 import DirectionPad from './components/DirectionPad';
@@ -127,7 +126,7 @@ class App extends Component {
 
   render() {
     const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
-    const { zoomFactor, slider } = this.props.map;
+    const { slider } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -143,28 +142,7 @@ class App extends Component {
 
         {isMobile && <MobileMessage />}
 
-        <div className="zoomButtons">
-          <Button.Group size="tiny" vertical>
-            <Button
-              onClick={() => this.props.zoomMap(zoomFactor)}
-              icon="plus"
-              inverted
-              aria-label="map zoom in"
-            />
-            <Button
-              onClick={() => this.props.zoomMap(1 / zoomFactor)}
-              icon="minus"
-              inverted
-              aria-label="map zoom out"
-            />
-            <Button
-              onClick={this.props.recenterMap}
-              icon="undo"
-              inverted
-              aria-label="map zoom reset"
-            />
-          </Button.Group>
-        </div>
+        <ZoomButtons />
 
         {quiz && <QuestionBox />}
 
@@ -237,7 +215,6 @@ export default connect(
     loadData,
     setRegionCheckbox,
     zoomMap,
-    recenterMap,
     setMap,
     regionClick,
     tooltipMove,
