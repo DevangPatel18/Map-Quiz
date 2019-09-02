@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TransitionMotion, spring } from 'react-motion';
-import { Button, Sidebar } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
@@ -19,7 +19,7 @@ import {
   tooltipLeave,
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
-import SidebarTabs from './components/SidebarTabs';
+import SidebarContainer from './components/SidebarContainer';
 import ChoroplethLegend from './components/ChoroplethLegend';
 import ChoroplethSlider from './components/ChoroplethSlider';
 import DirectionPad from './components/DirectionPad';
@@ -127,7 +127,7 @@ class App extends Component {
 
   render() {
     const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
-    const { zoomFactor, currentMap, slider } = this.props.map;
+    const { zoomFactor, slider } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -211,33 +211,7 @@ class App extends Component {
 
         {!quiz && slider && <ChoroplethSlider />}
 
-        <Button
-          icon={menuOpen ? 'close' : 'sidebar'}
-          circular
-          inverted={!menuOpen}
-          style={{
-            position: 'absolute',
-            margin: '0',
-            right: '1em',
-            top: '1em',
-            transition: 'all 0.3s ease-in-out',
-            visibility: quiz ? 'hidden' : 'visible',
-            zIndex: '200',
-          }}
-          onClick={this.handleMenu}
-          aria-label="sidebar button"
-        />
-        <Sidebar
-          animation="overlay"
-          vertical="true"
-          visible={quiz ? false : menuOpen}
-          direction="right"
-          width={!isMobile && currentMap === 'World' ? 'wide' : null}
-          style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-          }}
-          children={<SidebarTabs />}
-        />
+        <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 
         <Map app={this} />
         <footer>
