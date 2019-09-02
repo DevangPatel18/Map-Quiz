@@ -33,7 +33,7 @@ export default function(state = initialState, action) {
     case CHANGE_MAP_VIEW:
       return {
         ...state,
-        ...action.quiz,
+        ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
@@ -61,7 +61,7 @@ export default function(state = initialState, action) {
     case SET_QUIZ_STATE:
       return {
         ...state,
-        ...action.quiz,
+        ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };

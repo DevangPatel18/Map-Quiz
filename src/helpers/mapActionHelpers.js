@@ -27,11 +27,11 @@ export const getStatesForRegionSelect = regionName => {
     filterRegions: alpha3Codes[regionName],
     markerToggle: '',
   };
-  const quiz = {
+  const quizAttributes = {
     selectedProperties: '',
     markerToggle: '',
   };
-  return { map, quiz };
+  return { map, quizAttributes };
 };
 
 export const getGeographyPaths = async regionName => {

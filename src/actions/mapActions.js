@@ -44,9 +44,9 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { map, quiz } = getStatesForRegionSelect(regionName);
+  const { map, quizAttributes } = getStatesForRegionSelect(regionName);
 
-  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
+  await dispatch({ type: CHANGE_MAP_VIEW, map, quizAttributes });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)

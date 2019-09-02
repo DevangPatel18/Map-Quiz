@@ -22,8 +22,8 @@ const simple = str =>
 export const startQuiz = quizType => async dispatch => {
   const { filterRegions } = store.getState().map;
   const quizAnswers = generateAnswerArray(filterRegions);
-  const quiz = generateQuizState(quizAnswers, quizType);
-  await dispatch({ type: SET_QUIZ_STATE, quiz });
+  const quizAttributes = generateQuizState(quizAnswers, quizType);
+  await dispatch({ type: SET_QUIZ_STATE, quizAttributes });
   dispatch({ type: DISABLE_OPT });
 };
 
