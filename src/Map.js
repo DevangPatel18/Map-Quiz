@@ -33,9 +33,9 @@ const Map = props => {
 
   const { geographyPaths } = data
 
-  const { quiz } = props.quiz;
+  const { isQuizActive } = props.quiz;
 
-  const mouseHandlers = !tooltip || quiz
+  const mouseHandlers = !tooltip || isQuizActive
     ? {}
     : {
         onMouseMove: tooltipMove,

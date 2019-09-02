@@ -12,7 +12,7 @@ export const generateAnswerArray = filterRegions => {
 export const generateQuizState = (quizAnswers, quizType) => ({
   quizAnswers,
   quizType,
-  quiz: true,
+  isQuizActive: true,
   activeQuestionNum: 0,
   quizGuesses: [],
   selectedProperties: '',

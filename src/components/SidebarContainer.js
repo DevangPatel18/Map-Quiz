@@ -6,7 +6,7 @@ import SidebarTabs from './SidebarTabs';
 
 const SidebarContainer = props => {
   const { handleMenu, menuOpen } = props;
-  const { quiz } = props.quiz;
+  const { isQuizActive } = props.quiz;
   const { currentMap } = props.map;
 
   return (
@@ -21,7 +21,7 @@ const SidebarContainer = props => {
           right: '1em',
           top: '1em',
           transition: 'all 0.3s ease-in-out',
-          visibility: quiz ? 'hidden' : 'visible',
+          visibility: isQuizActive ? 'hidden' : 'visible',
           zIndex: '200',
         }}
         onClick={handleMenu}
@@ -30,7 +30,7 @@ const SidebarContainer = props => {
       <Sidebar
         animation="overlay"
         vertical="true"
-        visible={quiz ? false : menuOpen}
+        visible={isQuizActive ? false : menuOpen}
         direction="right"
         width={!isMobile && currentMap === 'World' ? 'wide' : null}
         style={{

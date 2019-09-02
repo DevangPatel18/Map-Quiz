@@ -9,7 +9,7 @@ const StatusBarStyles = styled.div`
   transition: all 0.5s;
   padding: 1em 0;
 
-  top: ${props => (props.quiz ? '0rem' : '-7rem')};
+  top: ${props => (props.isQuizActive ? '0rem' : '-7rem')};
 
   .statusBar-progress {
     position: relative;

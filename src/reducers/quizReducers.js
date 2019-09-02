@@ -19,7 +19,7 @@ const emptySelectedProperties = {
 const initialState = {
   quizAnswers: [],
   quizType: null,
-  quiz: false,
+  isQuizActive: false,
   activeQuestionNum: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
@@ -70,7 +70,7 @@ export default function(state = initialState, action) {
         ...state,
         quizAnswers: [],
         quizGuesses: [],
-        quiz: false,
+        isQuizActive: false,
         quizType: null,
         activeQuestionNum: null,
         isTypeQuizActive: false,

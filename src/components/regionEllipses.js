@@ -11,7 +11,7 @@ const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
   const { currentMap, filterRegions, tooltip } = this.props.map;
-  const { quiz } = this.props.quiz;
+  const { isQuizActive } = this.props.quiz;
   const { geographyPaths, capitalMarkers, regionMarkers } = this.props.data;
   let minArea;
   switch (currentMap) {
@@ -33,7 +33,7 @@ export default function regionEllipses() {
     filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
   }
 
-  const show = !(currentMap === 'World' && !quiz);
+  const show = !(currentMap === 'World' && !isQuizActive);
   return show && <Markers> 
     {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)
@@ -91,7 +91,7 @@ export default function regionEllipses() {
         rotate = `rotate(${angleMain})`;
       }
 
-      const mouseHandlers = !tooltip || quiz
+      const mouseHandlers = !tooltip || isQuizActive
         ? {}
         : {
             onMouseMove: (marker, evt) => this.props.tooltipMove(region, evt),

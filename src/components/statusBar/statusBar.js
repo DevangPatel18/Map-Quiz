@@ -68,9 +68,9 @@ class StatusBar extends Component {
   }
 
   render() {
-    const { quiz, quizGuesses, quizAnswers } = this.props.quiz;
+    const { isQuizActive, quizGuesses, quizAnswers } = this.props.quiz;
     const { time, open } = this.state;
-    const percentComp = quiz
+    const percentComp = isQuizActive
       ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
       : '';
     const questionText = `Question: ${quizGuesses.length} / ${
@@ -86,7 +86,7 @@ class StatusBar extends Component {
 
     return (
       <div>
-        <StatusBarStyles quiz={quiz}>
+        <StatusBarStyles isQuizActive={isQuizActive}>
           <TimerStyles>
             <div className="statusBar-timerButtons">
               <Button

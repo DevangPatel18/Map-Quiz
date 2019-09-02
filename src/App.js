@@ -122,7 +122,7 @@ class App extends Component {
   }
 
   render() {
-    const { quiz } = this.props.quiz;
+    const { isQuizActive } = this.props.quiz;
     const { slider } = this.props.map;
     const { menuOpen } = this.state;
 
@@ -130,7 +130,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        {!quiz && (
+        {!isQuizActive && (
           <header className="App-header">
             <h1 className="App-title">Map Quiz</h1>
           </header>
@@ -140,17 +140,17 @@ class App extends Component {
 
         <ZoomButtons />
 
-        {quiz && <QuestionBox />}
+        {isQuizActive && <QuestionBox />}
 
-        {quiz && <StatusBar />}
+        {isQuizActive && <StatusBar />}
 
         <TransitionInfoTab />
 
         <DirectionPad />
 
-        {!quiz && <ChoroplethLegend />}
+        {!isQuizActive && <ChoroplethLegend />}
 
-        {!quiz && slider && <ChoroplethSlider />}
+        {!isQuizActive && slider && <ChoroplethSlider />}
 
         <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 

@@ -7,7 +7,7 @@ const PROMPT_COLOR = 'rgb(255, 255, 0)';
 
 const ColorPicker = geo => {
   const {
-    quiz,
+    isQuizActive,
     quizGuesses,
     quizAnswers,
     isTypeQuizActive,
@@ -34,7 +34,7 @@ const ColorPicker = geo => {
     strokeColor = PROMPT_COLOR;
   }
 
-  if (quiz === true) {
+  if (isQuizActive === true) {
     const geoQuizIdx = quizAnswers.indexOf(regionID);
 
     // Fills region with name input request as yellow
@@ -80,7 +80,7 @@ const ColorPicker = geo => {
     strokeWidth = !isSelected && !regionOf && !onQuiz ? 0.01 : strokeWidth;
   }
 
-  if (choropleth !== 'None' && !quiz) {
+  if (choropleth !== 'None' && !isQuizActive) {
     defaultColor = choroplethColor(choropleth, geo);
   }
 
