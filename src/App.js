@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { TransitionMotion, spring } from 'react-motion';
-import { Button, Sidebar, Tab } from 'semantic-ui-react';
+import { Button, Sidebar } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import InfoTab from './components/infoTab/infoTab';
-import RegionButtons from './components/regionButtons';
-import QuizBox from './components/quizBox/quizBox';
 import handleDoubleClick from './components/handleDoubleClick';
-import RegionSearch from './components/RegionSearch';
 import regionEllipses from './components/regionEllipses';
 import regionLabels from './components/regionLabels';
 import StatusBar from './components/statusBar/statusBar';
@@ -22,48 +19,14 @@ import {
   tooltipLeave,
 } from './actions/mapActions';
 import MobileMessage from './components/mobileMessage';
-import ChoroplethToggles from './components/ChoroplethToggles';
+import SidebarTabs from './components/SidebarTabs';
 import ChoroplethLegend from './components/ChoroplethLegend';
 import ChoroplethSlider from './components/ChoroplethSlider';
-import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
-import TabStyles from './components/styles/TabStyles';
-import About from './components/About';
 
 const MOTIONCONFIG = { stiffness: 300, damping: 15 };
-
-const panes = [
-  {
-    menuItem: { key: 'Quiz', content: 'Quiz' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <DropdownSelectionStyles>
-          <RegionButtons />
-          <RegionSearch />
-        </DropdownSelectionStyles>
-        <QuizBox />
-      </Tab.Pane>
-    ),
-  },
-  {
-    menuItem: { key: 'Choropleth', content: 'Choropleth' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <ChoroplethToggles />
-      </Tab.Pane>
-    ),
-  },
-  {
-    menuItem: { key: 'About', icon: 'question circle outline' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <About />
-      </Tab.Pane>
-    ),
-  },
-];
 
 class App extends Component {
   constructor() {
@@ -273,9 +236,8 @@ class App extends Component {
           style={{
             background: 'rgba(0, 0, 0, 0.5)',
           }}
-        >
-          <TabStyles menu={{ secondary: true, pointing: true }} panes={panes} />
-        </Sidebar>
+          children={<SidebarTabs />}
+        />
 
         <Map app={this} />
         <footer>
