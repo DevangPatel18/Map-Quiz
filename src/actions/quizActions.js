@@ -41,49 +41,47 @@ export const regionClick = geographyPath => async dispatch => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
+  if (isTypeQuizActive) return;
   const { regionKey } = store.getState().map;
   const geoProperties = geographyPath.properties;
   let newSelectedProperties;
-  if (!isTypeQuizActive) {
-    if (checkIfQuizIncomplete()) {
-      const result =
-        geoProperties[regionKey] === quizAnswers[activeQuestionNum];
-      newSelectedProperties = result ? geoProperties : selectedProperties;
-      await dispatch({
-        type: QUIZ_ANSWER,
-        selectedProperties: newSelectedProperties,
-        quizGuesses: [...quizGuesses, result],
-        activeQuestionNum: activeQuestionNum + 1,
-        infoTabShow: false,
-      });
-      await dispatch({
-        type: REGION_CLICK,
-        selectedProperties: newSelectedProperties,
-        infoTabShow: result,
-      });
-      dispatch({ type: DISABLE_OPT });
-    } else {
-      if (geoProperties.name !== selectedProperties.name) {
-        await dispatch({
-          type: REGION_CLICK,
-          selectedProperties: geoProperties,
-          infoTabShow: false,
-        });
-        await dispatch({
-          type: REGION_CLICK,
-          selectedProperties: geoProperties,
-          infoTabShow: true,
-        });
-      } else {
-        await dispatch({
-          type: REGION_CLICK,
-          selectedProperties,
-          infoTabShow: !infoTabShow,
-        });
-      }
-      dispatch({ type: DISABLE_OPT });
-    }
+  if (checkIfQuizIncomplete()) {
+    const result = geoProperties[regionKey] === quizAnswers[activeQuestionNum];
+    newSelectedProperties = result ? geoProperties : selectedProperties;
+    await dispatch({
+      type: QUIZ_ANSWER,
+      selectedProperties: newSelectedProperties,
+      quizGuesses: [...quizGuesses, result],
+      activeQuestionNum: activeQuestionNum + 1,
+      infoTabShow: false,
+    });
+    await dispatch({
+      type: REGION_CLICK,
+      selectedProperties: newSelectedProperties,
+      infoTabShow: result,
+    });
+    dispatch({ type: DISABLE_OPT });
+    return;
   }
+  if (geoProperties.name !== selectedProperties.name) {
+    await dispatch({
+      type: REGION_CLICK,
+      selectedProperties: geoProperties,
+      infoTabShow: false,
+    });
+    await dispatch({
+      type: REGION_CLICK,
+      selectedProperties: geoProperties,
+      infoTabShow: true,
+    });
+    return;
+  }
+  await dispatch({
+    type: REGION_CLICK,
+    selectedProperties,
+    infoTabShow: !infoTabShow,
+  });
+  dispatch({ type: DISABLE_OPT });
 };
 
 export const answerQuiz = (userGuess = null) => async dispatch => {
