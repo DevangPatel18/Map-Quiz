@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { TransitionMotion, spring } from 'react-motion';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import InfoTab from './components/infoTab/infoTab';
+import TransitionInfoTab from './components/infoTab/TransitionInfoTab';
 import handleDoubleClick from './components/handleDoubleClick';
 import regionEllipses from './components/regionEllipses';
 import regionLabels from './components/regionLabels';
@@ -24,8 +23,6 @@ import ChoroplethSlider from './components/ChoroplethSlider';
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
-
-const MOTIONCONFIG = { stiffness: 300, damping: 15 };
 
 class App extends Component {
   constructor() {
@@ -125,12 +122,11 @@ class App extends Component {
   }
 
   render() {
-    const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
+    const { quiz } = this.props.quiz;
     const { slider } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
-    const infoArray = [selectedProperties];
 
     return (
       <div className="App">
@@ -148,40 +144,7 @@ class App extends Component {
 
         {quiz && <StatusBar />}
 
-        <TransitionMotion
-          defaultStyles={infoArray.map(infoProp => ({
-            key: infoProp.name,
-            style: { x: -230, opacity: 0 },
-            data: infoProp,
-          }))}
-          styles={infoArray.map(infoProp => ({
-            key: infoProp.name,
-            style: {
-              x: spring(infoTabShow ? 15 : -230, MOTIONCONFIG),
-              opacity: spring(infoTabShow ? 1 : 0, MOTIONCONFIG),
-            },
-            data: infoProp,
-          }))}
-        >
-          {interpolatedStyles => (
-            <div>
-              {interpolatedStyles.map(config => (
-                <div
-                  key={config.key}
-                  style={{
-                    position: 'absolute',
-                    zIndex: '2',
-                    left: `${config.style.x}px`,
-                    top: '182px',
-                    opacity: `${config.style.opacity}`,
-                  }}
-                >
-                  <InfoTab regionData={config.data} />
-                </div>
-              ))}
-            </div>
-          )}
-        </TransitionMotion>
+        <TransitionInfoTab />
 
         <DirectionPad />
 
