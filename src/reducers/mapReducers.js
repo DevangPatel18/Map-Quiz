@@ -78,7 +78,7 @@ export default function(state = initialState, action) {
     case CHANGE_MAP_VIEW:
       return {
         ...state,
-        ...action.map,
+        ...action.mapAttributes,
         disableOptimization: true,
       };
     case REGION_SELECT:

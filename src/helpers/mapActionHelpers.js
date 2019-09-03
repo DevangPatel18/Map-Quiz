@@ -18,7 +18,7 @@ const geoPathLinks = {
 
 export const getStatesForRegionSelect = regionName => {
   const { center, zoom } = mapConfig[regionName];
-  const map = {
+  const mapAttributes = {
     zoom,
     center,
     defaultZoom: zoom,
@@ -31,7 +31,7 @@ export const getStatesForRegionSelect = regionName => {
     selectedProperties: '',
     markerToggle: '',
   };
-  return { map, quizAttributes };
+  return { mapAttributes, quizAttributes };
 };
 
 export const getGeographyPaths = async regionName => {
