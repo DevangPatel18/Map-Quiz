@@ -137,7 +137,7 @@ export default function regionEllipses() {
               r={isMobile ? 12 : 4}
               fill={defaultColor}
               className="caribSelector"
-              onClick={() => this.markerClick(region)}
+              onClick={() => this.handleRegionClick(region)}
             />
           ) : (
             <ellipse
@@ -148,7 +148,7 @@ export default function regionEllipses() {
               rx={widthMain}
               ry={heightMain}
               transform={rotate}
-              onClick={() => this.markerClick(region)}
+              onClick={() => this.handleRegionClick(region)}
             />
           )}
         </Marker>

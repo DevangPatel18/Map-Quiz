@@ -7,7 +7,11 @@ import regionEllipses from './components/regionEllipses';
 import regionLabels from './components/regionLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
-import { regionClick } from './actions/quizActions';
+import {
+  processAnswerClick,
+  loadNewInfoTab,
+  toggleInfoTab,
+} from './actions/quizActions';
 import {
   setRegionCheckbox,
   zoomMap,
@@ -23,6 +27,7 @@ import ChoroplethSlider from './components/ChoroplethSlider';
 import DirectionPad from './components/DirectionPad';
 import QuestionBox from './components/quizBox/questionBox';
 import Map from './Map';
+import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
 class App extends Component {
   constructor() {
@@ -113,13 +118,23 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  markerClick = geographyPath => {
-    this.props.regionClick(geographyPath);
-  };
-
   handleMenu() {
     this.setState({ menuOpen: !this.state.menuOpen });
   }
+
+  handleRegionClick = geographyPath => {
+    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
+    const { processAnswerClick, loadNewInfoTab, toggleInfoTab } = this.props;
+    if (isTypeQuizActive) return;
+    const geoProperties = geographyPath.properties;
+    if (checkIfQuizIncomplete()) {
+      processAnswerClick(geoProperties);
+    } else if (geoProperties.name !== selectedProperties.name) {
+      loadNewInfoTab(geoProperties);
+    } else {
+      toggleInfoTab();
+    }
+  };
 
   render() {
     const { isQuizActive } = this.props.quiz;
@@ -179,7 +194,9 @@ export default connect(
     setRegionCheckbox,
     zoomMap,
     setMap,
-    regionClick,
+    processAnswerClick,
+    loadNewInfoTab,
+    toggleInfoTab,
     tooltipMove,
     tooltipLeave,
   }

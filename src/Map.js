@@ -9,7 +9,6 @@ import {
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
-import { regionClick } from './actions/quizActions';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
 import ColorPicker from './components/colorPicker';
 
@@ -17,7 +16,7 @@ import ColorPicker from './components/colorPicker';
 React.PropTypes = PropTypes;
 
 const Map = props => {
-  const { map, data, regionClick, app, tooltipMove, tooltipLeave } = props
+  const { map, data, app, tooltipMove, tooltipLeave } = props
   const {
     defaultZoom,
     center,
@@ -123,7 +122,7 @@ const Map = props => {
                       cacheId={cacheId}
                       geography={geography}
                       projection={projection}
-                      onClick={regionClick}
+                      onClick={app.handleRegionClick}
                       {...mouseHandlers}
                       fill="white"
                       stroke={strokeColor}
@@ -168,5 +167,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { regionClick, tooltipMove, tooltipLeave }
+  { tooltipMove, tooltipLeave }
 )(Map);
