@@ -4,6 +4,8 @@ import projection from '../helpers/projection';
 import store from '../store';
 import { alpha3Codes, mapConfig } from '../assets/regionAlpha3Codes';
 
+const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
+
 const geoPathLinks = {
   'United States of America': {
     geoJSON:
@@ -135,6 +137,11 @@ export const getNewRegionDataSet = async regionKey => {
   const capitalMarkers = await getCapitalMarkers(geographyPaths, regionKey);
   const subRegionName = getSubRegionName(regionKey);
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
+};
+
+export const checkMapViewsBetweenWorldRegions = regionName => {
+  const { currentMap } = store.getState().map;
+  return WorldRegions.includes(currentMap) && WorldRegions.includes(regionName);
 };
 
 export const getUpdatedRegionDataSets = async regionKey => {

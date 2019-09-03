@@ -3,6 +3,7 @@ import {
   getStatesForRegionSelect,
   getUpdatedRegionDataSets,
   getGeoPathCenterAndZoom,
+  checkMapViewsBetweenWorldRegions,
 } from '../helpers/mapActionHelpers';
 import {
   CHANGE_MAP_VIEW,
@@ -63,33 +64,29 @@ export const regionSelect = regionName => async dispatch => {
 };
 
 export const checkMapDataUpdate = regionName => async dispatch => {
-  const { currentMap } = store.getState().map;
+  if (checkMapViewsBetweenWorldRegions(regionName)) return;
+  
   let { regionDataSets } = store.getState().data;
-
-  if (
-    !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
-  ) {
-    const regionDataSetKey = WorldRegions.includes(regionName)
-      ? 'World'
-      : regionName;
-    if (!regionDataSets[regionDataSetKey]) {
-      const updatedRegionDataSets = await getUpdatedRegionDataSets(
-        regionDataSetKey
-      );
-
-      await dispatch({
-        type: ADD_REGION_DATA,
-        regionDataSets: updatedRegionDataSets,
-      });
-      regionDataSets = store.getState().data.regionDataSets;
-    }
-    const regionDataSet = regionDataSets[regionDataSetKey];
+  const regionDataSetKey = WorldRegions.includes(regionName)
+    ? 'World'
+    : regionName;
+  if (!regionDataSets[regionDataSetKey]) {
+    const updatedRegionDataSets = await getUpdatedRegionDataSets(
+      regionDataSetKey
+    );
 
     await dispatch({
-      type: LOAD_REGION_DATA,
-      ...regionDataSet,
+      type: ADD_REGION_DATA,
+      regionDataSets: updatedRegionDataSets,
     });
+    regionDataSets = store.getState().data.regionDataSets;
   }
+  const regionDataSet = regionDataSets[regionDataSetKey];
+
+  await dispatch({
+    type: LOAD_REGION_DATA,
+    ...regionDataSet,
+  });
 };
 
 export const regionZoom = geographyPath => async dispatch => {
