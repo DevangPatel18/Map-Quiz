@@ -4,6 +4,7 @@ import {
   getUpdatedRegionDataSets,
   getGeoPathCenterAndZoom,
   checkMapViewsBetweenWorldRegions,
+  getNewCenter,
 } from '../helpers/mapActionHelpers';
 import {
   CHANGE_MAP_VIEW,
@@ -125,24 +126,7 @@ export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
 };
 
 export const moveMap = direction => async dispatch => {
-  const { center } = store.getState().map;
-  let newCenter;
-  const step = 5;
-  switch (direction) {
-    case 'up':
-      newCenter = [center[0], center[1] + step];
-      break;
-    case 'down':
-      newCenter = [center[0], center[1] - step];
-      break;
-    case 'left':
-      newCenter = [center[0] - step, center[1]];
-      break;
-    case 'right':
-      newCenter = [center[0] + step, center[1]];
-      break;
-    default:
-  }
+  const newCenter = getNewCenter(direction);
   await dispatch({
     type: MOVE_CENTER,
     center: newCenter,
