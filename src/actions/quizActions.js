@@ -9,6 +9,7 @@ import {
 import {
   generateAnswerArray,
   generateQuizState,
+  checkClickAnswer,
 } from '../helpers/quizActionHelpers';
 import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
@@ -31,27 +32,20 @@ export const closeQuiz = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const processAnswerClick = newGeoProperties => async dispatch => {
-  const {
-    activeQuestionNum,
-    quizGuesses,
-    quizAnswers,
-    selectedProperties,
-  } = store.getState().quiz;
-  const { regionKey } = store.getState().map;
-  const result = newGeoProperties[regionKey] === quizAnswers[activeQuestionNum];
-  const newSelectedProperties = result ? newGeoProperties : selectedProperties;
+export const processAnswerClick = geoProperties => async dispatch => {
+  const { activeQuestionNum, quizGuesses } = store.getState().quiz;
+  const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
   await dispatch({
     type: QUIZ_ANSWER,
-    selectedProperties: newSelectedProperties,
-    quizGuesses: [...quizGuesses, result],
+    selectedProperties: newGeoProperties,
+    quizGuesses: [...quizGuesses, isAnswerCorrect],
     activeQuestionNum: activeQuestionNum + 1,
     infoTabShow: false,
   });
   await dispatch({
     type: REGION_CLICK,
-    selectedProperties: newSelectedProperties,
-    infoTabShow: result,
+    selectedProperties: newGeoProperties,
+    infoTabShow: isAnswerCorrect,
   });
   dispatch({ type: DISABLE_OPT });
 };

@@ -19,6 +19,21 @@ export const generateQuizState = (quizAnswers, quizType) => ({
   isTypeQuizActive: quizType.split('_')[0] === 'type',
 });
 
+export const checkClickAnswer = ansGeoProperties => {
+  const {
+    activeQuestionNum,
+    quizAnswers,
+    selectedProperties,
+  } = store.getState().quiz;
+  const { regionKey } = store.getState().map;
+  const isAnswerCorrect =
+    ansGeoProperties[regionKey] === quizAnswers[activeQuestionNum];
+  const newGeoProperties = isAnswerCorrect
+    ? ansGeoProperties
+    : selectedProperties;
+  return { isAnswerCorrect, newGeoProperties };
+};
+
 export const checkIfQuizIncomplete = () => {
   const { activeQuestionNum, quizGuesses, quizAnswers } = store.getState().quiz;
   return (
