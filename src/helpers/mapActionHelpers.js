@@ -171,3 +171,20 @@ export const getNewCenter = direction => {
   }
   return newCenter;
 }
+
+export const getChoroplethTooltipContent = geography => {
+  const { choropleth, slider, sliderYear } = store.getState().map;
+  const { populationData } = store.getState().data;
+  const { alpha3Code } = geography.properties;
+  let contentData;
+  if (slider) {
+    contentData = populationData[alpha3Code]
+      ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
+      : 'N/A';
+  } else {
+    contentData = geography.properties[choropleth]
+      ? geography.properties[choropleth].toLocaleString()
+      : 'N/A';
+  }
+  return ` - ${contentData}`;
+}

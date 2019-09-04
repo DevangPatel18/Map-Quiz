@@ -5,6 +5,7 @@ import {
   getGeoPathCenterAndZoom,
   checkMapViewsBetweenWorldRegions,
   getNewCenter,
+  getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
 import {
   CHANGE_MAP_VIEW,
@@ -140,22 +141,11 @@ export const setChoropleth = choropleth => async dispatch => {
 };
 
 export const tooltipMove = (geography, evt) => dispatch => {
-  const { choropleth, slider, sliderYear } = store.getState().map;
-  const { populationData } = store.getState().data;
-  const { name, alpha3Code } = geography.properties;
+  const { choropleth } = store.getState().map;
+  const { name } = geography.properties;
   let content = name;
-  let contentData;
   if (choropleth !== 'None') {
-    if (slider) {
-      contentData = populationData[alpha3Code]
-        ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
-        : 'N/A';
-    } else {
-      contentData = geography.properties[choropleth]
-        ? geography.properties[choropleth].toLocaleString()
-        : 'N/A';
-    }
-    content += ` - ${contentData}`;
+    content += getChoroplethTooltipContent(geography);
   }
   const x = evt.clientX;
   const y = evt.clientY + window.pageYOffset;
