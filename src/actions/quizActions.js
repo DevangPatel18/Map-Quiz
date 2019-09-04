@@ -10,14 +10,9 @@ import {
   generateAnswerArray,
   generateQuizState,
   checkClickAnswer,
+  checkTypeAnswer,
 } from '../helpers/quizActionHelpers';
-import removeDiacritics from '../helpers/removeDiacritics';
 import store from '../store';
-
-const simple = str =>
-  removeDiacritics(str.toLowerCase())
-    .replace(/\u002D/g, ' ')
-    .replace(/[^\w\s]/g, '');
 
 export const startQuiz = quizType => async dispatch => {
   const { filterRegions } = store.getState().map;
@@ -75,40 +70,15 @@ export const toggleInfoTab = () => async dispatch => {
 };
 
 export const answerQuiz = (userGuess = null) => async dispatch => {
-  const {
-    quizGuesses,
-    quizAnswers,
-    activeQuestionNum,
-    quizType,
-  } = store.getState().quiz;
-  const { geographyPaths } = store.getState().data;
-  const { regionKey } = store.getState().map;
-
-  if (userGuess) {
-    let result;
-
-    const answerProperties = geographyPaths.find(
-      geo => geo.properties[regionKey] === quizAnswers[activeQuestionNum]
-    ).properties;
-
-    if (quizType.split('_')[1] === 'name') {
-      result = answerProperties.spellings.some(
-        name => simple(userGuess) === simple(name)
-      );
-    } else {
-      result = simple(userGuess) === simple(answerProperties.capital);
-    }
-
-    const selectedProperties = result ? answerProperties : '';
-
-    await dispatch({
-      type: QUIZ_ANSWER,
-      selectedProperties,
-      quizGuesses: [...quizGuesses, result],
-      activeQuestionNum: activeQuestionNum + 1,
-    });
-    dispatch({ type: DISABLE_OPT });
-  }
+  const { quizGuesses, activeQuestionNum } = store.getState().quiz;
+  const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
+  await dispatch({
+    type: QUIZ_ANSWER,
+    selectedProperties: newGeoProperties,
+    quizGuesses: [...quizGuesses, isAnswerCorrect],
+    activeQuestionNum: activeQuestionNum + 1,
+  });
+  dispatch({ type: DISABLE_OPT });
 };
 
 export const setLabel = (markerToggle = '') => async dispatch => {
