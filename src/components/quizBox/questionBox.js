@@ -3,7 +3,7 @@ import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
-import { startQuiz, closeQuiz, answerQuiz } from '../../actions/quizActions';
+import { startQuiz, closeQuiz, processTypeAnswer } from '../../actions/quizActions';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -25,10 +25,10 @@ class QuestionBox extends Component {
 
   handleSubmit(event) {
     const { userGuess } = this.state;
-    const { answerQuiz } = this.props;
+    const { processTypeAnswer } = this.props;
     event.preventDefault();
     if (userGuess.length !== 0) {
-      answerQuiz(userGuess);
+      processTypeAnswer(userGuess);
       this.setState({ userGuess: '' });
     }
   }
@@ -147,5 +147,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { startQuiz, closeQuiz, answerQuiz }
+  { startQuiz, closeQuiz, processTypeAnswer }
 )(QuestionBox);

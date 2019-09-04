@@ -27,7 +27,7 @@ export const closeQuiz = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const processAnswerClick = geoProperties => async dispatch => {
+export const processClickAnswer = geoProperties => async dispatch => {
   const { activeQuestionNum, quizGuesses } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
   await dispatch({
@@ -69,7 +69,7 @@ export const toggleInfoTab = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const answerQuiz = (userGuess = null) => async dispatch => {
+export const processTypeAnswer = (userGuess = null) => async dispatch => {
   const { quizGuesses, activeQuestionNum } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
   await dispatch({

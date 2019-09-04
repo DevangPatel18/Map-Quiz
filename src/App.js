@@ -8,7 +8,7 @@ import regionLabels from './components/regionLabels';
 import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
 import {
-  processAnswerClick,
+  processClickAnswer,
   loadNewInfoTab,
   toggleInfoTab,
 } from './actions/quizActions';
@@ -124,11 +124,11 @@ class App extends Component {
 
   handleRegionClick = geographyPath => {
     const { isTypeQuizActive, selectedProperties } = this.props.quiz;
-    const { processAnswerClick, loadNewInfoTab, toggleInfoTab } = this.props;
+    const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
     if (isTypeQuizActive) return;
     const geoProperties = geographyPath.properties;
     if (checkIfQuizIncomplete()) {
-      processAnswerClick(geoProperties);
+      processClickAnswer(geoProperties);
     } else if (geoProperties.name !== selectedProperties.name) {
       loadNewInfoTab(geoProperties);
     } else {
@@ -194,7 +194,7 @@ export default connect(
     setRegionCheckbox,
     zoomMap,
     setMap,
-    processAnswerClick,
+    processClickAnswer,
     loadNewInfoTab,
     toggleInfoTab,
     tooltipMove,
