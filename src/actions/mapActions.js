@@ -24,11 +24,9 @@ import {
   ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { alpha3Codes, alpha3CodesSov } from '../assets/regionAlpha3Codes';
+import { worldRegions, alpha3CodesSov } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
-
-const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -69,7 +67,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
   if (checkMapViewsBetweenWorldRegions(regionName)) return;
   
   let { regionDataSets } = store.getState().data;
-  const regionDataSetKey = WorldRegions.includes(regionName)
+  const regionDataSetKey = worldRegions.includes(regionName)
     ? 'World'
     : regionName;
   if (!regionDataSets[regionDataSetKey]) {

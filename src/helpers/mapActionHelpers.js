@@ -2,9 +2,11 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import store from '../store';
-import { alpha3Codes, mapConfig } from '../assets/regionAlpha3Codes';
-
-const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
+import {
+  alpha3Codes,
+  mapConfig,
+  worldRegions,
+} from '../assets/regionAlpha3Codes';
 
 const geoPathLinks = {
   'United States of America': {
@@ -141,7 +143,7 @@ export const getNewRegionDataSet = async regionKey => {
 
 export const checkMapViewsBetweenWorldRegions = regionName => {
   const { currentMap } = store.getState().map;
-  return WorldRegions.includes(currentMap) && WorldRegions.includes(regionName);
+  return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
 };
 
 export const getUpdatedRegionDataSets = async regionKey => {
@@ -170,7 +172,7 @@ export const getNewCenter = direction => {
     default:
   }
   return newCenter;
-}
+};
 
 export const getChoroplethTooltipContent = geography => {
   const { choropleth, slider, sliderYear } = store.getState().map;
@@ -187,4 +189,4 @@ export const getChoroplethTooltipContent = geography => {
       : 'N/A';
   }
   return ` - ${contentData}`;
-}
+};
