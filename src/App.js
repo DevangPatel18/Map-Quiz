@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import TransitionInfoTab from './components/infoTab/TransitionInfoTab';
 import handleDoubleClick from './components/handleDoubleClick';
 import regionEllipses from './components/regionEllipses';
 import regionLabels from './components/regionLabels';
-import StatusBar from './components/statusBar/statusBar';
 import { loadPaths, loadData } from './actions/dataActions';
 import {
   processClickAnswer,
@@ -19,13 +17,8 @@ import {
   tooltipMove,
   tooltipLeave,
 } from './actions/mapActions';
-import MobileMessage from './components/mobileMessage';
 import SidebarContainer from './components/SidebarContainer';
-import ZoomButtons from './components/ZoomButtons';
-import ChoroplethLegend from './components/ChoroplethLegend';
-import ChoroplethSlider from './components/ChoroplethSlider';
-import DirectionPad from './components/DirectionPad';
-import QuestionBox from './components/quizBox/questionBox';
+import InterfaceElements from './components/InterfaceElements';
 import Map from './Map';
 import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
@@ -138,7 +131,6 @@ class App extends Component {
 
   render() {
     const { isQuizActive } = this.props.quiz;
-    const { slider } = this.props.map;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
@@ -150,23 +142,7 @@ class App extends Component {
             <h1 className="App-title">Map Quiz</h1>
           </header>
         )}
-
-        {isMobile && <MobileMessage />}
-
-        <ZoomButtons />
-
-        {isQuizActive && <QuestionBox />}
-
-        {isQuizActive && <StatusBar />}
-
-        <TransitionInfoTab />
-
-        <DirectionPad />
-
-        {!isQuizActive && <ChoroplethLegend />}
-
-        {!isQuizActive && slider && <ChoroplethSlider />}
-
+        <InterfaceElements />
         <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 
         <Map app={this} />
