@@ -1,4 +1,4 @@
-import { choroplethColor } from '../helpers/choroplethFunctions';
+import { choroplethColor } from './choroplethFunctions';
 import store from '../store';
 
 const RIGHT_ANSWER_COLOR = 'rgb(144, 238, 144)';

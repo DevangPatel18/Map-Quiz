@@ -10,7 +10,7 @@ import {
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
-import ColorPicker from './components/colorPicker';
+import ColorPicker from './helpers/colorPicker';
 
 // Required for proper functioning of redux-tooltip
 React.PropTypes = PropTypes;

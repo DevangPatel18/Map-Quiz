@@ -3,8 +3,8 @@ import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { isMobile } from 'react-device-detect';
 import ColorPicker from './colorPicker';
-import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
-import projection from "../helpers/projection";
+import { ellipseDim, labelDist, labelist } from './markerParams';
+import projection from "./projection";
 
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TUV', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];

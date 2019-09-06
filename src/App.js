@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import handleDoubleClick from './components/handleDoubleClick';
-import regionEllipses from './components/regionEllipses';
-import regionLabels from './components/regionLabels';
+import handleDoubleClick from './helpers/handleDoubleClick';
+import regionEllipses from './helpers/regionEllipses';
+import regionLabels from './helpers/regionLabels';
 import { loadPaths, loadData } from './actions/dataActions';
 import {
   processClickAnswer,

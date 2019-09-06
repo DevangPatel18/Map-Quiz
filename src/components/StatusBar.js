@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Button, Modal } from 'semantic-ui-react';
-import StatusBarStyles from '../styles/StatusBarStyles';
-import { startQuiz, closeQuiz } from '../../actions/quizActions';
-import msToTime from '../../helpers/msToTime';
-import TimerStyles from '../styles/TimerStyles';
+import StatusBarStyles from './styles/StatusBarStyles';
+import { startQuiz, closeQuiz } from '../actions/quizActions';
+import msToTime from '../helpers/msToTime';
+import TimerStyles from './styles/TimerStyles';
 
 class StatusBar extends Component {
   constructor() {

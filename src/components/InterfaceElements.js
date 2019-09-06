@@ -2,13 +2,13 @@ import React from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import TransitionInfoTab from './infoTab/TransitionInfoTab';
-import StatusBar from './statusBar/statusBar';
-import MobileMessage from './mobileMessage';
+import StatusBar from './StatusBar';
+import MobileMessage from './MobileMessage';
 import ZoomButtons from './ZoomButtons';
 import ChoroplethLegend from './ChoroplethLegend';
 import ChoroplethSlider from './ChoroplethSlider';
 import DirectionPad from './DirectionPad';
-import QuestionBox from './quizBox/questionBox';
+import QuestionBox from './quizBox/QuestionBox';
 
 const InterfaceElements = ({ map, quiz }) => {
   const { isQuizActive } = quiz;

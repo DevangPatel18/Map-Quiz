@@ -2,9 +2,9 @@ import React from 'react';
 import { Tab } from 'semantic-ui-react';
 import TabStyles from './styles/TabStyles';
 import DropdownSelectionStyles from './styles/DropdownSelectionStyles';
-import RegionButtons from './regionButtons';
+import MapViewDropdown from './MapViewDropdown';
 import RegionSearch from './RegionSearch';
-import QuizBox from './quizBox/quizBox';
+import QuizBox from './quizBox/QuizBox';
 import ChoroplethToggles from './ChoroplethToggles';
 import About from './About';
 
@@ -14,7 +14,7 @@ const panes = [
     render: () => (
       <Tab.Pane attached={false}>
         <DropdownSelectionStyles>
-          <RegionButtons />
+          <MapViewDropdown />
           <RegionSearch />
         </DropdownSelectionStyles>
         <QuizBox />

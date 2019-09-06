@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { TransitionMotion, spring } from 'react-motion';
-import InfoTab from './infoTab';
+import InfoTab from './InfoTab';
 
 const MOTIONCONFIG = { stiffness: 300, damping: 15 };
 

@@ -1,5 +1,5 @@
 import store from '../store';
-import projectionFunc from '../helpers/projection';
+import projectionFunc from './projection';
 
 export default function handleDoubleClick(evt) {
   const { dimensions, center } = store.getState().map;

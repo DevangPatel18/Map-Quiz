@@ -1,6 +1,6 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
+import { labelDist, tinyCarib, labelAnchors } from './markerParams';
 
 export default function regionLabels() {
   const {
