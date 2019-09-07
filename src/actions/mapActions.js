@@ -3,6 +3,7 @@ import {
   getStatesForRegionSelect,
   getUpdatedRegionDataSets,
   getGeoPathCenterAndZoom,
+  getOrientation,
   checkMapViewsBetweenWorldRegions,
   getNewCenter,
   getChoroplethTooltipContent,
@@ -45,7 +46,9 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { mapAttributes, quizAttributes } = getStatesForRegionSelect(regionName);
+  const { mapAttributes, quizAttributes } = getStatesForRegionSelect(
+    regionName
+  );
 
   await dispatch({ type: CHANGE_MAP_VIEW, mapAttributes, quizAttributes });
   dispatch({ type: DISABLE_OPT });
@@ -65,7 +68,7 @@ export const regionSelect = regionName => async dispatch => {
 
 export const checkMapDataUpdate = regionName => async dispatch => {
   if (checkMapViewsBetweenWorldRegions(regionName)) return;
-  
+
   let { regionDataSets } = store.getState().data;
   const regionDataSetKey = worldRegions.includes(regionName)
     ? 'World'
@@ -116,9 +119,11 @@ export const recenterMap = () => dispatch => {
 };
 
 export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
+  const orientation = getOrientation(dimensions[0]);
   await dispatch({
     type: SET_MAP,
     dimensions,
+    orientation,
     zoomFactor,
   });
   dispatch({ type: DISABLE_OPT });

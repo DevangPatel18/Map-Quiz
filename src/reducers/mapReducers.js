@@ -34,6 +34,7 @@ const initialState = {
   zoomFactor: 2,
   scale: 210,
   dimensions: [980, 551],
+  orientation: 'default',
   disableOptimization: false,
   filterRegions: [],
   currentMap: 'World',
@@ -108,6 +109,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dimensions: action.dimensions,
+        orientation: action.orientation,
         zoomFactor: action.zoomFactor,
         disableOptimization: true,
       };
@@ -142,8 +144,7 @@ export default function(state = initialState, action) {
       };
     case LOAD_REGION_DATA:
       const { subRegionName } = action;
-      const regionKey =
-        subRegionName === 'country' ? 'alpha3Code' : 'regionID';
+      const regionKey = subRegionName === 'country' ? 'alpha3Code' : 'regionID';
       return {
         ...state,
         subRegionName,

@@ -133,6 +133,26 @@ export const getGeoPathCenterAndZoom = geographyPath => {
   return { center, zoom };
 };
 
+export const getOrientation = (width = 980) => {
+  let orientation;
+  switch (width) {
+    case 980:
+      orientation = 'landscape';
+      break;
+    case 645:
+      orientation = 'medium';
+      break;
+    case 420:
+      orientation = 'small';
+      break;
+    case 310:
+      orientation = 'portrait';
+      break;
+    default:
+  }
+  return orientation;
+};
+
 export const getNewRegionDataSet = async regionKey => {
   const geographyPaths = await getGeographyPaths(regionKey);
   const regionMarkers = getRegionMarkers(geographyPaths);
