@@ -98,26 +98,13 @@ export default function regionEllipses() {
             onMouseLeave: this.props.tooltipLeave,
           };
 
-      const { defaultColor, hoverColor, pressedColor } = colorPicker(region);
+      const { geoStyle } = colorPicker(region);
       return (
         <Marker
           key={alpha3Code}
           {...mouseHandlers}
           marker={marker}
-          style={!caribbeanMap && {
-            default: {
-              fill: defaultColor,
-              transition: 'fill .5s',
-            },
-            hover: {
-              fill: hoverColor,
-              transition: 'fill .5s',
-            },
-            pressed: {
-              fill: pressedColor,
-              transition: 'fill .5s',
-            },
-          }}
+          style={!caribbeanMap && geoStyle}
           preserveMarkerAspect={caribbeanMap}
         >
           {caribbeanMap && (
@@ -135,7 +122,7 @@ export default function regionEllipses() {
               cx={ccx}
               cy={ccy}
               r={isMobile ? 12 : 4}
-              fill={defaultColor}
+              fill={geoStyle.default.fill}
               className="caribSelector"
               onClick={() => this.handleRegionClick(region)}
             />
