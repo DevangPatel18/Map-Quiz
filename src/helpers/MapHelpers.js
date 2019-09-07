@@ -16,11 +16,16 @@ export const colorPicker = geo => {
     infoTabShow,
   } = store.getState().quiz;
   const { regionKey } = store.getState().map;
-  const { filterRegions, currentMap, choropleth, defaultZoom } = store.getState().map;
+  const {
+    filterRegions,
+    currentMap,
+    choropleth,
+    defaultZoom,
+  } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
   const { regionOf } = geo.properties;
-  const regionID = geo.properties[regionKey]
+  const regionID = geo.properties[regionKey];
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
   let pressedColor = 'rgb(0, 70, 0)';
@@ -84,12 +89,28 @@ export const colorPicker = geo => {
     defaultColor = choroplethColor(choropleth, geo);
   }
 
+  const geoStyle = getGeoStyle({ defaultColor, hoverColor, pressedColor });
+
   return {
-    defaultColor,
-    hoverColor,
-    pressedColor,
+    geoStyle,
     render,
     strokeWidth,
     strokeColor,
   };
 };
+
+export const getGeoStyle = ({ defaultColor, hoverColor, pressedColor }) => ({
+  default: {
+    fill: defaultColor,
+    transition: 'fill .5s',
+    outline: 'yellow',
+  },
+  hover: {
+    fill: hoverColor,
+    transition: 'fill .5s',
+  },
+  pressed: {
+    fill: pressedColor,
+    transition: 'fill .5s',
+  },
+});

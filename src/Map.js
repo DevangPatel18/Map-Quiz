@@ -83,9 +83,7 @@ const Map = props => {
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
                   const {
-                    defaultColor,
-                    hoverColor,
-                    pressedColor,
+                    geoStyle,
                     render,
                     strokeWidth,
                     strokeColor,
@@ -102,20 +100,7 @@ const Map = props => {
                       fill="white"
                       stroke={strokeColor}
                       strokeWidth={strokeWidth}
-                      style={{
-                        default: {
-                          fill: defaultColor,
-                          transition: 'fill .5s',
-                        },
-                        hover: {
-                          fill: hoverColor,
-                          transition: 'fill .5s',
-                        },
-                        pressed: {
-                          fill: pressedColor,
-                          transition: 'fill .5s',
-                        },
-                      }}
+                      style={geoStyle}
                     />
                   );
                 })}
