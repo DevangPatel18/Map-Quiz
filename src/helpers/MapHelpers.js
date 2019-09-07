@@ -5,6 +5,14 @@ const RIGHT_ANSWER_COLOR = 'rgb(144, 238, 144)';
 const WRONG_ANSWER_COLOR = 'rgb(255, 69, 0)';
 const PROMPT_COLOR = 'rgb(255, 255, 0)';
 
+export const checkRegionHide = geography => {
+  const { filterRegions, currentMap, regionKey } = store.getState().map;
+  const regionID = geography.properties[regionKey];
+  const isRegionOnQuiz = filterRegions.includes(regionID);
+  const isRegionHidden = currentMap !== 'World' ? !isRegionOnQuiz : false;
+  return isRegionHidden;
+};
+
 export const colorPicker = geo => {
   const {
     isQuizActive,
@@ -18,7 +26,6 @@ export const colorPicker = geo => {
   const { regionKey } = store.getState().map;
   const {
     filterRegions,
-    currentMap,
     choropleth,
     defaultZoom,
   } = store.getState().map;
@@ -76,14 +83,9 @@ export const colorPicker = geo => {
     }
   }
 
-  let render = true;
-  let onQuiz = filterRegions.includes(regionID);
-  if (currentMap !== 'World') {
-    render = onQuiz;
-  } else {
-    defaultColor = !regionOf && !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
-    strokeWidth = !isSelected && !regionOf && !onQuiz ? 0.01 : strokeWidth;
-  }
+  const onQuiz = filterRegions.includes(regionID);
+  defaultColor = !regionOf && !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
+  strokeWidth = !isSelected && !regionOf && !onQuiz ? 0.01 : strokeWidth;
 
   if (choropleth !== 'None' && !isQuizActive) {
     defaultColor = choroplethColor(choropleth, geo);
@@ -93,7 +95,6 @@ export const colorPicker = geo => {
 
   return {
     geoStyle,
-    render,
     strokeWidth,
     strokeColor,
   };

@@ -10,7 +10,7 @@ import {
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
-import { colorPicker } from './helpers/MapHelpers';
+import { colorPicker, checkRegionHide } from './helpers/MapHelpers';
 
 // Required for proper functioning of redux-tooltip
 React.PropTypes = PropTypes;
@@ -82,14 +82,14 @@ const Map = props => {
             >
               <Geographies geography={geographyPaths} disableOptimization={disableOptimization}>
                 {(geographies, projection) => geographies.map((geography, i) => {
+                  if (checkRegionHide(geography)) return '';
                   const {
                     geoStyle,
-                    render,
                     strokeWidth,
                     strokeColor,
                   } = colorPicker(geography);
                   const key = `${currentMap}-${i}-${orientation}`
-                  return render && (
+                  return (
                     <Geography
                       key={key}
                       cacheId={key}
