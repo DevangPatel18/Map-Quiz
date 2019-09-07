@@ -2,7 +2,7 @@ import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { isMobile } from 'react-device-detect';
-import ColorPicker from './colorPicker';
+import ColorPicker from './MapHelpers';
 import { ellipseDim, labelDist, labelist } from './markerParams';
 import projection from "./projection";
 
