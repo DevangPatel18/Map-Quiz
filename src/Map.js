@@ -23,6 +23,7 @@ const Map = props => {
     zoom,
     scale,
     dimensions,
+    orientation,
     currentMap,
     disableOptimization,
     tooltip,
@@ -89,37 +90,11 @@ const Map = props => {
                     strokeWidth,
                     strokeColor,
                   } = ColorPicker(geography);
-                  let orientation;
-                  switch (dimensions[0]) {
-                    case 980:
-                      orientation = 'landscape';
-                      break;
-                    case 645:
-                      orientation = 'medium';
-                      break;
-                    case 420:
-                      orientation = 'small';
-                      break;
-                    case 310:
-                      orientation = 'portrait';
-                      break;
-                    default:
-                  }
-                  let key; let cacheId;
-                  if (currentMap === 'Oceania') {
-                    key = `oceania-${i}-${orientation}`;
-                    cacheId = `oceania-${i}-${orientation}`;
-                  } else if (currentMap === 'United States of America') {
-                    key = `usa-${i}-${orientation}`;
-                    cacheId = `usa-${i}-${orientation}`;
-                  } else {
-                    key = `geography-${i}-${orientation}`;
-                    cacheId = `geography-${i}-${orientation}`;
-                  }
+                  const key = `${currentMap}-${i}-${orientation}`
                   return render && (
                     <Geography
                       key={key}
-                      cacheId={cacheId}
+                      cacheId={key}
                       geography={geography}
                       projection={projection}
                       onClick={app.handleRegionClick}
