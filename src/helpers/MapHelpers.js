@@ -5,7 +5,7 @@ const RIGHT_ANSWER_COLOR = 'rgb(144, 238, 144)';
 const WRONG_ANSWER_COLOR = 'rgb(255, 69, 0)';
 const PROMPT_COLOR = 'rgb(255, 255, 0)';
 
-const ColorPicker = geo => {
+export const colorPicker = geo => {
   const {
     isQuizActive,
     quizGuesses,
@@ -93,5 +93,3 @@ const ColorPicker = geo => {
     strokeColor,
   };
 };
-
-export default ColorPicker;

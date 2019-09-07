@@ -2,7 +2,7 @@ import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { isMobile } from 'react-device-detect';
-import ColorPicker from './MapHelpers';
+import { colorPicker } from './MapHelpers';
 import { ellipseDim, labelDist, labelist } from './markerParams';
 import projection from "./projection";
 
@@ -98,7 +98,7 @@ export default function regionEllipses() {
             onMouseLeave: this.props.tooltipLeave,
           };
 
-      const { defaultColor, hoverColor, pressedColor } = ColorPicker(region);
+      const { defaultColor, hoverColor, pressedColor } = colorPicker(region);
       return (
         <Marker
           key={alpha3Code}

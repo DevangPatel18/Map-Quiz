@@ -10,7 +10,7 @@ import {
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { tooltipMove, tooltipLeave } from './actions/mapActions';
-import ColorPicker from './helpers/MapHelpers';
+import { colorPicker } from './helpers/MapHelpers';
 
 // Required for proper functioning of redux-tooltip
 React.PropTypes = PropTypes;
@@ -89,7 +89,7 @@ const Map = props => {
                     render,
                     strokeWidth,
                     strokeColor,
-                  } = ColorPicker(geography);
+                  } = colorPicker(geography);
                   const key = `${currentMap}-${i}-${orientation}`
                   return render && (
                     <Geography
