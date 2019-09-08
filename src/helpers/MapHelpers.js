@@ -16,19 +16,11 @@ export const checkRegionHide = geography => {
 export const colorPicker = geo => {
   const {
     isQuizActive,
-    quizGuesses,
-    quizAnswers,
-    isTypeQuizActive,
-    activeQuestionNum,
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
   const { regionKey } = store.getState().map;
-  const {
-    filterRegions,
-    choropleth,
-    defaultZoom,
-  } = store.getState().map;
+  const { filterRegions, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
   const { regionOf } = geo.properties;
@@ -46,42 +38,13 @@ export const colorPicker = geo => {
     strokeColor = PROMPT_COLOR;
   }
 
+  let geoStyle = { defaultColor, hoverColor, pressedColor };
+
   if (isQuizActive === true) {
-    const geoQuizIdx = quizAnswers.indexOf(regionID);
-
-    // Fills region with name input request as yellow
-    if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
-      defaultColor = PROMPT_COLOR;
-      hoverColor = PROMPT_COLOR;
-    }
-
-    // Fills correct status of region name guess, green for correct and red for incorrect
-    if (isTypeQuizActive) {
-      if (quizGuesses[geoQuizIdx] !== undefined) {
-        const answer = quizGuesses[geoQuizIdx][1]
-          ? RIGHT_ANSWER_COLOR
-          : WRONG_ANSWER_COLOR;
-        defaultColor = answer;
-        hoverColor = answer;
-      }
-    }
-
-    // Fills incorrect region clicks red
-    if (!isTypeQuizActive && regionID !== quizAnswers[activeQuestionNum]) {
-      pressedColor = WRONG_ANSWER_COLOR;
-    }
-
-    // Fills correct region clicks green
-    if (!isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]) {
-      pressedColor = RIGHT_ANSWER_COLOR;
-    }
-
-    // Fills correct region click guesses as green
-    if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
-      defaultColor = RIGHT_ANSWER_COLOR;
-      hoverColor = RIGHT_ANSWER_COLOR;
-    }
+    geoStyle = getGeographyQuizStyling(regionID, geoStyle);
   }
+
+  defaultColor = geoStyle.defaultColor;
 
   const onQuiz = filterRegions.includes(regionID);
   defaultColor = !regionOf && !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
@@ -91,13 +54,53 @@ export const colorPicker = geo => {
     defaultColor = choroplethColor(choropleth, geo);
   }
 
-  const geoStyle = getGeoStyle({ defaultColor, hoverColor, pressedColor });
+  geoStyle = getGeoStyle({ defaultColor, hoverColor, pressedColor });
 
   return {
     geoStyle,
     strokeWidth,
     strokeColor,
   };
+};
+
+export const getGeographyQuizStyling = (regionID, geoStyle) => {
+  const {
+    quizGuesses,
+    quizAnswers,
+    isTypeQuizActive,
+    activeQuestionNum,
+  } = store.getState().quiz;
+  const geoQuizIdx = quizAnswers.indexOf(regionID);
+  let { defaultColor, hoverColor, pressedColor } = geoStyle;
+
+  // Fills region with name input request as yellow
+  if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
+    defaultColor = PROMPT_COLOR;
+    hoverColor = PROMPT_COLOR;
+  }
+
+  // Fills status of region name guess, green for correct and red for incorrect
+  if (isTypeQuizActive && quizGuesses[geoQuizIdx] !== undefined) {
+    const answer = quizGuesses[geoQuizIdx][1]
+      ? RIGHT_ANSWER_COLOR
+      : WRONG_ANSWER_COLOR;
+    defaultColor = answer;
+    hoverColor = answer;
+  }
+
+  // Fills status of region click, green for correct and red for incorrect
+  pressedColor =
+    !isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]
+      ? RIGHT_ANSWER_COLOR
+      : WRONG_ANSWER_COLOR;
+
+  // Fills correct region click guesses as green
+  if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
+    defaultColor = RIGHT_ANSWER_COLOR;
+    hoverColor = RIGHT_ANSWER_COLOR;
+  }
+
+  return { defaultColor, hoverColor, pressedColor };
 };
 
 export const getGeoStyle = ({ defaultColor, hoverColor, pressedColor }) => ({
