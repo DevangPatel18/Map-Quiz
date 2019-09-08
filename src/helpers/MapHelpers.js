@@ -40,7 +40,7 @@ export const colorPicker = geo => {
   let stroke = { strokeColor, strokeWidth };
 
   if (isQuizActive === true) {
-    geoStyle = getGeographyQuizStyling(regionID, geoStyle);
+    updateGeographyQuizStyle(regionID, geoStyle);
   }
 
   checkWorldViewHide(geo, isSelected, geoStyle, stroke);
@@ -54,7 +54,7 @@ export const colorPicker = geo => {
   return { geoStyle, stroke };
 };
 
-export const getGeographyQuizStyling = (regionID, geoStyle) => {
+export const updateGeographyQuizStyle = (regionID, geoStyle) => {
   const {
     quizGuesses,
     quizAnswers,
@@ -62,12 +62,11 @@ export const getGeographyQuizStyling = (regionID, geoStyle) => {
     activeQuestionNum,
   } = store.getState().quiz;
   const geoQuizIdx = quizAnswers.indexOf(regionID);
-  let { defaultColor, hoverColor, pressedColor } = geoStyle;
 
   // Fills region with name input request as yellow
   if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
-    defaultColor = PROMPT_COLOR;
-    hoverColor = PROMPT_COLOR;
+    geoStyle.defaultColor = PROMPT_COLOR;
+    geoStyle.hoverColor = PROMPT_COLOR;
   }
 
   // Fills status of region name guess, green for correct and red for incorrect
@@ -75,23 +74,21 @@ export const getGeographyQuizStyling = (regionID, geoStyle) => {
     const answer = quizGuesses[geoQuizIdx][1]
       ? RIGHT_ANSWER_COLOR
       : WRONG_ANSWER_COLOR;
-    defaultColor = answer;
-    hoverColor = answer;
+    geoStyle.defaultColor = answer;
+    geoStyle.hoverColor = answer;
   }
 
   // Fills status of region click, green for correct and red for incorrect
-  pressedColor =
+  geoStyle.pressedColor =
     !isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]
       ? RIGHT_ANSWER_COLOR
       : WRONG_ANSWER_COLOR;
 
   // Fills correct region click guesses as green
   if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
-    defaultColor = RIGHT_ANSWER_COLOR;
-    hoverColor = RIGHT_ANSWER_COLOR;
+    geoStyle.defaultColor = RIGHT_ANSWER_COLOR;
+    geoStyle.hoverColor = RIGHT_ANSWER_COLOR;
   }
-
-  return { defaultColor, hoverColor, pressedColor };
 };
 
 export const checkWorldViewHide = (geography, isSelected, geoStyle, stroke) => {
