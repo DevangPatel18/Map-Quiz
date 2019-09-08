@@ -77,9 +77,7 @@ const Map = props => {
                 {(geographies, projection) =>
                   geographies.map((geography, i) => {
                     if (checkRegionHide(geography)) return '';
-                    const { geoStyle, strokeWidth, strokeColor } = colorPicker(
-                      geography
-                    );
+                    const { geoStyle, stroke } = colorPicker(geography);
                     const key = `${currentMap}-${i}-${orientation}`;
                     return (
                       <Geography
@@ -90,8 +88,8 @@ const Map = props => {
                         onClick={app.handleRegionClick}
                         {...mouseHandlers}
                         fill="white"
-                        stroke={strokeColor}
-                        strokeWidth={strokeWidth}
+                        stroke={stroke.strokeColor}
+                        strokeWidth={stroke.strokeWidth}
                         style={geoStyle}
                       />
                     );

@@ -19,11 +19,9 @@ export const colorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
-  const { regionKey } = store.getState().map;
-  const { filterRegions, choropleth, defaultZoom } = store.getState().map;
+  const { regionKey, choropleth, defaultZoom } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
-  const { regionOf } = geo.properties;
   const regionID = geo.properties[regionKey];
   let defaultColor = 'rgb(0, 140, 0)';
   let hoverColor = 'rgb(0, 120, 0)';
@@ -39,28 +37,21 @@ export const colorPicker = geo => {
   }
 
   let geoStyle = { defaultColor, hoverColor, pressedColor };
+  let stroke = { strokeColor, strokeWidth };
 
   if (isQuizActive === true) {
     geoStyle = getGeographyQuizStyling(regionID, geoStyle);
   }
 
-  defaultColor = geoStyle.defaultColor;
-
-  const onQuiz = filterRegions.includes(regionID);
-  defaultColor = !regionOf && !onQuiz ? 'rgba(0, 104, 0, .05)' : defaultColor;
-  strokeWidth = !isSelected && !regionOf && !onQuiz ? 0.01 : strokeWidth;
+  checkWorldViewHide(geo, isSelected, geoStyle, stroke);
 
   if (choropleth !== 'None' && !isQuizActive) {
-    defaultColor = choroplethColor(choropleth, geo);
+    geoStyle.defaultColor = choroplethColor(choropleth, geo);
   }
 
-  geoStyle = getGeoStyle({ defaultColor, hoverColor, pressedColor });
+  geoStyle = getGeoStyle(geoStyle);
 
-  return {
-    geoStyle,
-    strokeWidth,
-    strokeColor,
-  };
+  return { geoStyle, stroke };
 };
 
 export const getGeographyQuizStyling = (regionID, geoStyle) => {
@@ -101,6 +92,17 @@ export const getGeographyQuizStyling = (regionID, geoStyle) => {
   }
 
   return { defaultColor, hoverColor, pressedColor };
+};
+
+export const checkWorldViewHide = (geography, isSelected, geoStyle, stroke) => {
+  const { currentMap, filterRegions, regionKey } = store.getState().map;
+  const { regionOf } = geography.properties;
+  const regionID = geography.properties[regionKey];
+  const onQuiz = filterRegions.includes(regionID);
+  if (currentMap === 'World' && !regionOf && !onQuiz) {
+    geoStyle.defaultColor = 'rgba(0, 104, 0, .05)';
+    stroke.strokeWidth = !isSelected ? 0.01 : stroke.strokeWidth;
+  }
 };
 
 export const getGeoStyle = ({ defaultColor, hoverColor, pressedColor }) => ({
