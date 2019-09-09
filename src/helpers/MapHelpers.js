@@ -4,6 +4,15 @@ import store from '../store';
 const RIGHT_ANSWER_COLOR = 'rgb(144, 238, 144)';
 const WRONG_ANSWER_COLOR = 'rgb(255, 69, 0)';
 const PROMPT_COLOR = 'rgb(255, 255, 0)';
+const DEFAULT_GEO_STYLE = {
+  defaultColor: 'rgb(0, 140, 0)',
+  hoverColor: 'rgb(0, 120, 0)',
+  pressedColor: 'rgb(0, 70, 0)',
+};
+const DEFAULT_STROKE_STYLE = {
+  strokeWidth: 0.05,
+  strokeColor: 'black',
+};
 
 export const checkRegionHide = geography => {
   const { filterRegions, currentMap, regionKey } = store.getState().map;
@@ -23,21 +32,15 @@ export const colorPicker = geo => {
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
   const regionID = geo.properties[regionKey];
-  let defaultColor = 'rgb(0, 140, 0)';
-  let hoverColor = 'rgb(0, 120, 0)';
-  let pressedColor = 'rgb(0, 70, 0)';
-  let strokeWidth = 0.05;
-  let strokeColor = 'black';
+  let geoStyle = { ...DEFAULT_GEO_STYLE };
+  let stroke = { ...DEFAULT_STROKE_STYLE };
 
   if (isSelected) {
-    defaultColor = 'rgb(0, 100, 0)';
-    hoverColor = 'rgb(0, 100, 0)';
-    strokeWidth = 1 / defaultZoom;
-    strokeColor = PROMPT_COLOR;
+    geoStyle.defaultColor = 'rgb(0, 100, 0)';
+    geoStyle.hoverColor = 'rgb(0, 100, 0)';
+    stroke.strokeWidth = 1 / defaultZoom;
+    stroke.strokeColor = PROMPT_COLOR;
   }
-
-  let geoStyle = { defaultColor, hoverColor, pressedColor };
-  let stroke = { strokeColor, strokeWidth };
 
   if (isQuizActive === true) {
     updateGeographyQuizStyle(regionID, geoStyle);
