@@ -43,7 +43,7 @@ export const colorPicker = geo => {
     updateGeographyQuizStyle(regionID, geoStyleBasic);
   }
 
-  checkWorldViewHide(geo, isSelected, geoStyleBasic, stroke);
+  checkWorldViewHide(geo, geoStyleBasic, stroke);
 
   if (choropleth !== 'None' && !isQuizActive) {
     geoStyleBasic.defaultColor = choroplethColor(choropleth, geo);
@@ -99,13 +99,11 @@ export const setGeoStyleSelected = (geoStyleBasic, stroke) => {
   stroke.strokeColor = PROMPT_COLOR;
 };
 
-export const checkWorldViewHide = (
-  geography,
-  isSelected,
-  geoStyleBasic,
-  stroke
-) => {
+export const checkWorldViewHide = (geography, geoStyleBasic, stroke) => {
   const { currentMap, filterRegions, regionKey } = store.getState().map;
+  const { selectedProperties, infoTabShow } = store.getState().quiz;
+  const isSelected =
+    selectedProperties === geography.properties ? infoTabShow : false;
   const { regionOf } = geography.properties;
   const regionID = geography.properties[regionKey];
   const onQuiz = filterRegions.includes(regionID);
