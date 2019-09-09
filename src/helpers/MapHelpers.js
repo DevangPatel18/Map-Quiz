@@ -28,7 +28,7 @@ export const colorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
-  const { regionKey, choropleth, defaultZoom } = store.getState().map;
+  const { regionKey, choropleth } = store.getState().map;
   const isSelected =
     selectedProperties === geo.properties ? infoTabShow : false;
   const regionID = geo.properties[regionKey];
@@ -36,10 +36,7 @@ export const colorPicker = geo => {
   let stroke = { ...DEFAULT_STROKE_STYLE };
 
   if (isSelected) {
-    geoStyle.defaultColor = 'rgb(0, 100, 0)';
-    geoStyle.hoverColor = 'rgb(0, 100, 0)';
-    stroke.strokeWidth = 1 / defaultZoom;
-    stroke.strokeColor = PROMPT_COLOR;
+    setGeoStyleSelected(geoStyle, stroke);
   }
 
   if (isQuizActive === true) {
@@ -92,6 +89,14 @@ export const updateGeographyQuizStyle = (regionID, geoStyle) => {
     geoStyle.defaultColor = RIGHT_ANSWER_COLOR;
     geoStyle.hoverColor = RIGHT_ANSWER_COLOR;
   }
+};
+
+export const setGeoStyleSelected = (geoStyle, stroke) => {
+  const { defaultZoom } = store.getState().map;
+  geoStyle.defaultColor = 'rgb(0, 100, 0)';
+  geoStyle.hoverColor = 'rgb(0, 100, 0)';
+  stroke.strokeWidth = 1 / defaultZoom;
+  stroke.strokeColor = PROMPT_COLOR;
 };
 
 export const checkWorldViewHide = (geography, isSelected, geoStyle, stroke) => {
