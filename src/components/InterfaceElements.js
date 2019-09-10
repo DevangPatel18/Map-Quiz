@@ -10,22 +10,18 @@ import ChoroplethSlider from './ChoroplethSlider';
 import DirectionPad from './DirectionPad';
 import QuestionBox from './quizBox/QuestionBox';
 
-const InterfaceElements = ({ map, quiz }) => {
-  const { isQuizActive } = quiz;
-  const { slider } = map;
-  return (
-    <>
-      <ZoomButtons />
-      <TransitionInfoTab />
-      <DirectionPad />
-      {isMobile && <MobileMessage />}
-      {isQuizActive && <QuestionBox />}
-      {isQuizActive && <StatusBar />}
-      {!isQuizActive && <ChoroplethLegend />}
-      {!isQuizActive && slider && <ChoroplethSlider />}
-    </>
-  );
-};
+const InterfaceElements = ({ map: { slider }, quiz: { isQuizActive } }) => (
+  <>
+    <ZoomButtons />
+    <TransitionInfoTab />
+    <DirectionPad />
+    {isMobile && <MobileMessage />}
+    {isQuizActive && <QuestionBox />}
+    {isQuizActive && <StatusBar />}
+    {!isQuizActive && <ChoroplethLegend />}
+    {!isQuizActive && slider && <ChoroplethSlider />}
+  </>
+);
 
 const mapStateToProps = state => ({
   map: state.map,
