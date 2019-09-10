@@ -9,17 +9,11 @@ import TimerStyles from './styles/TimerStyles';
 class StatusBar extends Component {
   constructor() {
     super();
-
     this.state = {
       open: false,
       time: 0,
       timerOn: false,
     };
-
-    this.start = this.start.bind(this);
-    this.pause = this.pause.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-    this.close = this.close.bind(this);
   }
 
   componentDidMount() {
@@ -30,31 +24,31 @@ class StatusBar extends Component {
     clearInterval(this.timer);
   }
 
-  start() {
+  start = () => {
     this.setState({ timerOn: true, time: 0 });
     const x = Date.now();
     this.timer = setInterval(
       () => this.setState({ time: Date.now() - x }),
       1000
     );
-  }
+  };
 
-  pause() {
+  pause = () => {
     const { timerOn } = this.state;
     if (timerOn) {
       clearInterval(this.timer);
       this.setState({ timerOn: false, open: true });
     }
-  }
+  };
 
-  close() {
+  close = () => {
     const { closeQuiz } = this.props;
     closeQuiz();
     clearInterval(this.timer);
     this.setState({ time: 0, timerOn: false });
-  }
+  };
 
-  closeModal() {
+  closeModal = () => {
     const { timerOn, time } = this.state;
     if (!timerOn) {
       this.setState({ timerOn: true, open: false }, () => {
@@ -65,7 +59,7 @@ class StatusBar extends Component {
         );
       });
     }
-  }
+  };
 
   render() {
     const { isQuizActive, quizGuesses, quizAnswers } = this.props.quiz;

@@ -34,31 +34,25 @@ class QuizBox extends Component {
       quizType: 'click_name',
       regionMenu: false,
     };
-    this.handleQuizChange = this.handleQuizChange.bind(this);
-    this.handleLabelToggle = this.handleLabelToggle.bind(this);
-    this.handleCheckBox = this.handleCheckBox.bind(this);
-    this.handleRegionMenu = this.handleRegionMenu.bind(this);
-
-    this.start = this.start.bind(this);
   }
 
-  handleQuizChange(event, { value }) {
+  handleQuizChange = (event, { value }) => {
     this.setState({ quizType: value });
-  }
+  };
 
-  handleLabelToggle(marker) {
+  handleLabelToggle = marker => {
     const { setLabel, quiz } = this.props;
     const { markerToggle } = quiz;
     const parentMarker =
       markerToggle === '' || marker !== markerToggle ? marker : '';
     setLabel(parentMarker);
-  }
+  };
 
-  handleRegionMenu() {
+  handleRegionMenu = () => {
     this.setState({ regionMenu: !this.state.regionMenu });
-  }
+  };
 
-  handleCheckBox(e) {
+  handleCheckBox = e => {
     const { setRegionCheckbox, map } = this.props;
     const { checkedRegions } = map;
     const { value, checked } = e.target;
@@ -70,14 +64,13 @@ class QuizBox extends Component {
     if (!(!checked && nothing)) {
       setRegionCheckbox(value);
     }
-  }
+  };
 
-  start() {
+  start = () => {
     const { startQuiz } = this.props;
     const { quizType } = this.state;
-
     startQuiz(quizType);
-  }
+  };
 
   render() {
     const { quizType, regionMenu } = this.state;

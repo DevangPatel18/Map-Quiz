@@ -33,10 +33,6 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.regionLabels = regionLabels.bind(this);
-    this.toggleOrientation = this.toggleOrientation.bind(this);
-    this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.handleMenu = this.handleMenu.bind(this);
-    this.handleWheel = this.handleWheel.bind(this);
   }
 
   async componentDidMount() {
@@ -68,14 +64,14 @@ class App extends Component {
     window.removeEventListener('resize', this.adjustMapSize);
   }
 
-  toggleOrientation() {
+  toggleOrientation = () => {
     const { map, setMap } = this.props;
     const { dimensions, zoomFactor } = map;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
     setMap({ dimensions: newDimensions, zoomFactor });
-  }
+  };
 
-  adjustMapSize() {
+  adjustMapSize = () => {
     const { map, setMap } = this.props;
     const { dimensions } = map;
     const width = window.innerWidth;
@@ -92,16 +88,16 @@ class App extends Component {
     if (newDimensions[0] !== dimensions[0]) {
       setMap({ dimensions: newDimensions, zoomFactor: 2 });
     }
-  }
+  };
 
-  handleWheel(event) {
+  handleWheel = event => {
     if (event.deltaY > 0) {
       this.props.zoomMap(0.5);
     }
     if (event.deltaY < 0) {
       this.props.zoomMap(2);
     }
-  }
+  };
 
   handleMoveStart(currentCenter) {
     // console.log("Current center: ", currentCenter)
@@ -111,9 +107,9 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  handleMenu() {
+  handleMenu = () => {
     this.setState({ menuOpen: !this.state.menuOpen });
-  }
+  };
 
   handleRegionClick = geographyPath => {
     const { isTypeQuizActive, selectedProperties } = this.props.quiz;

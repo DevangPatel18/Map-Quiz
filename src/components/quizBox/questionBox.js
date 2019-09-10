@@ -3,7 +3,11 @@ import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
-import { startQuiz, closeQuiz, processTypeAnswer } from '../../actions/quizActions';
+import {
+  startQuiz,
+  closeQuiz,
+  processTypeAnswer,
+} from '../../actions/quizActions';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -12,18 +16,11 @@ class QuestionBox extends Component {
     this.state = {
       userGuess: '',
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinalDialog = this.handleFinalDialog.bind(this);
-    this.handleRestartQuiz = this.handleRestartQuiz.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ userGuess: event.target.value });
-  }
+  handleChange = event => this.setState({ userGuess: event.target.value });
 
-  handleSubmit(event) {
+  handleSubmit = event => {
     const { userGuess } = this.state;
     const { processTypeAnswer } = this.props;
     event.preventDefault();
@@ -31,15 +28,15 @@ class QuestionBox extends Component {
       processTypeAnswer(userGuess);
       this.setState({ userGuess: '' });
     }
-  }
+  };
 
-  async handleRestartQuiz(quizType) {
+  handleRestartQuiz = async quizType => {
     const { startQuiz, closeQuiz } = this.props;
     await closeQuiz();
     startQuiz(quizType);
-  }
+  };
 
-  handleFinalDialog() {
+  handleFinalDialog = () => {
     const { quiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers, quizType } = quiz;
 
@@ -69,7 +66,7 @@ class QuestionBox extends Component {
         </div>
       </div>
     );
-  }
+  };
 
   render() {
     const { userGuess } = this.state;
