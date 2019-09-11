@@ -2,7 +2,11 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import store from '../store';
-import { alpha3Codes, mapConfig } from '../assets/regionAlpha3Codes';
+import {
+  alpha3Codes,
+  mapConfig,
+  worldRegions,
+} from '../assets/regionAlpha3Codes';
 
 const geoPathLinks = {
   'United States of America': {
@@ -18,7 +22,7 @@ const geoPathLinks = {
 
 export const getStatesForRegionSelect = regionName => {
   const { center, zoom } = mapConfig[regionName];
-  const map = {
+  const mapAttributes = {
     zoom,
     center,
     defaultZoom: zoom,
@@ -27,11 +31,11 @@ export const getStatesForRegionSelect = regionName => {
     filterRegions: alpha3Codes[regionName],
     markerToggle: '',
   };
-  const quiz = {
+  const quizAttributes = {
     selectedProperties: '',
     markerToggle: '',
   };
-  return { map, quiz };
+  return { mapAttributes, quizAttributes };
 };
 
 export const getGeographyPaths = async regionName => {
@@ -127,4 +131,82 @@ export const getGeoPathCenterAndZoom = geographyPath => {
   zoom = properties[regionKey] === 'USA' ? zoom * 6 : zoom;
   zoom = Math.min(zoom, 64);
   return { center, zoom };
+};
+
+export const getOrientation = (width = 980) => {
+  let orientation;
+  switch (width) {
+    case 980:
+      orientation = 'landscape';
+      break;
+    case 645:
+      orientation = 'medium';
+      break;
+    case 420:
+      orientation = 'small';
+      break;
+    case 310:
+      orientation = 'portrait';
+      break;
+    default:
+  }
+  return orientation;
+};
+
+export const getNewRegionDataSet = async regionKey => {
+  const geographyPaths = await getGeographyPaths(regionKey);
+  const regionMarkers = getRegionMarkers(geographyPaths);
+  const capitalMarkers = await getCapitalMarkers(geographyPaths, regionKey);
+  const subRegionName = getSubRegionName(regionKey);
+  return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
+};
+
+export const checkMapViewsBetweenWorldRegions = regionName => {
+  const { currentMap } = store.getState().map;
+  return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
+};
+
+export const getUpdatedRegionDataSets = async regionKey => {
+  const { regionDataSets } = store.getState().data;
+  const newRegionDataSet = await getNewRegionDataSet(regionKey);
+  return { ...regionDataSets, [regionKey]: newRegionDataSet };
+};
+
+export const getNewCenter = direction => {
+  const { center } = store.getState().map;
+  let newCenter;
+  const step = 5;
+  switch (direction) {
+    case 'up':
+      newCenter = [center[0], center[1] + step];
+      break;
+    case 'down':
+      newCenter = [center[0], center[1] - step];
+      break;
+    case 'left':
+      newCenter = [center[0] - step, center[1]];
+      break;
+    case 'right':
+      newCenter = [center[0] + step, center[1]];
+      break;
+    default:
+  }
+  return newCenter;
+};
+
+export const getChoroplethTooltipContent = geography => {
+  const { choropleth, slider, sliderYear } = store.getState().map;
+  const { populationData } = store.getState().data;
+  const { alpha3Code } = geography.properties;
+  let contentData;
+  if (slider) {
+    contentData = populationData[alpha3Code]
+      ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
+      : 'N/A';
+  } else {
+    contentData = geography.properties[choropleth]
+      ? geography.properties[choropleth].toLocaleString()
+      : 'N/A';
+  }
+  return ` - ${contentData}`;
 };

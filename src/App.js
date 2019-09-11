@@ -1,69 +1,26 @@
 import React, { Component } from 'react';
-import { TransitionMotion, spring } from 'react-motion';
-import { Button, Sidebar, Tab } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import InfoTab from './components/infoTab/infoTab';
-import RegionButtons from './components/regionButtons';
-import QuizBox from './components/quizBox/quizBox';
-import handleDoubleClick from './components/handleDoubleClick';
-import RegionSearch from './components/RegionSearch';
-import regionEllipses from './components/regionEllipses';
-import regionLabels from './components/regionLabels';
-import StatusBar from './components/statusBar/statusBar';
+import handleDoubleClick from './helpers/handleDoubleClick';
+import regionEllipses from './helpers/regionEllipses';
+import regionLabels from './helpers/regionLabels';
 import { loadPaths, loadData } from './actions/dataActions';
-import { regionClick } from './actions/quizActions';
+import {
+  processClickAnswer,
+  loadNewInfoTab,
+  toggleInfoTab,
+} from './actions/quizActions';
 import {
   setRegionCheckbox,
   zoomMap,
-  recenterMap,
   setMap,
   tooltipMove,
   tooltipLeave,
 } from './actions/mapActions';
-import MobileMessage from './components/mobileMessage';
-import ChoroplethToggles from './components/ChoroplethToggles';
-import ChoroplethLegend from './components/ChoroplethLegend';
-import ChoroplethSlider from './components/ChoroplethSlider';
-import DropdownSelectionStyles from './components/styles/DropdownSelectionStyles';
-import DirectionPad from './components/DirectionPad';
-import QuestionBox from './components/quizBox/questionBox';
+import SidebarContainer from './components/SidebarContainer';
+import InterfaceElements from './components/InterfaceElements';
 import Map from './Map';
-import TabStyles from './components/styles/TabStyles';
-import About from './components/About';
-
-const MOTIONCONFIG = { stiffness: 300, damping: 15 };
-
-const panes = [
-  {
-    menuItem: { key: 'Quiz', content: 'Quiz' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <DropdownSelectionStyles>
-          <RegionButtons />
-          <RegionSearch />
-        </DropdownSelectionStyles>
-        <QuizBox />
-      </Tab.Pane>
-    ),
-  },
-  {
-    menuItem: { key: 'Choropleth', content: 'Choropleth' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <ChoroplethToggles />
-      </Tab.Pane>
-    ),
-  },
-  {
-    menuItem: { key: 'About', icon: 'question circle outline' },
-    render: () => (
-      <Tab.Pane attached={false}>
-        <About />
-      </Tab.Pane>
-    ),
-  },
-];
+import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
 class App extends Component {
   constructor() {
@@ -76,10 +33,6 @@ class App extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.regionLabels = regionLabels.bind(this);
-    this.toggleOrientation = this.toggleOrientation.bind(this);
-    this.adjustMapSize = this.adjustMapSize.bind(this);
-    this.handleMenu = this.handleMenu.bind(this);
-    this.handleWheel = this.handleWheel.bind(this);
   }
 
   async componentDidMount() {
@@ -111,14 +64,14 @@ class App extends Component {
     window.removeEventListener('resize', this.adjustMapSize);
   }
 
-  toggleOrientation() {
+  toggleOrientation = () => {
     const { map, setMap } = this.props;
     const { dimensions, zoomFactor } = map;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
     setMap({ dimensions: newDimensions, zoomFactor });
-  }
+  };
 
-  adjustMapSize() {
+  adjustMapSize = () => {
     const { map, setMap } = this.props;
     const { dimensions } = map;
     const width = window.innerWidth;
@@ -135,16 +88,16 @@ class App extends Component {
     if (newDimensions[0] !== dimensions[0]) {
       setMap({ dimensions: newDimensions, zoomFactor: 2 });
     }
-  }
+  };
 
-  handleWheel(event) {
+  handleWheel = event => {
     if (event.deltaY > 0) {
       this.props.zoomMap(0.5);
     }
     if (event.deltaY < 0) {
       this.props.zoomMap(2);
     }
-  }
+  };
 
   handleMoveStart(currentCenter) {
     // console.log("Current center: ", currentCenter)
@@ -154,128 +107,39 @@ class App extends Component {
     // console.log("New center: ", newCenter)
   }
 
-  markerClick = geographyPath => {
-    this.props.regionClick(geographyPath);
+  handleMenu = () => {
+    this.setState({ menuOpen: !this.state.menuOpen });
   };
 
-  handleMenu() {
-    this.setState({ menuOpen: !this.state.menuOpen });
-  }
+  handleRegionClick = geographyPath => {
+    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
+    const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
+    if (isTypeQuizActive) return;
+    const geoProperties = geographyPath.properties;
+    if (checkIfQuizIncomplete()) {
+      processClickAnswer(geoProperties);
+    } else if (geoProperties.name !== selectedProperties.name) {
+      loadNewInfoTab(geoProperties);
+    } else {
+      toggleInfoTab();
+    }
+  };
 
   render() {
-    const { quiz, selectedProperties, infoTabShow } = this.props.quiz;
-    const { zoomFactor, currentMap, slider } = this.props.map;
+    const { isQuizActive } = this.props.quiz;
     const { menuOpen } = this.state;
 
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
-    const infoArray = [selectedProperties];
 
     return (
       <div className="App">
-        {!quiz && (
+        {!isQuizActive && (
           <header className="App-header">
             <h1 className="App-title">Map Quiz</h1>
           </header>
         )}
-
-        {isMobile && <MobileMessage />}
-
-        <div className="zoomButtons">
-          <Button.Group size="tiny" vertical>
-            <Button
-              onClick={() => this.props.zoomMap(zoomFactor)}
-              icon="plus"
-              inverted
-              aria-label="map zoom in"
-            />
-            <Button
-              onClick={() => this.props.zoomMap(1 / zoomFactor)}
-              icon="minus"
-              inverted
-              aria-label="map zoom out"
-            />
-            <Button
-              onClick={this.props.recenterMap}
-              icon="undo"
-              inverted
-              aria-label="map zoom reset"
-            />
-          </Button.Group>
-        </div>
-
-        {quiz && <QuestionBox />}
-
-        {quiz && <StatusBar />}
-
-        <TransitionMotion
-          defaultStyles={infoArray.map(infoProp => ({
-            key: infoProp.name,
-            style: { x: -230, opacity: 0 },
-            data: infoProp,
-          }))}
-          styles={infoArray.map(infoProp => ({
-            key: infoProp.name,
-            style: {
-              x: spring(infoTabShow ? 15 : -230, MOTIONCONFIG),
-              opacity: spring(infoTabShow ? 1 : 0, MOTIONCONFIG),
-            },
-            data: infoProp,
-          }))}
-        >
-          {interpolatedStyles => (
-            <div>
-              {interpolatedStyles.map(config => (
-                <div
-                  key={config.key}
-                  style={{
-                    position: 'absolute',
-                    zIndex: '2',
-                    left: `${config.style.x}px`,
-                    top: '182px',
-                    opacity: `${config.style.opacity}`,
-                  }}
-                >
-                  <InfoTab regionData={config.data} />
-                </div>
-              ))}
-            </div>
-          )}
-        </TransitionMotion>
-
-        <DirectionPad />
-
-        {!quiz && <ChoroplethLegend />}
-
-        {!quiz && slider && <ChoroplethSlider />}
-
-        <Button
-          icon={menuOpen ? 'close' : 'sidebar'}
-          circular
-          inverted={!menuOpen}
-          style={{
-            position: 'absolute',
-            margin: '0',
-            right: '1em',
-            top: '1em',
-            transition: 'all 0.3s ease-in-out',
-            visibility: quiz ? 'hidden' : 'visible',
-            zIndex: '200',
-          }}
-          onClick={this.handleMenu}
-          aria-label="sidebar button"
-        />
-        <Sidebar
-          animation="overlay"
-          vertical="true"
-          visible={quiz ? false : menuOpen}
-          direction="right"
-          width={!isMobile && currentMap === 'World' ? 'wide' : null}
-          style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <TabStyles menu={{ secondary: true, pointing: true }} panes={panes} />
-        </Sidebar>
+        <InterfaceElements />
+        <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 
         <Map app={this} />
         <footer>
@@ -301,9 +165,10 @@ export default connect(
     loadData,
     setRegionCheckbox,
     zoomMap,
-    recenterMap,
     setMap,
-    regionClick,
+    processClickAnswer,
+    loadNewInfoTab,
+    toggleInfoTab,
     tooltipMove,
     tooltipLeave,
   }

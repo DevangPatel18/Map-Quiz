@@ -2,10 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import InfoTabStyles from '../styles/InfoTabStyles';
 
-const InfoTab = props => {
-  const { regionData } = props;
-  const { infoTabShow } = props.quiz;
-  const { geographyPaths } = props.data;
+const InfoTab = ({ regionData, quiz, data }) => {
+  const { infoTabShow } = quiz;
+  const { geographyPaths } = data;
   let { name, capital, population, area, regionOf } = regionData;
   let regionOfStr = '';
   population = population ? `${population.toLocaleString()}` : 'N/A';

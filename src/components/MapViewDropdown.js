@@ -10,15 +10,15 @@ const regionOptions = Object.keys(alpha3Codes).map(regionText => ({
   value: regionText,
 }));
 
-const RegionButtons = ({ regionSelect, checkMapDataUpdate }) => (
-  <div className="regionButtons">
+const MapViewDropdown = ({ regionSelect, checkMapDataUpdate }) => (
+  <div className="mapViewDropdown">
     <Dropdown
       placeholder="Select Region Quiz"
       fluid
       selection
       options={regionOptions}
-      onChange={(e, data) => {
-        checkMapDataUpdate(data.value);
+      onChange={async (e, data) => {
+        await checkMapDataUpdate(data.value);
         regionSelect(data.value);
       }}
     />
@@ -28,4 +28,4 @@ const RegionButtons = ({ regionSelect, checkMapDataUpdate }) => (
 export default connect(
   null,
   { regionSelect, checkMapDataUpdate }
-)(RegionButtons);
+)(MapViewDropdown);

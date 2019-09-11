@@ -25,7 +25,7 @@ const DropdownSelectionStyles = styled.div`
     width: 100%;
   }
 
-  .regionButtons {
+  .mapViewDropdown {
     padding: 1em;
     width: 100%;
   }

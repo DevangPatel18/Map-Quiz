@@ -1,25 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Button, Modal } from 'semantic-ui-react';
-import StatusBarStyles from '../styles/StatusBarStyles';
-import { startQuiz, closeQuiz } from '../../actions/quizActions';
-import msToTime from '../../helpers/msToTime';
-import TimerStyles from '../styles/TimerStyles';
+import StatusBarStyles from './styles/StatusBarStyles';
+import { startQuiz, closeQuiz } from '../actions/quizActions';
+import msToTime from '../helpers/msToTime';
+import TimerStyles from './styles/TimerStyles';
 
 class StatusBar extends Component {
   constructor() {
     super();
-
     this.state = {
       open: false,
       time: 0,
       timerOn: false,
     };
-
-    this.start = this.start.bind(this);
-    this.pause = this.pause.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-    this.close = this.close.bind(this);
   }
 
   componentDidMount() {
@@ -30,31 +24,31 @@ class StatusBar extends Component {
     clearInterval(this.timer);
   }
 
-  start() {
+  start = () => {
     this.setState({ timerOn: true, time: 0 });
     const x = Date.now();
     this.timer = setInterval(
       () => this.setState({ time: Date.now() - x }),
       1000
     );
-  }
+  };
 
-  pause() {
+  pause = () => {
     const { timerOn } = this.state;
     if (timerOn) {
       clearInterval(this.timer);
       this.setState({ timerOn: false, open: true });
     }
-  }
+  };
 
-  close() {
+  close = () => {
     const { closeQuiz } = this.props;
     closeQuiz();
     clearInterval(this.timer);
     this.setState({ time: 0, timerOn: false });
-  }
+  };
 
-  closeModal() {
+  closeModal = () => {
     const { timerOn, time } = this.state;
     if (!timerOn) {
       this.setState({ timerOn: true, open: false }, () => {
@@ -65,12 +59,12 @@ class StatusBar extends Component {
         );
       });
     }
-  }
+  };
 
   render() {
-    const { quiz, quizGuesses, quizAnswers } = this.props.quiz;
+    const { isQuizActive, quizGuesses, quizAnswers } = this.props.quiz;
     const { time, open } = this.state;
-    const percentComp = quiz
+    const percentComp = isQuizActive
       ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
       : '';
     const questionText = `Question: ${quizGuesses.length} / ${
@@ -86,7 +80,7 @@ class StatusBar extends Component {
 
     return (
       <div>
-        <StatusBarStyles quiz={quiz}>
+        <StatusBarStyles isQuizActive={isQuizActive}>
           <TimerStyles>
             <div className="statusBar-timerButtons">
               <Button

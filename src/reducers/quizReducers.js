@@ -19,11 +19,11 @@ const emptySelectedProperties = {
 const initialState = {
   quizAnswers: [],
   quizType: null,
-  quiz: false,
+  isQuizActive: false,
   activeQuestionNum: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
-  disableInfoClick: false,
+  isTypeQuizActive: false,
   markerToggle: '',
   infoTabShow: false,
 };
@@ -33,7 +33,7 @@ export default function(state = initialState, action) {
     case CHANGE_MAP_VIEW:
       return {
         ...state,
-        ...action.quiz,
+        ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
@@ -61,7 +61,7 @@ export default function(state = initialState, action) {
     case SET_QUIZ_STATE:
       return {
         ...state,
-        ...action.quiz,
+        ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
@@ -70,10 +70,10 @@ export default function(state = initialState, action) {
         ...state,
         quizAnswers: [],
         quizGuesses: [],
-        quiz: false,
+        isQuizActive: false,
         quizType: null,
         activeQuestionNum: null,
-        disableInfoClick: false,
+        isTypeQuizActive: false,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };

@@ -1,9 +1,8 @@
 import { moroccoGeo, westernSaharaGeo, tuvaluGeo } from './borderUpdate'
 
 // Change entries of data object
-const DataFix = ({data, capitalMarkers}) => {
+const DataFix = data => {
   let countryData = data.slice();
-  let capitalMarkersData = capitalMarkers.slice();
 
   // Add missing country variants
   countryData.find(x => x.alpha3Code === 'COG').altSpellings = ['Republic of the Congo'];
@@ -79,21 +78,6 @@ const DataFix = ({data, capitalMarkers}) => {
     countryData.find(x => x.alpha3Code === obj.alpha)[obj.attribute] = obj.value;
   });
 
-  // Add capitals for Overseas regions
-  const extraCapitals = [
-    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
-    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
-    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
-    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
-    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
-    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
-    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
-  ];
-
-  extraCapitals.forEach((capitalObj) => {
-    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
-  });
-
   // Add "Region of" designation for overseas regions
   const overseasRegions = {
     NZL: ['COK', 'NIU', 'TKL'],
@@ -114,14 +98,17 @@ const DataFix = ({data, capitalMarkers}) => {
     });
   });
 
-  return [countryData, capitalMarkersData]
+  return countryData
 }
 
-const GeoPathsMod = (geoPath) => {
-  const geographyPath = geoPath.slice();
+const modifyWorldGeographyPaths = (geoPath) => {
+  let geographyPaths = geoPath.slice();
+
+  // Remove Antarctica  
+  geographyPaths = geographyPaths.filter(x => (+x.id !== 10 ? 1 : 0));
 
   // Create geography paths for regions of France
-  const france = geographyPath.find(x => x.id === '250');
+  const france = geographyPaths.find(x => x.id === '250');
   const frenchguiana = JSON.parse(JSON.stringify(france));
   const guadeloupe = JSON.parse(JSON.stringify(france));
   const martinique = JSON.parse(JSON.stringify(france));
@@ -141,7 +128,7 @@ const GeoPathsMod = (geoPath) => {
   guadeloupe.geometry.coordinates = franceCoords.slice(4);
 
   // Create geography path for Bonaire
-  const netherlands = geographyPath.find(x => x.id === '528');
+  const netherlands = geographyPaths.find(x => x.id === '528');
   const bonaire = JSON.parse(JSON.stringify(netherlands));
   bonaire.id = '535';
 
@@ -149,15 +136,15 @@ const GeoPathsMod = (geoPath) => {
   bonaire.geometry.coordinates = coordsNLD;
 
   // Create geography path for Cocos and set numericCode for Christmas Island 
-  geographyPath[98].id = '162';
-  const cocos = JSON.parse(JSON.stringify(geographyPath[98]));
+  geographyPaths[98].id = '162';
+  const cocos = JSON.parse(JSON.stringify(geographyPaths[98]));
   cocos.id = '166';
 
-  const coordsCXR = geographyPath[98].geometry.coordinates.splice(0, 2);
+  const coordsCXR = geographyPaths[98].geometry.coordinates.splice(0, 2);
   cocos.geometry.coordinates = coordsCXR;
 
   // Create geography path for Svalbard
-  const norway = geographyPath.find(x => x.id === '578');
+  const norway = geographyPaths.find(x => x.id === '578');
   const svalbard = JSON.parse(JSON.stringify(norway));
   svalbard.id = '744';
 
@@ -165,7 +152,7 @@ const GeoPathsMod = (geoPath) => {
   svalbard.geometry.coordinates = coordsNOR;
 
   // Create geography path for Tokelau
-  const newzealand = geographyPath.find(x => x.id === '554');
+  const newzealand = geographyPaths.find(x => x.id === '554');
   const tokelau = JSON.parse(JSON.stringify(newzealand));
   tokelau.id = '772';
 
@@ -173,25 +160,25 @@ const GeoPathsMod = (geoPath) => {
   tokelau.geometry.coordinates = coordsNZL;
 
   // Create geography path for Tuvalu from existing arbitrary geography object
-  const tuvalu = JSON.parse(JSON.stringify(geographyPath[0]));
+  const tuvalu = JSON.parse(JSON.stringify(geographyPaths[0]));
   tuvalu.id = '798';
   tuvalu.geometry = tuvaluGeo
 
-  geographyPath.push(
+  geographyPaths.push(
     frenchguiana, guadeloupe, martinique, mayotte, reunion, bonaire, svalbard, cocos, tokelau, tuvalu
   );
 
   // Remove Ashmore Reef to prevent extra Australia label
-  geographyPath.splice(11, 1);
+  geographyPaths.splice(11, 1);
 
   // Set numericCode for Kosovo
-  geographyPath[117].id = '999';
+  geographyPaths[117].id = '999';
 
   // Update borders for Morocco and Western Sahara
-  geographyPath.find(x => x.id === "732").geometry = westernSaharaGeo;
-  geographyPath.find(x => x.id === "504").geometry = moroccoGeo;
+  geographyPaths.find(x => x.id === "732").geometry = westernSaharaGeo;
+  geographyPaths.find(x => x.id === "504").geometry = moroccoGeo;
 
-  return geographyPath
+  return geographyPaths
 };
 
 // Change positioning of country labels
@@ -256,7 +243,22 @@ const CapitalMarkersFix = (capitalMarkers) => {
     capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
   });
 
+  // Add capitals for Overseas regions
+  const extraCapitals = [
+    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
+    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
+    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
+    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
+    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
+    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
+    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
+  ];
+
+  extraCapitals.forEach((capitalObj) => {
+    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
+  });
+
   return capitalMarkersData;
 };
 
-export { DataFix, CountryMarkersFix, CapitalMarkersFix, GeoPathsMod };
+export { DataFix, CountryMarkersFix, CapitalMarkersFix, modifyWorldGeographyPaths };

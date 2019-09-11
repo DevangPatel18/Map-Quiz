@@ -1,11 +1,12 @@
 import { actions } from 'redux-tooltip';
 import {
   getStatesForRegionSelect,
-  getGeographyPaths,
-  getRegionMarkers,
-  getCapitalMarkers,
-  getSubRegionName,
+  getUpdatedRegionDataSets,
   getGeoPathCenterAndZoom,
+  getOrientation,
+  checkMapViewsBetweenWorldRegions,
+  getNewCenter,
+  getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
 import {
   CHANGE_MAP_VIEW,
@@ -21,13 +22,12 @@ import {
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
   LOAD_REGION_DATA,
+  ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { alpha3Codes, alpha3CodesSov } from '../assets/regionAlpha3Codes';
+import { worldRegions, alpha3CodesSov } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
-
-const WorldRegions = Object.keys(alpha3Codes).slice(0, -1);
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
@@ -46,9 +46,11 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { map, quiz } = getStatesForRegionSelect(regionName);
+  const { mapAttributes, quizAttributes } = getStatesForRegionSelect(
+    regionName
+  );
 
-  await dispatch({ type: CHANGE_MAP_VIEW, map, quiz });
+  await dispatch({ type: CHANGE_MAP_VIEW, mapAttributes, quizAttributes });
   dispatch({ type: DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
@@ -65,59 +67,29 @@ export const regionSelect = regionName => async dispatch => {
 };
 
 export const checkMapDataUpdate = regionName => async dispatch => {
-  const { currentMap } = store.getState().map;
-  const { regionDataSets } = store.getState().data;
+  if (checkMapViewsBetweenWorldRegions(regionName)) return;
 
-  if (
-    !(WorldRegions.includes(currentMap) && WorldRegions.includes(regionName))
-  ) {
-    const regionDataSetKey = WorldRegions.includes(regionName)
-      ? 'World'
-      : regionName;
-    if (regionDataSets[regionDataSetKey]) {
-      const {
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        subRegionName,
-      } = regionDataSets[regionDataSetKey];
-      await dispatch({
-        type: LOAD_REGION_DATA,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        regionDataSets,
-        subRegionName,
-      });
-    } else {
-      const newGeographyPaths = await getGeographyPaths(regionDataSetKey);
-      const newRegionMarkers = getRegionMarkers(newGeographyPaths);
-      const newCapitalMarkers = await getCapitalMarkers(
-        newGeographyPaths,
-        regionDataSetKey
-      );
-      const subRegionName = getSubRegionName(regionName);
+  let { regionDataSets } = store.getState().data;
+  const regionDataSetKey = worldRegions.includes(regionName)
+    ? 'World'
+    : regionName;
+  if (!regionDataSets[regionDataSetKey]) {
+    const updatedRegionDataSets = await getUpdatedRegionDataSets(
+      regionDataSetKey
+    );
 
-      const updatedRegionDataSets = {
-        ...regionDataSets,
-        [regionDataSetKey]: {
-          geographyPaths: newGeographyPaths,
-          regionMarkers: newRegionMarkers,
-          capitalMarkers: newCapitalMarkers,
-          subRegionName,
-        },
-      };
-
-      await dispatch({
-        type: LOAD_REGION_DATA,
-        geographyPaths: newGeographyPaths,
-        regionMarkers: newRegionMarkers,
-        capitalMarkers: newCapitalMarkers,
-        regionDataSets: updatedRegionDataSets,
-        subRegionName,
-      });
-    }
+    await dispatch({
+      type: ADD_REGION_DATA,
+      regionDataSets: updatedRegionDataSets,
+    });
+    regionDataSets = store.getState().data.regionDataSets;
   }
+  const regionDataSet = regionDataSets[regionDataSetKey];
+
+  await dispatch({
+    type: LOAD_REGION_DATA,
+    ...regionDataSet,
+  });
 };
 
 export const regionZoom = geographyPath => async dispatch => {
@@ -147,33 +119,18 @@ export const recenterMap = () => dispatch => {
 };
 
 export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
+  const orientation = getOrientation(dimensions[0]);
   await dispatch({
     type: SET_MAP,
     dimensions,
+    orientation,
     zoomFactor,
   });
   dispatch({ type: DISABLE_OPT });
 };
 
 export const moveMap = direction => async dispatch => {
-  const { center } = store.getState().map;
-  let newCenter;
-  const step = 5;
-  switch (direction) {
-    case 'up':
-      newCenter = [center[0], center[1] + step];
-      break;
-    case 'down':
-      newCenter = [center[0], center[1] - step];
-      break;
-    case 'left':
-      newCenter = [center[0] - step, center[1]];
-      break;
-    case 'right':
-      newCenter = [center[0] + step, center[1]];
-      break;
-    default:
-  }
+  const newCenter = getNewCenter(direction);
   await dispatch({
     type: MOVE_CENTER,
     center: newCenter,
@@ -187,22 +144,11 @@ export const setChoropleth = choropleth => async dispatch => {
 };
 
 export const tooltipMove = (geography, evt) => dispatch => {
-  const { choropleth, slider, sliderYear } = store.getState().map;
-  const { populationData } = store.getState().data;
-  const { name, alpha3Code } = geography.properties;
+  const { choropleth } = store.getState().map;
+  const { name } = geography.properties;
   let content = name;
-  let contentData;
   if (choropleth !== 'None') {
-    if (slider) {
-      contentData = populationData[alpha3Code]
-        ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
-        : 'N/A';
-    } else {
-      contentData = geography.properties[choropleth]
-        ? geography.properties[choropleth].toLocaleString()
-        : 'N/A';
-    }
-    content += ` - ${contentData}`;
+    content += getChoroplethTooltipContent(geography);
   }
   const x = evt.clientX;
   const y = evt.clientY + window.pageYOffset;

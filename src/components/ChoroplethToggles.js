@@ -11,22 +11,19 @@ class ChoroplethToggles extends Component {
   constructor() {
     super();
     this.state = {};
-
-    this.openDrawer = this.openDrawer.bind(this);
-    this.setRadio = this.setRadio.bind(this);
   }
 
-  openDrawer() {
+  openDrawer = () => {
     this.setState({ open: !this.state.open });
-  }
+  };
 
-  setRadio(e, { value }) {
+  setRadio = (e, { value }) => {
     const { setChoropleth, sliderSet } = this.props;
     setChoropleth(value);
     if (value !== 'population') {
       sliderSet(false);
     }
-  }
+  };
 
   render() {
     const { sliderSet } = this.props;

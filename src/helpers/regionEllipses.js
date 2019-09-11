@@ -2,16 +2,16 @@ import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { isMobile } from 'react-device-detect';
-import ColorPicker from './colorPicker';
-import { ellipseDim, labelDist, labelist } from '../helpers/markerParams';
-import projection from "../helpers/projection";
+import { colorPicker } from './MapHelpers';
+import { ellipseDim, labelDist, labelist } from './markerParams';
+import projection from "./projection";
 
 const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TUV', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
   const { currentMap, filterRegions, tooltip } = this.props.map;
-  const { quiz } = this.props.quiz;
+  const { isQuizActive } = this.props.quiz;
   const { geographyPaths, capitalMarkers, regionMarkers } = this.props.data;
   let minArea;
   switch (currentMap) {
@@ -33,7 +33,7 @@ export default function regionEllipses() {
     filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
   }
 
-  const show = !(currentMap === 'World' && !quiz);
+  const show = !(currentMap === 'World' && !isQuizActive);
   return show && <Markers> 
     {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFN)
@@ -91,33 +91,20 @@ export default function regionEllipses() {
         rotate = `rotate(${angleMain})`;
       }
 
-      const mouseHandlers = !tooltip || quiz
+      const mouseHandlers = !tooltip || isQuizActive
         ? {}
         : {
             onMouseMove: (marker, evt) => this.props.tooltipMove(region, evt),
             onMouseLeave: this.props.tooltipLeave,
           };
 
-      const { defaultColor, hoverColor, pressedColor } = ColorPicker(region);
+      const { geoStyle } = colorPicker(region);
       return (
         <Marker
           key={alpha3Code}
           {...mouseHandlers}
           marker={marker}
-          style={!caribbeanMap && {
-            default: {
-              fill: defaultColor,
-              transition: 'fill .5s',
-            },
-            hover: {
-              fill: hoverColor,
-              transition: 'fill .5s',
-            },
-            pressed: {
-              fill: pressedColor,
-              transition: 'fill .5s',
-            },
-          }}
+          style={!caribbeanMap && geoStyle}
           preserveMarkerAspect={caribbeanMap}
         >
           {caribbeanMap && (
@@ -135,9 +122,9 @@ export default function regionEllipses() {
               cx={ccx}
               cy={ccy}
               r={isMobile ? 12 : 4}
-              fill={defaultColor}
+              fill={geoStyle.default.fill}
               className="caribSelector"
-              onClick={() => this.markerClick(region)}
+              onClick={() => this.handleRegionClick(region)}
             />
           ) : (
             <ellipse
@@ -148,7 +135,7 @@ export default function regionEllipses() {
               rx={widthMain}
               ry={heightMain}
               transform={rotate}
-              onClick={() => this.markerClick(region)}
+              onClick={() => this.handleRegionClick(region)}
             />
           )}
         </Marker>

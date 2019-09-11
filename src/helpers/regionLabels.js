@@ -1,10 +1,10 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { labelDist, tinyCarib, labelAnchors } from '../helpers/markerParams';
+import { labelDist, tinyCarib, labelAnchors } from './markerParams';
 
 export default function regionLabels() {
   const {
-    quiz,
+    isQuizActive,
     quizGuesses,
     quizType,
     quizAnswers,
@@ -16,7 +16,7 @@ export default function regionLabels() {
   let display = true;
   let markerArray;
   let testing;
-  if (quiz) {
+  if (isQuizActive) {
     markerArray = quizAnswers;
     testing = quizType.split('_')[1];
   } else if (markerToggle !== '') {
@@ -32,7 +32,7 @@ export default function regionLabels() {
       let textAnchor;
       let dx;
       let dy;
-      const markerDisplay = quiz ? quizGuesses[i] : true;
+      const markerDisplay = isQuizActive ? quizGuesses[i] : true;
       if (markerDisplay) {
         if (testing === 'name' || testing === 'flag') {
           marker = regionMarkers.find(x => (x[regionKey]) === regionID);
