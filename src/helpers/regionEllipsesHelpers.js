@@ -1,5 +1,7 @@
-import { OceaniaUN } from './regionCodeArrays';
-import { labelDist, labelist } from './markerParams';
+import { geoPath } from 'd3-geo';
+import projection from './projection';
+import { OceaniaUN, CaribbeanUN } from './regionCodeArrays';
+import { OceaniaEllipseDimensions, labelDist, labelist } from './markerParams';
 import store from '../store';
 
 const getMaxAreaForEllipse = currentMap => {
@@ -25,7 +27,7 @@ export const getFilterFunction = currentMap => {
   return filterFunc;
 };
 
-export const getCaribMarkerProperties = alpha3Code => {
+export const getCaribbeanMarkerProperties = alpha3Code => {
   const { capitalMarkers } = store.getState().data;
   const marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
   let deltaX = 20;
@@ -49,4 +51,33 @@ export const getCaribMarkerProperties = alpha3Code => {
   }
 
   return { marker, circleX, circleY, lineX, lineY };
+};
+
+const getGeoEllipseDimensions = region => {
+  const { alpha3Code } = region.properties;
+  const path = geoPath().projection(projection());
+  const bounds = path.bounds(region);
+  const originWidth = bounds[1][0] - bounds[0][0];
+  const originHeight = bounds[1][1] - bounds[0][1];
+  const radius = CaribbeanUN.includes(alpha3Code) ? 1.5 : 3;
+  const width = Math.max(originWidth, radius);
+  const height = Math.max(originHeight, radius);
+  const angle = 0;
+  return { width, height, angle };
+};
+
+export const getEllipseMarkerProperties = region => {
+  const { regionMarkers } = store.getState().data;
+  const { alpha3Code } = region.properties;
+  const marker = regionMarkers.find(x => x.alpha3Code === alpha3Code);
+  let ellipseData;
+  if (Object.keys(OceaniaEllipseDimensions).includes(alpha3Code)) {
+    ellipseData = OceaniaEllipseDimensions[alpha3Code];
+  } else {
+    ellipseData = getGeoEllipseDimensions(region);
+  }
+  const { width, height, angle } = ellipseData;
+  const rotate = `rotate(${angle})`;
+
+  return { marker, width, height, rotate };
 };

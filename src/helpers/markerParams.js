@@ -9,7 +9,7 @@ const labelist = ['AIA', 'MAF', 'SXM', 'BLM'];
 const tinyCarib = ['tl', 'tr', 'br', 'bl']
   .map(pos => labelPos[pos].regions)
   .reduce((acc, val) => acc.concat(val), []);
-const ellipseDim = {
+const OceaniaEllipseDimensions = {
   FJI: { width: 13, height: 18, angle: 0 },
   KIR: { width: 59, height: 23, angle: 3 },
   MHL: { width: 11, height: 13, angle: 0 },
@@ -87,5 +87,5 @@ const labelAnchors = {
 };
 
 export {
-  labelPos, labelist, ellipseDim, labelDist, tinyCarib, labelAnchors,
+  labelPos, labelist, OceaniaEllipseDimensions, labelDist, tinyCarib, labelAnchors,
 };

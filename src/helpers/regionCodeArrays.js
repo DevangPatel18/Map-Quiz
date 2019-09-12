@@ -12,3 +12,5 @@ export const OceaniaUN = [
   'TON',
   'WSM',
 ];
+
+export const CaribbeanUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
