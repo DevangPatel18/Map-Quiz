@@ -3,51 +3,29 @@ import { Markers, Marker } from 'react-simple-maps';
 import { geoPath } from 'd3-geo';
 import { isMobile } from 'react-device-detect';
 import { colorPicker } from './MapHelpers';
-import { ellipseDim, labelDist, labelist } from './markerParams';
+import { ellipseDim } from './markerParams';
 import projection from "./projection";
-import { getFilterFunction } from './regionEllipsesHelpers'
+import { getFilterFunction, getCaribMarkerProperties } from './regionEllipsesHelpers'
 
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
   const { currentMap, filterRegions, tooltip } = this.props.map;
   const { isQuizActive } = this.props.quiz;
-  const { geographyPaths, capitalMarkers, regionMarkers } = this.props.data;
+  const { geographyPaths, regionMarkers } = this.props.data;
   const filterFunc = getFilterFunction(currentMap)
   const show = !(currentMap === 'World' && !isQuizActive);
   return show && <Markers> 
     {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
     .filter(filterFunc)
     .map((region) => {
-      let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
-      let ccx;
-      let ccy;
-      let llx;
-      let lly;
+      let marker; let rotate; let widthMain; let heightMain; let angleMain;
       const { alpha3Code } = region.properties;
       const caribbeanMap = currentMap === 'Caribbean'
+      let markerData
       if (caribbeanMap) {
-        marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
-        dx = 20;
-        dy = -20;
-        [dx, dy] = labelDist(dx, dy, alpha3Code);
-        ccx = dx;
-        ccy = dy;
-        llx = dx;
-        lly = dy;
-
-        if(!labelist.includes(alpha3Code)) {
-          ccx = dx*.8
-          ccy = dy*.8
-          llx = dx*.65
-          lly = dy*.65
-        } else {
-          ccx = dx*.93
-          ccy = dy*.93
-          llx = dx*.88
-          lly = dy*.88
-        }
-
+        markerData = getCaribMarkerProperties(alpha3Code);
+        marker = markerData.marker
       } else {
         marker = regionMarkers.find(x => x.alpha3Code === alpha3Code);
         const path = geoPath().projection(projection());
@@ -92,16 +70,16 @@ export default function regionEllipses() {
             <line
               x1="0"
               y1="0"
-              x2={llx.toString()}
-              y2={lly.toString()}
+              x2={markerData.lineX.toString()}
+              y2={markerData.lineY.toString()}
               stroke="black"
               strokeWidth={0.3}
             />
           )}
           {caribbeanMap ? (
             <circle
-              cx={ccx}
-              cy={ccy}
+              cx={markerData.circleX}
+              cy={markerData.circleY}
               r={isMobile ? 12 : 4}
               fill={geoStyle.default.fill}
               className="caribSelector"
