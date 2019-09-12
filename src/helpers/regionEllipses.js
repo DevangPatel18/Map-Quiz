@@ -5,38 +5,19 @@ import { isMobile } from 'react-device-detect';
 import { colorPicker } from './MapHelpers';
 import { ellipseDim, labelDist, labelist } from './markerParams';
 import projection from "./projection";
+import { getFilterFunction } from './regionEllipsesHelpers'
 
-const oceaniaUN = ['PLW', 'FSM', 'MHL', 'KIR', 'NRU', 'SLB', 'NCL', 'VUT', 'FJI', 'TUV', 'TON', 'WSM'];
 const caribUN = ['ATG', 'BRB', 'DMA', 'GRD', 'KNA', 'LCA', 'VCT'];
 
 export default function regionEllipses() {
   const { currentMap, filterRegions, tooltip } = this.props.map;
   const { isQuizActive } = this.props.quiz;
   const { geographyPaths, capitalMarkers, regionMarkers } = this.props.data;
-  let minArea;
-  switch (currentMap) {
-    case 'Caribbean':
-      minArea = 2000;
-      break;
-    case 'Oceania':
-      minArea = 29000;
-      break;
-    default:
-      minArea = 6000;
-  }
-
-  let filterFN;
-
-  if (currentMap !== 'World') {
-    filterFN = x => x.properties.area < minArea;
-  } else {
-    filterFN = x => x.properties.area < minArea || oceaniaUN.includes(x.properties.alpha3Code);
-  }
-
+  const filterFunc = getFilterFunction(currentMap)
   const show = !(currentMap === 'World' && !isQuizActive);
   return show && <Markers> 
     {geographyPaths.filter(x => filterRegions.includes(x.properties.alpha3Code))
-    .filter(filterFN)
+    .filter(filterFunc)
     .map((region) => {
       let marker; let dx; let dy; let rotate; let widthMain; let heightMain; let angleMain;
       let ccx;
