@@ -1,12 +1,9 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { labelDist, tinyCarib, labelAnchors } from './markerParams';
-import { getMarkerConfig, getRegionMarker } from './regionLabelsHelpers';
+import { getMarkerConfig, getRegionMarker, getLabelData } from './regionLabelsHelpers';
 
 export default function regionLabels() {
   const { isQuizActive, quizGuesses } = this.props.quiz;
-  const { capitalMarkers } = this.props.data;
-  const { currentMap, regionKey } = this.props.map;
   const { display, markerArray, testing } = getMarkerConfig()
 
   return display && <Markers>
@@ -14,29 +11,12 @@ export default function regionLabels() {
       const markerDisplay = isQuizActive ? quizGuesses[i] : true;
       if (!markerDisplay) return null;
 
-      let marker = getRegionMarker(regionID, testing);
-      if (!marker) return null
+      const initialMarker = getRegionMarker(regionID, testing);
+      if (!initialMarker) return null
 
-      const markerName = marker.name;
-      let textAnchor = 'middle';
-      let dx = 0;
-      let dy = marker ? marker.markerOffset : 0;
+      const labelData = getLabelData(initialMarker, regionID, testing );
+      const { marker, markerName, textAnchor, dx, dy } = labelData
 
-      if (currentMap === 'Caribbean') {
-        if (tinyCarib.includes(regionID)) {
-          marker =
-            testing !== 'capital'
-              ? capitalMarkers.find(x => x[regionKey] === regionID)
-              : marker;
-          dx = 20;
-          dy = -20;
-          [dx, dy, textAnchor] = labelDist(dx, dy, regionID);
-        }
-      }
-
-      if (Object.keys(labelAnchors).includes(regionID)) {
-        textAnchor = labelAnchors[regionID];
-      }
       return (
           <Marker
             key={regionID}
