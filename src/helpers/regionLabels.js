@@ -1,51 +1,43 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from './markerParams';
-import { markerConfig } from './regionLabelsHelpers';
+import { getMarkerConfig, getRegionMarker } from './regionLabelsHelpers';
 
 export default function regionLabels() {
   const { isQuizActive, quizGuesses } = this.props.quiz;
-  const { regionMarkers, capitalMarkers } = this.props.data;
+  const { capitalMarkers } = this.props.data;
   const { currentMap, regionKey } = this.props.map;
-  const { display, markerArray, testing } = markerConfig()
+  const { display, markerArray, testing } = getMarkerConfig()
 
   return display && <Markers>
     {markerArray.map((regionID, i) => {
-      let marker;
-      let markerName;
-      let textAnchor;
-      let dx;
-      let dy;
       const markerDisplay = isQuizActive ? quizGuesses[i] : true;
-      if (markerDisplay) {
-        if (testing === 'name' || testing === 'flag') {
-          marker = regionMarkers.find(x => (x[regionKey]) === regionID);
-        } else if (testing === 'capital') {
-          marker = capitalMarkers.find(x => x[regionKey] === regionID);
-        }
-        if(!marker) return null
-        markerName = marker.name;
-        textAnchor = 'middle';
-        dx = 0;
-        dy = marker ? marker.markerOffset : 0;
+      if (!markerDisplay) return null;
 
-        if (currentMap === 'Caribbean') {
-          if (tinyCarib.includes(regionID)) {
-            marker =
-              testing !== 'capital'
-                ? capitalMarkers.find(x => x[regionKey] === regionID)
-                : marker;
-            dx = 20;
-            dy = -20;
-            [dx, dy, textAnchor] = labelDist(dx, dy, regionID);
-          }
-        }
+      let marker = getRegionMarker(regionID, testing);
+      if (!marker) return null
 
-        if (Object.keys(labelAnchors).includes(regionID)) {
-          textAnchor = labelAnchors[regionID];
+      const markerName = marker.name;
+      let textAnchor = 'middle';
+      let dx = 0;
+      let dy = marker ? marker.markerOffset : 0;
+
+      if (currentMap === 'Caribbean') {
+        if (tinyCarib.includes(regionID)) {
+          marker =
+            testing !== 'capital'
+              ? capitalMarkers.find(x => x[regionKey] === regionID)
+              : marker;
+          dx = 20;
+          dy = -20;
+          [dx, dy, textAnchor] = labelDist(dx, dy, regionID);
         }
       }
-      return markerDisplay && (
+
+      if (Object.keys(labelAnchors).includes(regionID)) {
+        textAnchor = labelAnchors[regionID];
+      }
+      return (
           <Marker
             key={regionID}
             marker={marker}

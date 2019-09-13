@@ -1,6 +1,6 @@
 import store from '../store';
 
-export const markerConfig = () => {
+export const getMarkerConfig = () => {
   const { quiz, map } = store.getState();
   const { isQuizActive, quizType, quizAnswers, markerToggle } = quiz;
   const { filterRegions } = map;
@@ -17,4 +17,16 @@ export const markerConfig = () => {
     display = false;
   }
   return { display, markerArray, testing };
+};
+
+export const getRegionMarker = (regionID, testing) => {
+  const { regionMarkers, capitalMarkers } = store.getState().data;
+  const { regionKey } = store.getState().map;
+  let marker;
+  if (testing === 'name' || testing === 'flag') {
+    marker = regionMarkers.find(x => x[regionKey] === regionID);
+  } else if (testing === 'capital') {
+    marker = capitalMarkers.find(x => x[regionKey] === regionID);
+  }
+  return marker;
 };
