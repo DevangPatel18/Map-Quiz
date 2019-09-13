@@ -1,30 +1,14 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
 import { labelDist, tinyCarib, labelAnchors } from './markerParams';
+import { markerConfig } from './regionLabelsHelpers';
 
 export default function regionLabels() {
-  const {
-    isQuizActive,
-    quizGuesses,
-    quizType,
-    quizAnswers,
-    markerToggle,
-  } = this.props.quiz;
+  const { isQuizActive, quizGuesses } = this.props.quiz;
   const { regionMarkers, capitalMarkers } = this.props.data;
-  const { currentMap, filterRegions, regionKey } = this.props.map;
+  const { currentMap, regionKey } = this.props.map;
+  const { display, markerArray, testing } = markerConfig()
 
-  let display = true;
-  let markerArray;
-  let testing;
-  if (isQuizActive) {
-    markerArray = quizAnswers;
-    testing = quizType.split('_')[1];
-  } else if (markerToggle !== '') {
-    markerArray = filterRegions;
-    testing = markerToggle;
-  } else {
-    display = false;
-  }
   return display && <Markers>
     {markerArray.map((regionID, i) => {
       let marker;
