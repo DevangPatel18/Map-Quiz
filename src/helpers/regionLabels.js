@@ -18,7 +18,10 @@ export default function regionLabels() {
         if (!markerDisplay) return null;
 
         const initialMarker = getRegionMarker(regionID, testing);
-        if (!initialMarker) return null;
+        if (!initialMarker) {
+          console.log(`${testing} marker does not exist for ${regionID}`);
+          return null
+        };
 
         const labelData = getLabelData(initialMarker, regionID, testing);
         const { marker, markerName, textAnchor, deltaX, deltaY } = labelData;
