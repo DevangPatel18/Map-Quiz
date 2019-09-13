@@ -11,7 +11,7 @@ const tinyCarib = ['tl', 'tr', 'br', 'bl']
   .reduce((acc, val) => acc.concat(val), []);
 const OceaniaEllipseDimensions = {
   FJI: { width: 13, height: 18, angle: 0 },
-  KIR: { width: 59, height: 23, angle: 3 },
+  KIR: { width: 57, height: 23, angle: 5 },
   MHL: { width: 11, height: 13, angle: 0 },
   FSM: { width: 37, height: 9, angle: 10 },
   MNP: { width: 2, height: 8, angle: 7 },

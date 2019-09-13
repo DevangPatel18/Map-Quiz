@@ -189,7 +189,7 @@ const CountryMarkersFix = centroids => {
     // Americas coordinates
     ['CAN', [-100, 55]], ['USA', [-100, 40]], ['CHL', [-73, -39]],
     // Oceania coordinates
-    ['FJI', [177.5, -18]], ['KIR', [190, 0]], ['MHL', [169, 8.5]], ['FSM', [151, 7.5]], ['MNP', [145.5, 16.5]],
+    ['FJI', [177.5, -18]], ['KIR', [189, -0.15]], ['MHL', [169, 8.5]], ['FSM', [151, 7.5]], ['MNP', [145.5, 16.5]],
     ['SLB', [161.6, -9.75]], ['VUT', [168.5, -17]], ['NCL', [163.8, -20.9]], ['PLW', [133, 6]],
     // South America and Africa marker offsets
     ['SUR', -10], ['GUY', -15], ['DOM', 10], ['GMB', 3], ['GNB', 5], ['GIN', 5], ['SLE', 5], ['LBR', 5],
