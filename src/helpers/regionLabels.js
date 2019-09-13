@@ -1,67 +1,32 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { labelDist, tinyCarib, labelAnchors } from './markerParams';
+import {
+  getMarkerConfig,
+  getRegionMarker,
+  getLabelData,
+} from './regionLabelsHelpers';
 
 export default function regionLabels() {
-  const {
-    isQuizActive,
-    quizGuesses,
-    quizType,
-    quizAnswers,
-    markerToggle,
-  } = this.props.quiz;
-  const { regionMarkers, capitalMarkers } = this.props.data;
-  const { currentMap, filterRegions, regionKey } = this.props.map;
+  const { isQuizActive, quizGuesses } = this.props.quiz;
+  const { display, markerArray, testing } = getMarkerConfig();
+  if (!display) return null;
 
-  let display = true;
-  let markerArray;
-  let testing;
-  if (isQuizActive) {
-    markerArray = quizAnswers;
-    testing = quizType.split('_')[1];
-  } else if (markerToggle !== '') {
-    markerArray = filterRegions;
-    testing = markerToggle;
-  } else {
-    display = false;
-  }
-  return display && <Markers>
-    {markerArray.map((regionID, i) => {
-      let marker;
-      let markerName;
-      let textAnchor;
-      let dx;
-      let dy;
-      const markerDisplay = isQuizActive ? quizGuesses[i] : true;
-      if (markerDisplay) {
-        if (testing === 'name' || testing === 'flag') {
-          marker = regionMarkers.find(x => (x[regionKey]) === regionID);
-        } else if (testing === 'capital') {
-          marker = capitalMarkers.find(x => x[regionKey] === regionID);
-        }
-        if(!marker) return null
-        markerName = marker.name;
-        textAnchor = 'middle';
-        dx = 0;
-        dy = marker ? marker.markerOffset : 0;
+  return (
+    <Markers>
+      {markerArray.map((regionID, i) => {
+        const markerDisplay = isQuizActive ? quizGuesses[i] : true;
+        if (!markerDisplay) return null;
 
-        if (currentMap === 'Caribbean') {
-          if (tinyCarib.includes(regionID)) {
-            marker =
-              testing !== 'capital'
-                ? capitalMarkers.find(x => x[regionKey] === regionID)
-                : marker;
-            dx = 20;
-            dy = -20;
-            [dx, dy, textAnchor] = labelDist(dx, dy, regionID);
-          }
-        }
+        const initialMarker = getRegionMarker(regionID, testing);
+        if (!initialMarker) {
+          console.log(`${testing} marker does not exist for ${regionID}`);
+          return null
+        };
 
-        if (Object.keys(labelAnchors).includes(regionID)) {
-          textAnchor = labelAnchors[regionID];
-        }
-      }
-      return markerDisplay && (
+        const labelData = getLabelData(initialMarker, regionID, testing);
+        const { marker, markerName, textAnchor, deltaX, deltaY } = labelData;
+
+        return (
           <Marker
             key={regionID}
             marker={marker}
@@ -86,14 +51,15 @@ export default function regionLabels() {
             )}
             <text
               textAnchor={textAnchor}
-              x={dx}
-              y={dy}
+              x={deltaX}
+              y={deltaY}
               className="mapLabel dropFade"
             >
               {markerName}
             </text>
           </Marker>
-        )
-    })}
-  </Markers>
+        );
+      })}
+    </Markers>
+  );
 }
