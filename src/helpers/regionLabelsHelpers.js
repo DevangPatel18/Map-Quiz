@@ -35,13 +35,13 @@ export const getRegionMarker = (regionID, testing) => {
 export const updateMarkerForSmallCarib = (labelData, regionID, testing) => {
   const { capitalMarkers } = store.getState().data;
   const { regionKey } = store.getState().map;
-  const [ dx, dy, textAnchor ] = labelDist(20, -20, regionID);
+  const [deltaX, deltaY, textAnchor] = labelDist(20, -20, regionID);
   labelData.marker =
     testing !== 'capital'
       ? capitalMarkers.find(x => x[regionKey] === regionID)
       : labelData.marker;
-  labelData.dx = dx;
-  labelData.dy = dy;
+  labelData.deltaX = deltaX;
+  labelData.deltaY = deltaY;
   labelData.textAnchor = textAnchor;
 };
 
@@ -52,8 +52,8 @@ export const getLabelData = (marker, regionID, testing) => {
     marker,
     markerName: marker.name,
     textAnchor: 'middle',
-    dx: 0,
-    dy: marker ? marker.markerOffset : 0,
+    deltaX: 0,
+    deltaY: marker ? marker.markerOffset : 0,
   };
 
   if (currentMap === 'Caribbean' && tinyCarib.includes(regionID)) {

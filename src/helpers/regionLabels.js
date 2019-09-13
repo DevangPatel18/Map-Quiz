@@ -1,23 +1,29 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { getMarkerConfig, getRegionMarker, getLabelData } from './regionLabelsHelpers';
+import {
+  getMarkerConfig,
+  getRegionMarker,
+  getLabelData,
+} from './regionLabelsHelpers';
 
 export default function regionLabels() {
   const { isQuizActive, quizGuesses } = this.props.quiz;
-  const { display, markerArray, testing } = getMarkerConfig()
+  const { display, markerArray, testing } = getMarkerConfig();
+  if (!display) return null;
 
-  return display && <Markers>
-    {markerArray.map((regionID, i) => {
-      const markerDisplay = isQuizActive ? quizGuesses[i] : true;
-      if (!markerDisplay) return null;
+  return (
+    <Markers>
+      {markerArray.map((regionID, i) => {
+        const markerDisplay = isQuizActive ? quizGuesses[i] : true;
+        if (!markerDisplay) return null;
 
-      const initialMarker = getRegionMarker(regionID, testing);
-      if (!initialMarker) return null
+        const initialMarker = getRegionMarker(regionID, testing);
+        if (!initialMarker) return null;
 
-      const labelData = getLabelData(initialMarker, regionID, testing );
-      const { marker, markerName, textAnchor, dx, dy } = labelData
+        const labelData = getLabelData(initialMarker, regionID, testing);
+        const { marker, markerName, textAnchor, deltaX, deltaY } = labelData;
 
-      return (
+        return (
           <Marker
             key={regionID}
             marker={marker}
@@ -42,14 +48,15 @@ export default function regionLabels() {
             )}
             <text
               textAnchor={textAnchor}
-              x={dx}
-              y={dy}
+              x={deltaX}
+              y={deltaY}
               className="mapLabel dropFade"
             >
               {markerName}
             </text>
           </Marker>
-        )
-    })}
-  </Markers>
+        );
+      })}
+    </Markers>
+  );
 }
