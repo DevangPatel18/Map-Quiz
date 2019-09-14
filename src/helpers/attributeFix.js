@@ -226,8 +226,6 @@ const CapitalMarkersFix = (capitalMarkers) => {
     { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
     { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
     { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
-    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
-    { name: 'Funafuti', alpha3Code: 'TUV', coordinates: [-179.2, -8.5211] },
   ];
 
   extraCapitals.forEach((capitalObj) => {
