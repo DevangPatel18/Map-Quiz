@@ -6,6 +6,7 @@ import {
   CHANGE_MAP_VIEW,
   REGION_SELECT,
   SET_LABEL,
+  LOAD_REGION_DATA,
 } from '../actions/types';
 
 const emptySelectedProperties = {
@@ -81,6 +82,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         markerToggle: action.markerToggle,
+      };
+    case LOAD_REGION_DATA:
+      return {
+        ...state,
+        markerToggle: '',
       };
     default:
       return state;
