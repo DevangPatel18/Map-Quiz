@@ -9,15 +9,63 @@ import {
 } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
-import { tooltipMove, tooltipLeave } from './actions/mapActions';
+import { zoomMap, tooltipMove, tooltipLeave } from './actions/mapActions';
 import { colorPicker, checkRegionHide } from './helpers/MapHelpers';
+import {
+  processClickAnswer,
+  loadNewInfoTab,
+  toggleInfoTab,
+} from './actions/quizActions';
+import handleDoubleClick from './helpers/handleDoubleClick';
+import regionEllipses from './helpers/regionEllipses';
+import regionLabels from './helpers/regionLabels';
+import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
 // Required for proper functioning of redux-tooltip
 React.PropTypes = PropTypes;
 
 class Map extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleDoubleClick = handleDoubleClick.bind(this);
+    this.regionEllipses = regionEllipses.bind(this);
+    this.regionLabels = regionLabels.bind(this);
+  }
+
+  handleWheel = event => {
+    if (event.deltaY > 0) {
+      this.props.zoomMap(0.5);
+    }
+    if (event.deltaY < 0) {
+      this.props.zoomMap(2);
+    }
+  };
+
+  handleRegionClick = geographyPath => {
+    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
+    const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
+    if (isTypeQuizActive) return;
+    const geoProperties = geographyPath.properties;
+    if (checkIfQuizIncomplete()) {
+      processClickAnswer(geoProperties);
+    } else if (geoProperties.name !== selectedProperties.name) {
+      loadNewInfoTab(geoProperties);
+    } else {
+      toggleInfoTab();
+    }
+  };
+
+  handleMoveStart(currentCenter) {
+    console.log('Current center: ', currentCenter);
+  }
+
+  handleMoveEnd(newCenter) {
+    console.log('New center: ', newCenter);
+  }
+
   render() {
-    const { map, data, quiz, app, tooltipMove, tooltipLeave } = this.props;
+    const { map, data, quiz, tooltipMove, tooltipLeave } = this.props;
     const {
       defaultZoom,
       center,
@@ -55,8 +103,8 @@ class Map extends Component {
       >
         {({ zoom, x, y }) => (
           <div
-            onWheel={app.handleWheel}
-            // onDoubleClick={app.handleDoubleClick}
+            onWheel={this.handleWheel}
+            // onDoubleClick={this.handleDoubleClick}
           >
             <ComposableMap
               projection={mapProjection}
@@ -68,8 +116,8 @@ class Map extends Component {
               <ZoomableGroup
                 center={[x, y]}
                 zoom={zoom}
-                // onMoveStart={app.handleMoveStart}
-                // onMoveEnd={app.handleMoveEnd}
+                // onMoveStart={this.handleMoveStart}
+                // onMoveEnd={this.handleMoveEnd}
               >
                 <Geographies
                   geography={geographyPaths}
@@ -86,7 +134,7 @@ class Map extends Component {
                           cacheId={key}
                           geography={geography}
                           projection={projection}
-                          onClick={app.handleRegionClick}
+                          onClick={this.handleRegionClick}
                           {...mouseHandlers}
                           fill="white"
                           stroke={stroke.strokeColor}
@@ -97,9 +145,9 @@ class Map extends Component {
                     })
                   }
                 </Geographies>
-                {app.regionEllipses()}
+                {this.regionEllipses()}
                 {// Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
-                currentMap !== 'World' && app.regionLabels()}
+                currentMap !== 'World' && this.regionLabels()}
               </ZoomableGroup>
             </ComposableMap>
             <Tooltip />
@@ -118,5 +166,12 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { tooltipMove, tooltipLeave }
+  {
+    zoomMap,
+    tooltipMove,
+    tooltipLeave,
+    processClickAnswer,
+    loadNewInfoTab,
+    toggleInfoTab,
+  }
 )(Map);

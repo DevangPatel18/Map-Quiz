@@ -1,26 +1,11 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import handleDoubleClick from './helpers/handleDoubleClick';
-import regionEllipses from './helpers/regionEllipses';
-import regionLabels from './helpers/regionLabels';
 import { loadPaths, loadData } from './actions/dataActions';
-import {
-  processClickAnswer,
-  loadNewInfoTab,
-  toggleInfoTab,
-} from './actions/quizActions';
-import {
-  setRegionCheckbox,
-  zoomMap,
-  setMap,
-  tooltipMove,
-  tooltipLeave,
-} from './actions/mapActions';
+import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
 import InterfaceElements from './components/InterfaceElements';
 import Map from './Map';
-import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
 class App extends Component {
   constructor() {
@@ -29,10 +14,6 @@ class App extends Component {
     this.state = {
       menuOpen: true,
     };
-
-    this.handleDoubleClick = handleDoubleClick.bind(this);
-    this.regionEllipses = regionEllipses.bind(this);
-    this.regionLabels = regionLabels.bind(this);
   }
 
   async componentDidMount() {
@@ -90,39 +71,8 @@ class App extends Component {
     }
   };
 
-  handleWheel = event => {
-    if (event.deltaY > 0) {
-      this.props.zoomMap(0.5);
-    }
-    if (event.deltaY < 0) {
-      this.props.zoomMap(2);
-    }
-  };
-
-  handleMoveStart(currentCenter) {
-    // console.log("Current center: ", currentCenter)
-  }
-
-  handleMoveEnd(newCenter) {
-    // console.log("New center: ", newCenter)
-  }
-
   handleMenu = () => {
     this.setState({ menuOpen: !this.state.menuOpen });
-  };
-
-  handleRegionClick = geographyPath => {
-    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
-    const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
-    if (isTypeQuizActive) return;
-    const geoProperties = geographyPath.properties;
-    if (checkIfQuizIncomplete()) {
-      processClickAnswer(geoProperties);
-    } else if (geoProperties.name !== selectedProperties.name) {
-      loadNewInfoTab(geoProperties);
-    } else {
-      toggleInfoTab();
-    }
   };
 
   render() {
@@ -141,7 +91,7 @@ class App extends Component {
         <InterfaceElements />
         <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 
-        <Map app={this} />
+        <Map />
         <footer>
           <div style={footerStyle}>
             Copyright © 2018 Devang Patel. All rights reserved.
@@ -164,12 +114,6 @@ export default connect(
     loadPaths,
     loadData,
     setRegionCheckbox,
-    zoomMap,
     setMap,
-    processClickAnswer,
-    loadNewInfoTab,
-    toggleInfoTab,
-    tooltipMove,
-    tooltipLeave,
   }
 )(App);
