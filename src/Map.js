@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'redux-tooltip';
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-} from 'react-simple-maps';
+import { ComposableMap, ZoomableGroup } from 'react-simple-maps';
 import { Motion, spring } from 'react-motion';
 import { connect } from 'react-redux';
 import { zoomMap, tooltipMove, tooltipLeave } from './actions/mapActions';
-import { colorPicker, checkRegionHide } from './helpers/MapHelpers';
 import {
   processClickAnswer,
   loadNewInfoTab,
   toggleInfoTab,
 } from './actions/quizActions';
 import handleDoubleClick from './helpers/handleDoubleClick';
+import handleGeographies from './helpers/handleGeographies';
 import regionEllipses from './helpers/regionEllipses';
 import regionLabels from './helpers/regionLabels';
 import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
@@ -28,6 +23,7 @@ class Map extends Component {
   constructor(props) {
     super(props);
 
+    this.handleGeographies = handleGeographies.bind(this);
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.regionLabels = regionLabels.bind(this);
@@ -71,32 +67,19 @@ class Map extends Component {
   };
 
   render() {
-    const { map, data, quiz, tooltipMove, tooltipLeave } = this.props;
     const {
       defaultZoom,
       center,
       zoom,
       scale,
       dimensions,
-      orientation,
       currentMap,
-      disableOptimization,
-      tooltip,
-    } = map;
-    const { isQuizActive } = quiz;
-    const { geographyPaths } = data;
+    } = this.props.map;
 
     const isUsaMap = currentMap === 'United States of America';
     const rotation = currentMap === 'Oceania' ? [170, 0, 0] : [-10, 0, 0];
     const mapProjection = isUsaMap ? 'mercator' : 'times';
     const mapScale = isUsaMap ? 180 : scale;
-    const mouseHandlers =
-      !tooltip || isQuizActive
-        ? {}
-        : {
-            onMouseMove: tooltipMove,
-            onMouseLeave: tooltipLeave,
-          };
 
     return (
       <Motion
@@ -126,32 +109,7 @@ class Map extends Component {
                 // onMoveStart={this.handleMoveStart}
                 // onMoveEnd={this.handleMoveEnd}
               >
-                <Geographies
-                  geography={geographyPaths}
-                  disableOptimization={disableOptimization}
-                >
-                  {(geographies, projection) =>
-                    geographies.map((geography, i) => {
-                      if (checkRegionHide(geography)) return '';
-                      const { geoStyle, stroke } = colorPicker(geography);
-                      const key = `${currentMap}-${i}-${orientation}`;
-                      return (
-                        <Geography
-                          key={key}
-                          cacheId={key}
-                          geography={geography}
-                          projection={projection}
-                          onClick={this.handleRegionClick}
-                          {...mouseHandlers}
-                          fill="white"
-                          stroke={stroke.strokeColor}
-                          strokeWidth={stroke.strokeWidth}
-                          style={geoStyle}
-                        />
-                      );
-                    })
-                  }
-                </Geographies>
+                {this.handleGeographies()}
                 {this.regionEllipses()}
                 {// Condition put in place to prevent labels and markers from displaying in full map view due to poor performance
                 currentMap !== 'World' && this.regionLabels()}
