@@ -31,6 +31,8 @@ class Map extends Component {
     this.handleDoubleClick = handleDoubleClick.bind(this);
     this.regionEllipses = regionEllipses.bind(this);
     this.regionLabels = regionLabels.bind(this);
+
+    this._wrapper = React.createRef();
   }
 
   handleWheel = event => {
@@ -63,6 +65,10 @@ class Map extends Component {
   handleMoveEnd(newCenter) {
     console.log('New center: ', newCenter);
   }
+
+  setWrapperRef = wrapper => {
+    this._wrapper = wrapper;
+  };
 
   render() {
     const { map, data, quiz, tooltipMove, tooltipLeave } = this.props;
@@ -104,6 +110,7 @@ class Map extends Component {
         {({ zoom, x, y }) => (
           <div
             onWheel={this.handleWheel}
+            ref={this.setWrapperRef}
             // onDoubleClick={this.handleDoubleClick}
           >
             <ComposableMap
