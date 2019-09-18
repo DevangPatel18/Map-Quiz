@@ -17,6 +17,7 @@ export const LOAD_PATHS = 'LOAD_PATHS';
 export const LOAD_DATA = 'LOAD_DATA';
 export const LOAD_REGION_DATA = 'LOAD_REGION_DATA';
 export const ADD_REGION_DATA = 'ADD_REGION_DATA';
+export const GET_ELLIPSES = 'GET_ELLIPSES';
 // Quiz actions
 export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';

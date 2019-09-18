@@ -3,6 +3,7 @@ import {
   LOAD_DATA,
   LOAD_REGION_DATA,
   ADD_REGION_DATA,
+  GET_ELLIPSES,
 } from '../actions/types';
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
   capitalMarkers: [],
   populationData: {},
   regionDataSets: {},
+  regionEllipsesData : {},
 };
 
 export default function(state = initialState, action) {
@@ -49,6 +51,11 @@ export default function(state = initialState, action) {
         ...state,
         regionDataSets,
       };
+    case GET_ELLIPSES:
+      return {
+        ...state,
+        regionEllipsesData: action.regionEllipsesData,
+      }
     default:
       return state;
   }
