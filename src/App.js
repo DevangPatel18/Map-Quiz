@@ -17,35 +17,31 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const {
-      loadPaths,
-      loadData,
-      getRegionEllipses,
-      setRegionCheckbox,
-      setMap,
-    } = this.props;
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
+    const { setMap, setRegionCheckbox } = this.props;
+    const { innerWidth, innerHeight } = window;
     if (isMobile) {
-      const dimensions = height > width ? [310, 551] : [980, 551];
+      const dimensions = innerHeight > innerWidth ? [310, 551] : [980, 551];
       setMap({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
 
-    await loadPaths();
-    await loadData();
+    this.handleAppDataLoad();
     setRegionCheckbox();
-    getRegionEllipses('World');
-    window.addEventListener('orientationchange', this.toggleOrientation);
 
+    window.addEventListener('orientationchange', this.toggleOrientation);
     // Disable on mobile due to keyboard triggering resize
     if (!isMobile) {
       window.addEventListener('resize', this.adjustMapSize);
     }
   }
+
+  handleAppDataLoad = async () => {
+    const { loadPaths, loadData, getRegionEllipses } = this.props;
+    await loadPaths();
+    await loadData();
+    getRegionEllipses('World');
+  };
 
   componentWillUnmount() {
     window.removeEventListener('orientationchange', this.toggleOrientation);
