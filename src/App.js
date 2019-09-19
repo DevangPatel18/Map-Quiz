@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import { loadPaths, loadData } from './actions/dataActions';
+import { loadPaths, loadData, getRegionEllipses } from './actions/dataActions';
 import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
 import InterfaceElements from './components/InterfaceElements';
@@ -17,7 +17,13 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
+    const {
+      loadPaths,
+      loadData,
+      getRegionEllipses,
+      setRegionCheckbox,
+      setMap,
+    } = this.props;
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -32,6 +38,7 @@ class App extends Component {
     await loadPaths();
     await loadData();
     setRegionCheckbox();
+    getRegionEllipses('World');
     window.addEventListener('orientationchange', this.toggleOrientation);
 
     // Disable on mobile due to keyboard triggering resize
@@ -113,6 +120,7 @@ export default connect(
   {
     loadPaths,
     loadData,
+    getRegionEllipses,
     setRegionCheckbox,
     setMap,
   }
