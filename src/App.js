@@ -56,11 +56,9 @@ class App extends Component {
   };
 
   adjustMapSize = () => {
-    const { map, setMap } = this.props;
-    const { dimensions } = map;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const ratio = width / height;
+    const { map: dimensions, setMap } = this.props;
+    const { innerWidth, innerHeight } = window;
+    const ratio = innerWidth / innerHeight;
     let newDimensions;
     if (ratio > 1.43) {
       newDimensions = [980, 551];
@@ -74,16 +72,12 @@ class App extends Component {
     }
   };
 
-  handleMenu = () => {
-    this.setState({ menuOpen: !this.state.menuOpen });
-  };
+  handleMenu = () => this.setState({ menuOpen: !this.state.menuOpen });
 
   render() {
     const { isQuizActive } = this.props.quiz;
     const { menuOpen } = this.state;
-
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
-
     return (
       <div className="App">
         {!isQuizActive && (
