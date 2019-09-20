@@ -146,3 +146,23 @@ export const getWorldDataSet = async populationData => {
     subRegionName: 'country',
   };
 };
+
+export const getMapViewRegionIds = worldDataSet => {
+  const dataArr = worldDataSet.geographyPaths.map(obj => obj.properties);
+  const regionIDs = {};
+  regionIDs['North & Central America'] = dataArr.filter(obj =>
+    ['Northern America', 'Central America'].includes(obj.subregion)
+  );
+  regionIDs['South America'] = dataArr.filter(obj => obj.subregion === 'South America');
+  regionIDs['Caribbean'] = dataArr.filter(obj => obj.subregion === 'Caribbean');
+  regionIDs['Africa'] = dataArr.filter(obj => obj.region === 'Africa');
+  regionIDs['Europe'] = dataArr.filter(obj => obj.region === 'Europe');
+  regionIDs['Asia'] = dataArr.filter(obj => obj.region === 'Asia');
+  regionIDs['Oceania'] = dataArr.filter(obj => obj.region === 'Oceania');
+
+  for (let mapView in regionIDs) {
+    regionIDs[mapView] = regionIDs[mapView].map(obj => obj.alpha3Code);    
+  }
+  
+  return regionIDs;
+};
