@@ -21,6 +21,7 @@ const geoPathLinks = {
 };
 
 export const getStatesForRegionSelect = regionName => {
+  const { mapViewRegionIds } = store.getState().data;
   const { center, zoom } = mapConfig[regionName];
   const mapAttributes = {
     zoom,
@@ -28,7 +29,7 @@ export const getStatesForRegionSelect = regionName => {
     defaultZoom: zoom,
     defaultCenter: center,
     currentMap: regionName,
-    filterRegions: alpha3Codes[regionName],
+    filterRegions: mapViewRegionIds[regionName] || alpha3Codes[regionName],
     markerToggle: '',
   };
   const quizAttributes = {
