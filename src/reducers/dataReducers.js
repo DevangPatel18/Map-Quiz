@@ -12,7 +12,8 @@ const initialState = {
   capitalMarkers: [],
   populationData: {},
   regionDataSets: {},
-  regionEllipsesData : {},
+  regionEllipsesData: {},
+  mapViewRegionIds: {},
 };
 
 export default function(state = initialState, action) {
@@ -22,6 +23,7 @@ export default function(state = initialState, action) {
     capitalMarkers,
     populationData,
     regionDataSets,
+    mapViewRegionIds,
   } = action;
 
   switch (action.type) {
@@ -38,6 +40,7 @@ export default function(state = initialState, action) {
         capitalMarkers,
         populationData,
         regionDataSets,
+        mapViewRegionIds,
       };
     case LOAD_REGION_DATA:
       return {
@@ -55,7 +58,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         regionEllipsesData: action.regionEllipsesData,
-      }
+      };
     default:
       return state;
   }
