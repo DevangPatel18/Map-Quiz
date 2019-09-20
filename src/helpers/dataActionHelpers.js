@@ -22,6 +22,8 @@ const restDataFields = [
   'flag',
   'altSpellings',
   'translations',
+  'region',
+  'subregion',
 ];
 
 export const getWorldTopology = async () =>
