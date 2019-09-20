@@ -147,22 +147,34 @@ export const getWorldDataSet = async populationData => {
   };
 };
 
-export const getMapViewRegionIds = worldDataSet => {
+export const getMapViewIds = worldDataSet => {
   const dataArr = worldDataSet.geographyPaths.map(obj => obj.properties);
-  const regionIDs = {};
-  regionIDs['North & Central America'] = dataArr.filter(obj =>
+  const mapViewRegionIds = {};
+  mapViewRegionIds['North & Central America'] = dataArr.filter(obj =>
     ['Northern America', 'Central America'].includes(obj.subregion)
   );
-  regionIDs['South America'] = dataArr.filter(obj => obj.subregion === 'South America');
-  regionIDs['Caribbean'] = dataArr.filter(obj => obj.subregion === 'Caribbean');
-  regionIDs['Africa'] = dataArr.filter(obj => obj.region === 'Africa');
-  regionIDs['Europe'] = dataArr.filter(obj => obj.region === 'Europe');
-  regionIDs['Asia'] = dataArr.filter(obj => obj.region === 'Asia');
-  regionIDs['Oceania'] = dataArr.filter(obj => obj.region === 'Oceania');
+  mapViewRegionIds['South America'] = dataArr.filter(obj => obj.subregion === 'South America');
+  mapViewRegionIds['Caribbean'] = dataArr.filter(obj => obj.subregion === 'Caribbean');
+  mapViewRegionIds['Africa'] = dataArr.filter(obj => obj.region === 'Africa');
+  mapViewRegionIds['Europe'] = dataArr.filter(obj => obj.region === 'Europe');
+  mapViewRegionIds['Asia'] = dataArr.filter(obj => obj.region === 'Asia');
+  mapViewRegionIds['Oceania'] = dataArr.filter(obj => obj.region === 'Oceania');
 
-  for (let mapView in regionIDs) {
-    regionIDs[mapView] = regionIDs[mapView].map(obj => obj.alpha3Code);    
+  const mapViewCountryIds = getMapViewCountryIds(mapViewRegionIds);
+
+  for (let mapView in mapViewRegionIds) {
+    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.alpha3Code);
   }
-  
-  return regionIDs;
+
+  return { mapViewRegionIds, mapViewCountryIds };
+};
+
+const getMapViewCountryIds = mapViewRegionIds => {
+  const mapViewCountryIds = {};
+  for (let mapView in mapViewRegionIds) {
+    mapViewCountryIds[mapView] = mapViewRegionIds[mapView]
+      .filter(obj => !obj.regionOf)
+      .map(obj => obj.alpha3Code);
+  }
+  return mapViewCountryIds;
 };

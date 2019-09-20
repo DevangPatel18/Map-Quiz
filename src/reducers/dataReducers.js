@@ -14,6 +14,7 @@ const initialState = {
   regionDataSets: {},
   regionEllipsesData: {},
   mapViewRegionIds: {},
+  mapViewCountryIds: {},
 };
 
 export default function(state = initialState, action) {
@@ -24,6 +25,7 @@ export default function(state = initialState, action) {
     populationData,
     regionDataSets,
     mapViewRegionIds,
+    mapViewCountryIds,
   } = action;
 
   switch (action.type) {
@@ -41,6 +43,7 @@ export default function(state = initialState, action) {
         populationData,
         regionDataSets,
         mapViewRegionIds,
+        mapViewCountryIds,
       };
     case LOAD_REGION_DATA:
       return {

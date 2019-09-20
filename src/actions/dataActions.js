@@ -5,7 +5,7 @@ import {
   getWorldGeographyPaths,
   getPopulationData,
   getWorldDataSet,
-  getMapViewRegionIds,
+  getMapViewIds,
 } from '../helpers/dataActionHelpers';
 import {
   getFilterFunction,
@@ -26,7 +26,7 @@ export const loadPaths = () => async dispatch => {
 export const loadData = () => async dispatch => {
   const populationData = await getPopulationData();
   const worldDataSet = await getWorldDataSet(populationData);
-  const mapViewRegionIds = getMapViewRegionIds(worldDataSet);
+  const { mapViewRegionIds, mapViewCountryIds } = getMapViewIds(worldDataSet);
   const regionDataSets = { World: { ...worldDataSet } };
 
   await dispatch({
@@ -35,6 +35,7 @@ export const loadData = () => async dispatch => {
     regionDataSets,
     populationData,
     mapViewRegionIds,
+    mapViewCountryIds,
   });
 
   dispatch({ type: DISABLE_OPT });
