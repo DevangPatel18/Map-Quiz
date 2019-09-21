@@ -2,11 +2,7 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import store from '../store';
-import {
-  alpha3Codes,
-  mapConfig,
-  worldRegions,
-} from '../assets/regionAlpha3Codes';
+import { mapConfig, worldRegions } from '../assets/regionAlpha3Codes';
 
 const geoPathLinks = {
   'United States of America': {
@@ -29,7 +25,7 @@ export const getStatesForRegionSelect = regionName => {
     defaultZoom: zoom,
     defaultCenter: center,
     currentMap: regionName,
-    filterRegions: mapViewRegionIds[regionName] || alpha3Codes[regionName],
+    filterRegions: mapViewRegionIds[regionName] || [],
     markerToggle: '',
   };
   const quizAttributes = {
