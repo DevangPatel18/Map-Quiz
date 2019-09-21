@@ -3,10 +3,10 @@ import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { regionSelect, checkMapDataUpdate } from '../actions/mapActions';
 import { getRegionEllipses } from '../actions/dataActions';
-import { alpha3Codes } from '../assets/regionAlpha3Codes';
+import { mapViewsList } from '../assets/regionAlpha3Codes';
 import '../App.css';
 
-const regionOptions = Object.keys(alpha3Codes).map(regionText => ({
+const regionOptions = mapViewsList.map(regionText => ({
   text: regionText,
   value: regionText,
 }));

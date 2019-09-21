@@ -35,6 +35,7 @@ const mapConfig = {
   'United States of America': { center: [-95, 35], zoom: 4},
 };
 
-const worldRegions = Object.keys(alpha3Codes).slice(0, -1);
+const mapViewsList = Object.keys(mapConfig);
+const worldRegions = mapViewsList.slice(0, -1);
 
-export { alpha3Codes, mapConfig, alpha3CodesSov, worldRegions };
+export { alpha3Codes, mapConfig, alpha3CodesSov, worldRegions, mapViewsList };
