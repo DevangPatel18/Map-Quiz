@@ -26,19 +26,21 @@ import {
   ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { worldRegions, alpha3CodesSov } from '../assets/regionAlpha3Codes';
+import { worldRegions } from '../assets/regionAlpha3Codes';
 
 const { show, hide } = actions;
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
+  const { mapViewCountryIds } = store.getState().data;
+
   if (regionName) {
     checkedRegions[regionName] = !checkedRegions[regionName];
   }
 
   const filterRegions = Object.keys(checkedRegions)
     .filter(region => checkedRegions[region])
-    .map(region => alpha3CodesSov[region])
+    .map(region => mapViewCountryIds[region])
     .reduce((a, b) => a.concat(b), []);
 
   await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
@@ -47,6 +49,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
+  const { mapViewCountryIds } = store.getState().data;
   const { mapAttributes, quizAttributes } = getStatesForRegionSelect(
     regionName
   );
@@ -56,7 +59,7 @@ export const regionSelect = regionName => async dispatch => {
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
-      .map(region => alpha3CodesSov[region])
+      .map(region => mapViewCountryIds[region])
       .reduce((a, b) => a.concat(b), []);
     await dispatch({
       type: SET_REGION_CHECKBOX,

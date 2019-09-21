@@ -26,7 +26,7 @@ class App extends Component {
       this.adjustMapSize();
     }
 
-    this.handleAppDataLoad();
+    await this.handleAppDataLoad();
     setRegionCheckbox();
 
     window.addEventListener('orientationchange', this.toggleOrientation);
