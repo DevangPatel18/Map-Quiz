@@ -56,6 +56,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         regionDataSets,
+        mapViewRegionIds,
       };
     case GET_ELLIPSES:
       return {

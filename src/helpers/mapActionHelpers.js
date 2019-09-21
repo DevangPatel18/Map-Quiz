@@ -211,3 +211,12 @@ export const getChoroplethTooltipContent = geography => {
   }
   return ` - ${contentData}`;
 };
+
+export const getUpdatedMapViewRegionIds = (
+  geographyPaths,
+  regionDataSetKey
+) => {
+  const { mapViewRegionIds } = store.getState().data;
+  const regionIds = geographyPaths.map(obj => obj.properties.regionID);
+  return { ...mapViewRegionIds, [regionDataSetKey]: regionIds };
+};

@@ -2,6 +2,7 @@ import { actions } from 'redux-tooltip';
 import {
   getStatesForRegionSelect,
   getUpdatedRegionDataSets,
+  getUpdatedMapViewRegionIds,
   getGeoPathCenterAndZoom,
   getOrientation,
   checkMapViewsBetweenWorldRegions,
@@ -77,10 +78,16 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     const updatedRegionDataSets = await getUpdatedRegionDataSets(
       regionDataSetKey
     );
+    const { geographyPaths } = updatedRegionDataSets[regionDataSetKey];
+    const updatedMapViewRegionIds = getUpdatedMapViewRegionIds(
+      geographyPaths,
+      regionDataSetKey
+    );
 
     await dispatch({
       type: ADD_REGION_DATA,
       regionDataSets: updatedRegionDataSets,
+      mapViewRegionIds: updatedMapViewRegionIds,
     });
     regionDataSets = store.getState().data.regionDataSets;
   }
