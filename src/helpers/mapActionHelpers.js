@@ -2,7 +2,7 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import store from '../store';
-import { mapConfig, worldRegions } from '../assets/regionAlpha3Codes';
+import { mapConfig, worldRegions } from '../assets/mapViewSettings';
 
 const geoPathLinks = {
   'United States of America': {

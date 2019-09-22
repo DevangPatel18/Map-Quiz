@@ -26,7 +26,7 @@ import {
   ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { worldRegions } from '../assets/regionAlpha3Codes';
+import { worldRegions } from '../assets/mapViewSettings';
 
 const { show, hide } = actions;
 
