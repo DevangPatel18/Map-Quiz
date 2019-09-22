@@ -17,7 +17,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const { setMap, setRegionCheckbox } = this.props;
+    const { setMap } = this.props;
     const { innerWidth, innerHeight } = window;
     if (isMobile) {
       const dimensions = innerHeight > innerWidth ? [310, 551] : [980, 551];
@@ -27,7 +27,6 @@ class App extends Component {
     }
 
     await this.handleAppDataLoad();
-    setRegionCheckbox();
 
     window.addEventListener('orientationchange', this.toggleOrientation);
     // Disable on mobile due to keyboard triggering resize
@@ -37,9 +36,10 @@ class App extends Component {
   }
 
   handleAppDataLoad = async () => {
-    const { loadPaths, loadData, getRegionEllipses } = this.props;
+    const { loadPaths, loadData, setRegionCheckbox, getRegionEllipses } = this.props;
     await loadPaths();
     await loadData();
+    await setRegionCheckbox();
     getRegionEllipses('World');
   };
 
