@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import { loadPaths, loadData, getRegionEllipses } from './actions/dataActions';
+import { loadGeographyPaths, loadRegionData, getRegionEllipses } from './actions/dataActions';
 import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
 import InterfaceElements from './components/InterfaceElements';
@@ -36,9 +36,14 @@ class App extends Component {
   }
 
   handleAppDataLoad = async () => {
-    const { loadPaths, loadData, setRegionCheckbox, getRegionEllipses } = this.props;
-    await loadPaths();
-    await loadData();
+    const {
+      loadGeographyPaths,
+      loadRegionData,
+      setRegionCheckbox,
+      getRegionEllipses,
+    } = this.props;
+    await loadGeographyPaths();
+    await loadRegionData();
     await setRegionCheckbox();
     getRegionEllipses('World');
   };
@@ -108,8 +113,8 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   {
-    loadPaths,
-    loadData,
+    loadGeographyPaths,
+    loadRegionData,
     getRegionEllipses,
     setRegionCheckbox,
     setMap,

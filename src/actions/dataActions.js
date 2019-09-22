@@ -14,7 +14,7 @@ import {
 } from '../helpers/regionEllipsesHelpers';
 import store from '../store';
 
-export const loadPaths = () => async dispatch => {
+export const loadGeographyPaths = () => async dispatch => {
   const worldTopology = await getWorldTopology();
   let geographyPaths = getWorldGeographyPaths(worldTopology);
   geographyPaths = modifyWorldGeographyPaths(geographyPaths);
@@ -23,7 +23,7 @@ export const loadPaths = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const loadData = () => async dispatch => {
+export const loadRegionData = () => async dispatch => {
   const populationData = await getPopulationData();
   const worldDataSet = await getWorldDataSet(populationData);
   const { mapViewRegionIds, mapViewCountryIds } = getMapViewIds(worldDataSet);
