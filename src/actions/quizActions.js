@@ -5,6 +5,7 @@ import {
   REGION_CLICK,
   DISABLE_OPT,
   SET_LABEL,
+  TOGGLE_EXT_REGIONS,
 } from './types';
 import {
   generateAnswerArray,
@@ -85,3 +86,6 @@ export const setLabel = (markerToggle = '') => async dispatch => {
   await dispatch({ type: SET_LABEL, markerToggle });
   dispatch({ type: DISABLE_OPT });
 };
+
+export const toggleExternalRegions = () => dispatch =>
+  dispatch({ type: TOGGLE_EXT_REGIONS });

@@ -7,6 +7,7 @@ import {
   REGION_SELECT,
   SET_LABEL,
   LOAD_REGION_DATA,
+  TOGGLE_EXT_REGIONS,
 } from '../actions/types';
 
 const emptySelectedProperties = {
@@ -27,6 +28,7 @@ const initialState = {
   isTypeQuizActive: false,
   markerToggle: '',
   infoTabShow: false,
+  areExternalRegionsOnQuiz: true,
 };
 
 export default function(state = initialState, action) {
@@ -87,6 +89,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         markerToggle: '',
+      };
+    case TOGGLE_EXT_REGIONS:
+      return {
+        ...state,
+        areExternalRegionsOnQuiz: !state.areExternalRegionsOnQuiz,
       };
     default:
       return state;
