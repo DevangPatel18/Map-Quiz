@@ -66,6 +66,10 @@ class QuizBox extends Component {
     }
   };
 
+  handleExternalRegions = () => {
+    console.log('toggle external regions for quizzes');
+  };
+
   start = () => {
     const { startQuiz } = this.props;
     const { quizType } = this.state;
@@ -127,6 +131,16 @@ class QuizBox extends Component {
           )}
           {currentMap !== 'World' && (
             <div className="App-quiz-toggle">
+              <Button
+                toggle
+                size={formSize}
+                active={true}
+                onClick={this.handleExternalRegions}
+                aria-label="toggle external regions for quizzes"
+                style={{ width: '9em', margin: '1.5em 0', padding: '0.8em' }}
+              >
+                {'Include external regions'}
+              </Button>
               <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
               <Button.Group size={formSize} compact>
                 <Button
