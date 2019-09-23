@@ -17,8 +17,8 @@ export const getRegionIdsForQuiz = () => {
   return filterRegions;
 };
 
-export const generateAnswerArray = filterRegions => {
-  const quizAnswers = [...filterRegions];
+export const generateAnswerArray = quizRegionIds => {
+  const quizAnswers = [...quizRegionIds];
   return quizAnswers.reduce((dum1, dum2, i) => {
     const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
     [quizAnswers[i], quizAnswers[j]] = [quizAnswers[j], quizAnswers[i]];

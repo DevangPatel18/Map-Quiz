@@ -12,12 +12,13 @@ import {
   generateQuizState,
   checkClickAnswer,
   checkTypeAnswer,
+  getRegionIdsForQuiz,
 } from '../helpers/quizActionHelpers';
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
-  const { filterRegions } = store.getState().map;
-  const quizAnswers = generateAnswerArray(filterRegions);
+  const quizRegionIds = getRegionIdsForQuiz()
+  const quizAnswers = generateAnswerArray(quizRegionIds);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: SET_QUIZ_STATE, quizAttributes });
   dispatch({ type: DISABLE_OPT });
