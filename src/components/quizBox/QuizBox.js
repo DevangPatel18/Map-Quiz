@@ -4,7 +4,12 @@ import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
-import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
+import {
+  startQuiz,
+  closeQuiz,
+  setLabel,
+  toggleExternalRegions,
+} from '../../actions/quizActions';
 
 const generateQuizOptions = regionType => [
   { label: `Click ${regionType}`, value: 'click_name' },
@@ -66,10 +71,6 @@ class QuizBox extends Component {
     }
   };
 
-  handleExternalRegions = () => {
-    console.log('toggle external regions for quizzes');
-  };
-
   start = () => {
     const { startQuiz } = this.props;
     const { quizType } = this.state;
@@ -78,13 +79,9 @@ class QuizBox extends Component {
 
   render() {
     const { quizType, regionMenu } = this.state;
-    const { markerToggle } = this.props.quiz;
-    const {
-      checkedRegions,
-      currentMap,
-      subRegionName,
-      tooltip,
-    } = this.props.map;
+    const { quiz, map, toggleExternalRegions, tooltipToggle } = this.props;
+    const { markerToggle, areExternalRegionsOnQuiz } = quiz;
+    const { checkedRegions, currentMap, subRegionName, tooltip } = map;
     const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -134,8 +131,8 @@ class QuizBox extends Component {
               <Button
                 toggle
                 size={formSize}
-                active={true}
-                onClick={this.handleExternalRegions}
+                active={areExternalRegionsOnQuiz}
+                onClick={toggleExternalRegions}
                 aria-label="toggle external regions for quizzes"
                 style={{ width: '9em', margin: '1.5em 0', padding: '0.8em' }}
               >
@@ -171,7 +168,7 @@ class QuizBox extends Component {
               size={formSize}
               label={`Tooltip`}
               checked={tooltip}
-              onChange={this.props.tooltipToggle}
+              onChange={tooltipToggle}
               style={{}}
             />
           </div>
@@ -205,5 +202,12 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { setRegionCheckbox, startQuiz, closeQuiz, setLabel, tooltipToggle }
+  {
+    setRegionCheckbox,
+    startQuiz,
+    closeQuiz,
+    setLabel,
+    tooltipToggle,
+    toggleExternalRegions,
+  }
 )(QuizBox);
