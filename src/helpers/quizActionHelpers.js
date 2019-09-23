@@ -1,11 +1,21 @@
-import store from "../store";
+import store from '../store';
 
-import removeDiacritics from "../helpers/removeDiacritics";
+import removeDiacritics from '../helpers/removeDiacritics';
 
 const simple = str =>
   removeDiacritics(str.toLowerCase())
-    .replace(/\u002D/g, " ")
-    .replace(/[^\w\s]/g, "");
+    .replace(/\u002D/g, ' ')
+    .replace(/[^\w\s]/g, '');
+
+export const getRegionIdsForQuiz = () => {
+  const { filterRegions, currentMap } = store.getState().map;
+  const { mapViewCountryIds } = store.getState().data;
+  const { areExternalRegionsOnQuiz } = store.getState().quiz;
+  if (currentMap !== 'World' && !areExternalRegionsOnQuiz) {
+    return mapViewCountryIds[currentMap] || filterRegions;
+  }
+  return filterRegions;
+};
 
 export const generateAnswerArray = filterRegions => {
   const quizAnswers = [...filterRegions];
@@ -22,15 +32,15 @@ export const generateQuizState = (quizAnswers, quizType) => ({
   isQuizActive: true,
   activeQuestionNum: 0,
   quizGuesses: [],
-  selectedProperties: "",
-  isTypeQuizActive: quizType.split("_")[0] === "type"
+  selectedProperties: '',
+  isTypeQuizActive: quizType.split('_')[0] === 'type',
 });
 
 export const checkClickAnswer = ansGeoProperties => {
   const {
     activeQuestionNum,
     quizAnswers,
-    selectedProperties
+    selectedProperties,
   } = store.getState().quiz;
   const { regionKey } = store.getState().map;
   const isAnswerCorrect =
@@ -51,13 +61,13 @@ export const checkTypeAnswer = userGuess => {
   ).properties;
 
   const isAnswerCorrect =
-    quizType.split("_")[1] === "name"
+    quizType.split('_')[1] === 'name'
       ? answerProperties.spellings.some(
           name => simple(userGuess) === simple(name)
         )
       : simple(userGuess) === simple(answerProperties.capital);
 
-  const newGeoProperties = isAnswerCorrect ? answerProperties : "";
+  const newGeoProperties = isAnswerCorrect ? answerProperties : '';
 
   return { isAnswerCorrect, newGeoProperties };
 };
