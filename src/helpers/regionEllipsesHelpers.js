@@ -41,13 +41,13 @@ export const getCaribbeanMarkerProperties = alpha3Code => {
   if (!labelist.includes(alpha3Code)) {
     circleX = deltaX * 0.8;
     circleY = deltaY * 0.8;
-    lineX = deltaX * 0.65;
-    lineY = deltaY * 0.65;
+    lineX = deltaX * 0.46;
+    lineY = deltaY * 0.46;
   } else {
     circleX = deltaX * 0.93;
     circleY = deltaY * 0.93;
-    lineX = deltaX * 0.88;
-    lineY = deltaY * 0.88;
+    lineX = deltaX * 0.81;
+    lineY = deltaY * 0.81;
   }
 
   return { marker, circleX, circleY, lineX, lineY };

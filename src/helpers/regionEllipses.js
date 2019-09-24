@@ -1,6 +1,5 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { isMobile } from 'react-device-detect';
 import { colorPicker } from './MapHelpers';
 
 export default function regionEllipses() {
@@ -24,6 +23,11 @@ export default function regionEllipses() {
           };
 
       const { geoStyle } = colorPicker(region);
+      const circleFill =
+        geoStyle.default.fill === 'rgb(0, 140, 0)'
+         ? "rgba(255,255,255,0.5)"
+         : geoStyle.default.fill
+
       return (
         <Marker
           key={alpha3Code}
@@ -38,16 +42,16 @@ export default function regionEllipses() {
               y1="0"
               x2={markerData.lineX.toString()}
               y2={markerData.lineY.toString()}
-              stroke="black"
-              strokeWidth={0.3}
+              stroke="rgba(255,255,255,0.5)"
+              strokeWidth="4"
             />
           )}
           {caribbeanMap ? (
             <circle
               cx={markerData.circleX}
               cy={markerData.circleY}
-              r={isMobile ? 12 : 4}
-              fill={geoStyle.default.fill}
+              r="10"
+              fill={circleFill}
               className="caribSelector"
               onClick={() => this.handleRegionClick(region)}
             />
