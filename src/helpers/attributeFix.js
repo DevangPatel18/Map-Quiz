@@ -97,11 +97,9 @@ const DataFix = data => {
       x => x.alpha3Code === countryAlpha
     ).name;
     overseasRegions[countryAlpha].forEach(regionAlpha => {
-      let regionGeoPath = countryData.find(
+      countryData.find(
         x => x.alpha3Code === regionAlpha
-      );
-      regionGeoPath.regionOf = countryAlpha;
-      regionGeoPath.regionOfName = countryAlphaName
+      ).regionOf = countryAlphaName
     });
   }
 
