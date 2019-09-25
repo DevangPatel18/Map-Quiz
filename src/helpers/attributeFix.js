@@ -92,11 +92,18 @@ const DataFix = data => {
     NOR: ['SJM'],
   };
 
-  Object.keys(overseasRegions).forEach((countryAlpha) => {
-    overseasRegions[countryAlpha].forEach((regionAlpha) => {
-      countryData.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
+  for (let countryAlpha in overseasRegions) {
+    const countryAlphaName = countryData.find(
+      x => x.alpha3Code === countryAlpha
+    ).name;
+    overseasRegions[countryAlpha].forEach(regionAlpha => {
+      let regionGeoPath = countryData.find(
+        x => x.alpha3Code === regionAlpha
+      );
+      regionGeoPath.regionOf = countryAlpha;
+      regionGeoPath.regionOfName = countryAlphaName
     });
-  });
+  }
 
   return countryData
 }
