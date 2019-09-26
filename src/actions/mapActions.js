@@ -139,7 +139,8 @@ export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const moveMap = direction => async dispatch => {
+export const moveMap = (event, data) => async dispatch => {
+  const direction = data.value;
   const newCenter = getNewCenter(direction);
   await dispatch({
     type: MOVE_CENTER,
