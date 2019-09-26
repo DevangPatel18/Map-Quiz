@@ -12,7 +12,8 @@ export default function regionEllipses() {
     {currentMapEllipses
     .map((markerData) => {
       const { region } = markerData
-      const { alpha3Code } = region.properties;
+      const { properties } = region
+      const { alpha3Code } = properties;
       const caribbeanMap = currentMap === 'Caribbean'
 
       const mouseHandlers = !tooltip || isQuizActive
@@ -27,14 +28,16 @@ export default function regionEllipses() {
         geoStyle.default.fill === 'rgb(0, 140, 0)'
          ? "rgba(255,255,255,0.5)"
          : geoStyle.default.fill
+      const updatedMarker = { ...markerData.marker, properties }
 
       return (
         <Marker
           key={alpha3Code}
           {...mouseHandlers}
-          marker={markerData.marker}
+          marker={updatedMarker}
           style={!caribbeanMap && geoStyle}
           preserveMarkerAspect={caribbeanMap}
+          onClick={this.handleRegionClick}
         >
           {caribbeanMap && (
             <line
@@ -53,7 +56,6 @@ export default function regionEllipses() {
               r="10"
               fill={circleFill}
               className="caribSelector"
-              onClick={() => this.handleRegionClick(region)}
             />
           ) : (
             <ellipse
@@ -64,7 +66,6 @@ export default function regionEllipses() {
               rx={markerData.width}
               ry={markerData.height}
               transform={markerData.rotate}
-              onClick={() => this.handleRegionClick(region)}
             />
           )}
         </Marker>
