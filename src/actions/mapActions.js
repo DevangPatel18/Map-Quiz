@@ -102,7 +102,16 @@ export const checkMapDataUpdate = regionName => async dispatch => {
   });
 };
 
-export const regionZoom = geographyPath => async dispatch => {
+export const regionZoom = event => async dispatch => {
+  const { geographyPaths } = store.getState().data;
+  const geographyPath = geographyPaths.find(
+    x => x.properties.name === event.target.innerText
+  );
+
+  if (!geographyPath) {
+    return;
+  }
+
   const { properties } = geographyPath;
   const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({

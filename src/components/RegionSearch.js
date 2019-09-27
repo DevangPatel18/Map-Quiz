@@ -51,24 +51,7 @@ const RegionSearch = ({ map, data, regionZoom }) => {
         search
         selection
         options={mapRegions}
-        onChange={(e, d) => {
-          let geography;
-          if (e.code === 'Enter') {
-            geography = geographyPaths.find(
-              x => x.properties[regionKey] === d.value
-            );
-          } else {
-            geography = geographyPaths.find(
-              x => x.properties.name === e.target.innerText
-            );
-          }
-
-          if (!geography) {
-            return;
-          }
-
-          regionZoom(geography);
-        }}
+        onChange={regionZoom}
       />
     </div>
   );
