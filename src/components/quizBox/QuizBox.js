@@ -45,7 +45,8 @@ class QuizBox extends Component {
     this.setState({ quizType: value });
   };
 
-  handleLabelToggle = marker => {
+  handleLabelToggle = (event, data) => {
+    const marker = data.value;
     const { setLabel, quiz } = this.props;
     const { markerToggle } = quiz;
     const parentMarker =
@@ -145,7 +146,8 @@ class QuizBox extends Component {
                 <Button
                   toggle
                   active={regionLabel}
-                  onClick={() => this.handleLabelToggle('name')}
+                  value="name"
+                  onClick={this.handleLabelToggle}
                   aria-label="toggle region names"
                 >
                   {subRegionNameCap}
@@ -154,7 +156,8 @@ class QuizBox extends Component {
                 <Button
                   toggle
                   active={capitalLabel}
-                  onClick={() => this.handleLabelToggle('capital')}
+                  value="capital"
+                  onClick={this.handleLabelToggle}
                   aria-label="toggle region capitals"
                 >
                   {'Capital'}
