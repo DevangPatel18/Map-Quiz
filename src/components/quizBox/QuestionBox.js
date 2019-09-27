@@ -30,7 +30,8 @@ class QuestionBox extends Component {
     }
   };
 
-  handleRestartQuiz = async quizType => {
+  handleRestartQuiz = async () => {
+    const { quizType } = this.props.quiz;
     const { startQuiz, closeQuiz } = this.props;
     await closeQuiz();
     startQuiz(quizType);
@@ -38,7 +39,7 @@ class QuestionBox extends Component {
 
   handleFinalDialog = () => {
     const { quiz, closeQuiz } = this.props;
-    const { quizGuesses, quizAnswers, quizType } = quiz;
+    const { quizGuesses, quizAnswers } = quiz;
 
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
@@ -49,7 +50,7 @@ class QuestionBox extends Component {
         <div>{finalText}</div>
         <div style={{ display: 'flex' }}>
           <Button
-            onClick={() => closeQuiz()}
+            onClick={closeQuiz}
             size="large"
             compact
             content="CANCEL"
@@ -57,7 +58,7 @@ class QuestionBox extends Component {
             aria-label="cancel quiz"
           />
           <Button
-            onClick={() => this.handleRestartQuiz(quizType)}
+            onClick={this.handleRestartQuiz}
             size="large"
             compact
             content="RESTART"
