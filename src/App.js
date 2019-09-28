@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { loadGeographyPaths, loadRegionData, getRegionEllipses } from './actions/dataActions';
 import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
@@ -54,14 +55,13 @@ class App extends Component {
   }
 
   toggleOrientation = () => {
-    const { map, setMap } = this.props;
-    const { dimensions, zoomFactor } = map;
+    const { dimensions, zoomFactor, setMap } = this.props;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
     setMap({ dimensions: newDimensions, zoomFactor });
   };
 
   adjustMapSize = () => {
-    const { map: dimensions, setMap } = this.props;
+    const { dimensions, setMap } = this.props;
     const { innerWidth, innerHeight } = window;
     const ratio = innerWidth / innerHeight;
     let newDimensions;
@@ -80,7 +80,7 @@ class App extends Component {
   handleMenu = () => this.setState({ menuOpen: !this.state.menuOpen });
 
   render() {
-    const { isQuizActive } = this.props.quiz;
+    const { isQuizActive } = this.props;
     const { menuOpen } = this.state;
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
     return (
@@ -104,14 +104,19 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  data: state.data,
-  map: state.map,
-  quiz: state.quiz,
-});
+const getAppState = createSelector(
+  state => state.map.dimensions,
+  state => state.map.zoomFactor,
+  state => state.quiz.isQuizActive,
+  (dimensions, zoomFactor, isQuizActive) => ({
+    dimensions,
+    zoomFactor,
+    isQuizActive,
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   {
     loadGeographyPaths,
     loadRegionData,
