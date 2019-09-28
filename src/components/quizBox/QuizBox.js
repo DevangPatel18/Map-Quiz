@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
@@ -200,13 +201,28 @@ class QuizBox extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  map: state.map,
-  quiz: state.quiz,
-});
+const getAppState = createSelector(
+  state => state.map.checkedRegions,
+  state => state.map.currentMap,
+  state => state.map.subRegionName,
+  state => state.map.tooltip,
+  state => state.quiz.markerToggle,
+  state => state.quiz.areExternalRegionsOnQuiz,
+  (
+    checkedRegions,
+    currentMap,
+    subRegionName,
+    tooltip,
+    markerToggle,
+    areExternalRegionsOnQuiz
+  ) => ({
+    map: { checkedRegions, currentMap, subRegionName, tooltip },
+    quiz: { markerToggle, areExternalRegionsOnQuiz },
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   {
     setRegionCheckbox,
     startQuiz,
