@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { regionZoom } from '../actions/mapActions';
 
 const RegionSearch = ({ map, data, regionZoom }) => {
@@ -57,12 +58,18 @@ const RegionSearch = ({ map, data, regionZoom }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  data: state.data,
-  map: state.map,
-});
+const getAppState = createSelector(
+  state => state.map.currentMap,
+  state => state.map.filterRegions,
+  state => state.map.regionKey,
+  state => state.data.geographyPaths,
+  (currentMap, filterRegions, regionKey, geographyPaths) => ({
+    map: { currentMap, filterRegions, regionKey },
+    data: { geographyPaths },
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   { regionZoom }
 )(RegionSearch);
