@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Radio, Form } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 import { setChoropleth, sliderSet } from '../actions/mapActions';
@@ -26,9 +27,9 @@ class ChoroplethToggles extends Component {
   };
 
   render() {
-    const { sliderSet } = this.props;
-    const { choropleth, slider } = this.props.map;
+    const { sliderSet, choropleth, slider } = this.props;
     const radioSize = isMobile ? 'mini' : 'small';
+    console.log('choro toggle render');
 
     return (
       <ChoroplethTogglesStyles>
@@ -65,11 +66,16 @@ class ChoroplethToggles extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  map: state.map,
-});
+const getAppState = createSelector(
+  state => state.map.choropleth,
+  state => state.map.slider,
+  (choropleth, slider) => ({
+    choropleth,
+    slider,
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   { setChoropleth, sliderSet }
 )(ChoroplethToggles);
