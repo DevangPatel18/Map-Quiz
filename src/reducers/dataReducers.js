@@ -4,6 +4,7 @@ import {
   LOAD_REGION_DATA,
   ADD_REGION_DATA,
   GET_ELLIPSES,
+  GET_REGION_SEARCH_LIST,
 } from '../actions/types';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   regionEllipsesData: {},
   mapViewRegionIds: {},
   mapViewCountryIds: {},
+  regionSearchList: {},
 };
 
 export default function(state = initialState, action) {
@@ -62,6 +64,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         regionEllipsesData: action.regionEllipsesData,
+      };
+    case GET_REGION_SEARCH_LIST:
+      return {
+        ...state,
+        regionSearchList: action.regionSearchList,
       };
     default:
       return state;
