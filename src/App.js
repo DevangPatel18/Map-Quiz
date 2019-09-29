@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { loadGeographyPaths, loadRegionData, getRegionEllipses } from './actions/dataActions';
+import {
+  loadGeographyPaths,
+  loadRegionData,
+  getRegionEllipses,
+  getRegionSearchOptions,
+} from './actions/dataActions';
 import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
 import InterfaceElements from './components/InterfaceElements';
@@ -42,11 +47,13 @@ class App extends Component {
       loadRegionData,
       setRegionCheckbox,
       getRegionEllipses,
+      getRegionSearchOptions,
     } = this.props;
     await loadGeographyPaths();
     await loadRegionData();
     await setRegionCheckbox();
     getRegionEllipses('World');
+    getRegionSearchOptions('World');
   };
 
   componentWillUnmount() {
@@ -121,6 +128,7 @@ export default connect(
     loadGeographyPaths,
     loadRegionData,
     getRegionEllipses,
+    getRegionSearchOptions,
     setRegionCheckbox,
     setMap,
   }
