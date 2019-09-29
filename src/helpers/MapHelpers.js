@@ -11,7 +11,7 @@ const DEFAULT_GEO_STYLE = {
 };
 const DEFAULT_STROKE_STYLE = {
   strokeWidth: 0.05,
-  strokeColor: 'black',
+  strokeColor: 'white',
 };
 
 export const checkRegionHide = geography => {
