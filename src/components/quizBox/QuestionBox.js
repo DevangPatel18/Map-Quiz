@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Input } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
 import {
   startQuiz,
@@ -144,13 +145,30 @@ class QuestionBox extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  map: state.map,
-  data: state.data,
-  quiz: state.quiz,
-});
+const getAppState = createSelector(
+  state => state.quiz.quizType,
+  state => state.quiz.quizGuesses,
+  state => state.quiz.quizAnswers,
+  state => state.quiz.activeQuestionNum,
+  state => state.map.regionKey,
+  state => state.map.subRegionName,
+  state => state.data.geographyPaths,
+  (
+    quizType,
+    quizGuesses,
+    quizAnswers,
+    activeQuestionNum,
+    regionKey,
+    subRegionName,
+    geographyPaths
+  ) => ({
+    quiz: { quizType, quizGuesses, quizAnswers, activeQuestionNum },
+    map: { regionKey, subRegionName },
+    data: { geographyPaths },
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   { startQuiz, closeQuiz, processTypeAnswer }
 )(QuestionBox);
