@@ -37,12 +37,7 @@ footer {
 }
 
 .caribSelector {
-  stroke: black;
   transition: all 0.3s;
-}
-
-.caribSelector:hover {
-  fill: gray;
 }
 
 .dropFade {

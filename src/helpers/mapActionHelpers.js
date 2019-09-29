@@ -2,11 +2,7 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import projection from '../helpers/projection';
 import store from '../store';
-import {
-  alpha3Codes,
-  mapConfig,
-  worldRegions,
-} from '../assets/regionAlpha3Codes';
+import { mapConfig, worldRegions } from '../assets/mapViewSettings';
 
 const geoPathLinks = {
   'United States of America': {
@@ -21,6 +17,7 @@ const geoPathLinks = {
 };
 
 export const getStatesForRegionSelect = regionName => {
+  const { mapViewRegionIds } = store.getState().data;
   const { center, zoom } = mapConfig[regionName];
   const mapAttributes = {
     zoom,
@@ -28,7 +25,7 @@ export const getStatesForRegionSelect = regionName => {
     defaultZoom: zoom,
     defaultCenter: center,
     currentMap: regionName,
-    filterRegions: alpha3Codes[regionName],
+    filterRegions: mapViewRegionIds[regionName] || [],
     markerToggle: '',
   };
   const quizAttributes = {
@@ -209,4 +206,13 @@ export const getChoroplethTooltipContent = geography => {
       : 'N/A';
   }
   return ` - ${contentData}`;
+};
+
+export const getUpdatedMapViewRegionIds = (
+  geographyPaths,
+  regionDataSetKey
+) => {
+  const { mapViewRegionIds } = store.getState().data;
+  const regionIds = geographyPaths.map(obj => obj.properties.regionID);
+  return { ...mapViewRegionIds, [regionDataSetKey]: regionIds };
 };

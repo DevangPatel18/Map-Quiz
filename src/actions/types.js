@@ -17,9 +17,12 @@ export const LOAD_PATHS = 'LOAD_PATHS';
 export const LOAD_DATA = 'LOAD_DATA';
 export const LOAD_REGION_DATA = 'LOAD_REGION_DATA';
 export const ADD_REGION_DATA = 'ADD_REGION_DATA';
+export const GET_ELLIPSES = 'GET_ELLIPSES';
+export const GET_REGION_SEARCH_LIST = 'GET_REGION_SEARCH_LIST';
 // Quiz actions
 export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';
 export const QUIZ_CLOSE = 'QUIZ_CLOSE';
 export const REGION_CLICK = 'REGION_CLICK';
 export const SET_LABEL = 'SET_LABEL';
+export const TOGGLE_EXT_REGIONS = 'TOGGLE_EXT_REGIONS';

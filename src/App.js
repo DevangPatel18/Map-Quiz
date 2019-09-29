@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import handleDoubleClick from './helpers/handleDoubleClick';
-import regionEllipses from './helpers/regionEllipses';
-import regionLabels from './helpers/regionLabels';
-import { loadPaths, loadData } from './actions/dataActions';
+import { createSelector } from 'reselect';
 import {
-  processClickAnswer,
-  loadNewInfoTab,
-  toggleInfoTab,
-} from './actions/quizActions';
-import {
-  setRegionCheckbox,
-  zoomMap,
-  setMap,
-  tooltipMove,
-  tooltipLeave,
-} from './actions/mapActions';
+  loadGeographyPaths,
+  loadRegionData,
+  getRegionEllipses,
+  getRegionSearchOptions,
+} from './actions/dataActions';
+import { setRegionCheckbox, setMap } from './actions/mapActions';
 import SidebarContainer from './components/SidebarContainer';
 import InterfaceElements from './components/InterfaceElements';
 import Map from './Map';
-import { checkIfQuizIncomplete } from './helpers/quizActionHelpers';
 
 class App extends Component {
   constructor() {
@@ -29,35 +20,41 @@ class App extends Component {
     this.state = {
       menuOpen: true,
     };
-
-    this.handleDoubleClick = handleDoubleClick.bind(this);
-    this.regionEllipses = regionEllipses.bind(this);
-    this.regionLabels = regionLabels.bind(this);
   }
 
   async componentDidMount() {
-    const { loadPaths, loadData, setRegionCheckbox, setMap } = this.props;
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
+    const { setMap } = this.props;
+    const { innerWidth, innerHeight } = window;
     if (isMobile) {
-      const dimensions = height > width ? [310, 551] : [980, 551];
+      const dimensions = innerHeight > innerWidth ? [310, 551] : [980, 551];
       setMap({ dimensions, zoomFactor: 1.5 });
     } else {
       this.adjustMapSize();
     }
 
-    await loadPaths();
-    await loadData();
-    setRegionCheckbox();
-    window.addEventListener('orientationchange', this.toggleOrientation);
+    await this.handleAppDataLoad();
 
+    window.addEventListener('orientationchange', this.toggleOrientation);
     // Disable on mobile due to keyboard triggering resize
     if (!isMobile) {
       window.addEventListener('resize', this.adjustMapSize);
     }
   }
+
+  handleAppDataLoad = async () => {
+    const {
+      loadGeographyPaths,
+      loadRegionData,
+      setRegionCheckbox,
+      getRegionEllipses,
+      getRegionSearchOptions,
+    } = this.props;
+    await loadGeographyPaths();
+    await loadRegionData();
+    await setRegionCheckbox();
+    getRegionEllipses('World');
+    getRegionSearchOptions('World');
+  };
 
   componentWillUnmount() {
     window.removeEventListener('orientationchange', this.toggleOrientation);
@@ -65,18 +62,15 @@ class App extends Component {
   }
 
   toggleOrientation = () => {
-    const { map, setMap } = this.props;
-    const { dimensions, zoomFactor } = map;
+    const { dimensions, zoomFactor, setMap } = this.props;
     const newDimensions = dimensions[0] === 310 ? [980, 551] : [310, 551];
     setMap({ dimensions: newDimensions, zoomFactor });
   };
 
   adjustMapSize = () => {
-    const { map, setMap } = this.props;
-    const { dimensions } = map;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const ratio = width / height;
+    const { dimensions, setMap } = this.props;
+    const { innerWidth, innerHeight } = window;
+    const ratio = innerWidth / innerHeight;
     let newDimensions;
     if (ratio > 1.43) {
       newDimensions = [980, 551];
@@ -90,47 +84,12 @@ class App extends Component {
     }
   };
 
-  handleWheel = event => {
-    if (event.deltaY > 0) {
-      this.props.zoomMap(0.5);
-    }
-    if (event.deltaY < 0) {
-      this.props.zoomMap(2);
-    }
-  };
-
-  handleMoveStart(currentCenter) {
-    // console.log("Current center: ", currentCenter)
-  }
-
-  handleMoveEnd(newCenter) {
-    // console.log("New center: ", newCenter)
-  }
-
-  handleMenu = () => {
-    this.setState({ menuOpen: !this.state.menuOpen });
-  };
-
-  handleRegionClick = geographyPath => {
-    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
-    const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
-    if (isTypeQuizActive) return;
-    const geoProperties = geographyPath.properties;
-    if (checkIfQuizIncomplete()) {
-      processClickAnswer(geoProperties);
-    } else if (geoProperties.name !== selectedProperties.name) {
-      loadNewInfoTab(geoProperties);
-    } else {
-      toggleInfoTab();
-    }
-  };
+  handleMenu = () => this.setState({ menuOpen: !this.state.menuOpen });
 
   render() {
-    const { isQuizActive } = this.props.quiz;
+    const { isQuizActive } = this.props;
     const { menuOpen } = this.state;
-
     const footerStyle = isMobile ? { fontSize: '10px' } : {};
-
     return (
       <div className="App">
         {!isQuizActive && (
@@ -141,7 +100,7 @@ class App extends Component {
         <InterfaceElements />
         <SidebarContainer handleMenu={this.handleMenu} menuOpen={menuOpen} />
 
-        <Map app={this} />
+        <Map />
         <footer>
           <div style={footerStyle}>
             Copyright © 2018 Devang Patel. All rights reserved.
@@ -152,24 +111,25 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  data: state.data,
-  map: state.map,
-  quiz: state.quiz,
-});
+const getAppState = createSelector(
+  state => state.map.dimensions,
+  state => state.map.zoomFactor,
+  state => state.quiz.isQuizActive,
+  (dimensions, zoomFactor, isQuizActive) => ({
+    dimensions,
+    zoomFactor,
+    isQuizActive,
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   {
-    loadPaths,
-    loadData,
+    loadGeographyPaths,
+    loadRegionData,
+    getRegionEllipses,
+    getRegionSearchOptions,
     setRegionCheckbox,
-    zoomMap,
     setMap,
-    processClickAnswer,
-    loadNewInfoTab,
-    toggleInfoTab,
-    tooltipMove,
-    tooltipLeave,
   }
 )(App);

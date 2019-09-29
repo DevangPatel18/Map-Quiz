@@ -1,19 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { Button } from 'semantic-ui-react';
 import { zoomMap, recenterMap } from '../actions/mapActions';
 
-const ZoomButtons = ({ map, zoomMap, recenterMap }) => (
+const ZoomButtons = ({ zoomFactor, zoomMap, recenterMap }) => (
   <div className="zoomButtons">
     <Button.Group size="tiny" vertical>
       <Button
-        onClick={() => zoomMap(map.zoomFactor)}
+        onClick={() => zoomMap(zoomFactor)}
         icon="plus"
         inverted
         aria-label="map zoom in"
       />
       <Button
-        onClick={() => zoomMap(1 / map.zoomFactor)}
+        onClick={() => zoomMap(1 / zoomFactor)}
         icon="minus"
         inverted
         aria-label="map zoom out"
@@ -28,12 +29,15 @@ const ZoomButtons = ({ map, zoomMap, recenterMap }) => (
   </div>
 );
 
-const mapStateToProps = state => ({
-  map: state.map,
-});
+const getAppState = createSelector(
+  state => state.map.zoomFactor,
+  zoomFactor => ({
+    zoomFactor,
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   {
     zoomMap,
     recenterMap,

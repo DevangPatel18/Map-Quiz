@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
-import { startQuiz, closeQuiz, setLabel } from '../../actions/quizActions';
+import {
+  startQuiz,
+  closeQuiz,
+  setLabel,
+  toggleExternalRegions,
+} from '../../actions/quizActions';
 
 const generateQuizOptions = regionType => [
   { label: `Click ${regionType}`, value: 'click_name' },
@@ -40,7 +46,8 @@ class QuizBox extends Component {
     this.setState({ quizType: value });
   };
 
-  handleLabelToggle = marker => {
+  handleLabelToggle = (event, data) => {
+    const marker = data.value;
     const { setLabel, quiz } = this.props;
     const { markerToggle } = quiz;
     const parentMarker =
@@ -74,13 +81,9 @@ class QuizBox extends Component {
 
   render() {
     const { quizType, regionMenu } = this.state;
-    const { markerToggle } = this.props.quiz;
-    const {
-      checkedRegions,
-      currentMap,
-      subRegionName,
-      tooltip,
-    } = this.props.map;
+    const { quiz, map, toggleExternalRegions, tooltipToggle } = this.props;
+    const { markerToggle, areExternalRegionsOnQuiz } = quiz;
+    const { checkedRegions, currentMap, subRegionName, tooltip } = map;
     const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
@@ -127,12 +130,25 @@ class QuizBox extends Component {
           )}
           {currentMap !== 'World' && (
             <div className="App-quiz-toggle">
+              {checkedRegionsLabels.includes(currentMap) && (
+                <Button
+                  toggle
+                  size={formSize}
+                  active={areExternalRegionsOnQuiz}
+                  onClick={toggleExternalRegions}
+                  aria-label="toggle external regions for quizzes"
+                  style={{ width: '9em', margin: '1.5em 0', padding: '0.8em' }}
+                >
+                  {'Include external regions'}
+                </Button>
+              )}
               <div className="App-quiz-toggle-header">TOGGLE LABEL</div>
               <Button.Group size={formSize} compact>
                 <Button
                   toggle
                   active={regionLabel}
-                  onClick={() => this.handleLabelToggle('name')}
+                  value="name"
+                  onClick={this.handleLabelToggle}
                   aria-label="toggle region names"
                 >
                   {subRegionNameCap}
@@ -141,7 +157,8 @@ class QuizBox extends Component {
                 <Button
                   toggle
                   active={capitalLabel}
-                  onClick={() => this.handleLabelToggle('capital')}
+                  value="capital"
+                  onClick={this.handleLabelToggle}
                   aria-label="toggle region capitals"
                 >
                   {'Capital'}
@@ -157,7 +174,7 @@ class QuizBox extends Component {
               size={formSize}
               label={`Tooltip`}
               checked={tooltip}
-              onChange={this.props.tooltipToggle}
+              onChange={tooltipToggle}
               style={{}}
             />
           </div>
@@ -184,12 +201,34 @@ class QuizBox extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  map: state.map,
-  quiz: state.quiz,
-});
+const getAppState = createSelector(
+  state => state.map.checkedRegions,
+  state => state.map.currentMap,
+  state => state.map.subRegionName,
+  state => state.map.tooltip,
+  state => state.quiz.markerToggle,
+  state => state.quiz.areExternalRegionsOnQuiz,
+  (
+    checkedRegions,
+    currentMap,
+    subRegionName,
+    tooltip,
+    markerToggle,
+    areExternalRegionsOnQuiz
+  ) => ({
+    map: { checkedRegions, currentMap, subRegionName, tooltip },
+    quiz: { markerToggle, areExternalRegionsOnQuiz },
+  })
+);
 
 export default connect(
-  mapStateToProps,
-  { setRegionCheckbox, startQuiz, closeQuiz, setLabel, tooltipToggle }
+  getAppState,
+  {
+    setRegionCheckbox,
+    startQuiz,
+    closeQuiz,
+    setLabel,
+    tooltipToggle,
+    toggleExternalRegions,
+  }
 )(QuizBox);

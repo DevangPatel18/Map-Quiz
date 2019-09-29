@@ -5,18 +5,20 @@ import {
   REGION_CLICK,
   DISABLE_OPT,
   SET_LABEL,
+  TOGGLE_EXT_REGIONS,
 } from './types';
 import {
   generateAnswerArray,
   generateQuizState,
   checkClickAnswer,
   checkTypeAnswer,
+  getRegionIdsForQuiz,
 } from '../helpers/quizActionHelpers';
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
-  const { filterRegions } = store.getState().map;
-  const quizAnswers = generateAnswerArray(filterRegions);
+  const quizRegionIds = getRegionIdsForQuiz()
+  const quizAnswers = generateAnswerArray(quizRegionIds);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: SET_QUIZ_STATE, quizAttributes });
   dispatch({ type: DISABLE_OPT });
@@ -85,3 +87,6 @@ export const setLabel = (markerToggle = '') => async dispatch => {
   await dispatch({ type: SET_LABEL, markerToggle });
   dispatch({ type: DISABLE_OPT });
 };
+
+export const toggleExternalRegions = () => dispatch =>
+  dispatch({ type: TOGGLE_EXT_REGIONS });

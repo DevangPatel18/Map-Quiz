@@ -2,6 +2,7 @@ import { actions } from 'redux-tooltip';
 import {
   getStatesForRegionSelect,
   getUpdatedRegionDataSets,
+  getUpdatedMapViewRegionIds,
   getGeoPathCenterAndZoom,
   getOrientation,
   checkMapViewsBetweenWorldRegions,
@@ -25,19 +26,21 @@ import {
   ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { worldRegions, alpha3CodesSov } from '../assets/regionAlpha3Codes';
+import { worldRegions } from '../assets/mapViewSettings';
 
 const { show, hide } = actions;
 
 export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = { ...store.getState().map.checkedRegions };
+  const { mapViewCountryIds } = store.getState().data;
+
   if (regionName) {
     checkedRegions[regionName] = !checkedRegions[regionName];
   }
 
   const filterRegions = Object.keys(checkedRegions)
     .filter(region => checkedRegions[region])
-    .map(region => alpha3CodesSov[region])
+    .map(region => mapViewCountryIds[region])
     .reduce((a, b) => a.concat(b), []);
 
   await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
@@ -46,6 +49,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
+  const { mapViewCountryIds } = store.getState().data;
   const { mapAttributes, quizAttributes } = getStatesForRegionSelect(
     regionName
   );
@@ -55,7 +59,7 @@ export const regionSelect = regionName => async dispatch => {
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
-      .map(region => alpha3CodesSov[region])
+      .map(region => mapViewCountryIds[region])
       .reduce((a, b) => a.concat(b), []);
     await dispatch({
       type: SET_REGION_CHECKBOX,
@@ -77,10 +81,16 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     const updatedRegionDataSets = await getUpdatedRegionDataSets(
       regionDataSetKey
     );
+    const { geographyPaths } = updatedRegionDataSets[regionDataSetKey];
+    const updatedMapViewRegionIds = getUpdatedMapViewRegionIds(
+      geographyPaths,
+      regionDataSetKey
+    );
 
     await dispatch({
       type: ADD_REGION_DATA,
       regionDataSets: updatedRegionDataSets,
+      mapViewRegionIds: updatedMapViewRegionIds,
     });
     regionDataSets = store.getState().data.regionDataSets;
   }
@@ -92,7 +102,16 @@ export const checkMapDataUpdate = regionName => async dispatch => {
   });
 };
 
-export const regionZoom = geographyPath => async dispatch => {
+export const regionZoom = event => async dispatch => {
+  const { geographyPaths } = store.getState().data;
+  const geographyPath = geographyPaths.find(
+    x => x.properties.name === event.target.innerText
+  );
+
+  if (!geographyPath) {
+    return;
+  }
+
   const { properties } = geographyPath;
   const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
@@ -129,7 +148,8 @@ export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
-export const moveMap = direction => async dispatch => {
+export const moveMap = (event, data) => async dispatch => {
+  const direction = data.value;
   const newCenter = getNewCenter(direction);
   await dispatch({
     type: MOVE_CENTER,

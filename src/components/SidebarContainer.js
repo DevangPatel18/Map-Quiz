@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { Button, Sidebar } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import SidebarTabs from './SidebarTabs';
 
-const SidebarContainer = ({ handleMenu, menuOpen, quiz, map }) => (
+const SidebarContainer = ({ handleMenu, menuOpen, isQuizActive, currentMap }) => (
   <>
     <Button
       icon={menuOpen ? 'close' : 'sidebar'}
@@ -16,7 +17,7 @@ const SidebarContainer = ({ handleMenu, menuOpen, quiz, map }) => (
         right: '1em',
         top: '1em',
         transition: 'all 0.3s ease-in-out',
-        visibility: quiz.isQuizActive ? 'hidden' : 'visible',
+        visibility: isQuizActive ? 'hidden' : 'visible',
         zIndex: '200',
       }}
       onClick={handleMenu}
@@ -25,9 +26,9 @@ const SidebarContainer = ({ handleMenu, menuOpen, quiz, map }) => (
     <Sidebar
       animation="overlay"
       vertical="true"
-      visible={quiz.isQuizActive ? false : menuOpen}
+      visible={isQuizActive ? false : menuOpen}
       direction="right"
-      width={!isMobile && map.currentMap === 'World' ? 'wide' : null}
+      width={!isMobile && currentMap === 'World' ? 'wide' : null}
       style={{
         background: 'rgba(0, 0, 0, 0.5)',
       }}
@@ -36,12 +37,16 @@ const SidebarContainer = ({ handleMenu, menuOpen, quiz, map }) => (
   </>
 );
 
-const mapStateToProps = state => ({
-  quiz: state.quiz,
-  map: state.map,
-});
+const getAppState = createSelector(
+  state => state.quiz.isQuizActive,
+  state => state.map.currentMap,
+  (isQuizActive, currentMap) => ({
+    isQuizActive,
+    currentMap,
+  })
+);
 
 export default connect(
-  mapStateToProps,
+  getAppState,
   null
 )(SidebarContainer);

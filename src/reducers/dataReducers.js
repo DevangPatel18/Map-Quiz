@@ -3,6 +3,8 @@ import {
   LOAD_DATA,
   LOAD_REGION_DATA,
   ADD_REGION_DATA,
+  GET_ELLIPSES,
+  GET_REGION_SEARCH_LIST,
 } from '../actions/types';
 
 const initialState = {
@@ -11,6 +13,10 @@ const initialState = {
   capitalMarkers: [],
   populationData: {},
   regionDataSets: {},
+  regionEllipsesData: {},
+  mapViewRegionIds: {},
+  mapViewCountryIds: {},
+  regionSearchList: {},
 };
 
 export default function(state = initialState, action) {
@@ -20,6 +26,8 @@ export default function(state = initialState, action) {
     capitalMarkers,
     populationData,
     regionDataSets,
+    mapViewRegionIds,
+    mapViewCountryIds,
   } = action;
 
   switch (action.type) {
@@ -36,6 +44,8 @@ export default function(state = initialState, action) {
         capitalMarkers,
         populationData,
         regionDataSets,
+        mapViewRegionIds,
+        mapViewCountryIds,
       };
     case LOAD_REGION_DATA:
       return {
@@ -48,6 +58,20 @@ export default function(state = initialState, action) {
       return {
         ...state,
         regionDataSets,
+        mapViewRegionIds,
+      };
+    case GET_ELLIPSES:
+      return {
+        ...state,
+        regionEllipsesData: action.regionEllipsesData,
+      };
+    case GET_REGION_SEARCH_LIST:
+      return {
+        ...state,
+        regionSearchList: {
+          ...state.regionSearchList,
+          [action.currentMap]: action.regionSearchOptions,
+        },
       };
     default:
       return state;

@@ -10,8 +10,9 @@ const DirectionPad = ({ moveMap }) => (
     <div className="up">
       <Button
         icon="arrow up"
+        value="up"
         inverted
-        onClick={() => moveMap('up')}
+        onClick={moveMap}
         aria-label="move up"
       />
     </div>
@@ -19,8 +20,9 @@ const DirectionPad = ({ moveMap }) => (
     <div className="left">
       <Button
         icon="arrow left"
+        value="left"
         inverted
-        onClick={() => moveMap('left')}
+        onClick={moveMap}
         aria-label="move left"
       />
     </div>
@@ -28,8 +30,9 @@ const DirectionPad = ({ moveMap }) => (
     <div className="right">
       <Button
         icon="arrow right"
+        value="right"
         inverted
-        onClick={() => moveMap('right')}
+        onClick={moveMap}
         aria-label="move right"
       />
     </div>
@@ -37,8 +40,9 @@ const DirectionPad = ({ moveMap }) => (
     <div className="down">
       <Button
         icon="arrow down"
+        value="down"
         inverted
-        onClick={() => moveMap('down')}
+        onClick={moveMap}
         aria-label="move down"
       />
     </div>

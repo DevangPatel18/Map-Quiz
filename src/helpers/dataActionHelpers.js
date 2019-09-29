@@ -22,6 +22,8 @@ const restDataFields = [
   'flag',
   'altSpellings',
   'translations',
+  'region',
+  'subregion',
 ];
 
 export const getWorldTopology = async () =>
@@ -142,5 +144,70 @@ export const getWorldDataSet = async populationData => {
     regionMarkers,
     capitalMarkers,
     subRegionName: 'country',
+  };
+};
+
+export const getMapViewIds = worldDataSet => {
+  const dataArr = worldDataSet.geographyPaths.map(obj => obj.properties);
+  const mapViewRegionIds = {};
+  mapViewRegionIds['North & Central America'] = dataArr.filter(obj =>
+    ['Northern America', 'Central America'].includes(obj.subregion)
+  );
+  mapViewRegionIds['South America'] = dataArr.filter(obj => obj.subregion === 'South America');
+  mapViewRegionIds['Caribbean'] = dataArr.filter(obj => obj.subregion === 'Caribbean');
+  mapViewRegionIds['Africa'] = dataArr.filter(obj => obj.region === 'Africa');
+  mapViewRegionIds['Europe'] = dataArr.filter(obj => obj.region === 'Europe');
+  mapViewRegionIds['Asia'] = dataArr.filter(obj => obj.region === 'Asia');
+  mapViewRegionIds['Oceania'] = dataArr.filter(obj => obj.region === 'Oceania');
+
+  const mapViewCountryIds = getMapViewCountryIds(mapViewRegionIds);
+
+  for (let mapView in mapViewRegionIds) {
+    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.alpha3Code);
+  }
+
+  return { mapViewRegionIds, mapViewCountryIds };
+};
+
+const getMapViewCountryIds = mapViewRegionIds => {
+  const mapViewCountryIds = {};
+  for (let mapView in mapViewRegionIds) {
+    mapViewCountryIds[mapView] = mapViewRegionIds[mapView]
+      .filter(obj => !obj.regionOf)
+      .map(obj => obj.alpha3Code);
+  }
+  return mapViewCountryIds;
+};
+
+export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
+  mapRegions
+    .map(x => getRegionSearchObject(x, regionKey))
+    .filter(x => x !== null)
+    .filter(
+      x =>
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
+          x.key
+        )
+    )
+    .sort((a, b) => (a.text > b.text ? 1 : -1));
+
+export const getRegionSearchObject = (properties, regionKey) => {
+  let key;
+  let flag;
+  if (regionKey === 'alpha3Code') {
+    if (!properties.alpha2Code) {
+      return null;
+    }
+    key = properties.alpha2Code.toString().toLowerCase();
+    flag = { flag: key };
+  } else {
+    key = properties[regionKey];
+  }
+
+  return {
+    key,
+    ...flag,
+    text: properties.name,
+    value: properties[regionKey],
   };
 };

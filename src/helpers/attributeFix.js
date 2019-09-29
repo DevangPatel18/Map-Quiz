@@ -92,11 +92,16 @@ const DataFix = data => {
     NOR: ['SJM'],
   };
 
-  Object.keys(overseasRegions).forEach((countryAlpha) => {
-    overseasRegions[countryAlpha].forEach((regionAlpha) => {
-      countryData.find(x => x.alpha3Code === regionAlpha).regionOf = countryAlpha;
+  for (let countryAlpha in overseasRegions) {
+    const countryAlphaName = countryData.find(
+      x => x.alpha3Code === countryAlpha
+    ).name;
+    overseasRegions[countryAlpha].forEach(regionAlpha => {
+      countryData.find(
+        x => x.alpha3Code === regionAlpha
+      ).regionOf = countryAlphaName
     });
-  });
+  }
 
   return countryData
 }
@@ -218,6 +223,20 @@ const CountryMarkersFix = centroids => {
 const CapitalMarkersFix = (capitalMarkers) => {
   const capitalMarkersData = capitalMarkers.slice();
 
+  // Add capitals for Overseas regions
+  const extraCapitals = [
+    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
+    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
+    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
+    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
+    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
+    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
+  ];
+
+  extraCapitals.forEach((capitalObj) => {
+    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
+  });
+
   const capitalFix = [
     // Caribbean capital markers fix
     ['GTM', 10], ['SLV', 12], ['CRI', 12], ['URY', 15], ['GUY', -10], ['SUR', -5], ['GUF', 0], ['DOM', 0],
@@ -236,27 +255,13 @@ const CapitalMarkersFix = (capitalMarkers) => {
     ['GUM', 13], ['KIR', 13], ['ASM', 13], ['WLF', -10], ['WSM', -3],
   ];
 
-  let idx;
-
   capitalFix.forEach(fix => {
-    idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0])
-    capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
-  });
-
-  // Add capitals for Overseas regions
-  const extraCapitals = [
-    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
-    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
-    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
-    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
-    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
-    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
-    { name: 'Fakaofo', alpha3Code: 'TKL', coordinates: [-171.2188, -9.3803] },
-    { name: 'Funafuti', alpha3Code: 'TUV', coordinates: [-179.2, -8.5211] },
-  ];
-
-  extraCapitals.forEach((capitalObj) => {
-    capitalMarkersData.push({ ...capitalObj, markerOffset: -7 });
+    let idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0]);
+    if (idx === -1) {
+      console.log(`Index not found for ${fix[0]}`);
+    } else {
+      capitalMarkersData.splice(idx, 1, {...capitalMarkersData[idx], markerOffset: fix[1]})
+    }
   });
 
   return capitalMarkersData;
