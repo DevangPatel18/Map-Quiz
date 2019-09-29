@@ -37,6 +37,56 @@ class QuestionBox extends Component {
     startQuiz(quizType);
   };
 
+  handleTypePrompt = testing => {
+    const { userGuess } = this.state;
+    const { subRegionName } = this.props.map;
+    const text = `Enter the ${testing} of the highlighted ${subRegionName}`;
+    const inputSize = isMobile ? 'mini' : 'small';
+    return (
+      <QuizPrompt typeTest={true}>
+        <div className="qInputText">{text}</div>
+        <form onSubmit={this.handleSubmit}>
+          <Input
+            type="text"
+            aria-label="user guess"
+            autoFocus
+            size={inputSize}
+            value={userGuess}
+            onChange={this.handleChange}
+          />
+          <div>
+            <Button
+              type="submit"
+              size="small"
+              aria-label="submit answer"
+              compact
+            >
+              Submit
+            </Button>
+          </div>
+        </form>
+      </QuizPrompt>
+    );
+  };
+
+  handleFlagPrompt = region => (
+    <QuizFlag>
+      <img
+        src={region}
+        className="qFlag"
+        display="block"
+        height={isMobile ? '50px' : '100px'}
+        alt=""
+      />
+    </QuizFlag>
+  );
+
+  handleNamePrompt = region => (
+    <QuizPrompt>
+      <span className="quizName">{region}</span>
+    </QuizPrompt>
+  );
+
   handleFinalDialog = () => {
     const { quiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers } = quiz;
@@ -46,94 +96,51 @@ class QuestionBox extends Component {
       quizAnswers.length
     } (${Math.round((score / quizAnswers.length) * 100)}%)`;
     return (
-      <div>
-        <div>{finalText}</div>
-        <div style={{ display: 'flex' }}>
-          <Button
-            onClick={closeQuiz}
-            size="large"
-            compact
-            content="CANCEL"
-            style={{ marginRight: '1rem' }}
-            aria-label="cancel quiz"
-          />
-          <Button
-            onClick={this.handleRestartQuiz}
-            size="large"
-            compact
-            content="RESTART"
-            aria-label="restart quiz"
-          />
+      <QuizPrompt>
+        <div>
+          <div>{finalText}</div>
+          <div style={{ display: 'flex' }}>
+            <Button
+              onClick={closeQuiz}
+              size="large"
+              compact
+              content="CANCEL"
+              style={{ marginRight: '1rem' }}
+              aria-label="cancel quiz"
+            />
+            <Button
+              onClick={this.handleRestartQuiz}
+              size="large"
+              compact
+              content="RESTART"
+              aria-label="restart quiz"
+            />
+          </div>
         </div>
-      </div>
+      </QuizPrompt>
     );
   };
 
   render() {
-    const { userGuess } = this.state;
     const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
     const { geographyPaths } = this.props.data;
-    const { subRegionName, regionKey } = this.props.map;
+    const { regionKey } = this.props.map;
     const [type, testing] = quizType.split('_');
-    const typeTest = type === 'type';
-    let text;
 
     if (activeQuestionNum !== quizAnswers.length) {
-      if (typeTest) {
-        text = `Enter the ${testing} of the highlighted ${subRegionName}`;
-        const inputSize = isMobile ? 'mini' : 'small';
-        return (
-          <QuizPrompt typeTest={typeTest}>
-            <div className="qInputText">{text}</div>
-            <form onSubmit={this.handleSubmit}>
-              <Input
-                type="text"
-                aria-label="user guess"
-                autoFocus
-                size={inputSize}
-                value={userGuess}
-                onChange={this.handleChange}
-              />
-              <div>
-                <Button
-                  type="submit"
-                  size="small"
-                  aria-label="submit answer"
-                  compact
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </QuizPrompt>
-        );
+      if (type === 'type') {
+        return this.handleTypePrompt(testing);
       }
       const alpha = quizAnswers[activeQuestionNum];
-
       const region = geographyPaths.find(x => x.properties[regionKey] === alpha)
         .properties[testing];
 
       if (testing === 'flag') {
-        const flagHeight = isMobile ? '50px' : '100px';
-        return (
-          <QuizFlag>
-            <img
-              src={region}
-              className="qFlag"
-              display="block"
-              height={flagHeight}
-              alt=""
-            />
-          </QuizFlag>
-        );
+        return this.handleFlagPrompt(region);
       }
-      return (
-        <QuizPrompt>
-          <span className="quizName">{region}</span>
-        </QuizPrompt>
-      );
+      return this.handleNamePrompt(region);
     }
-    return <QuizPrompt>{this.handleFinalDialog()}</QuizPrompt>;
+    return this.handleFinalDialog();
   }
 }
 
