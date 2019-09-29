@@ -178,3 +178,36 @@ const getMapViewCountryIds = mapViewRegionIds => {
   }
   return mapViewCountryIds;
 };
+
+export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
+  mapRegions
+    .map(x => getRegionSearchObject(x, regionKey))
+    .filter(x => x !== null)
+    .filter(
+      x =>
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
+          x.key
+        )
+    )
+    .sort((a, b) => (a.text > b.text ? 1 : -1));
+
+export const getRegionSearchObject = (properties, regionKey) => {
+  let key;
+  let flag;
+  if (regionKey === 'alpha3Code') {
+    if (!properties.alpha2Code) {
+      return null;
+    }
+    key = properties.alpha2Code.toString().toLowerCase();
+    flag = { flag: key };
+  } else {
+    key = properties[regionKey];
+  }
+
+  return {
+    key,
+    ...flag,
+    text: properties.name,
+    value: properties[regionKey],
+  };
+};

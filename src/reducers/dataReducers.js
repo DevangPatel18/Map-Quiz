@@ -68,7 +68,10 @@ export default function(state = initialState, action) {
     case GET_REGION_SEARCH_LIST:
       return {
         ...state,
-        regionSearchList: action.regionSearchList,
+        regionSearchList: {
+          ...state.regionSearchList,
+          [action.currentMap]: action.regionSearchOptions,
+        },
       };
     default:
       return state;

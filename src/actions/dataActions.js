@@ -1,4 +1,10 @@
-import { LOAD_PATHS, LOAD_DATA, DISABLE_OPT, GET_ELLIPSES } from './types';
+import {
+  LOAD_PATHS,
+  LOAD_DATA,
+  DISABLE_OPT,
+  GET_ELLIPSES,
+  GET_REGION_SEARCH_LIST,
+} from './types';
 import { modifyWorldGeographyPaths } from '../helpers/attributeFix';
 import {
   getWorldTopology,
@@ -6,6 +12,7 @@ import {
   getPopulationData,
   getWorldDataSet,
   getMapViewIds,
+  getRegionSearchObjectArray,
 } from '../helpers/dataActionHelpers';
 import {
   getFilterFunction,
@@ -65,5 +72,27 @@ export const getRegionEllipses = currentMap => dispatch => {
       ...regionEllipsesData,
       [currentMap]: markersArray,
     },
+  });
+};
+
+export const getRegionSearchOptions = currentMap => dispatch => {
+  const { map, data } = store.getState();
+  const { regionKey } = map;
+  const { geographyPaths, mapViewRegionIds } = data;
+
+  let mapRegions = geographyPaths.map(x => x.properties);
+
+  if (currentMap !== 'World') {
+    mapRegions = mapRegions.filter(x =>
+      mapViewRegionIds[currentMap].includes(x[regionKey])
+    );
+  }
+
+  const regionSearchOptions = getRegionSearchObjectArray(mapRegions, regionKey);
+
+  dispatch({
+    type: GET_REGION_SEARCH_LIST,
+    currentMap,
+    regionSearchOptions,
   });
 };
