@@ -69,7 +69,10 @@ export default function(state = initialState, action) {
     case GET_ELLIPSES:
       return {
         ...state,
-        regionEllipsesData: action.regionEllipsesData,
+        regionEllipsesData: {
+          ...state.regionEllipsesData,
+          [action.currentMap]: action.markersArray,
+        },
       };
     case GET_REGION_SEARCH_LIST:
       return {

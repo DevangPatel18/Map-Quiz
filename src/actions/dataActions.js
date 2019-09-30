@@ -84,7 +84,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
 export const getRegionEllipses = currentMap => dispatch => {
   const { map, data } = store.getState();
   const { filterRegions } = map;
-  const { geographyPaths, regionEllipsesData } = data;
+  const { geographyPaths } = data;
   const filterFunc = getFilterFunction(currentMap);
   const markersArray = geographyPaths
     .filter(x => filterRegions.includes(x.properties.alpha3Code))
@@ -101,10 +101,8 @@ export const getRegionEllipses = currentMap => dispatch => {
 
   dispatch({
     type: GET_ELLIPSES,
-    regionEllipsesData: {
-      ...regionEllipsesData,
-      [currentMap]: markersArray,
-    },
+    currentMap,
+    markersArray,
   });
 };
 
