@@ -20,16 +20,6 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  const {
-    geographyPaths,
-    regionMarkers,
-    capitalMarkers,
-    populationData,
-    regionDataSets,
-    mapViewRegionIds,
-    mapViewCountryIds,
-  } = action;
-
   switch (action.type) {
     case LOAD_PATHS:
       return {
@@ -39,13 +29,13 @@ export default function(state = initialState, action) {
     case LOAD_DATA:
       return {
         ...state,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        populationData,
-        regionDataSets,
-        mapViewRegionIds,
-        mapViewCountryIds,
+        geographyPaths: action.geographyPaths,
+        regionMarkers: action.regionMarkers,
+        capitalMarkers: action.capitalMarkers,
+        populationData: action.populationData,
+        regionDataSets: action.regionDataSets,
+        mapViewRegionIds: action.mapViewRegionIds,
+        mapViewCountryIds: action.mapViewCountryIds,
       };
     case LOAD_REGION_DATA:
       const updatedRegion = state.regionDataSets[action.currentMap];
