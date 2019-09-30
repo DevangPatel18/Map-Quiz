@@ -57,8 +57,14 @@ export default function(state = initialState, action) {
     case ADD_REGION_DATA:
       return {
         ...state,
-        regionDataSets,
-        mapViewRegionIds,
+        regionDataSets: {
+          ...state.regionDataSets,
+          [action.regionName]: action.newRegionDataSet,
+        },
+        mapViewRegionIds: {
+          ...state.mapViewRegionIds,
+          [action.regionName]: action.newRegionIdList,
+        },
       };
     case GET_ELLIPSES:
       return {

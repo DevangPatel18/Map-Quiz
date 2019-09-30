@@ -187,12 +187,6 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
   return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
 };
 
-export const getUpdatedRegionDataSets = async regionKey => {
-  const { regionDataSets } = store.getState().data;
-  const newRegionDataSet = await getNewRegionDataSet(regionKey);
-  return { ...regionDataSets, [regionKey]: newRegionDataSet };
-};
-
 export const getNewRegionDataSet = async regionKey => {
   const geographyPaths = await getRegionGeographyPaths(regionKey);
   const regionMarkers = getRegionMarkers(geographyPaths);
@@ -273,15 +267,6 @@ export const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
       });
     });
   return newCapitalMarkers;
-};
-
-export const getUpdatedMapViewRegionIds = (
-  geographyPaths,
-  regionDataSetKey
-) => {
-  const { mapViewRegionIds } = store.getState().data;
-  const regionIds = geographyPaths.map(obj => obj.properties.regionID);
-  return { ...mapViewRegionIds, [regionDataSetKey]: regionIds };
 };
 
 const getMapViewCountryIds = mapViewRegionIds => {

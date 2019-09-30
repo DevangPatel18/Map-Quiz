@@ -14,8 +14,7 @@ import {
   getPopulationData,
   getWorldDataSet,
   getMapViewIds,
-  getUpdatedRegionDataSets,
-  getUpdatedMapViewRegionIds,
+  getNewRegionDataSet,
   checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
 } from '../helpers/dataActionHelpers';
@@ -62,19 +61,15 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     ? 'World'
     : regionName;
   if (!regionDataSets[regionDataSetKey]) {
-    const updatedRegionDataSets = await getUpdatedRegionDataSets(
-      regionDataSetKey
-    );
-    const { geographyPaths } = updatedRegionDataSets[regionDataSetKey];
-    const updatedMapViewRegionIds = getUpdatedMapViewRegionIds(
-      geographyPaths,
-      regionDataSetKey
-    );
+    const newRegionDataSet = await getNewRegionDataSet(regionName);
+    const { geographyPaths } = newRegionDataSet;
+    const newRegionIdList = geographyPaths.map(x => x.properties.regionID);
 
     await dispatch({
       type: ADD_REGION_DATA,
-      regionDataSets: updatedRegionDataSets,
-      mapViewRegionIds: updatedMapViewRegionIds,
+      regionName,
+      newRegionDataSet,
+      newRegionIdList,
     });
     regionDataSets = store.getState().data.regionDataSets;
   }
