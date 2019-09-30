@@ -73,11 +73,10 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     });
     regionDataSets = store.getState().data.regionDataSets;
   }
-  const regionDataSet = regionDataSets[regionDataSetKey];
-
   await dispatch({
     type: LOAD_REGION_DATA,
-    ...regionDataSet,
+    currentMap: regionDataSetKey,
+    subRegionName: regionDataSets[regionDataSetKey],
   });
 };
 

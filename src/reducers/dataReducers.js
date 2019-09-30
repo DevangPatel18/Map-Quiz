@@ -48,11 +48,12 @@ export default function(state = initialState, action) {
         mapViewCountryIds,
       };
     case LOAD_REGION_DATA:
+      const updatedRegion = state.regionDataSets[action.currentMap];
       return {
         ...state,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
+        geographyPaths: updatedRegion.geographyPaths,
+        regionMarkers: updatedRegion.regionMarkers,
+        capitalMarkers: updatedRegion.capitalMarkers,
       };
     case ADD_REGION_DATA:
       return {
