@@ -4,6 +4,8 @@ import {
   DISABLE_OPT,
   GET_ELLIPSES,
   GET_REGION_SEARCH_LIST,
+  ADD_REGION_DATA,
+  LOAD_REGION_DATA,
 } from './types';
 import { modifyWorldGeographyPaths } from '../helpers/attributeFix';
 import {
@@ -12,6 +14,9 @@ import {
   getPopulationData,
   getWorldDataSet,
   getMapViewIds,
+  getUpdatedRegionDataSets,
+  getUpdatedMapViewRegionIds,
+  checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
 } from '../helpers/dataActionHelpers';
 import {
@@ -19,6 +24,7 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
+import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -46,6 +52,38 @@ export const loadRegionData = () => async dispatch => {
   });
 
   dispatch({ type: DISABLE_OPT });
+};
+
+export const checkMapDataUpdate = regionName => async dispatch => {
+  if (checkMapViewsBetweenWorldRegions(regionName)) return;
+
+  let { regionDataSets } = store.getState().data;
+  const regionDataSetKey = worldRegions.includes(regionName)
+    ? 'World'
+    : regionName;
+  if (!regionDataSets[regionDataSetKey]) {
+    const updatedRegionDataSets = await getUpdatedRegionDataSets(
+      regionDataSetKey
+    );
+    const { geographyPaths } = updatedRegionDataSets[regionDataSetKey];
+    const updatedMapViewRegionIds = getUpdatedMapViewRegionIds(
+      geographyPaths,
+      regionDataSetKey
+    );
+
+    await dispatch({
+      type: ADD_REGION_DATA,
+      regionDataSets: updatedRegionDataSets,
+      mapViewRegionIds: updatedMapViewRegionIds,
+    });
+    regionDataSets = store.getState().data.regionDataSets;
+  }
+  const regionDataSet = regionDataSets[regionDataSetKey];
+
+  await dispatch({
+    type: LOAD_REGION_DATA,
+    ...regionDataSet,
+  });
 };
 
 export const getRegionEllipses = currentMap => dispatch => {

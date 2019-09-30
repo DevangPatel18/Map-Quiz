@@ -4,11 +4,24 @@ import { geoPath } from 'd3-geo';
 import Papa from 'papaparse';
 import store from '../store';
 import capitalData from '../assets/country_capitals';
+import { worldRegions } from '../assets/mapViewSettings';
 import {
   DataFix,
   CountryMarkersFix,
   CapitalMarkersFix,
 } from '../helpers/attributeFix';
+
+const geoPathLinks = {
+  'United States of America': {
+    geoJSON:
+      'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566493791/Map%20Quiz/usData.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
+    subRegionName: 'state',
+  },
+};
 
 const restDataFields = [
   'name',
@@ -91,7 +104,7 @@ export const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
     geography.properties.density = +(geography.properties.population / area);
   });
 
-export const getCapitalMarkers = geographyPaths =>
+export const getWorldCapitalMarkers = geographyPaths =>
   geographyPaths
     .filter(checkGeoPathValidId)
     .reduce((capitalMarkers, geography) => {
@@ -113,7 +126,7 @@ export const getCapitalMarkers = geographyPaths =>
       return capitalMarkers;
     }, []);
 
-export const getRegionMarkers = geographyPaths =>
+export const getCountryMarkers = geographyPaths =>
   geographyPaths.map(x => {
     const { name, alpha3Code } = x.properties;
     const path = geoPath().projection(projection());
@@ -133,8 +146,8 @@ export const getWorldDataSet = async populationData => {
   addRestDataToGeoPaths(restData, geographyPaths);
   updatePopDataInGeoPaths(populationData, geographyPaths);
 
-  let regionMarkers = getRegionMarkers(geographyPaths);
-  let capitalMarkers = getCapitalMarkers(geographyPaths);
+  let regionMarkers = getCountryMarkers(geographyPaths);
+  let capitalMarkers = getWorldCapitalMarkers(geographyPaths);
 
   regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
@@ -167,6 +180,108 @@ export const getMapViewIds = worldDataSet => {
   }
 
   return { mapViewRegionIds, mapViewCountryIds };
+};
+
+export const checkMapViewsBetweenWorldRegions = regionName => {
+  const { currentMap } = store.getState().map;
+  return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
+};
+
+export const getUpdatedRegionDataSets = async regionKey => {
+  const { regionDataSets } = store.getState().data;
+  const newRegionDataSet = await getNewRegionDataSet(regionKey);
+  return { ...regionDataSets, [regionKey]: newRegionDataSet };
+};
+
+export const getNewRegionDataSet = async regionKey => {
+  const geographyPaths = await getRegionGeographyPaths(regionKey);
+  const regionMarkers = getRegionMarkers(geographyPaths);
+  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionKey);
+  const subRegionName = geoPathLinks[regionKey].subRegionName
+  return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
+};
+
+export const getRegionGeographyPaths = async regionName => {
+  const geographyPaths = await fetch(geoPathLinks[regionName].geoJSON)
+    .then(response => response.json())
+    .then(featureCollection => featureCollection.features);
+
+  await addRegionDataToGeographyPaths(geographyPaths, regionName);
+
+  return geographyPaths;
+};
+
+export const addRegionDataToGeographyPaths = async (
+  geographyPaths,
+  regionName
+) => {
+  await fetch(geoPathLinks[regionName].data)
+    .then(response => response.text())
+    .then(csvtext => {
+      Papa.parse(csvtext, {
+        header: true,
+        skipEmptyLines: true,
+        step: row => {
+          let geo = geographyPaths.find(
+            obj => obj.properties.postal === row.data['regionID']
+          );
+          if (geo) {
+            geo.properties = { ...geo.properties, ...row.data };
+            const { area, population, name } = geo.properties;
+            geo.properties.area = +area;
+            geo.properties.population = +population;
+            geo.properties.spellings = [name];
+          }
+        },
+      });
+    });
+};
+
+export const getRegionMarkers = geographyPaths =>
+  geographyPaths.map(x => {
+    const { name, postal } = x.properties;
+    const path = geoPath().projection(projection());
+    return {
+      name,
+      regionID: postal,
+      coordinates: projection().invert(path.centroid(x)),
+      markerOffset: 0,
+    };
+  });
+
+export const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
+  const newCapitalMarkers = [];
+  await fetch(geoPathLinks[regionName].capitalLatLng)
+    .then(response => response.text())
+    .then(csvtext => {
+      Papa.parse(csvtext, {
+        header: true,
+        skipEmptyLines: true,
+        step: row => {
+          let geo = geographyPaths.find(
+            obj => obj.properties.postal === row.data['regionID']
+          );
+          if (geo) {
+            newCapitalMarkers.push({
+              name: geo.properties.capital,
+              regionID: row.data['regionID'],
+              coordinates: [+row.data['lng'], +row.data['lat']],
+              markerOffset: -7,
+            });
+          }
+        },
+      });
+    });
+  return newCapitalMarkers;
+};
+
+export const getUpdatedMapViewRegionIds = (
+  geographyPaths,
+  regionDataSetKey
+) => {
+  const { mapViewRegionIds } = store.getState().data;
+  const regionIds = geographyPaths.map(obj => obj.properties.regionID);
+  return { ...mapViewRegionIds, [regionDataSetKey]: regionIds };
 };
 
 const getMapViewCountryIds = mapViewRegionIds => {
