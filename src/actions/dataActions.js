@@ -76,7 +76,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
   await dispatch({
     type: LOAD_REGION_DATA,
     currentMap: regionDataSetKey,
-    subRegionName: regionDataSets[regionDataSetKey],
+    subRegionName: regionDataSets[regionDataSetKey].subRegionName,
   });
 };
 
