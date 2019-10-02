@@ -20,6 +20,7 @@ const geoPathLinks = {
     capitalLatLng:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1566487851/Map%20Quiz/usLatLng.csv',
     subRegionName: 'state',
+    regionID: 'postal',
   },
 };
 
@@ -217,7 +218,9 @@ export const addRegionDataToGeographyPaths = async (
         skipEmptyLines: true,
         step: row => {
           let geo = geographyPaths.find(
-            obj => obj.properties.postal === row.data['regionID']
+            obj =>
+              obj.properties[geoPathLinks[regionName].regionID] ===
+              row.data['regionID']
           );
           if (geo) {
             geo.properties = { ...geo.properties, ...row.data };
