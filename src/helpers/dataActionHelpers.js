@@ -163,16 +163,17 @@ export const getWorldDataSet = async populationData => {
 
 export const getMapViewIds = worldDataSet => {
   const dataArr = worldDataSet.geographyPaths.map(obj => obj.properties);
-  const mapViewRegionIds = {};
-  mapViewRegionIds['North & Central America'] = dataArr.filter(obj =>
-    ['Northern America', 'Central America'].includes(obj.subregion)
-  );
-  mapViewRegionIds['South America'] = dataArr.filter(obj => obj.subregion === 'South America');
-  mapViewRegionIds['Caribbean'] = dataArr.filter(obj => obj.subregion === 'Caribbean');
-  mapViewRegionIds['Africa'] = dataArr.filter(obj => obj.region === 'Africa');
-  mapViewRegionIds['Europe'] = dataArr.filter(obj => obj.region === 'Europe');
-  mapViewRegionIds['Asia'] = dataArr.filter(obj => obj.region === 'Asia');
-  mapViewRegionIds['Oceania'] = dataArr.filter(obj => obj.region === 'Oceania');
+  const mapViewRegionIds = {
+    'North & Central America': dataArr.filter(obj =>
+      ['Northern America', 'Central America'].includes(obj.subregion)
+    ),
+    'South America': dataArr.filter(obj => obj.subregion === 'South America'),
+    Caribbean: dataArr.filter(obj => obj.subregion === 'Caribbean'),
+    Africa: dataArr.filter(obj => obj.region === 'Africa'),
+    Europe: dataArr.filter(obj => obj.region === 'Europe'),
+    Asia: dataArr.filter(obj => obj.region === 'Asia'),
+    Oceania: dataArr.filter(obj => obj.region === 'Oceania'),
+  };
 
   const mapViewCountryIds = getMapViewCountryIds(mapViewRegionIds);
 
