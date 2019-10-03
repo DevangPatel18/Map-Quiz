@@ -237,11 +237,11 @@ export const addRegionDataToGeographyPaths = async (
 
 export const getRegionMarkers = geographyPaths =>
   geographyPaths.map(x => {
-    const { name, postal } = x.properties;
+    const { name, regionID } = x.properties;
     const path = geoPath().projection(projection());
     return {
       name,
-      regionID: postal,
+      regionID,
       coordinates: projection().invert(path.centroid(x)),
       markerOffset: 0,
     };
@@ -257,7 +257,7 @@ export const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
         skipEmptyLines: true,
         step: row => {
           let geo = geographyPaths.find(
-            obj => obj.properties.postal === row.data['regionID']
+            obj => obj.properties.regionID === row.data['regionID']
           );
           if (geo) {
             newCapitalMarkers.push({
