@@ -22,6 +22,16 @@ const geoPathLinks = {
     subRegionName: 'state',
     regionID: 'postal',
   },
+  China: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570134411/Map%20Quiz/China_provinces.json',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570135001/Map%20Quiz/China_data.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570134840/Map%20Quiz/China_capitals_LatLng.csv',
+    subRegionName: 'province',
+    regionID: 'HASC_1',
+  },
 };
 
 const restDataFields = [
