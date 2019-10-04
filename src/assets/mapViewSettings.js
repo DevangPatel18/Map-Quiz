@@ -9,6 +9,7 @@ const mapConfig = {
   Oceania: { center: [-190, -22], zoom: 2 },
   'United States of America': { center: [-95, 35], zoom: 4 },
   'China': { center: [102, 35], zoom: 3.7 },
+  'India': { center: [79, 21], zoom: 5.5 }
 };
 
 const mapViewsList = Object.keys(mapConfig);
