@@ -32,6 +32,16 @@ const geoPathLinks = {
     subRegionName: 'province',
     regionID: 'HASC_1',
   },
+  India: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570223141/Map%20Quiz/India_states.json',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570223063/Map%20Quiz/India_data.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570223063/Map%20Quiz/India_capital_LatLng.csv',
+    subRegionName: 'state',
+    regionID: 'HASC_1',
+  }
 };
 
 const restDataFields = [
