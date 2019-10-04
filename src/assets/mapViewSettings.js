@@ -13,6 +13,6 @@ const mapConfig = {
 };
 
 const mapViewsList = Object.keys(mapConfig);
-const worldRegions = mapViewsList.slice(0, 7);
+const worldRegions = mapViewsList.slice(0, 8);
 
 export { mapConfig, mapViewsList, worldRegions };
