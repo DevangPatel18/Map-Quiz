@@ -8,11 +8,10 @@ import store from '../store';
 const getMaxAreaForEllipse = currentMap => {
   switch (currentMap) {
     case 'Caribbean':
+    case 'India':
       return 2000;
     case 'Oceania':
       return 29000;
-    case 'India':
-      return 0;
     default:
       return 6000;
   }

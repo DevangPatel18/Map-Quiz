@@ -21,7 +21,7 @@ const geoPathLink = {
   },
   India: {
     geoJSON:
-      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570223141/Map%20Quiz/India_states.json',
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570301819/Map%20Quiz/India_states.json',
     data:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1570223063/Map%20Quiz/India_data.csv',
     capitalLatLng:
