@@ -151,7 +151,8 @@ export const getWorldDataSet = async populationData => {
 };
 
 export const getMapViewIds = worldDataSet => {
-  const dataArr = worldDataSet.geographyPaths.map(obj => obj.properties);
+  const regionIdUniqueGeoPaths = getRegionIdUniqueGeoPaths(worldDataSet.geographyPaths)
+  const dataArr = regionIdUniqueGeoPaths.map(obj => obj.properties);
   const mapViewRegionIds = {
     'North & Central America': dataArr.filter(obj =>
       ['Northern America', 'Central America'].includes(obj.subregion)
