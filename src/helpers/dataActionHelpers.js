@@ -172,6 +172,18 @@ export const getMapViewIds = worldDataSet => {
   return { mapViewRegionIds, mapViewCountryIds };
 };
 
+const getRegionIdUniqueGeoPaths = geographyPaths => {
+  const regionIDs = []
+  const uniqueGeoPaths = geographyPaths.filter(obj => {
+    if(regionIDs.includes(obj.properties.alpha3Code)){
+      return false
+    }
+    regionIDs.push(obj.properties.alpha3Code)
+    return true
+  })
+  return uniqueGeoPaths
+}
+
 export const checkMapViewsBetweenWorldRegions = regionName => {
   const { currentMap } = store.getState().map;
   return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
