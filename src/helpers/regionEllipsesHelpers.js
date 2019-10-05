@@ -77,12 +77,20 @@ export const getEllipseMarkerProperties = region => {
   const { regionMarkers } = store.getState().data;
   const { regionKey } = store.getState().map;
   const regionID = region.properties[regionKey];
-  const marker = regionMarkers.find(x => x[regionKey] === regionID);
   let ellipseData;
+  let marker = '';
   if (Object.keys(OceaniaEllipseDimensions).includes(regionID)) {
     ellipseData = OceaniaEllipseDimensions[regionID];
+    marker = regionMarkers.find(x => x[regionKey] === regionID);
   } else {
     ellipseData = getGeoEllipseDimensions(region);
+    const path = geoPath().projection(projection());
+    marker = {
+      name: region.properties.name,
+      regionID,
+      coordinates: projection().invert(path.centroid(region)),
+      markerOffset: 0,
+    };
   }
   const rotate = `rotate(${ellipseData.angle})`;
 
