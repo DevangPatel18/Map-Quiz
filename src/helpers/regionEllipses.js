@@ -3,7 +3,7 @@ import { Markers, Marker } from 'react-simple-maps';
 import { colorPicker } from './MapHelpers';
 
 export default function regionEllipses() {
-  const { currentMap, tooltip } = this.props.map;
+  const { currentMap, tooltip, regionKey } = this.props.map;
   const { isQuizActive } = this.props.quiz;
   const { regionEllipsesData } = this.props.data;
   const currentMapEllipses = regionEllipsesData[currentMap]
@@ -13,7 +13,7 @@ export default function regionEllipses() {
     .map((markerData) => {
       const { region } = markerData
       const { properties } = region
-      const { alpha3Code } = properties;
+      const regionID = properties[regionKey]
       const caribbeanMap = currentMap === 'Caribbean'
 
       const mouseHandlers = !tooltip || isQuizActive
@@ -32,7 +32,7 @@ export default function regionEllipses() {
 
       return (
         <Marker
-          key={alpha3Code}
+          key={regionID}
           {...mouseHandlers}
           marker={updatedMarker}
           style={!caribbeanMap && geoStyle}

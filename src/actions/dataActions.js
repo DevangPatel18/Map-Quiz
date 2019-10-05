@@ -82,17 +82,17 @@ export const checkMapDataUpdate = regionName => async dispatch => {
 
 export const getRegionEllipses = currentMap => dispatch => {
   const { map, data } = store.getState();
-  const { filterRegions } = map;
+  const { filterRegions, regionKey } = map;
   const { geographyPaths } = data;
   const filterFunc = getFilterFunction(currentMap);
   const markersArray = geographyPaths
-    .filter(x => filterRegions.includes(x.properties.alpha3Code))
+    .filter(x => filterRegions.includes(x.properties[regionKey]))
     .filter(filterFunc)
     .map(region => {
-      const { alpha3Code } = region.properties;
+      const regionID = region.properties[regionKey];
       const caribbeanMap = currentMap === 'Caribbean';
       const markerData = caribbeanMap
-        ? getCaribbeanMarkerProperties(alpha3Code)
+        ? getCaribbeanMarkerProperties(regionID)
         : getEllipseMarkerProperties(region);
       markerData.region = region;
       return markerData;

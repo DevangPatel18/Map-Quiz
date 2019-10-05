@@ -10,6 +10,8 @@ const getMaxAreaForEllipse = currentMap => {
       return 2000;
     case 'Oceania':
       return 29000;
+    case 'India':
+      return 0;
     default:
       return 6000;
   }
@@ -54,12 +56,13 @@ export const getCaribbeanMarkerProperties = alpha3Code => {
 };
 
 const getGeoEllipseDimensions = region => {
-  const { alpha3Code } = region.properties;
+  const { regionKey } = store.getState().map;
+  const regionID = region.properties[regionKey];
   const path = geoPath().projection(projection());
   const bounds = path.bounds(region);
   const originWidth = bounds[1][0] - bounds[0][0];
   const originHeight = bounds[1][1] - bounds[0][1];
-  const radius = CaribbeanUN.includes(alpha3Code) ? 1.5 : 3;
+  const radius = CaribbeanUN.includes(regionID) ? 1.5 : 3;
   const width = Math.max(originWidth, radius);
   const height = Math.max(originHeight, radius);
   const angle = 0;
@@ -68,16 +71,16 @@ const getGeoEllipseDimensions = region => {
 
 export const getEllipseMarkerProperties = region => {
   const { regionMarkers } = store.getState().data;
-  const { alpha3Code } = region.properties;
-  const marker = regionMarkers.find(x => x.alpha3Code === alpha3Code);
+  const { regionKey } = store.getState().map;
+  const regionID = region.properties[regionKey];
+  const marker = regionMarkers.find(x => x[regionKey] === regionID);
   let ellipseData;
-  if (Object.keys(OceaniaEllipseDimensions).includes(alpha3Code)) {
-    ellipseData = OceaniaEllipseDimensions[alpha3Code];
+  if (Object.keys(OceaniaEllipseDimensions).includes(regionID)) {
+    ellipseData = OceaniaEllipseDimensions[regionID];
   } else {
     ellipseData = getGeoEllipseDimensions(region);
   }
-  const { width, height, angle } = ellipseData;
-  const rotate = `rotate(${angle})`;
+  const rotate = `rotate(${ellipseData.angle})`;
 
-  return { marker, width, height, rotate };
+  return { ...ellipseData, marker, rotate };
 };
