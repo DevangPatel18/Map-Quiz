@@ -63,7 +63,8 @@ export const checkMapDataUpdate = regionName => async dispatch => {
   if (!regionDataSets[regionDataSetKey]) {
     const newRegionDataSet = await getNewRegionDataSet(regionName);
     const { geographyPaths } = newRegionDataSet;
-    const newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+    let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+    newRegionIdList = [...new Set(newRegionIdList)];
 
     await dispatch({
       type: ADD_REGION_DATA,
