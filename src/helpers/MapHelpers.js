@@ -30,7 +30,9 @@ export const colorPicker = geo => {
   } = store.getState().quiz;
   const { regionKey, choropleth } = store.getState().map;
   const isSelected =
-    selectedProperties === geo.properties ? infoTabShow : false;
+    selectedProperties[regionKey] === geo.properties[regionKey]
+      ? infoTabShow
+      : false;
   const regionID = geo.properties[regionKey];
   const geoStyleBasic = { ...DEFAULT_GEO_STYLE };
   const stroke = { ...DEFAULT_STROKE_STYLE };
