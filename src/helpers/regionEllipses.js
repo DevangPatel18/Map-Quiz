@@ -16,6 +16,8 @@ export default function regionEllipses() {
       const regionID = properties[regionKey]
       const caribbeanMap = currentMap === 'Caribbean'
 
+      if(!regionID) return '';
+
       const mouseHandlers = !tooltip || isQuizActive
         ? {}
         : {

@@ -199,6 +199,7 @@ export const addRegionDataToGeographyPaths = async (
   geographyPaths,
   regionName
 ) => {
+  let csvData = {}
   await fetch(geoPathLinks[regionName].data)
     .then(response => response.text())
     .then(csvtext => {
@@ -206,21 +207,20 @@ export const addRegionDataToGeographyPaths = async (
         header: true,
         skipEmptyLines: true,
         step: row => {
-          let geo = geographyPaths.find(
-            obj =>
-              obj.properties[geoPathLinks[regionName].regionID] ===
-              row.data['regionID']
-          );
-          if (geo) {
-            geo.properties = { ...geo.properties, ...row.data };
-            const { area, population, name } = geo.properties;
-            geo.properties.area = +area;
-            geo.properties.population = +population;
-            geo.properties.spellings = [name];
-          }
+          csvData[row.data['regionID']] = row.data
         },
       });
     });
+    const regionKey = geoPathLinks[regionName].regionID
+    for (let geoPath of geographyPaths) {
+      if(csvData[geoPath.properties[regionKey]]) {
+        geoPath.properties = {...geoPath.properties, ...csvData[geoPath.properties[regionKey]]}
+        let { area, population, name } = geoPath.properties;
+        geoPath.properties.area = +area;
+        geoPath.properties.population = +population;
+        geoPath.properties.spellings = [name];
+      }
+    }
 };
 
 export const getRegionMarkers = geographyPaths =>
