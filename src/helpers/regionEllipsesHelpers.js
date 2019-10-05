@@ -2,6 +2,7 @@ import { geoPath } from 'd3-geo';
 import projection from './projection';
 import { OceaniaUN, CaribbeanUN } from './regionCodeArrays';
 import { OceaniaEllipseDimensions, labelDist, labelist } from './markerParams';
+import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 const getMaxAreaForEllipse = currentMap => {
@@ -56,13 +57,16 @@ export const getCaribbeanMarkerProperties = alpha3Code => {
 };
 
 const getGeoEllipseDimensions = region => {
-  const { regionKey } = store.getState().map;
+  const { regionKey, currentMap } = store.getState().map;
   const regionID = region.properties[regionKey];
   const path = geoPath().projection(projection());
   const bounds = path.bounds(region);
   const originWidth = bounds[1][0] - bounds[0][0];
   const originHeight = bounds[1][1] - bounds[0][1];
-  const radius = CaribbeanUN.includes(regionID) ? 1.5 : 3;
+  const radius =
+    CaribbeanUN.includes(regionID) || !worldRegions.includes(currentMap)
+      ? 1.5
+      : 3;
   const width = Math.max(originWidth, radius);
   const height = Math.max(originHeight, radius);
   const angle = 0;
