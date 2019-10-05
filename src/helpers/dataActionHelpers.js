@@ -134,9 +134,10 @@ export const getWorldDataSet = async populationData => {
 
   addRestDataToGeoPaths(restData, geographyPaths);
   updatePopDataInGeoPaths(populationData, geographyPaths);
-
-  let regionMarkers = getCountryMarkers(geographyPaths);
-  let capitalMarkers = getWorldCapitalMarkers(geographyPaths);
+  
+  const regionIdUniqueGeoPaths = getRegionIdUniqueGeoPaths(geographyPaths)
+  let regionMarkers = getCountryMarkers(regionIdUniqueGeoPaths);
+  let capitalMarkers = getWorldCapitalMarkers(regionIdUniqueGeoPaths);
 
   regionMarkers = CountryMarkersFix(regionMarkers);
   capitalMarkers = CapitalMarkersFix(capitalMarkers);
