@@ -10,7 +10,7 @@ export default function regionEllipses() {
   const show = !(currentMap === 'World' && !isQuizActive) && currentMapEllipses;
   return show && <Markers> 
     {currentMapEllipses
-    .map((markerData) => {
+    .map((markerData, i) => {
       const { region } = markerData
       const { properties } = region
       const regionID = properties[regionKey]
@@ -34,7 +34,7 @@ export default function regionEllipses() {
 
       return (
         <Marker
-          key={regionID}
+          key={`${regionID}-${i}`}
           {...mouseHandlers}
           marker={updatedMarker}
           style={!caribbeanMap && geoStyle}

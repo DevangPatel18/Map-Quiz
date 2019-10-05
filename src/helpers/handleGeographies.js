@@ -28,7 +28,7 @@ export default function handleGeographies() {
           const key = `${currentMap}-${i}-${orientation}`;
           return (
             <Geography
-              key={key}
+              key={`${key}-${i}`}
               cacheId={key}
               geography={geography}
               projection={projection}
