@@ -8,6 +8,7 @@ import {
   TOGGLE_EXT_REGIONS,
 } from './types';
 import {
+  removeQuizExceptions,
   generateAnswerArray,
   generateQuizState,
   checkClickAnswer,
@@ -17,8 +18,9 @@ import {
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
-  const quizRegionIds = getRegionIdsForQuiz()
-  const quizAnswers = generateAnswerArray(quizRegionIds);
+  const quizRegionIds = getRegionIdsForQuiz();
+  let quizAnswers = generateAnswerArray(quizRegionIds);
+  quizAnswers = removeQuizExceptions(quizAnswers, quizType);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: SET_QUIZ_STATE, quizAttributes });
   dispatch({ type: DISABLE_OPT });

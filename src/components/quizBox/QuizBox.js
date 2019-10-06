@@ -3,6 +3,7 @@ import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { mapViewsWithNoFlags } from '../../assets/mapViewSettings';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
@@ -73,6 +74,28 @@ class QuizBox extends Component {
     }
   };
 
+  handleQuizOptions = subRegionNameCap => {
+    const { quizType } = this.state;
+    const { currentMap } = this.props.map;
+    let quizOptions = generateQuizOptions(subRegionNameCap);
+    if (mapViewsWithNoFlags.includes(currentMap)) {
+      const idx = quizOptions.findIndex(obj => obj.value === 'click_flag');
+      quizOptions.splice(idx, 1);
+    }
+    return quizOptions.map(form => (
+      <Form.Field key={form.value}>
+        <Radio
+          aria-label={form.label}
+          label={form.label}
+          value={form.value}
+          name="quiz"
+          checked={quizType === form.value}
+          onChange={this.handleQuizChange}
+        />
+      </Form.Field>
+    ));
+  };
+
   start = () => {
     const { startQuiz } = this.props;
     const { quizType } = this.state;
@@ -80,16 +103,14 @@ class QuizBox extends Component {
   };
 
   render() {
-    const { quizType, regionMenu } = this.state;
+    const { regionMenu } = this.state;
     const { quiz, map, toggleExternalRegions, tooltipToggle } = this.props;
     const { markerToggle, areExternalRegionsOnQuiz } = quiz;
     const { checkedRegions, currentMap, subRegionName, tooltip } = map;
     const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
     const formSize = isMobile ? 'mini' : 'small';
-
     const subRegionNameCap = capitalize(subRegionName);
-    const quizOptions = generateQuizOptions(subRegionNameCap);
 
     return (
       <QuizMenu regionMenu={regionMenu}>
@@ -103,18 +124,7 @@ class QuizBox extends Component {
             START QUIZ
           </Button>
           <Form size={formSize}>
-            {quizOptions.map(form => (
-              <Form.Field key={form.value}>
-                <Radio
-                  aria-label={form.label}
-                  label={form.label}
-                  value={form.value}
-                  name="quiz"
-                  checked={quizType === form.value}
-                  onChange={this.handleQuizChange}
-                />
-              </Form.Field>
-            ))}
+            {this.handleQuizOptions(subRegionNameCap)}
           </Form>
           {currentMap === 'World' && (
             <Button

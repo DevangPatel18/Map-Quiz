@@ -79,3 +79,31 @@ export const checkIfQuizIncomplete = () => {
     quizGuesses.length < quizAnswers.length
   );
 };
+
+export const removeQuizExceptions = (quizAnswers, quizType) => {
+  const { currentMap } = store.getState().map;
+  const testedAttr = quizType.split('_')[1];
+  let newQuizAnswers = [...quizAnswers];
+  let removedAnswers = null;
+  switch (currentMap) {
+    case 'Asia':
+      if (testedAttr === 'capital') {
+        removedAnswers = ['MAC', 'HKG'];
+      }
+      break;
+    case 'United States of America':
+      if (testedAttr !== 'flag') {
+        removedAnswers = ['DC'];
+      }
+      break;
+    case 'India':
+      if (quizType === 'click_capital') {
+        removedAnswers = ['IN.PB', 'IN.HR', 'IN.CH'];
+      }
+      break;
+    default:
+  }
+  return removedAnswers
+    ? newQuizAnswers.filter(x => !removedAnswers.includes(x))
+    : newQuizAnswers;
+};

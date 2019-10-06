@@ -1,11 +1,8 @@
 import { actions } from 'redux-tooltip';
 import {
   getStatesForRegionSelect,
-  getUpdatedRegionDataSets,
-  getUpdatedMapViewRegionIds,
   getGeoPathCenterAndZoom,
   getOrientation,
-  checkMapViewsBetweenWorldRegions,
   getNewCenter,
   getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
@@ -22,11 +19,8 @@ import {
   SET_CHORO_YEAR,
   TOGGLE_TOOLTIP,
   TOGGLE_SLIDER,
-  LOAD_REGION_DATA,
-  ADD_REGION_DATA,
 } from './types';
 import store from '../store';
-import { worldRegions } from '../assets/mapViewSettings';
 
 const { show, hide } = actions;
 
@@ -68,38 +62,6 @@ export const regionSelect = regionName => async dispatch => {
     });
     dispatch({ type: DISABLE_OPT });
   }
-};
-
-export const checkMapDataUpdate = regionName => async dispatch => {
-  if (checkMapViewsBetweenWorldRegions(regionName)) return;
-
-  let { regionDataSets } = store.getState().data;
-  const regionDataSetKey = worldRegions.includes(regionName)
-    ? 'World'
-    : regionName;
-  if (!regionDataSets[regionDataSetKey]) {
-    const updatedRegionDataSets = await getUpdatedRegionDataSets(
-      regionDataSetKey
-    );
-    const { geographyPaths } = updatedRegionDataSets[regionDataSetKey];
-    const updatedMapViewRegionIds = getUpdatedMapViewRegionIds(
-      geographyPaths,
-      regionDataSetKey
-    );
-
-    await dispatch({
-      type: ADD_REGION_DATA,
-      regionDataSets: updatedRegionDataSets,
-      mapViewRegionIds: updatedMapViewRegionIds,
-    });
-    regionDataSets = store.getState().data.regionDataSets;
-  }
-  const regionDataSet = regionDataSets[regionDataSetKey];
-
-  await dispatch({
-    type: LOAD_REGION_DATA,
-    ...regionDataSet,
-  });
 };
 
 export const regionZoom = event => async dispatch => {

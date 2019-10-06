@@ -20,16 +20,6 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  const {
-    geographyPaths,
-    regionMarkers,
-    capitalMarkers,
-    populationData,
-    regionDataSets,
-    mapViewRegionIds,
-    mapViewCountryIds,
-  } = action;
-
   switch (action.type) {
     case LOAD_PATHS:
       return {
@@ -39,31 +29,41 @@ export default function(state = initialState, action) {
     case LOAD_DATA:
       return {
         ...state,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
-        populationData,
-        regionDataSets,
-        mapViewRegionIds,
-        mapViewCountryIds,
+        geographyPaths: action.geographyPaths,
+        regionMarkers: action.regionMarkers,
+        capitalMarkers: action.capitalMarkers,
+        populationData: action.populationData,
+        regionDataSets: action.regionDataSets,
+        mapViewRegionIds: action.mapViewRegionIds,
+        mapViewCountryIds: action.mapViewCountryIds,
       };
     case LOAD_REGION_DATA:
+      const updatedRegion = state.regionDataSets[action.currentMap];
       return {
         ...state,
-        geographyPaths,
-        regionMarkers,
-        capitalMarkers,
+        geographyPaths: updatedRegion.geographyPaths,
+        regionMarkers: updatedRegion.regionMarkers,
+        capitalMarkers: updatedRegion.capitalMarkers,
       };
     case ADD_REGION_DATA:
       return {
         ...state,
-        regionDataSets,
-        mapViewRegionIds,
+        regionDataSets: {
+          ...state.regionDataSets,
+          [action.regionName]: action.newRegionDataSet,
+        },
+        mapViewRegionIds: {
+          ...state.mapViewRegionIds,
+          [action.regionName]: action.newRegionIdList,
+        },
       };
     case GET_ELLIPSES:
       return {
         ...state,
-        regionEllipsesData: action.regionEllipsesData,
+        regionEllipsesData: {
+          ...state.regionEllipsesData,
+          [action.currentMap]: action.markersArray,
+        },
       };
     case GET_REGION_SEARCH_LIST:
       return {

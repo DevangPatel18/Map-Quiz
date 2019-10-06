@@ -4,6 +4,8 @@ import {
   DISABLE_OPT,
   GET_ELLIPSES,
   GET_REGION_SEARCH_LIST,
+  ADD_REGION_DATA,
+  LOAD_REGION_DATA,
 } from './types';
 import { modifyWorldGeographyPaths } from '../helpers/attributeFix';
 import {
@@ -12,6 +14,8 @@ import {
   getPopulationData,
   getWorldDataSet,
   getMapViewIds,
+  getNewRegionDataSet,
+  checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
 } from '../helpers/dataActionHelpers';
 import {
@@ -19,6 +23,7 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
+import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -48,19 +53,47 @@ export const loadRegionData = () => async dispatch => {
   dispatch({ type: DISABLE_OPT });
 };
 
+export const checkMapDataUpdate = regionName => async dispatch => {
+  if (checkMapViewsBetweenWorldRegions(regionName)) return;
+
+  let { regionDataSets } = store.getState().data;
+  const regionDataSetKey = worldRegions.includes(regionName)
+    ? 'World'
+    : regionName;
+  if (!regionDataSets[regionDataSetKey]) {
+    const newRegionDataSet = await getNewRegionDataSet(regionName);
+    const { geographyPaths } = newRegionDataSet;
+    let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+    newRegionIdList = [...new Set(newRegionIdList)];
+
+    await dispatch({
+      type: ADD_REGION_DATA,
+      regionName,
+      newRegionDataSet,
+      newRegionIdList,
+    });
+    regionDataSets = store.getState().data.regionDataSets;
+  }
+  await dispatch({
+    type: LOAD_REGION_DATA,
+    currentMap: regionDataSetKey,
+    subRegionName: regionDataSets[regionDataSetKey].subRegionName,
+  });
+};
+
 export const getRegionEllipses = currentMap => dispatch => {
   const { map, data } = store.getState();
-  const { filterRegions } = map;
-  const { geographyPaths, regionEllipsesData } = data;
+  const { filterRegions, regionKey } = map;
+  const { geographyPaths } = data;
   const filterFunc = getFilterFunction(currentMap);
   const markersArray = geographyPaths
-    .filter(x => filterRegions.includes(x.properties.alpha3Code))
+    .filter(x => filterRegions.includes(x.properties[regionKey]))
     .filter(filterFunc)
     .map(region => {
-      const { alpha3Code } = region.properties;
+      const regionID = region.properties[regionKey];
       const caribbeanMap = currentMap === 'Caribbean';
       const markerData = caribbeanMap
-        ? getCaribbeanMarkerProperties(alpha3Code)
+        ? getCaribbeanMarkerProperties(regionID)
         : getEllipseMarkerProperties(region);
       markerData.region = region;
       return markerData;
@@ -68,10 +101,8 @@ export const getRegionEllipses = currentMap => dispatch => {
 
   dispatch({
     type: GET_ELLIPSES,
-    regionEllipsesData: {
-      ...regionEllipsesData,
-      [currentMap]: markersArray,
-    },
+    currentMap,
+    markersArray,
   });
 };
 
@@ -80,8 +111,14 @@ export const getRegionSearchOptions = currentMap => dispatch => {
   const { regionKey } = map;
   const { geographyPaths, mapViewRegionIds } = data;
 
-  let mapRegions = geographyPaths.map(x => x.properties);
-
+  let mapRegions = geographyPaths
+    .map(x => x.properties)
+    .filter((x, i) => {
+      let firstIndexOfGeoPath = geographyPaths.findIndex(
+        y => y.properties.regionID === x.regionID
+      );
+      return i === firstIndexOfGeoPath;
+    });
   if (currentMap !== 'World') {
     mapRegions = mapRegions.filter(x =>
       mapViewRegionIds[currentMap].includes(x[regionKey])

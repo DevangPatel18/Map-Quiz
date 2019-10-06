@@ -1,8 +1,12 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { regionSelect, checkMapDataUpdate } from '../actions/mapActions';
-import { getRegionEllipses, getRegionSearchOptions } from '../actions/dataActions';
+import { regionSelect } from '../actions/mapActions';
+import {
+  checkMapDataUpdate,
+  getRegionEllipses,
+  getRegionSearchOptions,
+} from '../actions/dataActions';
 import { mapViewsList } from '../assets/mapViewSettings';
 import '../App.css';
 
@@ -49,5 +53,10 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { regionSelect, checkMapDataUpdate, getRegionEllipses, getRegionSearchOptions }
+  {
+    regionSelect,
+    checkMapDataUpdate,
+    getRegionEllipses,
+    getRegionSearchOptions,
+  }
 )(MapViewDropdown);

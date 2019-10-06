@@ -2,11 +2,13 @@ import { geoPath } from 'd3-geo';
 import projection from './projection';
 import { OceaniaUN, CaribbeanUN } from './regionCodeArrays';
 import { OceaniaEllipseDimensions, labelDist, labelist } from './markerParams';
+import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 const getMaxAreaForEllipse = currentMap => {
   switch (currentMap) {
     case 'Caribbean':
+    case 'India':
       return 2000;
     case 'Oceania':
       return 29000;
@@ -54,12 +56,16 @@ export const getCaribbeanMarkerProperties = alpha3Code => {
 };
 
 const getGeoEllipseDimensions = region => {
-  const { alpha3Code } = region.properties;
+  const { regionKey, currentMap } = store.getState().map;
+  const regionID = region.properties[regionKey];
   const path = geoPath().projection(projection());
   const bounds = path.bounds(region);
   const originWidth = bounds[1][0] - bounds[0][0];
   const originHeight = bounds[1][1] - bounds[0][1];
-  const radius = CaribbeanUN.includes(alpha3Code) ? 1.5 : 3;
+  const radius =
+    CaribbeanUN.includes(regionID) || !worldRegions.includes(currentMap)
+      ? 1.5
+      : 3;
   const width = Math.max(originWidth, radius);
   const height = Math.max(originHeight, radius);
   const angle = 0;
@@ -68,16 +74,24 @@ const getGeoEllipseDimensions = region => {
 
 export const getEllipseMarkerProperties = region => {
   const { regionMarkers } = store.getState().data;
-  const { alpha3Code } = region.properties;
-  const marker = regionMarkers.find(x => x.alpha3Code === alpha3Code);
+  const { regionKey } = store.getState().map;
+  const regionID = region.properties[regionKey];
   let ellipseData;
-  if (Object.keys(OceaniaEllipseDimensions).includes(alpha3Code)) {
-    ellipseData = OceaniaEllipseDimensions[alpha3Code];
+  let marker = '';
+  if (Object.keys(OceaniaEllipseDimensions).includes(regionID)) {
+    ellipseData = OceaniaEllipseDimensions[regionID];
+    marker = regionMarkers.find(x => x[regionKey] === regionID);
   } else {
     ellipseData = getGeoEllipseDimensions(region);
+    const path = geoPath().projection(projection());
+    marker = {
+      name: region.properties.name,
+      regionID,
+      coordinates: projection().invert(path.centroid(region)),
+      markerOffset: 0,
+    };
   }
-  const { width, height, angle } = ellipseData;
-  const rotate = `rotate(${angle})`;
+  const rotate = `rotate(${ellipseData.angle})`;
 
-  return { marker, width, height, rotate };
+  return { ...ellipseData, marker, rotate };
 };
