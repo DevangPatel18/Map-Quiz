@@ -3,6 +3,7 @@ import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { mapViewsWithNoFlags } from '../../assets/mapViewSettings';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
@@ -75,7 +76,12 @@ class QuizBox extends Component {
 
   handleQuizOptions = subRegionNameCap => {
     const { quizType } = this.state;
+    const { currentMap } = this.props.map;
     let quizOptions = generateQuizOptions(subRegionNameCap);
+    if (mapViewsWithNoFlags.includes(currentMap)) {
+      const idx = quizOptions.findIndex(obj => obj.value === 'click_flag');
+      quizOptions.splice(idx, 1);
+    }
     return quizOptions.map(form => (
       <Form.Field key={form.value}>
         <Radio
