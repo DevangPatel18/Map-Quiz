@@ -174,13 +174,14 @@ export const getMapViewIds = worldDataSet => {
   return { mapViewRegionIds, mapViewCountryIds };
 };
 
-const getRegionIdUniqueGeoPaths = geographyPaths => {
+export const getRegionIdUniqueGeoPaths = geographyPaths => {
+  const { regionKey } = store.getState().map;
   const regionIDs = []
   const uniqueGeoPaths = geographyPaths.filter(obj => {
-    if(regionIDs.includes(obj.properties.alpha3Code)){
+    if(regionIDs.includes(obj.properties[regionKey])){
       return false
     }
-    regionIDs.push(obj.properties.alpha3Code)
+    regionIDs.push(obj.properties[regionKey])
     return true
   })
   return uniqueGeoPaths

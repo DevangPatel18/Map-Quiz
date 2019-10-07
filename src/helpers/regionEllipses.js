@@ -63,8 +63,8 @@ export default function regionEllipses() {
             <ellipse
               fillOpacity="0.5"
               stroke="black"
-              strokeWidth="0.2"
-              strokeDasharray="1"
+              strokeWidth="0.05"
+              strokeDasharray="0.5"
               rx={markerData.width}
               ry={markerData.height}
               transform={markerData.rotate}
