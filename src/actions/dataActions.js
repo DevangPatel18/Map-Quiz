@@ -17,6 +17,7 @@ import {
   getNewRegionDataSet,
   checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
+  getRegionIdUniqueGeoPaths,
 } from '../helpers/dataActionHelpers';
 import {
   getFilterFunction,
@@ -111,14 +112,9 @@ export const getRegionSearchOptions = currentMap => dispatch => {
   const { regionKey } = map;
   const { geographyPaths, mapViewRegionIds } = data;
 
-  let mapRegions = geographyPaths
-    .map(x => x.properties)
-    .filter((x, i) => {
-      let firstIndexOfGeoPath = geographyPaths.findIndex(
-        y => y.properties.regionID === x.regionID
-      );
-      return i === firstIndexOfGeoPath;
-    });
+  let mapRegions = getRegionIdUniqueGeoPaths(geographyPaths).map(
+    obj => obj.properties
+  );
   if (currentMap !== 'World') {
     mapRegions = mapRegions.filter(x =>
       mapViewRegionIds[currentMap].includes(x[regionKey])
