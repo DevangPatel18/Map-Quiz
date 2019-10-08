@@ -1,14 +1,4 @@
-import {
-  SET_QUIZ_STATE,
-  QUIZ_ANSWER,
-  QUIZ_CLOSE,
-  REGION_CLICK,
-  CHANGE_MAP_VIEW,
-  REGION_SELECT,
-  SET_LABEL,
-  LOAD_REGION_DATA,
-  TOGGLE_EXT_REGIONS,
-} from '../actions/types';
+import * as types from '../actions/types';
 
 const emptySelectedProperties = {
   name: '',
@@ -33,26 +23,26 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case CHANGE_MAP_VIEW:
+    case types.CHANGE_MAP_VIEW:
       return {
         ...state,
         ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
-    case REGION_SELECT:
+    case types.REGION_SELECT:
       return {
         ...state,
         selectedProperties: action.selectedProperties,
         infoTabShow: true,
       };
-    case REGION_CLICK:
+    case types.REGION_CLICK:
       return {
         ...state,
         selectedProperties: action.selectedProperties,
         infoTabShow: action.infoTabShow,
       };
-    case QUIZ_ANSWER:
+    case types.QUIZ_ANSWER:
       return {
         ...state,
         selectedProperties:
@@ -61,14 +51,14 @@ export default function(state = initialState, action) {
         activeQuestionNum: action.activeQuestionNum,
         infoTabShow: action.infoTabShow,
       };
-    case SET_QUIZ_STATE:
+    case types.SET_QUIZ_STATE:
       return {
         ...state,
         ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
-    case QUIZ_CLOSE:
+    case types.QUIZ_CLOSE:
       return {
         ...state,
         quizAnswers: [],
@@ -80,17 +70,17 @@ export default function(state = initialState, action) {
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
-    case SET_LABEL:
+    case types.SET_LABEL:
       return {
         ...state,
         markerToggle: action.markerToggle,
       };
-    case LOAD_REGION_DATA:
+    case types.LOAD_REGION_DATA:
       return {
         ...state,
         markerToggle: '',
       };
-    case TOGGLE_EXT_REGIONS:
+    case types.TOGGLE_EXT_REGIONS:
       return {
         ...state,
         areExternalRegionsOnQuiz: !state.areExternalRegionsOnQuiz,

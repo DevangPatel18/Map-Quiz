@@ -6,20 +6,7 @@ import {
   getNewCenter,
   getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
-import {
-  CHANGE_MAP_VIEW,
-  REGION_SELECT,
-  SET_REGION_CHECKBOX,
-  DISABLE_OPT,
-  ZOOM_MAP,
-  RECENTER_MAP,
-  SET_MAP,
-  MOVE_CENTER,
-  SET_CHOROPLETH,
-  SET_CHORO_YEAR,
-  TOGGLE_TOOLTIP,
-  TOGGLE_SLIDER,
-} from './types';
+import * as types from './types';
 import store from '../store';
 
 const { show, hide } = actions;
@@ -37,8 +24,12 @@ export const setRegionCheckbox = regionName => async dispatch => {
     .map(region => mapViewCountryIds[region])
     .reduce((a, b) => a.concat(b), []);
 
-  await dispatch({ type: SET_REGION_CHECKBOX, checkedRegions, filterRegions });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({
+    type: types.SET_REGION_CHECKBOX,
+    checkedRegions,
+    filterRegions,
+  });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const regionSelect = regionName => async dispatch => {
@@ -48,19 +39,23 @@ export const regionSelect = regionName => async dispatch => {
     regionName
   );
 
-  await dispatch({ type: CHANGE_MAP_VIEW, mapAttributes, quizAttributes });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({
+    type: types.CHANGE_MAP_VIEW,
+    mapAttributes,
+    quizAttributes,
+  });
+  dispatch({ type: types.DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
       .map(region => mapViewCountryIds[region])
       .reduce((a, b) => a.concat(b), []);
     await dispatch({
-      type: SET_REGION_CHECKBOX,
+      type: types.SET_REGION_CHECKBOX,
       checkedRegions,
       filterRegions,
     });
-    dispatch({ type: DISABLE_OPT });
+    dispatch({ type: types.DISABLE_OPT });
   }
 };
 
@@ -77,23 +72,23 @@ export const regionZoom = event => async dispatch => {
   const { properties } = geographyPath;
   const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
-    type: REGION_SELECT,
+    type: types.REGION_SELECT,
     selectedProperties: properties,
     center,
     zoom,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const zoomMap = factor => dispatch => {
   const { zoom } = store.getState().map;
-  dispatch({ type: ZOOM_MAP, zoom: zoom * factor });
+  dispatch({ type: types.ZOOM_MAP, zoom: zoom * factor });
 };
 
 export const recenterMap = () => dispatch => {
   const { defaultCenter, defaultZoom } = store.getState().map;
   dispatch({
-    type: RECENTER_MAP,
+    type: types.RECENTER_MAP,
     center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
     zoom: defaultZoom,
   });
@@ -102,27 +97,27 @@ export const recenterMap = () => dispatch => {
 export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {
   const orientation = getOrientation(dimensions[0]);
   await dispatch({
-    type: SET_MAP,
+    type: types.SET_MAP,
     dimensions,
     orientation,
     zoomFactor,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const moveMap = (event, data) => async dispatch => {
   const direction = data.value;
   const newCenter = getNewCenter(direction);
   await dispatch({
-    type: MOVE_CENTER,
+    type: types.MOVE_CENTER,
     center: newCenter,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const setChoropleth = choropleth => async dispatch => {
-  await dispatch({ type: SET_CHOROPLETH, choropleth });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.SET_CHOROPLETH, choropleth });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const tooltipMove = (geography, evt) => dispatch => {
@@ -147,15 +142,15 @@ export const tooltipLeave = () => dispatch => {
 };
 
 export const tooltipToggle = () => async dispatch => {
-  await dispatch({ type: TOGGLE_TOOLTIP });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.TOGGLE_TOOLTIP });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const sliderSet = value => dispatch => {
-  dispatch({ type: TOGGLE_SLIDER, value });
+  dispatch({ type: types.TOGGLE_SLIDER, value });
 };
 
 export const setChoroYear = value => async dispatch => {
-  await dispatch({ type: SET_CHORO_YEAR, value });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.SET_CHORO_YEAR, value });
+  dispatch({ type: types.DISABLE_OPT });
 };
