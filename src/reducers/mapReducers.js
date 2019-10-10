@@ -1,5 +1,6 @@
 import { isMobile } from 'react-device-detect';
 import * as types from '../actions/types';
+import { mapConfig } from '../assets/mapViewSettings';
 
 const tooltipLocalStorage = localStorage.getItem('tooltip');
 const userTooltip =
@@ -56,9 +57,15 @@ export default function(state = initialState, action) {
         filterRegions,
       };
     case types.CHANGE_MAP_VIEW:
+      const { center, zoom } = mapConfig[action.regionName];
       return {
         ...state,
-        ...action.mapAttributes,
+        zoom,
+        center,
+        defaultZoom: zoom,
+        defaultCenter: center,
+        filterRegions: action.filterRegions,
+        currentMap: action.regionName,
         disableOptimization: true,
       };
     case types.REGION_SELECT:

@@ -1,26 +1,6 @@
 import { geoPath } from 'd3-geo';
 import projection from '../helpers/projection';
 import store from '../store';
-import { mapConfig } from '../assets/mapViewSettings';
-
-export const getStatesForRegionSelect = regionName => {
-  const { mapViewRegionIds } = store.getState().data;
-  const { center, zoom } = mapConfig[regionName];
-  const mapAttributes = {
-    zoom,
-    center,
-    defaultZoom: zoom,
-    defaultCenter: center,
-    currentMap: regionName,
-    filterRegions: mapViewRegionIds[regionName] || [],
-    markerToggle: '',
-  };
-  const quizAttributes = {
-    selectedProperties: '',
-    markerToggle: '',
-  };
-  return { mapAttributes, quizAttributes };
-};
 
 export const getGeoPathCenterAndZoom = geographyPath => {
   const { regionMarkers } = store.getState().data;

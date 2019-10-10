@@ -1,6 +1,5 @@
 import { actions } from 'redux-tooltip';
 import {
-  getStatesForRegionSelect,
   getGeoPathCenterAndZoom,
   getOrientation,
   getNewCenter,
@@ -34,15 +33,11 @@ export const setRegionCheckbox = regionName => async dispatch => {
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { mapViewCountryIds } = store.getState().data;
-  const { mapAttributes, quizAttributes } = getStatesForRegionSelect(
-    regionName
-  );
-
+  const { mapViewRegionIds, mapViewCountryIds } = store.getState().data;
   await dispatch({
     type: types.CHANGE_MAP_VIEW,
-    mapAttributes,
-    quizAttributes,
+    regionName,
+    filterRegions: mapViewRegionIds[regionName] || [],
   });
   dispatch({ type: types.DISABLE_OPT });
   if (regionName === 'World') {

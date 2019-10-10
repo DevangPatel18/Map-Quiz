@@ -26,8 +26,8 @@ export default function(state = initialState, action) {
     case types.CHANGE_MAP_VIEW:
       return {
         ...state,
-        ...action.quizAttributes,
         selectedProperties: emptySelectedProperties,
+        markerToggle: '',
         infoTabShow: false,
       };
     case types.REGION_SELECT:
