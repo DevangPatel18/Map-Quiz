@@ -21,45 +21,35 @@ export const getGeoPathCenterAndZoom = geographyPath => {
 };
 
 export const getOrientation = (width = 980) => {
-  let orientation;
   switch (width) {
     case 980:
-      orientation = 'landscape';
-      break;
+      return 'landscape';
     case 645:
-      orientation = 'medium';
-      break;
+      return 'medium';
     case 420:
-      orientation = 'small';
-      break;
+      return 'small';
     case 310:
-      orientation = 'portrait';
-      break;
+      return 'portrait';
     default:
+      return 'landscape';
   }
-  return orientation;
 };
 
 export const getNewCenter = direction => {
   const { center } = store.getState().map;
-  let newCenter;
   const step = 5;
   switch (direction) {
     case 'up':
-      newCenter = [center[0], center[1] + step];
-      break;
+      return [center[0], center[1] + step];
     case 'down':
-      newCenter = [center[0], center[1] - step];
-      break;
+      return [center[0], center[1] - step];
     case 'left':
-      newCenter = [center[0] - step, center[1]];
-      break;
+      return [center[0] - step, center[1]];
     case 'right':
-      newCenter = [center[0] + step, center[1]];
-      break;
+      return [center[0] + step, center[1]];
     default:
+      return center;
   }
-  return newCenter;
 };
 
 export const getChoroplethTooltipContent = geography => {
