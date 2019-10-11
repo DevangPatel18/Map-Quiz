@@ -24,14 +24,11 @@ export const closeQuiz = () => async dispatch => {
 };
 
 export const processClickAnswer = geoProperties => async dispatch => {
-  const { activeQuestionNum, quizGuesses } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
-    quizGuesses: [...quizGuesses, isAnswerCorrect],
-    activeQuestionNum: activeQuestionNum + 1,
-    infoTabShow: false,
+    isAnswerCorrect,
   });
   await dispatch({
     type: types.REGION_CLICK,
@@ -66,13 +63,11 @@ export const toggleInfoTab = () => async dispatch => {
 };
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
-  const { quizGuesses, activeQuestionNum } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
-    quizGuesses: [...quizGuesses, isAnswerCorrect],
-    activeQuestionNum: activeQuestionNum + 1,
+    isAnswerCorrect,
   });
   dispatch({ type: types.DISABLE_OPT });
 };

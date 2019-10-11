@@ -47,9 +47,9 @@ export default function(state = initialState, action) {
         ...state,
         selectedProperties:
           action.selectedProperties || emptySelectedProperties,
-        quizGuesses: action.quizGuesses,
-        activeQuestionNum: action.activeQuestionNum,
-        infoTabShow: action.infoTabShow,
+        quizGuesses: [...state.quizGuesses, action.isAnswerCorrect],
+        activeQuestionNum: state.activeQuestionNum + 1,
+        infoTabShow: false,
       };
     case types.SET_QUIZ_STATE:
       return {
