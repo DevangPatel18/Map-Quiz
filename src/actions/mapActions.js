@@ -76,17 +76,11 @@ export const regionZoom = event => async dispatch => {
 };
 
 export const zoomMap = factor => dispatch => {
-  const { zoom } = store.getState().map;
-  dispatch({ type: types.ZOOM_MAP, zoom: zoom * factor });
+  dispatch({ type: types.ZOOM_MAP, factor });
 };
 
 export const recenterMap = () => dispatch => {
-  const { defaultCenter, defaultZoom } = store.getState().map;
-  dispatch({
-    type: types.RECENTER_MAP,
-    center: [defaultCenter[0], defaultCenter[1] + Math.random() / 1000],
-    zoom: defaultZoom,
-  });
+  dispatch({ type: types.RECENTER_MAP });
 };
 
 export const setMap = ({ dimensions, zoomFactor }) => async dispatch => {

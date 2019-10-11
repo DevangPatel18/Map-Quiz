@@ -83,13 +83,16 @@ export default function(state = initialState, action) {
     case types.ZOOM_MAP:
       return {
         ...state,
-        zoom: action.zoom,
+        zoom: state.zoom * action.factor,
       };
     case types.RECENTER_MAP:
       return {
         ...state,
-        center: action.center,
-        zoom: action.zoom,
+        center: [
+          state.defaultCenter[0],
+          state.defaultCenter[1] + Math.random() / 1000,
+        ],
+        zoom: state.defaultZoom,
       };
     case types.SET_MAP:
       return {
