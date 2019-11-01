@@ -54,6 +54,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
     ? 'World'
     : regionName;
   if (!regionDataSets[regionDataSetKey]) {
+    dispatch({ type: types.LOADING_DATA, value: true });
     const newRegionDataSet = await getNewRegionDataSet(regionName);
     const { geographyPaths } = newRegionDataSet;
     let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
@@ -65,6 +66,7 @@ export const checkMapDataUpdate = regionName => async dispatch => {
       newRegionDataSet,
       newRegionIdList,
     });
+    dispatch({ type: types.LOADING_DATA, value: false });
     regionDataSets = store.getState().data.regionDataSets;
   }
   await dispatch({
