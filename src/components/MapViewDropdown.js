@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { regionSelect } from '../actions/mapActions';
@@ -15,37 +15,39 @@ const regionOptions = mapViewsList.map(regionText => ({
   value: regionText,
 }));
 
-const MapViewDropdown = props => {
-  const {
-    data,
-    regionSelect,
-    checkMapDataUpdate,
-    getRegionEllipses,
-    getRegionSearchOptions,
-  } = props;
-  const { regionEllipsesData, regionSearchList } = data;
+class MapViewDropdown extends Component {
+  render() {
+    const {
+      data,
+      regionSelect,
+      checkMapDataUpdate,
+      getRegionEllipses,
+      getRegionSearchOptions,
+    } = this.props;
+    const { regionEllipsesData, regionSearchList } = data;
 
-  return (
-    <div className="mapViewDropdown">
-      <Dropdown
-        placeholder="Select Region Quiz"
-        fluid
-        selection
-        options={regionOptions}
-        onChange={async (e, data) => {
-          await checkMapDataUpdate(data.value);
-          regionSelect(data.value);
-          if (!regionEllipsesData[data.value]) {
-            getRegionEllipses(data.value);
-          }
-          if (!regionSearchList[data.value]) {
-            getRegionSearchOptions(data.value);
-          }
-        }}
-      />
-    </div>
-  );
-};
+    return (
+      <div className="mapViewDropdown">
+        <Dropdown
+          placeholder="Select Region Quiz"
+          fluid
+          selection
+          options={regionOptions}
+          onChange={async (e, data) => {
+            await checkMapDataUpdate(data.value);
+            regionSelect(data.value);
+            if (!regionEllipsesData[data.value]) {
+              getRegionEllipses(data.value);
+            }
+            if (!regionSearchList[data.value]) {
+              getRegionSearchOptions(data.value);
+            }
+          }}
+        />
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   data: state.data,
