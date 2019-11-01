@@ -9,12 +9,14 @@ import ChoroplethLegend from './ChoroplethLegend';
 import ChoroplethSlider from './ChoroplethSlider';
 import DirectionPad from './DirectionPad';
 import QuestionBox from './quizBox/QuestionBox';
+import LoadingPrompt from './LoadingPrompt';
 
 const InterfaceElements = ({ quiz: { isQuizActive } }) => (
   <>
     <ZoomButtons />
     <TransitionInfoTab />
     <DirectionPad />
+    <LoadingPrompt />
     {isMobile && <MobileMessage />}
     {isQuizActive && <QuestionBox />}
     {isQuizActive && <StatusBar />}
