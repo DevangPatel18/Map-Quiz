@@ -10,6 +10,7 @@ const initialState = {
   mapViewRegionIds: {},
   mapViewCountryIds: {},
   regionSearchList: {},
+  loadingData: false,
 };
 
 export default function(state = initialState, action) {
@@ -65,6 +66,11 @@ export default function(state = initialState, action) {
           ...state.regionSearchList,
           [action.currentMap]: action.regionSearchOptions,
         },
+      };
+    case types.LOADING_DATA:
+      return {
+        ...state,
+        loadingData: action.value,
       };
     default:
       return state;
