@@ -1,12 +1,4 @@
-import {
-  SET_QUIZ_STATE,
-  QUIZ_ANSWER,
-  QUIZ_CLOSE,
-  REGION_CLICK,
-  DISABLE_OPT,
-  SET_LABEL,
-  TOGGLE_EXT_REGIONS,
-} from './types';
+import * as types from './types';
 import {
   removeQuizExceptions,
   generateAnswerArray,
@@ -22,73 +14,68 @@ export const startQuiz = quizType => async dispatch => {
   let quizAnswers = generateAnswerArray(quizRegionIds);
   quizAnswers = removeQuizExceptions(quizAnswers, quizType);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
-  await dispatch({ type: SET_QUIZ_STATE, quizAttributes });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const closeQuiz = () => async dispatch => {
-  await dispatch({ type: QUIZ_CLOSE });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.QUIZ_CLOSE });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const processClickAnswer = geoProperties => async dispatch => {
-  const { activeQuestionNum, quizGuesses } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
   await dispatch({
-    type: QUIZ_ANSWER,
+    type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
-    quizGuesses: [...quizGuesses, isAnswerCorrect],
-    activeQuestionNum: activeQuestionNum + 1,
-    infoTabShow: false,
+    isAnswerCorrect,
   });
   await dispatch({
-    type: REGION_CLICK,
+    type: types.REGION_CLICK,
     selectedProperties: newGeoProperties,
     infoTabShow: isAnswerCorrect,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const loadNewInfoTab = newGeoProperties => async dispatch => {
   await dispatch({
-    type: REGION_CLICK,
+    type: types.REGION_CLICK,
     selectedProperties: newGeoProperties,
     infoTabShow: false,
   });
   await dispatch({
-    type: REGION_CLICK,
+    type: types.REGION_CLICK,
     selectedProperties: newGeoProperties,
     infoTabShow: true,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const toggleInfoTab = () => async dispatch => {
   const { selectedProperties, infoTabShow } = store.getState().quiz;
   await dispatch({
-    type: REGION_CLICK,
+    type: types.REGION_CLICK,
     selectedProperties,
     infoTabShow: !infoTabShow,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
-  const { quizGuesses, activeQuestionNum } = store.getState().quiz;
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
   await dispatch({
-    type: QUIZ_ANSWER,
+    type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
-    quizGuesses: [...quizGuesses, isAnswerCorrect],
-    activeQuestionNum: activeQuestionNum + 1,
+    isAnswerCorrect,
   });
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const setLabel = (markerToggle = '') => async dispatch => {
-  await dispatch({ type: SET_LABEL, markerToggle });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.SET_LABEL, markerToggle });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const toggleExternalRegions = () => dispatch =>
-  dispatch({ type: TOGGLE_EXT_REGIONS });
+  dispatch({ type: types.TOGGLE_EXT_REGIONS });

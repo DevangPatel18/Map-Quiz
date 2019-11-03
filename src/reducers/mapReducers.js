@@ -1,26 +1,6 @@
 import { isMobile } from 'react-device-detect';
-import {
-  SET_REGION_CHECKBOX,
-  CHANGE_MAP_VIEW,
-  REGION_SELECT,
-  DISABLE_OPT,
-  ZOOM_MAP,
-  RECENTER_MAP,
-  SET_MAP,
-  LOAD_DATA,
-  LOAD_PATHS,
-  REGION_CLICK,
-  QUIZ_ANSWER,
-  MOVE_CENTER,
-  SET_QUIZ_STATE,
-  QUIZ_CLOSE,
-  SET_CHOROPLETH,
-  SET_CHORO_YEAR,
-  SET_LABEL,
-  TOGGLE_TOOLTIP,
-  TOGGLE_SLIDER,
-  LOAD_REGION_DATA,
-} from '../actions/types';
+import * as types from '../actions/types';
+import { mapConfig } from '../assets/mapViewSettings';
 
 const tooltipLocalStorage = localStorage.getItem('tooltip');
 const userTooltip =
@@ -57,18 +37,18 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case LOAD_DATA:
-    case LOAD_PATHS:
-    case REGION_CLICK:
-    case QUIZ_ANSWER:
-    case SET_QUIZ_STATE:
-    case QUIZ_CLOSE:
-    case SET_LABEL:
+    case types.LOAD_DATA:
+    case types.LOAD_PATHS:
+    case types.REGION_CLICK:
+    case types.QUIZ_ANSWER:
+    case types.SET_QUIZ_STATE:
+    case types.QUIZ_CLOSE:
+    case types.SET_LABEL:
       return {
         ...state,
         disableOptimization: true,
       };
-    case SET_REGION_CHECKBOX:
+    case types.SET_REGION_CHECKBOX:
       const { checkedRegions, filterRegions } = action;
       return {
         ...state,
@@ -76,36 +56,45 @@ export default function(state = initialState, action) {
         checkedRegions,
         filterRegions,
       };
-    case CHANGE_MAP_VIEW:
+    case types.CHANGE_MAP_VIEW:
+      const { center, zoom } = mapConfig[action.regionName];
       return {
         ...state,
-        ...action.mapAttributes,
+        zoom,
+        center,
+        defaultZoom: zoom,
+        defaultCenter: center,
+        filterRegions: action.filterRegions,
+        currentMap: action.regionName,
         disableOptimization: true,
       };
-    case REGION_SELECT:
+    case types.REGION_SELECT:
       return {
         ...state,
         zoom: action.zoom,
         center: action.center,
         disableOptimization: true,
       };
-    case DISABLE_OPT:
+    case types.DISABLE_OPT:
       return {
         ...state,
         disableOptimization: false,
       };
-    case ZOOM_MAP:
+    case types.ZOOM_MAP:
       return {
         ...state,
-        zoom: action.zoom,
+        zoom: state.zoom * action.factor,
       };
-    case RECENTER_MAP:
+    case types.RECENTER_MAP:
       return {
         ...state,
-        center: action.center,
-        zoom: action.zoom,
+        center: [
+          state.defaultCenter[0],
+          state.defaultCenter[1] + Math.random() / 1000,
+        ],
+        zoom: state.defaultZoom,
       };
-    case SET_MAP:
+    case types.SET_MAP:
       return {
         ...state,
         dimensions: action.dimensions,
@@ -113,36 +102,36 @@ export default function(state = initialState, action) {
         zoomFactor: action.zoomFactor,
         disableOptimization: true,
       };
-    case MOVE_CENTER:
+    case types.MOVE_CENTER:
       return {
         ...state,
         center: action.center,
       };
-    case SET_CHOROPLETH:
+    case types.SET_CHOROPLETH:
       return {
         ...state,
         choropleth: action.choropleth,
         disableOptimization: true,
       };
-    case SET_CHORO_YEAR:
+    case types.SET_CHORO_YEAR:
       return {
         ...state,
         sliderYear: action.value,
         disableOptimization: true,
       };
-    case TOGGLE_TOOLTIP:
+    case types.TOGGLE_TOOLTIP:
       localStorage.setItem('tooltip', (!state.tooltip).toString());
       return {
         ...state,
         tooltip: !state.tooltip,
         disableOptimization: true,
       };
-    case TOGGLE_SLIDER:
+    case types.TOGGLE_SLIDER:
       return {
         ...state,
         slider: action.value,
       };
-    case LOAD_REGION_DATA:
+    case types.LOAD_REGION_DATA:
       const { subRegionName } = action;
       const regionKey = subRegionName === 'country' ? 'alpha3Code' : 'regionID';
       return {

@@ -1,11 +1,4 @@
-import {
-  LOAD_PATHS,
-  LOAD_DATA,
-  LOAD_REGION_DATA,
-  ADD_REGION_DATA,
-  GET_ELLIPSES,
-  GET_REGION_SEARCH_LIST,
-} from '../actions/types';
+import * as types from '../actions/types';
 
 const initialState = {
   geographyPaths: [],
@@ -17,16 +10,17 @@ const initialState = {
   mapViewRegionIds: {},
   mapViewCountryIds: {},
   regionSearchList: {},
+  loadingData: false,
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case LOAD_PATHS:
+    case types.LOAD_PATHS:
       return {
         ...state,
         geographyPaths: action.geographyPaths,
       };
-    case LOAD_DATA:
+    case types.LOAD_DATA:
       return {
         ...state,
         geographyPaths: action.geographyPaths,
@@ -37,7 +31,7 @@ export default function(state = initialState, action) {
         mapViewRegionIds: action.mapViewRegionIds,
         mapViewCountryIds: action.mapViewCountryIds,
       };
-    case LOAD_REGION_DATA:
+    case types.LOAD_REGION_DATA:
       const updatedRegion = state.regionDataSets[action.currentMap];
       return {
         ...state,
@@ -45,7 +39,7 @@ export default function(state = initialState, action) {
         regionMarkers: updatedRegion.regionMarkers,
         capitalMarkers: updatedRegion.capitalMarkers,
       };
-    case ADD_REGION_DATA:
+    case types.ADD_REGION_DATA:
       return {
         ...state,
         regionDataSets: {
@@ -57,7 +51,7 @@ export default function(state = initialState, action) {
           [action.regionName]: action.newRegionIdList,
         },
       };
-    case GET_ELLIPSES:
+    case types.GET_ELLIPSES:
       return {
         ...state,
         regionEllipsesData: {
@@ -65,13 +59,18 @@ export default function(state = initialState, action) {
           [action.currentMap]: action.markersArray,
         },
       };
-    case GET_REGION_SEARCH_LIST:
+    case types.GET_REGION_SEARCH_LIST:
       return {
         ...state,
         regionSearchList: {
           ...state.regionSearchList,
           [action.currentMap]: action.regionSearchOptions,
         },
+      };
+    case types.LOADING_DATA:
+      return {
+        ...state,
+        loadingData: action.value,
       };
     default:
       return state;

@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { regionSelect } from '../actions/mapActions';
 import {
-  checkMapDataUpdate,
+  processNewRegionDataSet,
+  loadRegionDataSet,
   getRegionEllipses,
   getRegionSearchOptions,
 } from '../actions/dataActions';
-import { mapViewsList } from '../assets/mapViewSettings';
+import { checkMapViewsBetweenWorldRegions } from '../helpers/dataActionHelpers';
+import { mapViewsList, worldRegions } from '../assets/mapViewSettings';
 import '../App.css';
 
 const regionOptions = mapViewsList.map(regionText => ({
@@ -15,37 +17,51 @@ const regionOptions = mapViewsList.map(regionText => ({
   value: regionText,
 }));
 
-const MapViewDropdown = props => {
-  const {
-    data,
-    regionSelect,
-    checkMapDataUpdate,
-    getRegionEllipses,
-    getRegionSearchOptions,
-  } = props;
-  const { regionEllipsesData, regionSearchList } = data;
+class MapViewDropdown extends Component {
+  handleDropdown = async (event, { value }) => {
+    const {
+      data,
+      regionSelect,
+      getRegionEllipses,
+      getRegionSearchOptions,
+    } = this.props;
+    const { regionEllipsesData, regionSearchList } = data;
 
-  return (
-    <div className="mapViewDropdown">
-      <Dropdown
-        placeholder="Select Region Quiz"
-        fluid
-        selection
-        options={regionOptions}
-        onChange={async (e, data) => {
-          await checkMapDataUpdate(data.value);
-          regionSelect(data.value);
-          if (!regionEllipsesData[data.value]) {
-            getRegionEllipses(data.value);
-          }
-          if (!regionSearchList[data.value]) {
-            getRegionSearchOptions(data.value);
-          }
-        }}
-      />
-    </div>
-  );
-};
+    await this.handleMapDataUpdate(value);
+    regionSelect(value);
+    if (!regionEllipsesData[value]) {
+      getRegionEllipses(value);
+    }
+    if (!regionSearchList[value]) {
+      getRegionSearchOptions(value);
+    }
+  };
+
+  handleMapDataUpdate = async value => {
+    if (checkMapViewsBetweenWorldRegions(value)) return;
+    const { data, processNewRegionDataSet, loadRegionDataSet } = this.props;
+    const { regionDataSets } = data;
+    const regionDataSetKey = worldRegions.includes(value) ? 'World' : value;
+    if (!regionDataSets[regionDataSetKey]) {
+      await processNewRegionDataSet(value);
+    }
+    await loadRegionDataSet(regionDataSetKey);
+  };
+
+  render() {
+    return (
+      <div className="mapViewDropdown">
+        <Dropdown
+          placeholder="Select Region Quiz"
+          fluid
+          selection
+          options={regionOptions}
+          onChange={this.handleDropdown}
+        />
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   data: state.data,
@@ -55,7 +71,8 @@ export default connect(
   mapStateToProps,
   {
     regionSelect,
-    checkMapDataUpdate,
+    processNewRegionDataSet,
+    loadRegionDataSet,
     getRegionEllipses,
     getRegionSearchOptions,
   }

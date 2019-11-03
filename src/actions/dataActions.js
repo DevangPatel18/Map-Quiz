@@ -1,12 +1,4 @@
-import {
-  LOAD_PATHS,
-  LOAD_DATA,
-  DISABLE_OPT,
-  GET_ELLIPSES,
-  GET_REGION_SEARCH_LIST,
-  ADD_REGION_DATA,
-  LOAD_REGION_DATA,
-} from './types';
+import * as types from './types';
 import { modifyWorldGeographyPaths } from '../helpers/attributeFix';
 import {
   getWorldTopology,
@@ -15,7 +7,6 @@ import {
   getWorldDataSet,
   getMapViewIds,
   getNewRegionDataSet,
-  checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
   getRegionIdUniqueGeoPaths,
 } from '../helpers/dataActionHelpers';
@@ -24,7 +15,6 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
-import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -32,8 +22,8 @@ export const loadGeographyPaths = () => async dispatch => {
   let geographyPaths = getWorldGeographyPaths(worldTopology);
   geographyPaths = modifyWorldGeographyPaths(geographyPaths);
 
-  await dispatch({ type: LOAD_PATHS, geographyPaths });
-  dispatch({ type: DISABLE_OPT });
+  await dispatch({ type: types.LOAD_PATHS, geographyPaths });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
 export const loadRegionData = () => async dispatch => {
@@ -43,7 +33,7 @@ export const loadRegionData = () => async dispatch => {
   const regionDataSets = { World: { ...worldDataSet } };
 
   await dispatch({
-    type: LOAD_DATA,
+    type: types.LOAD_DATA,
     ...worldDataSet,
     regionDataSets,
     populationData,
@@ -51,32 +41,31 @@ export const loadRegionData = () => async dispatch => {
     mapViewCountryIds,
   });
 
-  dispatch({ type: DISABLE_OPT });
+  dispatch({ type: types.DISABLE_OPT });
 };
 
-export const checkMapDataUpdate = regionName => async dispatch => {
-  if (checkMapViewsBetweenWorldRegions(regionName)) return;
+export const processNewRegionDataSet = regionName => async dispatch => {
+  dispatch({ type: types.LOADING_DATA, value: true });
 
-  let { regionDataSets } = store.getState().data;
-  const regionDataSetKey = worldRegions.includes(regionName)
-    ? 'World'
-    : regionName;
-  if (!regionDataSets[regionDataSetKey]) {
-    const newRegionDataSet = await getNewRegionDataSet(regionName);
-    const { geographyPaths } = newRegionDataSet;
-    let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
-    newRegionIdList = [...new Set(newRegionIdList)];
+  const newRegionDataSet = await getNewRegionDataSet(regionName);
+  const { geographyPaths } = newRegionDataSet;
+  let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+  newRegionIdList = [...new Set(newRegionIdList)];
 
-    await dispatch({
-      type: ADD_REGION_DATA,
-      regionName,
-      newRegionDataSet,
-      newRegionIdList,
-    });
-    regionDataSets = store.getState().data.regionDataSets;
-  }
   await dispatch({
-    type: LOAD_REGION_DATA,
+    type: types.ADD_REGION_DATA,
+    regionName,
+    newRegionDataSet,
+    newRegionIdList,
+  });
+
+  dispatch({ type: types.LOADING_DATA, value: false });
+};
+
+export const loadRegionDataSet = regionDataSetKey => async dispatch => {
+  let { regionDataSets } = store.getState().data;
+  await dispatch({
+    type: types.LOAD_REGION_DATA,
     currentMap: regionDataSetKey,
     subRegionName: regionDataSets[regionDataSetKey].subRegionName,
   });
@@ -101,7 +90,7 @@ export const getRegionEllipses = currentMap => dispatch => {
     });
 
   dispatch({
-    type: GET_ELLIPSES,
+    type: types.GET_ELLIPSES,
     currentMap,
     markersArray,
   });
@@ -124,7 +113,7 @@ export const getRegionSearchOptions = currentMap => dispatch => {
   const regionSearchOptions = getRegionSearchObjectArray(mapRegions, regionKey);
 
   dispatch({
-    type: GET_REGION_SEARCH_LIST,
+    type: types.GET_REGION_SEARCH_LIST,
     currentMap,
     regionSearchOptions,
   });
