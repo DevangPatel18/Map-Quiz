@@ -20,13 +20,12 @@ class MapViewDropdown extends Component {
     const {
       data,
       regionSelect,
-      checkMapDataUpdate,
       getRegionEllipses,
       getRegionSearchOptions,
     } = this.props;
     const { regionEllipsesData, regionSearchList } = data;
 
-    await checkMapDataUpdate(value);
+    await this.handleMapDataUpdate(value);
     regionSelect(value);
     if (!regionEllipsesData[value]) {
       getRegionEllipses(value);
@@ -34,6 +33,11 @@ class MapViewDropdown extends Component {
     if (!regionSearchList[value]) {
       getRegionSearchOptions(value);
     }
+  };
+
+  handleMapDataUpdate = async value => {
+    const { checkMapDataUpdate } = this.props;
+    await checkMapDataUpdate(value);
   };
 
   render() {
