@@ -7,7 +7,6 @@ import {
   getWorldDataSet,
   getMapViewIds,
   getNewRegionDataSet,
-  checkMapViewsBetweenWorldRegions,
   getRegionSearchObjectArray,
   getRegionIdUniqueGeoPaths,
 } from '../helpers/dataActionHelpers';
@@ -16,7 +15,6 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
-import { worldRegions } from '../assets/mapViewSettings';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -46,29 +44,26 @@ export const loadRegionData = () => async dispatch => {
   dispatch({ type: types.DISABLE_OPT });
 };
 
-export const checkMapDataUpdate = regionName => async dispatch => {
-  if (checkMapViewsBetweenWorldRegions(regionName)) return;
+export const processNewRegionDataSet = regionName => async dispatch => {
+  dispatch({ type: types.LOADING_DATA, value: true });
 
+  const newRegionDataSet = await getNewRegionDataSet(regionName);
+  const { geographyPaths } = newRegionDataSet;
+  let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+  newRegionIdList = [...new Set(newRegionIdList)];
+
+  await dispatch({
+    type: types.ADD_REGION_DATA,
+    regionName,
+    newRegionDataSet,
+    newRegionIdList,
+  });
+
+  dispatch({ type: types.LOADING_DATA, value: false });
+};
+
+export const loadRegionDataSet = regionDataSetKey => async dispatch => {
   let { regionDataSets } = store.getState().data;
-  const regionDataSetKey = worldRegions.includes(regionName)
-    ? 'World'
-    : regionName;
-  if (!regionDataSets[regionDataSetKey]) {
-    dispatch({ type: types.LOADING_DATA, value: true });
-    const newRegionDataSet = await getNewRegionDataSet(regionName);
-    const { geographyPaths } = newRegionDataSet;
-    let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
-    newRegionIdList = [...new Set(newRegionIdList)];
-
-    await dispatch({
-      type: types.ADD_REGION_DATA,
-      regionName,
-      newRegionDataSet,
-      newRegionIdList,
-    });
-    dispatch({ type: types.LOADING_DATA, value: false });
-    regionDataSets = store.getState().data.regionDataSets;
-  }
   await dispatch({
     type: types.LOAD_REGION_DATA,
     currentMap: regionDataSetKey,

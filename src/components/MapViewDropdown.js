@@ -3,11 +3,13 @@ import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { regionSelect } from '../actions/mapActions';
 import {
-  checkMapDataUpdate,
+  processNewRegionDataSet,
+  loadRegionDataSet,
   getRegionEllipses,
   getRegionSearchOptions,
 } from '../actions/dataActions';
-import { mapViewsList } from '../assets/mapViewSettings';
+import { checkMapViewsBetweenWorldRegions } from '../helpers/dataActionHelpers';
+import { mapViewsList, worldRegions } from '../assets/mapViewSettings';
 import '../App.css';
 
 const regionOptions = mapViewsList.map(regionText => ({
@@ -36,8 +38,14 @@ class MapViewDropdown extends Component {
   };
 
   handleMapDataUpdate = async value => {
-    const { checkMapDataUpdate } = this.props;
-    await checkMapDataUpdate(value);
+    if (checkMapViewsBetweenWorldRegions(value)) return;
+    const { data, processNewRegionDataSet, loadRegionDataSet } = this.props;
+    const { regionDataSets } = data;
+    const regionDataSetKey = worldRegions.includes(value) ? 'World' : value;
+    if (!regionDataSets[regionDataSetKey]) {
+      await processNewRegionDataSet(value);
+    }
+    await loadRegionDataSet(regionDataSetKey);
   };
 
   render() {
@@ -63,7 +71,8 @@ export default connect(
   mapStateToProps,
   {
     regionSelect,
-    checkMapDataUpdate,
+    processNewRegionDataSet,
+    loadRegionDataSet,
     getRegionEllipses,
     getRegionSearchOptions,
   }
