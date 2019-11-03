@@ -16,7 +16,7 @@ const regionOptions = mapViewsList.map(regionText => ({
 }));
 
 class MapViewDropdown extends Component {
-  render() {
+  handleDropdown = async (event, { value }) => {
     const {
       data,
       regionSelect,
@@ -26,6 +26,17 @@ class MapViewDropdown extends Component {
     } = this.props;
     const { regionEllipsesData, regionSearchList } = data;
 
+    await checkMapDataUpdate(value);
+    regionSelect(value);
+    if (!regionEllipsesData[value]) {
+      getRegionEllipses(value);
+    }
+    if (!regionSearchList[value]) {
+      getRegionSearchOptions(value);
+    }
+  };
+
+  render() {
     return (
       <div className="mapViewDropdown">
         <Dropdown
@@ -33,16 +44,7 @@ class MapViewDropdown extends Component {
           fluid
           selection
           options={regionOptions}
-          onChange={async (e, data) => {
-            await checkMapDataUpdate(data.value);
-            regionSelect(data.value);
-            if (!regionEllipsesData[data.value]) {
-              getRegionEllipses(data.value);
-            }
-            if (!regionSearchList[data.value]) {
-              getRegionSearchOptions(data.value);
-            }
-          }}
+          onChange={this.handleDropdown}
         />
       </div>
     );
