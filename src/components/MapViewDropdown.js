@@ -18,7 +18,8 @@ const regionOptions = mapViewsList.map(regionText => ({
 }));
 
 class MapViewDropdown extends Component {
-  handleDropdown = async (event, { value }) => {
+  handleDropdown = async (event, dropdownDataObj) => {
+    const nextMap = dropdownDataObj.value;
     const {
       data,
       regionSelect,
@@ -27,23 +28,23 @@ class MapViewDropdown extends Component {
     } = this.props;
     const { regionEllipsesData, regionSearchList } = data;
 
-    await this.handleMapDataUpdate(value);
-    regionSelect(value);
-    if (!regionEllipsesData[value]) {
-      getRegionEllipses(value);
+    await this.handleMapDataUpdate(nextMap);
+    regionSelect(nextMap);
+    if (!regionEllipsesData[nextMap]) {
+      getRegionEllipses(nextMap);
     }
-    if (!regionSearchList[value]) {
-      getRegionSearchOptions(value);
+    if (!regionSearchList[nextMap]) {
+      getRegionSearchOptions(nextMap);
     }
   };
 
-  handleMapDataUpdate = async value => {
-    if (checkMapViewsBetweenWorldRegions(value)) return;
+  handleMapDataUpdate = async nextMap => {
+    if (checkMapViewsBetweenWorldRegions(nextMap)) return;
     const { data, processNewRegionDataSet, loadRegionDataSet } = this.props;
     const { regionDataSets } = data;
-    const regionDataSetKey = worldRegions.includes(value) ? 'World' : value;
+    const regionDataSetKey = worldRegions.includes(nextMap) ? 'World' : nextMap;
     if (!regionDataSets[regionDataSetKey]) {
-      await processNewRegionDataSet(value);
+      await processNewRegionDataSet(nextMap);
     }
     await loadRegionDataSet(regionDataSetKey);
   };
