@@ -17,6 +17,7 @@ const initialState = {
   orientation: 'default',
   disableOptimization: false,
   filterRegions: [],
+  filterRegionsStyles: {},
   currentMap: 'World',
   subRegionName: 'country',
   regionKey: 'alpha3Code',
@@ -78,6 +79,7 @@ export default function(state = initialState, action) {
     case types.DISABLE_OPT:
       return {
         ...state,
+        filterRegionsStyles: action.filterRegionsStyles,
         disableOptimization: false,
       };
     case types.ZOOM_MAP:
