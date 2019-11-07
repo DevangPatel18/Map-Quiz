@@ -43,8 +43,8 @@ const choroplethColor = (choropleth, geo) => {
   const { scaleFunc, bounds } = choroParams[choropleth];
 
   let choroplethNum;
-  if (slider && populationData[geo.properties.alpha3Code]) {
-    choroplethNum = populationData[geo.properties.alpha3Code][sliderYear];    
+  if (slider && populationData[geo.properties.regionID]) {
+    choroplethNum = populationData[geo.properties.regionID][sliderYear];    
   } else {
     choroplethNum = geo.properties[choropleth.toLowerCase()];
   }

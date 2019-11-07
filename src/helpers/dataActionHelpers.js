@@ -108,20 +108,20 @@ const addRestDataToGeoPaths = (restData, geographyPaths) =>
 
 const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
   geographyPaths.filter(checkGeoPathValidId).forEach(geography => {
-    const { alpha3Code, area } = geography.properties;
-    if (populationData[alpha3Code]) {
-      geography.properties.population = +populationData[alpha3Code]['2018'];
+    const { regionID, area } = geography.properties;
+    if (populationData[regionID]) {
+      geography.properties.population = +populationData[regionID]['2018'];
     }
     geography.properties.density = +(geography.properties.population / area);
   });
 
 const getCountryMarkers = geographyPaths =>
   geographyPaths.map(x => {
-    const { name, alpha3Code } = x.properties;
+    const { name, regionID } = x.properties;
     const path = geoPath().projection(projection());
     return {
       name,
-      alpha3Code,
+      regionID,
       coordinates: projection().invert(path.centroid(x)),
       markerOffset: 0,
     };
@@ -131,14 +131,14 @@ const getWorldCapitalMarkers = geographyPaths =>
   geographyPaths
     .filter(checkGeoPathValidId)
     .reduce((capitalMarkers, geography) => {
-      const { capital, alpha2Code, alpha3Code } = geography.properties;
+      const { capital, alpha2Code, regionID } = geography.properties;
       const capObject = capitalData.find(
         capitalObj => capitalObj.CountryCode === alpha2Code
       );
       if (capObject) {
         capitalMarkers.push({
           name: capital,
-          alpha3Code,
+          regionID,
           coordinates: [
             +capObject.CapitalLongitude,
             +capObject.CapitalLatitude,
@@ -169,7 +169,7 @@ export const getMapViewIds = worldDataSet => {
   const mapViewCountryIds = getMapViewCountryIds(mapViewRegionIds);
 
   for (let mapView in mapViewRegionIds) {
-    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.alpha3Code);
+    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.regionID);
   }
 
   return { mapViewRegionIds, mapViewCountryIds };
@@ -193,7 +193,7 @@ const getMapViewCountryIds = mapViewRegionIds => {
   for (let mapView in mapViewRegionIds) {
     mapViewCountryIds[mapView] = mapViewRegionIds[mapView]
       .filter(obj => !obj.regionOf)
-      .map(obj => obj.alpha3Code);
+      .map(obj => obj.regionID);
   }
   return mapViewCountryIds;
 };
@@ -302,7 +302,7 @@ export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
 const getRegionSearchObject = (properties, regionKey) => {
   let key;
   let flag;
-  if (regionKey === 'alpha3Code') {
+  if (regionKey === 'regionID') {
     if (!properties.alpha2Code) {
       return null;
     }

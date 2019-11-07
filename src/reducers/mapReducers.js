@@ -20,7 +20,7 @@ const initialState = {
   regionStyles: {},
   currentMap: 'World',
   subRegionName: 'country',
-  regionKey: 'alpha3Code',
+  regionKey: 'regionID',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,
@@ -144,11 +144,9 @@ export default function(state = initialState, action) {
       };
     case types.LOAD_REGION_DATA:
       const { subRegionName } = action;
-      const regionKey = subRegionName === 'country' ? 'alpha3Code' : 'regionID';
       return {
         ...state,
         subRegionName,
-        regionKey,
       };
     default:
       return state;

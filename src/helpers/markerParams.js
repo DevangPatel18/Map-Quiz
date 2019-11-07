@@ -24,13 +24,13 @@ const OceaniaEllipseDimensions = {
   TUV: { width: 4, height: 10, angle: -49},
 };
 
-function labelDist(x, y, alpha3Code) {
+function labelDist(x, y, regionID) {
   let dx = x;
   let dy = y;
   let textAnchor;
 
   Object.keys(labelPos).some((pos) => {
-    if (labelPos[pos].regions.includes(alpha3Code)) {
+    if (labelPos[pos].regions.includes(regionID)) {
       [dx, dy] = labelPos[pos].coords;
       textAnchor = pos[1] === 'r' ? 'start' : 'end';
       return true;
@@ -38,9 +38,9 @@ function labelDist(x, y, alpha3Code) {
     return false;
   });
 
-  if (labelist.includes(alpha3Code)) {
-    const xDist = labelist.length - labelist.indexOf(alpha3Code);
-    dx = (labelist.indexOf(alpha3Code) + 1) * 20;
+  if (labelist.includes(regionID)) {
+    const xDist = labelist.length - labelist.indexOf(regionID);
+    dx = (labelist.indexOf(regionID) + 1) * 20;
     dy *= xDist;
   }
 

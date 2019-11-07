@@ -213,7 +213,7 @@ const CountryMarkersFix = centroids => {
 
   centroidsFix.forEach(fix => {
     keyChange = Array.isArray(fix[1]) ? 'coordinates' : 'markerOffset';
-    idx = centroidsData.findIndex(x => x.alpha3Code === fix[0]);
+    idx = centroidsData.findIndex(x => x.regionID === fix[0]);
     centroidsData.splice(idx, 1, {...centroidsData[idx], [keyChange]: fix[1]})
   });
 
@@ -225,12 +225,12 @@ const CapitalMarkersFix = (capitalMarkers) => {
 
   // Add capitals for Overseas regions
   const extraCapitals = [
-    { name: 'Cayenne', alpha3Code: 'GUF', coordinates: [-52.3135, 4.9224] },
-    { name: 'Saint-Denis', alpha3Code: 'REU', coordinates: [55.4551, -20.8907] },
-    { name: 'Fort-de-France', alpha3Code: 'MTQ', coordinates: [-61.0588, 14.6161] },
-    { name: 'Mamoudzou', alpha3Code: 'MYT', coordinates: [45.2279, -12.7809] },
-    { name: 'Basse-Terre', alpha3Code: 'GLP', coordinates: [-61.6947, 16.0341] },
-    { name: 'Kralendijk', alpha3Code: 'BES', coordinates: [-68.2655, 12.1443] },
+    { name: 'Cayenne', regionID: 'GUF', coordinates: [-52.3135, 4.9224] },
+    { name: 'Saint-Denis', regionID: 'REU', coordinates: [55.4551, -20.8907] },
+    { name: 'Fort-de-France', regionID: 'MTQ', coordinates: [-61.0588, 14.6161] },
+    { name: 'Mamoudzou', regionID: 'MYT', coordinates: [45.2279, -12.7809] },
+    { name: 'Basse-Terre', regionID: 'GLP', coordinates: [-61.6947, 16.0341] },
+    { name: 'Kralendijk', regionID: 'BES', coordinates: [-68.2655, 12.1443] },
   ];
 
   extraCapitals.forEach((capitalObj) => {
@@ -256,7 +256,7 @@ const CapitalMarkersFix = (capitalMarkers) => {
   ];
 
   capitalFix.forEach(fix => {
-    let idx = capitalMarkersData.findIndex(x => x.alpha3Code === fix[0]);
+    let idx = capitalMarkersData.findIndex(x => x.regionID === fix[0]);
     if (idx === -1) {
       console.log(`Index not found for ${fix[0]}`);
     } else {

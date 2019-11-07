@@ -55,11 +55,11 @@ export const getNewCenter = direction => {
 export const getChoroplethTooltipContent = geography => {
   const { choropleth, slider, sliderYear } = store.getState().map;
   const { populationData } = store.getState().data;
-  const { alpha3Code } = geography.properties;
+  const { regionID } = geography.properties;
   let contentData;
   if (slider) {
-    contentData = populationData[alpha3Code]
-      ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
+    contentData = populationData[regionID]
+      ? parseInt(populationData[regionID][sliderYear]).toLocaleString()
       : 'N/A';
   } else {
     contentData = geography.properties[choropleth]
