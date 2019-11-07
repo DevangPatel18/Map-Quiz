@@ -139,3 +139,8 @@ export const getGeoStyle = ({ defaultColor, hoverColor, pressedColor }) => ({
     transition: 'fill .5s',
   },
 });
+
+export const defaultStyle = {
+  geoStyle: getGeoStyle({ ...DEFAULT_GEO_STYLE }),
+  stroke: { ...DEFAULT_STROKE_STYLE },
+};
