@@ -103,6 +103,7 @@ const addRestDataToGeoPaths = (restData, geographyPaths) =>
       ...countryData.altSpellings,
       ...Object.values(countryData.translations),
     ];
+    geography.properties.regionID = countryData.alpha3Code;
   });
 
 const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
