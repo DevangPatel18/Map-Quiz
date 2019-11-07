@@ -22,6 +22,16 @@ export const checkRegionHide = geography => {
   return isRegionHidden;
 };
 
+export const getRegionStyles = () => {
+  const { geographyPaths } = store.getState().data;
+  const { regionKey } = store.getState().map;
+  return geographyPaths.reduce((regionStyles, geoPath) => {
+    const regionID = geoPath.properties[regionKey];
+    regionStyles[regionID] = colorPicker(geoPath);
+    return regionStyles;
+  }, {});
+};
+
 export const colorPicker = geo => {
   const {
     isQuizActive,
