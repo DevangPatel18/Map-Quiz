@@ -15,6 +15,7 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
+import { getRegionStyles } from '../helpers/MapHelpers';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -39,6 +40,7 @@ export const loadRegionData = () => async dispatch => {
     populationData,
     mapViewRegionIds,
     mapViewCountryIds,
+    regionStyles: getRegionStyles(), 
   });
 
   dispatch({ type: types.DISABLE_OPT });

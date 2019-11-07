@@ -7,6 +7,7 @@ import {
   checkTypeAnswer,
   getRegionIdsForQuiz,
 } from '../helpers/quizActionHelpers';
+import { getRegionStyles } from '../helpers/MapHelpers';
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
@@ -15,11 +16,13 @@ export const startQuiz = quizType => async dispatch => {
   quizAnswers = removeQuizExceptions(quizAnswers, quizType);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
 export const closeQuiz = () => async dispatch => {
   await dispatch({ type: types.QUIZ_CLOSE });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -35,6 +38,7 @@ export const processClickAnswer = geoProperties => async dispatch => {
     selectedProperties: newGeoProperties,
     infoTabShow: isAnswerCorrect,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -49,6 +53,7 @@ export const loadNewInfoTab = newGeoProperties => async dispatch => {
     selectedProperties: newGeoProperties,
     infoTabShow: true,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -59,6 +64,7 @@ export const toggleInfoTab = () => async dispatch => {
     selectedProperties,
     infoTabShow: !infoTabShow,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -69,6 +75,7 @@ export const processTypeAnswer = (userGuess = null) => async dispatch => {
     selectedProperties: newGeoProperties,
     isAnswerCorrect,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 

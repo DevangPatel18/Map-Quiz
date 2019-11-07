@@ -5,6 +5,7 @@ import {
   getNewCenter,
   getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
+import { getRegionStyles } from '../helpers/MapHelpers';
 import * as types from './types';
 import store from '../store';
 
@@ -28,6 +29,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
     checkedRegions,
     filterRegions,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -39,6 +41,7 @@ export const regionSelect = regionName => async dispatch => {
     regionName,
     filterRegions: mapViewRegionIds[regionName] || [],
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
@@ -50,6 +53,7 @@ export const regionSelect = regionName => async dispatch => {
       checkedRegions,
       filterRegions,
     });
+    await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
     dispatch({ type: types.DISABLE_OPT });
   }
 };
@@ -72,6 +76,7 @@ export const regionZoom = event => async dispatch => {
     center,
     zoom,
   });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -106,6 +111,7 @@ export const moveMap = (event, data) => async dispatch => {
 
 export const setChoropleth = choropleth => async dispatch => {
   await dispatch({ type: types.SET_CHOROPLETH, choropleth });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -141,5 +147,6 @@ export const sliderSet = value => dispatch => {
 
 export const setChoroYear = value => async dispatch => {
   await dispatch({ type: types.SET_CHORO_YEAR, value });
+  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
   dispatch({ type: types.DISABLE_OPT });
 };
