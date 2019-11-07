@@ -6,6 +6,7 @@ export const DISABLE_OPT = 'DISABLE_OPT';
 export const RECENTER_MAP = 'RECENTER_MAP';
 export const ZOOM_MAP = 'ZOOM_MAP';
 export const SET_MAP = 'SET_MAP';
+export const UPDATE_MAP = 'UPDATE_MAP';
 export const MOVE_CENTER = 'MOVE_CENTER';
 export const SET_CHOROPLETH = 'SET_CHOROPLETH';
 export const SET_CHORO_YEAR = 'SET_CHORO_YEAR';

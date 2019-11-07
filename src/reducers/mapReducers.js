@@ -17,7 +17,7 @@ const initialState = {
   orientation: 'default',
   disableOptimization: false,
   filterRegions: [],
-  filterRegionsStyles: {},
+  regionStyles: {},
   currentMap: 'World',
   subRegionName: 'country',
   regionKey: 'alpha3Code',
@@ -38,7 +38,6 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case types.LOAD_DATA:
     case types.LOAD_PATHS:
     case types.REGION_CLICK:
     case types.QUIZ_ANSWER:
@@ -48,6 +47,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         disableOptimization: true,
+      };
+    case types.LOAD_DATA:
+      return {
+        ...state,
+        disableOptimization: true,
+        regionStyles: action.regionStyles,
       };
     case types.SET_REGION_CHECKBOX:
       const { checkedRegions, filterRegions } = action;
@@ -79,7 +84,6 @@ export default function(state = initialState, action) {
     case types.DISABLE_OPT:
       return {
         ...state,
-        filterRegionsStyles: action.filterRegionsStyles,
         disableOptimization: false,
       };
     case types.ZOOM_MAP:
@@ -103,6 +107,11 @@ export default function(state = initialState, action) {
         orientation: action.orientation,
         zoomFactor: action.zoomFactor,
         disableOptimization: true,
+      };
+    case types.UPDATE_MAP:
+      return {
+        ...state,
+        regionStyles: action.regionStyles,
       };
     case types.MOVE_CENTER:
       return {
