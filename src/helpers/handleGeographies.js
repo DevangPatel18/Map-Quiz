@@ -1,10 +1,17 @@
 import React from 'react';
 import { Geographies, Geography } from 'react-simple-maps';
-import { colorPicker, checkRegionHide } from './MapHelpers';
+import { checkRegionHide, defaultStyle } from './MapHelpers';
 
 export default function handleGeographies() {
   const { map, data, quiz, tooltipMove, tooltipLeave } = this.props;
-  const { orientation, currentMap, disableOptimization, tooltip } = map;
+  const {
+    orientation,
+    currentMap,
+    disableOptimization,
+    tooltip,
+    regionKey,
+    regionStyles,
+  } = map;
   const { geographyPaths } = data;
   const { isQuizActive } = quiz;
 
@@ -24,7 +31,8 @@ export default function handleGeographies() {
       {(geographies, projection) =>
         geographies.map((geography, i) => {
           if (checkRegionHide(geography)) return '';
-          const { geoStyle, stroke } = colorPicker(geography);
+          const regionID = geography.properties[regionKey];
+          const { geoStyle, stroke } = regionStyles[regionID] || defaultStyle;
           const key = `${currentMap}-${i}-${orientation}`;
           return (
             <Geography
