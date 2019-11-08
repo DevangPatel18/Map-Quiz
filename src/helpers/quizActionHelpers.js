@@ -42,9 +42,8 @@ export const checkClickAnswer = ansGeoProperties => {
     quizAnswers,
     selectedProperties,
   } = store.getState().quiz;
-  const { regionKey } = store.getState().map;
   const isAnswerCorrect =
-    ansGeoProperties[regionKey] === quizAnswers[activeQuestionNum];
+    ansGeoProperties.regionID === quizAnswers[activeQuestionNum];
   const newGeoProperties = isAnswerCorrect
     ? ansGeoProperties
     : selectedProperties;
@@ -54,10 +53,9 @@ export const checkClickAnswer = ansGeoProperties => {
 export const checkTypeAnswer = userGuess => {
   const { quizAnswers, activeQuestionNum, quizType } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
-  const { regionKey } = store.getState().map;
 
   const answerProperties = geographyPaths.find(
-    geo => geo.properties[regionKey] === quizAnswers[activeQuestionNum]
+    geo => geo.properties.regionID === quizAnswers[activeQuestionNum]
   ).properties;
 
   const isAnswerCorrect =

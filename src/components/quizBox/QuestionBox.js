@@ -125,7 +125,6 @@ class QuestionBox extends Component {
   render() {
     const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
     const { geographyPaths } = this.props.data;
-    const { regionKey } = this.props.map;
     const [type, testing] = quizType.split('_');
 
     if (activeQuestionNum !== quizAnswers.length) {
@@ -133,7 +132,7 @@ class QuestionBox extends Component {
         return this.handleTypePrompt(testing);
       }
       const alpha = quizAnswers[activeQuestionNum];
-      const region = geographyPaths.find(x => x.properties[regionKey] === alpha)
+      const region = geographyPaths.find(x => x.properties.regionID === alpha)
         .properties[testing];
 
       if (testing === 'flag') {
@@ -150,7 +149,6 @@ const getAppState = createSelector(
   state => state.quiz.quizGuesses,
   state => state.quiz.quizAnswers,
   state => state.quiz.activeQuestionNum,
-  state => state.map.regionKey,
   state => state.map.subRegionName,
   state => state.data.geographyPaths,
   (
@@ -158,12 +156,11 @@ const getAppState = createSelector(
     quizGuesses,
     quizAnswers,
     activeQuestionNum,
-    regionKey,
     subRegionName,
     geographyPaths
   ) => ({
     quiz: { quizType, quizGuesses, quizAnswers, activeQuestionNum },
-    map: { regionKey, subRegionName },
+    map: { subRegionName },
     data: { geographyPaths },
   })
 );

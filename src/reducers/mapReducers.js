@@ -20,7 +20,6 @@ const initialState = {
   regionStyles: {},
   currentMap: 'World',
   subRegionName: 'country',
-  regionKey: 'regionID',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,

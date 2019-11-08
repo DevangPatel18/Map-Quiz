@@ -56,8 +56,8 @@ export const getCaribbeanMarkerProperties = regionID => {
 };
 
 const getGeoEllipseDimensions = region => {
-  const { regionKey, currentMap } = store.getState().map;
-  const regionID = region.properties[regionKey];
+  const { currentMap } = store.getState().map;
+  const { regionID } = region.properties;
   const path = geoPath().projection(projection());
   const bounds = path.bounds(region);
   const originWidth = bounds[1][0] - bounds[0][0];
@@ -74,13 +74,12 @@ const getGeoEllipseDimensions = region => {
 
 export const getEllipseMarkerProperties = region => {
   const { regionMarkers } = store.getState().data;
-  const { regionKey } = store.getState().map;
-  const regionID = region.properties[regionKey];
+  const regionID = region.properties.regionID;
   let ellipseData;
   let marker = '';
   if (Object.keys(OceaniaEllipseDimensions).includes(regionID)) {
     ellipseData = OceaniaEllipseDimensions[regionID];
-    marker = regionMarkers.find(x => x[regionKey] === regionID);
+    marker = regionMarkers.find(x => x.regionID === regionID);
   } else {
     ellipseData = getGeoEllipseDimensions(region);
     const path = geoPath().projection(projection());

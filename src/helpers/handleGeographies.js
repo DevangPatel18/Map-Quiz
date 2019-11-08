@@ -9,7 +9,6 @@ export default function handleGeographies() {
     currentMap,
     disableOptimization,
     tooltip,
-    regionKey,
     regionStyles,
   } = map;
   const { geographyPaths } = data;
@@ -31,7 +30,7 @@ export default function handleGeographies() {
       {(geographies, projection) =>
         geographies.map((geography, i) => {
           if (checkRegionHide(geography)) return '';
-          const regionID = geography.properties[regionKey];
+          const { regionID } = geography.properties;
           const { geoStyle, stroke } = regionStyles[regionID] || defaultStyle;
           const key = `${currentMap}-${i}-${orientation}`;
           return (

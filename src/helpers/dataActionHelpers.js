@@ -176,13 +176,12 @@ export const getMapViewIds = worldDataSet => {
 };
 
 export const getRegionIdUniqueGeoPaths = geographyPaths => {
-  const { regionKey } = store.getState().map;
   const regionIDs = []
   const uniqueGeoPaths = geographyPaths.filter(obj => {
-    if(regionIDs.includes(obj.properties[regionKey])){
+    if(regionIDs.includes(obj.properties.regionID)){
       return false
     }
-    regionIDs.push(obj.properties[regionKey])
+    regionIDs.push(obj.properties.regionID)
     return true
   })
   return uniqueGeoPaths
@@ -287,10 +286,10 @@ const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
   return newCapitalMarkers;
 };
 
-export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
+export const getRegionSearchObjectArray = mapRegions =>
   mapRegions
-    .map(x => getRegionSearchObject(x, regionKey))
-    .filter(x => x !== null)
+    .map(getRegionSearchObject)
+    .filter(x => x.key)
     .filter(
       x =>
         !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
@@ -299,23 +298,20 @@ export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
     )
     .sort((a, b) => (a.text > b.text ? 1 : -1));
 
-const getRegionSearchObject = (properties, regionKey) => {
+const getRegionSearchObject = properties => {
   let key;
   let flag;
-  if (regionKey === 'regionID') {
-    if (!properties.alpha2Code) {
-      return null;
-    }
+  if (properties.alpha2Code) {
     key = properties.alpha2Code.toString().toLowerCase();
     flag = { flag: key };
   } else {
-    key = properties[regionKey];
+    key = properties.regionID;
   }
 
   return {
     key,
     ...flag,
     text: properties.name,
-    value: properties[regionKey],
+    value: properties.regionID,
   };
 };

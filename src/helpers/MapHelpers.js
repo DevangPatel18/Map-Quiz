@@ -15,18 +15,16 @@ const DEFAULT_STROKE_STYLE = {
 };
 
 export const checkRegionHide = geography => {
-  const { filterRegions, currentMap, regionKey } = store.getState().map;
-  const regionID = geography.properties[regionKey];
-  const isRegionOnQuiz = filterRegions.includes(regionID);
+  const { filterRegions, currentMap } = store.getState().map;
+  const isRegionOnQuiz = filterRegions.includes(geography.properties.regionID);
   const isRegionHidden = currentMap !== 'World' ? !isRegionOnQuiz : false;
   return isRegionHidden;
 };
 
 export const getRegionStyles = () => {
   const { geographyPaths } = store.getState().data;
-  const { regionKey } = store.getState().map;
   return geographyPaths.reduce((regionStyles, geoPath) => {
-    const regionID = geoPath.properties[regionKey];
+    const { regionID } = geoPath.properties;
     regionStyles[regionID] = colorPicker(geoPath);
     return regionStyles;
   }, {});
@@ -38,12 +36,12 @@ export const colorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
-  const { regionKey, choropleth } = store.getState().map;
+  const { choropleth } = store.getState().map;
   const isSelected =
-    selectedProperties[regionKey] === geo.properties[regionKey]
+    selectedProperties.regionID === geo.properties.regionID
       ? infoTabShow
       : false;
-  const regionID = geo.properties[regionKey];
+  const regionID = geo.properties.regionID;
   const geoStyleBasic = { ...DEFAULT_GEO_STYLE };
   const stroke = { ...DEFAULT_STROKE_STYLE };
 
@@ -112,12 +110,11 @@ export const setGeoStyleSelected = (geoStyleBasic, stroke) => {
 };
 
 export const checkWorldViewHide = (geography, geoStyleBasic, stroke) => {
-  const { currentMap, filterRegions, regionKey } = store.getState().map;
+  const { currentMap, filterRegions } = store.getState().map;
   const { selectedProperties, infoTabShow } = store.getState().quiz;
   const isSelected =
     selectedProperties === geography.properties ? infoTabShow : false;
-  const { regionOf } = geography.properties;
-  const regionID = geography.properties[regionKey];
+  const { regionOf, regionID } = geography.properties;
   const onQuiz = filterRegions.includes(regionID);
   if (currentMap === 'World' && !regionOf && !onQuiz) {
     geoStyleBasic.defaultColor = 'rgba(0, 104, 0, .05)';

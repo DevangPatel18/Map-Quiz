@@ -4,10 +4,10 @@ import store from '../store';
 
 export const getGeoPathCenterAndZoom = geographyPath => {
   const { regionMarkers } = store.getState().data;
-  const { dimensions, regionKey } = store.getState().map;
+  const { dimensions } = store.getState().map;
   const { properties } = geographyPath;
 
-  const center = regionMarkers.find(x => x[regionKey] === properties[regionKey])
+  const center = regionMarkers.find(x => x.regionID === properties.regionID)
     .coordinates;
   const path = geoPath().projection(projection());
   const bounds = path.bounds(geographyPath);
@@ -15,7 +15,7 @@ export const getGeoPathCenterAndZoom = geographyPath => {
   const height = bounds[1][1] - bounds[0][1];
   let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
 
-  zoom = properties[regionKey] === 'USA' ? zoom * 6 : zoom;
+  zoom = properties.regionID === 'USA' ? zoom * 6 : zoom;
   zoom = Math.min(zoom, 64);
   return { center, zoom };
 };
