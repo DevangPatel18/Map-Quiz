@@ -202,11 +202,11 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
   return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
 };
 
-export const getNewRegionDataSet = async regionKey => {
-  const geographyPaths = await getRegionGeographyPaths(regionKey);
+export const getNewRegionDataSet = async regionName => {
+  const geographyPaths = await getRegionGeographyPaths(regionName);
   const regionMarkers = getRegionMarkers(geographyPaths);
-  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionKey);
-  const subRegionName = geoPathLinks[regionKey].subRegionName
+  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionName);
+  const subRegionName = geoPathLinks[regionName].subRegionName
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
 
