@@ -30,6 +30,23 @@ export const getRegionStyles = () => {
   }, {});
 };
 
+export const getSelectUpdatedRegionStyles = regionIDList => {
+  const { geographyPaths } = store.getState().data;
+  const { regionStyles } = store.getState().map;
+  return regionIDList.reduce(
+    (newRegionStyles, regionID) => {
+      const geoPath = geographyPaths.find(
+        geoPath => geoPath.properties.regionID === regionID
+      );
+      if (geoPath) {
+        newRegionStyles[regionID] = colorPicker(geoPath);
+      }
+      return newRegionStyles;
+    },
+    { ...regionStyles }
+  );
+};
+
 export const colorPicker = geo => {
   const {
     isQuizActive,
