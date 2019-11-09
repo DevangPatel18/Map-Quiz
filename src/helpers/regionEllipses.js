@@ -1,9 +1,8 @@
 import React from 'react';
 import { Markers, Marker } from 'react-simple-maps';
-import { colorPicker } from './MapHelpers';
 
 export default function regionEllipses() {
-  const { currentMap, tooltip } = this.props.map;
+  const { currentMap, tooltip, regionStyles } = this.props.map;
   const { isQuizActive } = this.props.quiz;
   const { regionEllipsesData } = this.props.data;
   const currentMapEllipses = regionEllipsesData[currentMap]
@@ -16,7 +15,7 @@ export default function regionEllipses() {
       const { regionID } = properties
       const caribbeanMap = currentMap === 'Caribbean'
 
-      if(!regionID) return '';
+      if(!regionID || !regionStyles[regionID]) return '';
 
       const mouseHandlers = !tooltip || isQuizActive
         ? {}
@@ -25,7 +24,7 @@ export default function regionEllipses() {
             onMouseLeave: this.props.tooltipLeave,
           };
 
-      const { geoStyle } = colorPicker(region);
+      const { geoStyle } = regionStyles[regionID];
       const circleFill =
         geoStyle.default.fill === 'rgb(0, 140, 0)'
          ? "rgba(255,255,255,0.5)"
