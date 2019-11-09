@@ -12,7 +12,7 @@ const initialState = {
   quizAnswers: [],
   quizType: null,
   isQuizActive: false,
-  activeQuestionNum: null,
+  quizIdx: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
   isTypeQuizActive: false,
@@ -48,7 +48,7 @@ export default function(state = initialState, action) {
         selectedProperties:
           action.selectedProperties || emptySelectedProperties,
         quizGuesses: [...state.quizGuesses, action.isAnswerCorrect],
-        activeQuestionNum: state.activeQuestionNum + 1,
+        quizIdx: state.quizIdx + 1,
         infoTabShow: false,
       };
     case types.SET_QUIZ_STATE:
@@ -65,7 +65,7 @@ export default function(state = initialState, action) {
         quizGuesses: [],
         isQuizActive: false,
         quizType: null,
-        activeQuestionNum: null,
+        quizIdx: null,
         isTypeQuizActive: false,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,

@@ -86,12 +86,12 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
     quizGuesses,
     quizAnswers,
     isTypeQuizActive,
-    activeQuestionNum,
+    quizIdx,
   } = store.getState().quiz;
   const geoQuizIdx = quizAnswers.indexOf(regionID);
 
   // Fills region with name input request as yellow
-  if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
+  if (isTypeQuizActive && quizAnswers[quizIdx] === regionID) {
     geoStyleBasic.defaultColor = PROMPT_COLOR;
     geoStyleBasic.hoverColor = PROMPT_COLOR;
   }
@@ -107,7 +107,7 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
 
   // Fills status of region click, green for correct and red for incorrect
   geoStyleBasic.pressedColor =
-    !isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]
+    !isTypeQuizActive && regionID === quizAnswers[quizIdx]
       ? RIGHT_ANSWER_COLOR
       : WRONG_ANSWER_COLOR;
 

@@ -30,7 +30,7 @@ export const generateQuizState = (quizAnswers, quizType) => ({
   quizAnswers,
   quizType,
   isQuizActive: true,
-  activeQuestionNum: 0,
+  quizIdx: 0,
   quizGuesses: [],
   selectedProperties: '',
   isTypeQuizActive: quizType.split('_')[0] === 'type',
@@ -38,12 +38,12 @@ export const generateQuizState = (quizAnswers, quizType) => ({
 
 export const checkClickAnswer = ansGeoProperties => {
   const {
-    activeQuestionNum,
+    quizIdx,
     quizAnswers,
     selectedProperties,
   } = store.getState().quiz;
   const isAnswerCorrect =
-    ansGeoProperties.regionID === quizAnswers[activeQuestionNum];
+    ansGeoProperties.regionID === quizAnswers[quizIdx];
   const newGeoProperties = isAnswerCorrect
     ? ansGeoProperties
     : selectedProperties;
@@ -51,11 +51,11 @@ export const checkClickAnswer = ansGeoProperties => {
 };
 
 export const checkTypeAnswer = userGuess => {
-  const { quizAnswers, activeQuestionNum, quizType } = store.getState().quiz;
+  const { quizAnswers, quizIdx, quizType } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
 
   const answerProperties = geographyPaths.find(
-    geo => geo.properties.regionID === quizAnswers[activeQuestionNum]
+    geo => geo.properties.regionID === quizAnswers[quizIdx]
   ).properties;
 
   const isAnswerCorrect =
@@ -71,9 +71,9 @@ export const checkTypeAnswer = userGuess => {
 };
 
 export const checkIfQuizIncomplete = () => {
-  const { activeQuestionNum, quizGuesses, quizAnswers } = store.getState().quiz;
+  const { quizIdx, quizGuesses, quizAnswers } = store.getState().quiz;
   return (
-    activeQuestionNum === quizGuesses.length &&
+    quizIdx === quizGuesses.length &&
     quizGuesses.length < quizAnswers.length
   );
 };
