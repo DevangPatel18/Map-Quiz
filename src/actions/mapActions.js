@@ -60,6 +60,19 @@ export const regionSelect = regionName => async dispatch => {
   }
 };
 
+const updateCheckedRegions = async (dispatch, checkedRegions) => {
+  const { mapViewCountryIds } = store.getState().data;
+  const filterRegions = Object.keys(checkedRegions)
+    .filter(region => checkedRegions[region])
+    .map(region => mapViewCountryIds[region])
+    .reduce((a, b) => a.concat(b), []);
+  await dispatch({
+    type: types.SET_REGION_CHECKBOX,
+    checkedRegions,
+    filterRegions,
+  });
+};
+
 export const regionZoom = event => async dispatch => {
   const { geographyPaths } = store.getState().data;
   const { selectedProperties } = store.getState().quiz;
