@@ -23,22 +23,13 @@ export const setRegionCheckbox = regionName => async dispatch => {
     checkedRegions[regionName] = !checkedRegions[regionName];
   }
 
-  const filterRegions = Object.keys(checkedRegions)
-    .filter(region => checkedRegions[region])
-    .map(region => mapViewCountryIds[region])
-    .reduce((a, b) => a.concat(b), []);
-
-  await dispatch({
-    type: types.SET_REGION_CHECKBOX,
-    checkedRegions,
-    filterRegions,
-  });
+  await updateCheckedRegions(dispatch, checkedRegions);
   await partialMapRefresh(dispatch, mapViewCountryIds[regionName]);
 };
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { mapViewRegionIds, mapViewCountryIds } = store.getState().data;
+  const { mapViewRegionIds } = store.getState().data;
   await dispatch({
     type: types.CHANGE_MAP_VIEW,
     regionName,
@@ -46,15 +37,7 @@ export const regionSelect = regionName => async dispatch => {
   });
   await partialMapRefresh(dispatch, mapViewRegionIds[regionName]);
   if (regionName === 'World') {
-    const filterRegions = Object.keys(checkedRegions)
-      .filter(region => checkedRegions[region])
-      .map(region => mapViewCountryIds[region])
-      .reduce((a, b) => a.concat(b), []);
-    await dispatch({
-      type: types.SET_REGION_CHECKBOX,
-      checkedRegions,
-      filterRegions,
-    });
+    await updateCheckedRegions(dispatch, checkedRegions);
     await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
     dispatch({ type: types.DISABLE_OPT });
   }
