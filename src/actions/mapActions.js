@@ -33,11 +33,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
     checkedRegions,
     filterRegions,
   });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(mapViewCountryIds[regionName]),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, mapViewCountryIds[regionName]);
 };
 
 export const regionSelect = regionName => async dispatch => {
@@ -48,11 +44,7 @@ export const regionSelect = regionName => async dispatch => {
     regionName,
     filterRegions: mapViewRegionIds[regionName] || [],
   });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(mapViewRegionIds[regionName]),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, mapViewRegionIds[regionName]);
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
       .filter(region => checkedRegions[region])
@@ -91,11 +83,7 @@ export const regionZoom = event => async dispatch => {
     center,
     zoom,
   });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(regionIDList),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, regionIDList);
 };
 
 export const zoomMap = factor => dispatch => {
