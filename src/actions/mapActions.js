@@ -5,7 +5,10 @@ import {
   getNewCenter,
   getChoroplethTooltipContent,
 } from '../helpers/mapActionHelpers';
-import { getRegionStyles } from '../helpers/MapHelpers';
+import {
+  getRegionStyles,
+  getSelectUpdatedRegionStyles,
+} from '../helpers/MapHelpers';
 import * as types from './types';
 import store from '../store';
 
@@ -29,7 +32,10 @@ export const setRegionCheckbox = regionName => async dispatch => {
     checkedRegions,
     filterRegions,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(mapViewCountryIds[regionName]),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -41,7 +47,10 @@ export const regionSelect = regionName => async dispatch => {
     regionName,
     filterRegions: mapViewRegionIds[regionName] || [],
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(mapViewRegionIds[regionName]),
+  });
   dispatch({ type: types.DISABLE_OPT });
   if (regionName === 'World') {
     const filterRegions = Object.keys(checkedRegions)
@@ -60,6 +69,7 @@ export const regionSelect = regionName => async dispatch => {
 
 export const regionZoom = event => async dispatch => {
   const { geographyPaths } = store.getState().data;
+  const { selectedProperties } = store.getState().quiz;
   const geographyPath = geographyPaths.find(
     x => x.properties.name === event.target.innerText
   );
@@ -69,6 +79,10 @@ export const regionZoom = event => async dispatch => {
   }
 
   const { properties } = geographyPath;
+  const oldRegionID = selectedProperties.regionID;
+  const newRegionID = properties.regionID;
+  const regionIDList =
+    oldRegionID === newRegionID ? [newRegionID] : [oldRegionID, newRegionID];
   const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
     type: types.REGION_SELECT,
@@ -76,7 +90,10 @@ export const regionZoom = event => async dispatch => {
     center,
     zoom,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(regionIDList),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 

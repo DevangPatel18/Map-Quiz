@@ -30,7 +30,7 @@ export const getRegionStyles = () => {
   }, {});
 };
 
-export const getSelectUpdatedRegionStyles = regionIDList => {
+export const getSelectUpdatedRegionStyles = (regionIDList = []) => {
   const { geographyPaths } = store.getState().data;
   const { regionStyles } = store.getState().map;
   return regionIDList.reduce(
