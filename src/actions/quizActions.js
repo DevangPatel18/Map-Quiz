@@ -7,27 +7,36 @@ import {
   checkTypeAnswer,
   getRegionIdsForQuiz,
 } from '../helpers/quizActionHelpers';
-import { getRegionStyles } from '../helpers/MapHelpers';
+import { getSelectUpdatedRegionStyles } from '../helpers/MapHelpers';
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
+  const { filterRegions } = store.getState().map;
   const quizRegionIds = getRegionIdsForQuiz();
   let quizAnswers = generateAnswerArray(quizRegionIds);
   quizAnswers = removeQuizExceptions(quizAnswers, quizType);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(filterRegions),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
 export const closeQuiz = () => async dispatch => {
+  const { filterRegions } = store.getState().map;
   await dispatch({ type: types.QUIZ_CLOSE });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(filterRegions),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
 export const processClickAnswer = geoProperties => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
+  const { quizAnswers, quizIdx } = store.getState().quiz;
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
@@ -38,11 +47,16 @@ export const processClickAnswer = geoProperties => async dispatch => {
     selectedProperties: newGeoProperties,
     infoTabShow: isAnswerCorrect,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
 export const loadNewInfoTab = newGeoProperties => async dispatch => {
+  const { selectedProperties } = store.getState().quiz;
   await dispatch({
     type: types.REGION_CLICK,
     selectedProperties: newGeoProperties,
@@ -53,7 +67,14 @@ export const loadNewInfoTab = newGeoProperties => async dispatch => {
     selectedProperties: newGeoProperties,
     infoTabShow: true,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  const updatedRegionIDList = [
+    newGeoProperties.regionID,
+    selectedProperties.regionID,
+  ];
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -64,18 +85,26 @@ export const toggleInfoTab = () => async dispatch => {
     selectedProperties,
     infoTabShow: !infoTabShow,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles([selectedProperties.regionID]),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
+  const { quizAnswers, quizIdx } = store.getState().quiz;
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
     isAnswerCorrect,
   });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };
 
