@@ -4,6 +4,7 @@ import {
   getOrientation,
   getNewCenter,
   getChoroplethTooltipContent,
+  getVisibleRegionStyles,
 } from '../helpers/mapActionHelpers';
 import {
   getRegionStyles,
@@ -128,7 +129,8 @@ export const moveMap = (event, data) => async dispatch => {
 
 export const setChoropleth = choropleth => async dispatch => {
   await dispatch({ type: types.SET_CHOROPLETH, choropleth });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  const regionStyles = getVisibleRegionStyles();
+  await dispatch({ type: types.UPDATE_MAP, regionStyles });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -164,6 +166,7 @@ export const sliderSet = value => dispatch => {
 
 export const setChoroYear = value => async dispatch => {
   await dispatch({ type: types.SET_CHORO_YEAR, value });
-  await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
+  const regionStyles = getVisibleRegionStyles();
+  await dispatch({ type: types.UPDATE_MAP, regionStyles });
   dispatch({ type: types.DISABLE_OPT });
 };

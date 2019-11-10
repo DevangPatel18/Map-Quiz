@@ -1,5 +1,6 @@
 import { geoPath } from 'd3-geo';
 import projection from '../helpers/projection';
+import { getRegionStyles, getSelectUpdatedRegionStyles } from './MapHelpers';
 import store from '../store';
 
 export const getGeoPathCenterAndZoom = geographyPath => {
@@ -67,4 +68,11 @@ export const getChoroplethTooltipContent = geography => {
       : 'N/A';
   }
   return ` - ${contentData}`;
+};
+
+export const getVisibleRegionStyles = () => {
+  const { currentMap, filterRegions } = store.getState().map;
+  return currentMap === 'World'
+    ? getRegionStyles()
+    : getSelectUpdatedRegionStyles(filterRegions);
 };
