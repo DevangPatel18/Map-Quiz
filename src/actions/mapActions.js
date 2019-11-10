@@ -159,7 +159,7 @@ export const setChoroYear = value => async dispatch => {
   dispatch({ type: types.DISABLE_OPT });
 };
 
-const partialMapRefresh = async (dispatch, regionIDList) => {
+export const partialMapRefresh = async (dispatch, regionIDList) => {
   await dispatch({
     type: types.UPDATE_MAP,
     regionStyles: getSelectUpdatedRegionStyles(regionIDList),

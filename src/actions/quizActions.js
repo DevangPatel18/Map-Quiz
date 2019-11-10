@@ -7,7 +7,7 @@ import {
   checkTypeAnswer,
   getRegionIdsForQuiz,
 } from '../helpers/quizActionHelpers';
-import { getSelectUpdatedRegionStyles } from '../helpers/MapHelpers';
+import { partialMapRefresh } from './mapActions';
 import store from '../store';
 
 export const startQuiz = quizType => async dispatch => {
@@ -17,21 +17,13 @@ export const startQuiz = quizType => async dispatch => {
   quizAnswers = removeQuizExceptions(quizAnswers, quizType);
   const quizAttributes = generateQuizState(quizAnswers, quizType);
   await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(filterRegions),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, filterRegions);
 };
 
 export const closeQuiz = () => async dispatch => {
   const { filterRegions } = store.getState().map;
   await dispatch({ type: types.QUIZ_CLOSE });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(filterRegions),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, filterRegions);
 };
 
 export const processClickAnswer = geoProperties => async dispatch => {
@@ -48,11 +40,7 @@ export const processClickAnswer = geoProperties => async dispatch => {
     infoTabShow: isAnswerCorrect,
   });
   const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 
 export const loadNewInfoTab = newGeoProperties => async dispatch => {
@@ -71,11 +59,7 @@ export const loadNewInfoTab = newGeoProperties => async dispatch => {
     newGeoProperties.regionID,
     selectedProperties.regionID,
   ];
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 
 export const toggleInfoTab = () => async dispatch => {
@@ -85,11 +69,7 @@ export const toggleInfoTab = () => async dispatch => {
     selectedProperties,
     infoTabShow: !infoTabShow,
   });
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles([selectedProperties.regionID]),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, [selectedProperties.regionID]);
 };
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
@@ -101,11 +81,7 @@ export const processTypeAnswer = (userGuess = null) => async dispatch => {
     isAnswerCorrect,
   });
   const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
-  await dispatch({
-    type: types.UPDATE_MAP,
-    regionStyles: getSelectUpdatedRegionStyles(updatedRegionIDList),
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 
 export const setLabel = (markerToggle = '') => async dispatch => {
