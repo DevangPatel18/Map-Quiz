@@ -62,12 +62,12 @@ export const colorPicker = geo => {
   const geoStyleBasic = { ...DEFAULT_GEO_STYLE };
   const stroke = { ...DEFAULT_STROKE_STYLE };
 
-  if (isSelected) {
-    setGeoStyleSelected(geoStyleBasic, stroke);
+  if (isQuizActive) {
+    updateGeographyQuizStyle(regionID, geoStyleBasic, stroke);
   }
 
-  if (isQuizActive) {
-    updateGeographyQuizStyle(regionID, geoStyleBasic);
+  if (isSelected) {
+    setGeoStyleSelected(geoStyleBasic, stroke);
   }
 
   checkWorldViewHide(geo, geoStyleBasic, stroke);
@@ -81,7 +81,7 @@ export const colorPicker = geo => {
   return { geoStyle, stroke };
 };
 
-export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
+export const updateGeographyQuizStyle = (regionID, geoStyleBasic, stroke) => {
   const {
     quizGuesses,
     quizAnswers,
@@ -115,13 +115,17 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
   if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
     geoStyleBasic.defaultColor = RIGHT_ANSWER_COLOR;
     geoStyleBasic.hoverColor = RIGHT_ANSWER_COLOR;
+    stroke.strokeColor = 'black';
   }
 };
 
 export const setGeoStyleSelected = (geoStyleBasic, stroke) => {
   const { defaultZoom } = store.getState().map;
-  geoStyleBasic.defaultColor = 'rgb(0, 100, 0)';
-  geoStyleBasic.hoverColor = 'rgb(0, 100, 0)';
+  const { isQuizActive } = store.getState().quiz;
+  if (!isQuizActive) {
+    geoStyleBasic.defaultColor = 'rgb(0, 100, 0)';
+    geoStyleBasic.hoverColor = 'rgb(0, 100, 0)';
+  }
   stroke.strokeWidth = 1 / defaultZoom;
   stroke.strokeColor = PROMPT_COLOR;
 };
