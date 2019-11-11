@@ -28,7 +28,7 @@ export const closeQuiz = () => async dispatch => {
 
 export const processClickAnswer = geoProperties => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
-  const { quizAnswers, quizIdx } = store.getState().quiz;
+  const { quizAnswers, quizGuesses, quizIdx } = store.getState().quiz;
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
@@ -40,6 +40,9 @@ export const processClickAnswer = geoProperties => async dispatch => {
     infoTabShow: isAnswerCorrect,
   });
   const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
+  if (quizIdx > 0 && quizGuesses[quizIdx - 1]) {
+    updatedRegionIDList.push(quizAnswers[quizIdx - 1]);
+  }
   await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 
