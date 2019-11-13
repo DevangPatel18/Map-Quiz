@@ -133,9 +133,10 @@ class QuestionBox extends Component {
 
   handleIncorrectResponseTable = () => {
     const { quizType } = this.props.quiz;
-    const { subRegionName } = this.props.map;
+    const { subRegionName, orientation } = this.props.map;
     const testing = quizType.split('_')[1];
     const answerTableData = this.getIncorrectResponseList();
+    const maxHeight = isMobile && orientation === 'landscape' ? '35vh' : '60vh';
 
     if (answerTableData.length === 0) return;
 
@@ -200,10 +201,10 @@ class QuestionBox extends Component {
 
     return (
       <>
-        <h3>Incorrect Responses</h3>
+        <h3 style={{ margin: '0.4em' }}>Incorrect Responses</h3>
         <div
           style={{
-            maxHeight: '60vh',
+            maxHeight,
             overflow: 'auto',
             background: 'rgba(255,255,255,0.1)',
           }}
@@ -263,6 +264,7 @@ const getAppState = createSelector(
   state => state.quiz.quizAnswers,
   state => state.quiz.quizIdx,
   state => state.map.subRegionName,
+  state => state.map.orientation,
   state => state.data.geographyPaths,
   (
     quizType,
@@ -270,10 +272,11 @@ const getAppState = createSelector(
     quizAnswers,
     quizIdx,
     subRegionName,
+    orientation,
     geographyPaths
   ) => ({
     quiz: { quizType, quizGuesses, quizAnswers, quizIdx },
-    map: { subRegionName },
+    map: { subRegionName, orientation },
     data: { geographyPaths },
   })
 );
