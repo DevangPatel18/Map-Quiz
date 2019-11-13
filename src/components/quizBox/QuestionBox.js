@@ -93,6 +93,7 @@ class QuestionBox extends Component {
     const { quiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers } = quiz;
 
+    const incorrectResponseTable = this.handleIncorrectResponseTable();
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
       quizAnswers.length
@@ -101,7 +102,14 @@ class QuestionBox extends Component {
       <QuizPrompt>
         <div>
           <div>{finalText}</div>
-          <div style={{ display: 'flex' }}>
+          {incorrectResponseTable}
+          <div
+            style={{
+              display: 'flex',
+              paddingTop: '1em',
+              justifyContent: 'center',
+            }}
+          >
             <Button
               onClick={closeQuiz}
               size="large"
