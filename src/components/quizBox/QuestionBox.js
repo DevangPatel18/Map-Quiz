@@ -122,6 +122,27 @@ class QuestionBox extends Component {
     );
   };
 
+  getIncorrectResponseList = () => {
+    const { quizGuesses, quizAnswers } = this.props.quiz;
+    const { geographyPaths } = this.props.data;
+    return quizAnswers
+      .reduce((acc, regionID, idx) => {
+        if (!quizGuesses[idx]) {
+          acc.push(regionID);
+        }
+        return acc;
+      }, [])
+      .reduce((acc, regionID) => {
+        const regionGeoPath = geographyPaths.find(
+          geoPath => geoPath.properties.regionID === regionID
+        );
+        if (regionGeoPath) {
+          acc.push(regionGeoPath.properties);
+        }
+        return acc;
+      }, []);
+  };
+
   render() {
     const { quizType, quizAnswers, quizIdx } = this.props.quiz;
     const { geographyPaths } = this.props.data;
