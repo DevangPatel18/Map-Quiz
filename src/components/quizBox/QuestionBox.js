@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'semantic-ui-react';
+import { Button, Input, Table } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -9,6 +9,7 @@ import {
   closeQuiz,
   processTypeAnswer,
 } from '../../actions/quizActions';
+import { capitalize } from './QuizBox';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -119,6 +120,89 @@ class QuestionBox extends Component {
           </div>
         </div>
       </QuizPrompt>
+    );
+  };
+
+  handleIncorrectResponseTable = () => {
+    const { quizType } = this.props.quiz;
+    const { subRegionName } = this.props.map;
+    const testing = quizType.split('_')[1];
+    const answerTableData = this.getIncorrectResponseList();
+
+    if (answerTableData.length === 0) return;
+
+    let MainContent;
+    if (testing === 'name') {
+      MainContent = (
+        <Table basic="very" textAlign="center" celled compact inverted unstackable>
+          <Table.Body>
+            <Table.Row>
+              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
+            </Table.Row>
+            {answerTableData.map(({ regionID, name }) => (
+              <Table.Row key={regionID}>
+                <Table.Cell>{name}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      );
+    } else if (testing === 'capital') {
+      MainContent = (
+        <Table basic="very" textAlign="center" celled compact inverted unstackable>
+          <Table.Body>
+            <Table.Row>
+              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
+              <Table.HeaderCell>Capital</Table.HeaderCell>
+            </Table.Row>
+            {answerTableData.map(({ regionID, name, capital }) => (
+              <Table.Row key={regionID}>
+                <Table.Cell>{name}</Table.Cell>
+                <Table.Cell>{capital}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      );
+    } else if (testing === 'flag') {
+      MainContent = (
+        <Table basic="very" textAlign="center" celled compact inverted unstackable>
+          <Table.Body>
+            <Table.Row>
+              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
+              <Table.HeaderCell>Flag</Table.HeaderCell>
+            </Table.Row>
+            {answerTableData.map(({ regionID, name, flag }) => (
+              <Table.Row key={regionID}>
+                <Table.Cell>{name}</Table.Cell>
+                <Table.Cell>
+                  <img
+                    src={flag}
+                    alt={`${name}-flag`}
+                    height="50"
+                    style={{ border: '1px solid black' }}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      );
+    }
+
+    return (
+      <>
+        <h3>Incorrect Responses</h3>
+        <div
+          style={{
+            maxHeight: '60vh',
+            overflow: 'auto',
+            background: 'rgba(255,255,255,0.1)',
+          }}
+        >
+          {MainContent}
+        </div>
+      </>
     );
   };
 
