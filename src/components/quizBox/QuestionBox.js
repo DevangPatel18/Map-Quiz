@@ -132,72 +132,13 @@ class QuestionBox extends Component {
   };
 
   handleIncorrectResponseTable = () => {
-    const { quizType } = this.props.quiz;
     const { subRegionName, orientation } = this.props.map;
-    const testing = quizType.split('_')[1];
     const answerTableData = this.getIncorrectResponseList();
-    const maxHeight = isMobile && orientation === 'landscape' ? '35vh' : '60vh';
 
     if (answerTableData.length === 0) return;
 
-    let MainContent;
-    if (testing === 'name') {
-      MainContent = (
-        <Table basic="very" textAlign="center" celled compact inverted unstackable>
-          <Table.Body>
-            <Table.Row>
-              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
-            </Table.Row>
-            {answerTableData.map(({ regionID, name }) => (
-              <Table.Row key={regionID}>
-                <Table.Cell>{name}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      );
-    } else if (testing === 'capital') {
-      MainContent = (
-        <Table basic="very" textAlign="center" celled compact inverted unstackable>
-          <Table.Body>
-            <Table.Row>
-              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
-              <Table.HeaderCell>Capital</Table.HeaderCell>
-            </Table.Row>
-            {answerTableData.map(({ regionID, name, capital }) => (
-              <Table.Row key={regionID}>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>{capital}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      );
-    } else if (testing === 'flag') {
-      MainContent = (
-        <Table basic="very" textAlign="center" celled compact inverted unstackable>
-          <Table.Body>
-            <Table.Row>
-              <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
-              <Table.HeaderCell>Flag</Table.HeaderCell>
-            </Table.Row>
-            {answerTableData.map(({ regionID, name, flag }) => (
-              <Table.Row key={regionID}>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>
-                  <img
-                    src={flag}
-                    alt={`${name}-flag`}
-                    height="50"
-                    style={{ border: '1px solid black' }}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      );
-    }
+    const maxHeight = isMobile && orientation === 'landscape' ? '35vh' : '60vh';
+    const { headerCell, tableRows } = this.getTableContent(answerTableData);
 
     return (
       <>
@@ -209,10 +150,66 @@ class QuestionBox extends Component {
             background: 'rgba(255,255,255,0.1)',
           }}
         >
-          {MainContent}
+          <Table basic="very" textAlign="center" celled compact inverted unstackable>
+            <Table.Body>
+              <Table.Row>
+                <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
+                {headerCell}
+              </Table.Row>
+              {tableRows}
+            </Table.Body>
+          </Table>
         </div>
       </>
     );
+  };
+
+  getTableContent = answerTableData => {
+    const { quizType } = this.props.quiz;
+    const testing = quizType.split('_')[1];
+    const tableContent = { headerCell: '', tableRows: '' };
+
+    switch (testing) {
+      case 'name':
+        tableContent.headerCell = '';
+        tableContent.tableRows = answerTableData.map(({ regionID, name }) => (
+          <Table.Row key={regionID}>
+            <Table.Cell>{name}</Table.Cell>
+          </Table.Row>
+        ));
+        break;
+      case 'capital':
+        tableContent.headerCell = <Table.HeaderCell>Capital</Table.HeaderCell>;
+        tableContent.tableRows = answerTableData.map(
+          ({ regionID, name, capital }) => (
+            <Table.Row key={regionID}>
+              <Table.Cell>{name}</Table.Cell>
+              <Table.Cell>{capital}</Table.Cell>
+            </Table.Row>
+          )
+        );
+        break;
+      case 'flag':
+        tableContent.headerCell = <Table.HeaderCell>Flag</Table.HeaderCell>;
+        tableContent.tableRows = answerTableData.map(
+          ({ regionID, name, flag }) => (
+            <Table.Row key={regionID}>
+              <Table.Cell>{name}</Table.Cell>
+              <Table.Cell>
+                <img
+                  src={flag}
+                  alt={`${name}-flag`}
+                  height="50"
+                  style={{ border: '1px solid black' }}
+                />
+              </Table.Cell>
+            </Table.Row>
+          )
+        );
+        break;
+      default:
+    }
+    return tableContent;
   };
 
   getIncorrectResponseList = () => {
