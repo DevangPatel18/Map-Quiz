@@ -3,7 +3,11 @@ import { Button, Input, Table } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
+import QuizPrompt, {
+  QuizFlag,
+  FinalDialogButtons,
+  TableContainer,
+} from '../styles/QuizPromptStyles';
 import {
   startQuiz,
   closeQuiz,
@@ -103,13 +107,7 @@ class QuestionBox extends Component {
         <div>
           <div>{finalText}</div>
           {incorrectResponseTable}
-          <div
-            style={{
-              display: 'flex',
-              paddingTop: '1em',
-              justifyContent: 'center',
-            }}
-          >
+          <FinalDialogButtons>
             <Button
               onClick={closeQuiz}
               size="large"
@@ -125,7 +123,7 @@ class QuestionBox extends Component {
               content="RESTART"
               aria-label="restart quiz"
             />
-          </div>
+          </FinalDialogButtons>
         </div>
       </QuizPrompt>
     );
@@ -137,19 +135,12 @@ class QuestionBox extends Component {
 
     if (answerTableData.length === 0) return;
 
-    const maxHeight = isMobile && orientation === 'landscape' ? '35vh' : '60vh';
     const { headerCell, tableRows } = this.getTableContent(answerTableData);
 
     return (
       <>
         <h3 style={{ margin: '0.4em' }}>Incorrect Responses</h3>
-        <div
-          style={{
-            maxHeight,
-            overflow: 'auto',
-            background: 'rgba(255,255,255,0.1)',
-          }}
-        >
+        <TableContainer orientation={orientation}>
           <Table basic="very" textAlign="center" celled compact inverted unstackable>
             <Table.Body>
               <Table.Row>
@@ -159,7 +150,7 @@ class QuestionBox extends Component {
               {tableRows}
             </Table.Body>
           </Table>
-        </div>
+        </TableContainer>
       </>
     );
   };
