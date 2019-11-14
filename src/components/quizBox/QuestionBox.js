@@ -162,7 +162,7 @@ class QuestionBox extends Component {
 
     switch (testing) {
       case 'name':
-        tableContent.headerCell = '';
+        tableContent.headerCell = null;
         tableContent.tableRows = answerTableData.map(({ regionID, name }) => (
           <Table.Row key={regionID}>
             <Table.Cell>{name}</Table.Cell>
