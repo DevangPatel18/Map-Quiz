@@ -9,6 +9,7 @@ export const SET_MAP = 'SET_MAP';
 export const UPDATE_MAP = 'UPDATE_MAP';
 export const MOVE_CENTER = 'MOVE_CENTER';
 export const SET_CHOROPLETH = 'SET_CHOROPLETH';
+export const SET_CHOROPLETH_PARAMS = 'SET_CHOROPLETH_PARAMS';
 export const SET_CHORO_YEAR = 'SET_CHORO_YEAR';
 export const TOGGLE_TOOLTIP = 'TOGGLE_TOOLTIP';
 export const TOGGLE_SLIDER = 'TOGGLE_SLIDER';
