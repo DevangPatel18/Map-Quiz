@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { choroParams } from '../helpers/choroplethFunctions';
 import ChoroplethLegendStyles from './styles/ChoroplethLegendStyles';
 
 const ChoroplethLegend = props => {
-  const { choropleth } = props.map;
+  const { choropleth } = props;
 
   if (choropleth === 'None') return null;
 
@@ -42,8 +43,11 @@ const ChoroplethLegend = props => {
   return <ChoroplethLegendStyles>{legendsMap}</ChoroplethLegendStyles>;
 };
 
-const mapStateToProps = state => ({
-  map: state.map,
-});
+const getAppState = createSelector(
+  state => state.map.choropleth,
+  choropleth => ({
+    choropleth,
+  })
+);
 
-export default connect(mapStateToProps)(ChoroplethLegend);
+export default connect(getAppState)(ChoroplethLegend);
