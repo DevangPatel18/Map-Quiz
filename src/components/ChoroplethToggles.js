@@ -19,7 +19,8 @@ class ChoroplethToggles extends Component {
   };
 
   setRadio = (e, { value }) => {
-    const { setChoropleth, sliderSet } = this.props;
+    const { setChoropleth, choropleth, sliderSet } = this.props;
+    if (value === choropleth) return;
     setChoropleth(value);
     if (value !== 'population') {
       sliderSet(false);
@@ -29,7 +30,6 @@ class ChoroplethToggles extends Component {
   render() {
     const { sliderSet, choropleth, slider } = this.props;
     const radioSize = isMobile ? 'mini' : 'small';
-    console.log('choro toggle render');
 
     return (
       <ChoroplethTogglesStyles>
@@ -75,7 +75,6 @@ const getAppState = createSelector(
   })
 );
 
-export default connect(
-  getAppState,
-  { setChoropleth, sliderSet }
-)(ChoroplethToggles);
+export default connect(getAppState, { setChoropleth, sliderSet })(
+  ChoroplethToggles
+);

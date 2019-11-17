@@ -84,5 +84,18 @@ const QuizFlag = styled.div`
   }
 `;
 
+export const FinalDialogButtons = styled.div`
+  display: flex;
+  margin-top: 0.5em;
+  justify-content: center;
+`;
+
+export const TableContainer = styled.div`
+  max-height: ${props =>
+    isMobile && props.orientation === 'landscape' ? '35vh' : '60vh'};
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.1);
+`;
+
 export default QuizPrompt;
 export { QuizFlag };

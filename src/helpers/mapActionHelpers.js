@@ -1,13 +1,14 @@
 import { geoPath } from 'd3-geo';
 import projection from '../helpers/projection';
+import { getRegionStyles, getSelectUpdatedRegionStyles } from './MapHelpers';
 import store from '../store';
 
 export const getGeoPathCenterAndZoom = geographyPath => {
   const { regionMarkers } = store.getState().data;
-  const { dimensions, regionKey } = store.getState().map;
+  const { dimensions } = store.getState().map;
   const { properties } = geographyPath;
 
-  const center = regionMarkers.find(x => x[regionKey] === properties[regionKey])
+  const center = regionMarkers.find(x => x.regionID === properties.regionID)
     .coordinates;
   const path = geoPath().projection(projection());
   const bounds = path.bounds(geographyPath);
@@ -15,7 +16,7 @@ export const getGeoPathCenterAndZoom = geographyPath => {
   const height = bounds[1][1] - bounds[0][1];
   let zoom = 0.7 / Math.max(width / dimensions[0], height / dimensions[1]);
 
-  zoom = properties[regionKey] === 'USA' ? zoom * 6 : zoom;
+  zoom = properties.regionID === 'USA' ? zoom * 6 : zoom;
   zoom = Math.min(zoom, 64);
   return { center, zoom };
 };
@@ -55,11 +56,11 @@ export const getNewCenter = direction => {
 export const getChoroplethTooltipContent = geography => {
   const { choropleth, slider, sliderYear } = store.getState().map;
   const { populationData } = store.getState().data;
-  const { alpha3Code } = geography.properties;
+  const { regionID } = geography.properties;
   let contentData;
   if (slider) {
-    contentData = populationData[alpha3Code]
-      ? parseInt(populationData[alpha3Code][sliderYear]).toLocaleString()
+    contentData = populationData[regionID]
+      ? parseInt(populationData[regionID][sliderYear]).toLocaleString()
       : 'N/A';
   } else {
     contentData = geography.properties[choropleth]
@@ -67,4 +68,11 @@ export const getChoroplethTooltipContent = geography => {
       : 'N/A';
   }
   return ` - ${contentData}`;
+};
+
+export const getVisibleRegionStyles = () => {
+  const { currentMap, filterRegions } = store.getState().map;
+  return currentMap === 'World'
+    ? getRegionStyles()
+    : getSelectUpdatedRegionStyles(filterRegions);
 };

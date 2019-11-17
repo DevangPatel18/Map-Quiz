@@ -8,7 +8,7 @@ const About = () => {
         <h1>About</h1>
         <p>
           Map Quiz is a site for learning and testing geography, including
-          country names, capitals, and flags.
+          country and subdivision names, capitals, and flags.
         </p>
       </div>
       <div className="about-section">
@@ -31,6 +31,8 @@ const About = () => {
           </a>
           {', '}
           <a href="http://geojson.xyz/">geojson.xyz</a>
+          {', '}
+          <a href="https://gadm.org/index.html">GADM maps and data</a>
         </p>
         <p>
           {'Capital Coordinates: '}

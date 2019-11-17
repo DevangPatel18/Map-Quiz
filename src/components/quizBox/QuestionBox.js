@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'semantic-ui-react';
+import { Button, Input, Table } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import QuizPrompt, { QuizFlag } from '../styles/QuizPromptStyles';
+import QuizPrompt, {
+  QuizFlag,
+  FinalDialogButtons,
+  TableContainer,
+} from '../styles/QuizPromptStyles';
 import {
   startQuiz,
   closeQuiz,
   processTypeAnswer,
 } from '../../actions/quizActions';
+import { capitalize } from './QuizBox';
 
 class QuestionBox extends Component {
   constructor(props) {
@@ -92,6 +97,7 @@ class QuestionBox extends Component {
     const { quiz, closeQuiz } = this.props;
     const { quizGuesses, quizAnswers } = quiz;
 
+    const incorrectResponseTable = this.handleIncorrectResponseTable();
     const score = quizGuesses.reduce((a, b) => a * 1 + b * 1);
     const finalText = `Your score is ${score} / ${
       quizAnswers.length
@@ -100,7 +106,8 @@ class QuestionBox extends Component {
       <QuizPrompt>
         <div>
           <div>{finalText}</div>
-          <div style={{ display: 'flex' }}>
+          {incorrectResponseTable}
+          <FinalDialogButtons>
             <Button
               onClick={closeQuiz}
               size="large"
@@ -116,24 +123,118 @@ class QuestionBox extends Component {
               content="RESTART"
               aria-label="restart quiz"
             />
-          </div>
+          </FinalDialogButtons>
         </div>
       </QuizPrompt>
     );
   };
 
-  render() {
-    const { quizType, quizAnswers, activeQuestionNum } = this.props.quiz;
+  handleIncorrectResponseTable = () => {
+    const { subRegionName, orientation } = this.props.map;
+    const answerTableData = this.getIncorrectResponseList();
+
+    if (answerTableData.length === 0) return;
+
+    const { headerCell, tableRows } = this.getTableContent(answerTableData);
+
+    return (
+      <>
+        <h3 style={{ margin: '0.4em' }}>Incorrect Responses</h3>
+        <TableContainer orientation={orientation}>
+          <Table basic="very" textAlign="center" celled compact inverted unstackable>
+            <Table.Body>
+              <Table.Row>
+                <Table.HeaderCell>{capitalize(subRegionName)}</Table.HeaderCell>
+                {headerCell}
+              </Table.Row>
+              {tableRows}
+            </Table.Body>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  };
+
+  getTableContent = answerTableData => {
+    const { quizType } = this.props.quiz;
+    const testing = quizType.split('_')[1];
+    const tableContent = { headerCell: '', tableRows: '' };
+
+    switch (testing) {
+      case 'name':
+        tableContent.headerCell = null;
+        tableContent.tableRows = answerTableData.map(({ regionID, name }) => (
+          <Table.Row key={regionID}>
+            <Table.Cell>{name}</Table.Cell>
+          </Table.Row>
+        ));
+        break;
+      case 'capital':
+        tableContent.headerCell = <Table.HeaderCell>Capital</Table.HeaderCell>;
+        tableContent.tableRows = answerTableData.map(
+          ({ regionID, name, capital }) => (
+            <Table.Row key={regionID}>
+              <Table.Cell>{name}</Table.Cell>
+              <Table.Cell>{capital}</Table.Cell>
+            </Table.Row>
+          )
+        );
+        break;
+      case 'flag':
+        tableContent.headerCell = <Table.HeaderCell>Flag</Table.HeaderCell>;
+        tableContent.tableRows = answerTableData.map(
+          ({ regionID, name, flag }) => (
+            <Table.Row key={regionID}>
+              <Table.Cell>{name}</Table.Cell>
+              <Table.Cell>
+                <img
+                  src={flag}
+                  alt={`${name}-flag`}
+                  height="50"
+                  style={{ border: '1px solid black' }}
+                />
+              </Table.Cell>
+            </Table.Row>
+          )
+        );
+        break;
+      default:
+    }
+    return tableContent;
+  };
+
+  getIncorrectResponseList = () => {
+    const { quizGuesses, quizAnswers } = this.props.quiz;
     const { geographyPaths } = this.props.data;
-    const { regionKey } = this.props.map;
+    return quizAnswers
+      .reduce((acc, regionID, idx) => {
+        if (!quizGuesses[idx]) {
+          acc.push(regionID);
+        }
+        return acc;
+      }, [])
+      .reduce((acc, regionID) => {
+        const regionGeoPath = geographyPaths.find(
+          geoPath => geoPath.properties.regionID === regionID
+        );
+        if (regionGeoPath) {
+          acc.push(regionGeoPath.properties);
+        }
+        return acc;
+      }, []);
+  };
+
+  render() {
+    const { quizType, quizAnswers, quizIdx } = this.props.quiz;
+    const { geographyPaths } = this.props.data;
     const [type, testing] = quizType.split('_');
 
-    if (activeQuestionNum !== quizAnswers.length) {
+    if (quizIdx !== quizAnswers.length) {
       if (type === 'type') {
         return this.handleTypePrompt(testing);
       }
-      const alpha = quizAnswers[activeQuestionNum];
-      const region = geographyPaths.find(x => x.properties[regionKey] === alpha)
+      const alpha = quizAnswers[quizIdx];
+      const region = geographyPaths.find(x => x.properties.regionID === alpha)
         .properties[testing];
 
       if (testing === 'flag') {
@@ -149,21 +250,21 @@ const getAppState = createSelector(
   state => state.quiz.quizType,
   state => state.quiz.quizGuesses,
   state => state.quiz.quizAnswers,
-  state => state.quiz.activeQuestionNum,
-  state => state.map.regionKey,
+  state => state.quiz.quizIdx,
   state => state.map.subRegionName,
+  state => state.map.orientation,
   state => state.data.geographyPaths,
   (
     quizType,
     quizGuesses,
     quizAnswers,
-    activeQuestionNum,
-    regionKey,
+    quizIdx,
     subRegionName,
+    orientation,
     geographyPaths
   ) => ({
-    quiz: { quizType, quizGuesses, quizAnswers, activeQuestionNum },
-    map: { regionKey, subRegionName },
+    quiz: { quizType, quizGuesses, quizAnswers, quizIdx },
+    map: { subRegionName, orientation },
     data: { geographyPaths },
   })
 );

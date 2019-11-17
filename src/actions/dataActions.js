@@ -15,6 +15,7 @@ import {
   getEllipseMarkerProperties,
   getCaribbeanMarkerProperties,
 } from '../helpers/regionEllipsesHelpers';
+import { getRegionStyles } from '../helpers/MapHelpers';
 import store from '../store';
 
 export const loadGeographyPaths = () => async dispatch => {
@@ -39,6 +40,7 @@ export const loadRegionData = () => async dispatch => {
     populationData,
     mapViewRegionIds,
     mapViewCountryIds,
+    regionStyles: getRegionStyles(), 
   });
 
   dispatch({ type: types.DISABLE_OPT });
@@ -73,14 +75,14 @@ export const loadRegionDataSet = regionDataSetKey => async dispatch => {
 
 export const getRegionEllipses = currentMap => dispatch => {
   const { map, data } = store.getState();
-  const { filterRegions, regionKey } = map;
+  const { filterRegions } = map;
   const { geographyPaths } = data;
   const filterFunc = getFilterFunction(currentMap);
   const markersArray = geographyPaths
-    .filter(x => filterRegions.includes(x.properties[regionKey]))
+    .filter(x => filterRegions.includes(x.properties.regionID))
     .filter(filterFunc)
     .map(region => {
-      const regionID = region.properties[regionKey];
+      const regionID = region.properties.regionID;
       const caribbeanMap = currentMap === 'Caribbean';
       const markerData = caribbeanMap
         ? getCaribbeanMarkerProperties(regionID)
@@ -97,20 +99,18 @@ export const getRegionEllipses = currentMap => dispatch => {
 };
 
 export const getRegionSearchOptions = currentMap => dispatch => {
-  const { map, data } = store.getState();
-  const { regionKey } = map;
-  const { geographyPaths, mapViewRegionIds } = data;
+  const { geographyPaths, mapViewRegionIds } = store.getState().data;
 
   let mapRegions = getRegionIdUniqueGeoPaths(geographyPaths).map(
     obj => obj.properties
   );
   if (currentMap !== 'World') {
     mapRegions = mapRegions.filter(x =>
-      mapViewRegionIds[currentMap].includes(x[regionKey])
+      mapViewRegionIds[currentMap].includes(x.regionID)
     );
   }
 
-  const regionSearchOptions = getRegionSearchObjectArray(mapRegions, regionKey);
+  const regionSearchOptions = getRegionSearchObjectArray(mapRegions);
 
   dispatch({
     type: types.GET_REGION_SEARCH_LIST,

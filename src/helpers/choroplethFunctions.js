@@ -5,58 +5,88 @@ import {
   interpolatePiYG,
   interpolatePurples,
 } from 'd3';
-import store from "../store";
-
-const popScale = scaleSequential(interpolateReds).domain([0, 10]);
-const areaScale = scaleSequential(interpolateOranges).domain([0, 17000000]);
-const giniScale = scaleSequential(interpolatePiYG).domain([70, 20]);
-const densityScale = scaleSequential(interpolatePurples).domain([0, 7]);
+import store from '../store';
+import { jenks } from './jenksNaturalBreaks';
 
 const choroParams = {
   population: {
-    scaleFunc: popScale,
-    bounds: [1, 5, 10, 20, 30, 40, 50, 100, 200, 1000, 1400].map(
-      x => x * 1000000
-    ),
+    colorScheme: interpolateReds,
     units: 'people',
   },
   area: {
-    scaleFunc: areaScale,
-    bounds: [0, 17000000],
+    colorScheme: interpolateOranges,
     units: 'km²',
   },
   gini: {
-    scaleFunc: giniScale,
-    bounds: [70, 20],
+    colorScheme: interpolatePiYG,
     units: '',
   },
   density: {
-    scaleFunc: densityScale,
-    bounds: [25, 50, 75, 100, 200, 300, 1000, 27000],
+    colorScheme: interpolatePurples,
     units: 'people / km²',
   },
 };
 
 const choroplethColor = (choropleth, geo) => {
-  const { slider, sliderYear } = store.getState().map;
-  const { populationData } = store.getState().data;
-  const { scaleFunc, bounds } = choroParams[choropleth];
+  const { slider, sliderYear, currentMap } = store.getState().map;
+  const { populationData, choroplethParams } = store.getState().data;
+  const mapChoroData = choroplethParams[currentMap];
+  const { regionID } = geo.properties;
+  if (mapChoroData && mapChoroData[choropleth] && !slider) {
+    return choroplethParams[currentMap][choropleth]['regionStyles'][regionID];
+  }
 
+  const { bounds } = mapChoroData[choropleth];
   let choroplethNum;
-  if (slider && populationData[geo.properties.alpha3Code]) {
-    choroplethNum = populationData[geo.properties.alpha3Code][sliderYear];    
+  if (slider && populationData[geo.properties.regionID]) {
+    choroplethNum = populationData[geo.properties.regionID][sliderYear];
   } else {
     choroplethNum = geo.properties[choropleth.toLowerCase()];
   }
 
   if (choroplethNum) {
-    if (bounds.length > 2) {
-      const choroplethIndex = bounds.findIndex(x => x > choroplethNum);
-      return scaleFunc(choroplethIndex);
-    }
-    return scaleFunc(choroplethNum);
+    const { color } = bounds.find(({ val }) => choroplethNum <= val);
+    if (color) return color;
   }
   return '#000000';
+};
+
+export const getChoroplethParams = choropleth => {
+  const { currentMap, filterRegions } = store.getState().map;
+  let { geographyPaths } = store.getState().data;
+  if (currentMap !== 'World') {
+    geographyPaths = geographyPaths.filter(({ properties }) =>
+      filterRegions.includes(properties.regionID)
+    );
+  }
+  const dataSet = geographyPaths
+    .map(geoPath => ({
+      regionID: geoPath.properties.regionID,
+      val: geoPath.properties[choropleth],
+    }))
+    .sort((objA, objB) => objA.val - objB.val);
+  const numOnly = dataSet.map(obj => obj.val).filter(Number);
+  if (numOnly.length === 0) return {};
+  const classes = Math.min(parseInt(numOnly.length / 2), 10);
+  const jenksOutput = jenks(numOnly, classes);
+
+  const scaleFunc = scaleSequential(choroParams[choropleth].colorScheme).domain([
+    0,
+    [jenksOutput.length - 1],
+  ]);
+
+  const regionStyles = dataSet.reduce((acc, { regionID, val }) => {
+    const idx = jenksOutput.findIndex(bound => val <= bound);
+    acc[regionID] = val ? scaleFunc(idx) : '#000000';
+    return acc;
+  });
+
+  const bounds = jenksOutput.map((bound, idx) => ({
+    val: bound,
+    color: scaleFunc(idx),
+  }));
+
+  return { regionStyles, bounds };
 };
 
 export { choroParams, choroplethColor };

@@ -23,24 +23,24 @@ export const getFilterFunction = currentMap => {
   let filterFunc = filterByArea;
   if (currentMap === 'World') {
     const filterByOceaniaISOCodes = x =>
-      OceaniaUN.includes(x.properties.alpha3Code);
+      OceaniaUN.includes(x.properties.regionID);
     filterFunc = x => filterByArea(x) || filterByOceaniaISOCodes(x);
   }
   return filterFunc;
 };
 
-export const getCaribbeanMarkerProperties = alpha3Code => {
+export const getCaribbeanMarkerProperties = regionID => {
   const { capitalMarkers } = store.getState().data;
-  const marker = capitalMarkers.find(x => x.alpha3Code === alpha3Code);
+  const marker = capitalMarkers.find(x => x.regionID === regionID);
   let deltaX = 20;
   let deltaY = -20;
-  [deltaX, deltaY] = labelDist(deltaX, deltaY, alpha3Code);
+  [deltaX, deltaY] = labelDist(deltaX, deltaY, regionID);
   let circleX = deltaX;
   let circleY = deltaY;
   let lineX = deltaX;
   let lineY = deltaY;
 
-  if (!labelist.includes(alpha3Code)) {
+  if (!labelist.includes(regionID)) {
     circleX = deltaX * 0.8;
     circleY = deltaY * 0.8;
     lineX = deltaX * 0.46;
@@ -56,8 +56,8 @@ export const getCaribbeanMarkerProperties = alpha3Code => {
 };
 
 const getGeoEllipseDimensions = region => {
-  const { regionKey, currentMap } = store.getState().map;
-  const regionID = region.properties[regionKey];
+  const { currentMap } = store.getState().map;
+  const { regionID } = region.properties;
   const path = geoPath().projection(projection());
   const bounds = path.bounds(region);
   const originWidth = bounds[1][0] - bounds[0][0];
@@ -74,13 +74,12 @@ const getGeoEllipseDimensions = region => {
 
 export const getEllipseMarkerProperties = region => {
   const { regionMarkers } = store.getState().data;
-  const { regionKey } = store.getState().map;
-  const regionID = region.properties[regionKey];
+  const regionID = region.properties.regionID;
   let ellipseData;
   let marker = '';
   if (Object.keys(OceaniaEllipseDimensions).includes(regionID)) {
     ellipseData = OceaniaEllipseDimensions[regionID];
-    marker = regionMarkers.find(x => x[regionKey] === regionID);
+    marker = regionMarkers.find(x => x.regionID === regionID);
   } else {
     ellipseData = getGeoEllipseDimensions(region);
     const path = geoPath().projection(projection());

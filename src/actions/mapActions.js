@@ -4,7 +4,13 @@ import {
   getOrientation,
   getNewCenter,
   getChoroplethTooltipContent,
+  getVisibleRegionStyles,
 } from '../helpers/mapActionHelpers';
+import {
+  getRegionStyles,
+  getSelectUpdatedRegionStyles,
+} from '../helpers/MapHelpers';
+import { getChoroplethParams } from '../helpers/choroplethFunctions';
 import * as types from './types';
 import store from '../store';
 
@@ -18,44 +24,42 @@ export const setRegionCheckbox = regionName => async dispatch => {
     checkedRegions[regionName] = !checkedRegions[regionName];
   }
 
-  const filterRegions = Object.keys(checkedRegions)
-    .filter(region => checkedRegions[region])
-    .map(region => mapViewCountryIds[region])
-    .reduce((a, b) => a.concat(b), []);
-
-  await dispatch({
-    type: types.SET_REGION_CHECKBOX,
-    checkedRegions,
-    filterRegions,
-  });
-  dispatch({ type: types.DISABLE_OPT });
+  await updateCheckedRegions(dispatch, checkedRegions);
+  await partialMapRefresh(dispatch, mapViewCountryIds[regionName]);
 };
 
 export const regionSelect = regionName => async dispatch => {
   const { checkedRegions } = store.getState().map;
-  const { mapViewRegionIds, mapViewCountryIds } = store.getState().data;
+  const { mapViewRegionIds } = store.getState().data;
   await dispatch({
     type: types.CHANGE_MAP_VIEW,
     regionName,
     filterRegions: mapViewRegionIds[regionName] || [],
   });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, mapViewRegionIds[regionName]);
   if (regionName === 'World') {
-    const filterRegions = Object.keys(checkedRegions)
-      .filter(region => checkedRegions[region])
-      .map(region => mapViewCountryIds[region])
-      .reduce((a, b) => a.concat(b), []);
-    await dispatch({
-      type: types.SET_REGION_CHECKBOX,
-      checkedRegions,
-      filterRegions,
-    });
+    await updateCheckedRegions(dispatch, checkedRegions);
+    await dispatch({ type: types.UPDATE_MAP, regionStyles: getRegionStyles() });
     dispatch({ type: types.DISABLE_OPT });
   }
 };
 
+const updateCheckedRegions = async (dispatch, checkedRegions) => {
+  const { mapViewCountryIds } = store.getState().data;
+  const filterRegions = Object.keys(checkedRegions)
+    .filter(region => checkedRegions[region])
+    .map(region => mapViewCountryIds[region])
+    .reduce((a, b) => a.concat(b), []);
+  await dispatch({
+    type: types.SET_REGION_CHECKBOX,
+    checkedRegions,
+    filterRegions,
+  });
+};
+
 export const regionZoom = event => async dispatch => {
   const { geographyPaths } = store.getState().data;
+  const { selectedProperties } = store.getState().quiz;
   const geographyPath = geographyPaths.find(
     x => x.properties.name === event.target.innerText
   );
@@ -65,6 +69,10 @@ export const regionZoom = event => async dispatch => {
   }
 
   const { properties } = geographyPath;
+  const oldRegionID = selectedProperties.regionID;
+  const newRegionID = properties.regionID;
+  const regionIDList =
+    oldRegionID === newRegionID ? [newRegionID] : [oldRegionID, newRegionID];
   const { center, zoom } = getGeoPathCenterAndZoom(geographyPath);
   await dispatch({
     type: types.REGION_SELECT,
@@ -72,7 +80,7 @@ export const regionZoom = event => async dispatch => {
     center,
     zoom,
   });
-  dispatch({ type: types.DISABLE_OPT });
+  await partialMapRefresh(dispatch, regionIDList);
 };
 
 export const zoomMap = factor => dispatch => {
@@ -105,7 +113,25 @@ export const moveMap = (event, data) => async dispatch => {
 };
 
 export const setChoropleth = choropleth => async dispatch => {
+  const { currentMap } = store.getState().map;
+  const mapChoroData = store.getState().data.choroplethParams[currentMap];
+  if (!(mapChoroData && mapChoroData[choropleth]) && choropleth !== 'None') {
+    const { regionStyles, bounds } = getChoroplethParams(choropleth);
+    if (!regionStyles) {
+      alert(`Sorry! ${choropleth} data not available.`);
+      return;
+    }
+    await dispatch({
+      type: types.SET_CHOROPLETH_PARAMS,
+      currentMap,
+      attribute: choropleth,
+      regionStyles,
+      bounds,
+    });
+  }
   await dispatch({ type: types.SET_CHOROPLETH, choropleth });
+  const regionStyles = getVisibleRegionStyles();
+  await dispatch({ type: types.UPDATE_MAP, regionStyles });
   dispatch({ type: types.DISABLE_OPT });
 };
 
@@ -141,5 +167,15 @@ export const sliderSet = value => dispatch => {
 
 export const setChoroYear = value => async dispatch => {
   await dispatch({ type: types.SET_CHORO_YEAR, value });
+  const regionStyles = getVisibleRegionStyles();
+  await dispatch({ type: types.UPDATE_MAP, regionStyles });
+  dispatch({ type: types.DISABLE_OPT });
+};
+
+export const partialMapRefresh = async (dispatch, regionIDList) => {
+  await dispatch({
+    type: types.UPDATE_MAP,
+    regionStyles: getSelectUpdatedRegionStyles(regionIDList),
+  });
   dispatch({ type: types.DISABLE_OPT });
 };

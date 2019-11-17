@@ -103,24 +103,25 @@ const addRestDataToGeoPaths = (restData, geographyPaths) =>
       ...countryData.altSpellings,
       ...Object.values(countryData.translations),
     ];
+    geography.properties.regionID = countryData.alpha3Code;
   });
 
 const updatePopDataInGeoPaths = (populationData, geographyPaths) =>
   geographyPaths.filter(checkGeoPathValidId).forEach(geography => {
-    const { alpha3Code, area } = geography.properties;
-    if (populationData[alpha3Code]) {
-      geography.properties.population = +populationData[alpha3Code]['2018'];
+    const { regionID, area } = geography.properties;
+    if (populationData[regionID]) {
+      geography.properties.population = +populationData[regionID]['2018'];
     }
     geography.properties.density = +(geography.properties.population / area);
   });
 
 const getCountryMarkers = geographyPaths =>
   geographyPaths.map(x => {
-    const { name, alpha3Code } = x.properties;
+    const { name, regionID } = x.properties;
     const path = geoPath().projection(projection());
     return {
       name,
-      alpha3Code,
+      regionID,
       coordinates: projection().invert(path.centroid(x)),
       markerOffset: 0,
     };
@@ -130,14 +131,14 @@ const getWorldCapitalMarkers = geographyPaths =>
   geographyPaths
     .filter(checkGeoPathValidId)
     .reduce((capitalMarkers, geography) => {
-      const { capital, alpha2Code, alpha3Code } = geography.properties;
+      const { capital, alpha2Code, regionID } = geography.properties;
       const capObject = capitalData.find(
         capitalObj => capitalObj.CountryCode === alpha2Code
       );
       if (capObject) {
         capitalMarkers.push({
           name: capital,
-          alpha3Code,
+          regionID,
           coordinates: [
             +capObject.CapitalLongitude,
             +capObject.CapitalLatitude,
@@ -168,20 +169,19 @@ export const getMapViewIds = worldDataSet => {
   const mapViewCountryIds = getMapViewCountryIds(mapViewRegionIds);
 
   for (let mapView in mapViewRegionIds) {
-    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.alpha3Code);
+    mapViewRegionIds[mapView] = mapViewRegionIds[mapView].map(obj => obj.regionID);
   }
 
   return { mapViewRegionIds, mapViewCountryIds };
 };
 
 export const getRegionIdUniqueGeoPaths = geographyPaths => {
-  const { regionKey } = store.getState().map;
   const regionIDs = []
   const uniqueGeoPaths = geographyPaths.filter(obj => {
-    if(regionIDs.includes(obj.properties[regionKey])){
+    if(regionIDs.includes(obj.properties.regionID)){
       return false
     }
-    regionIDs.push(obj.properties[regionKey])
+    regionIDs.push(obj.properties.regionID)
     return true
   })
   return uniqueGeoPaths
@@ -192,7 +192,7 @@ const getMapViewCountryIds = mapViewRegionIds => {
   for (let mapView in mapViewRegionIds) {
     mapViewCountryIds[mapView] = mapViewRegionIds[mapView]
       .filter(obj => !obj.regionOf)
-      .map(obj => obj.alpha3Code);
+      .map(obj => obj.regionID);
   }
   return mapViewCountryIds;
 };
@@ -202,11 +202,11 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
   return worldRegions.includes(currentMap) && worldRegions.includes(regionName);
 };
 
-export const getNewRegionDataSet = async regionKey => {
-  const geographyPaths = await getRegionGeographyPaths(regionKey);
+export const getNewRegionDataSet = async regionName => {
+  const geographyPaths = await getRegionGeographyPaths(regionName);
   const regionMarkers = getRegionMarkers(geographyPaths);
-  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionKey);
-  const subRegionName = geoPathLinks[regionKey].subRegionName
+  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionName);
+  const subRegionName = geoPathLinks[regionName].subRegionName
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
 
@@ -244,6 +244,7 @@ const addRegionDataToGeographyPaths = async (
         geoPath.properties.area = +area;
         geoPath.properties.population = +population;
         geoPath.properties.spellings = [name];
+        geoPath.properties.density = parseInt(population/area);
       }
     }
 };
@@ -286,10 +287,10 @@ const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
   return newCapitalMarkers;
 };
 
-export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
+export const getRegionSearchObjectArray = mapRegions =>
   mapRegions
-    .map(x => getRegionSearchObject(x, regionKey))
-    .filter(x => x !== null)
+    .map(getRegionSearchObject)
+    .filter(x => x.key)
     .filter(
       x =>
         !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
@@ -298,23 +299,20 @@ export const getRegionSearchObjectArray = (mapRegions, regionKey) =>
     )
     .sort((a, b) => (a.text > b.text ? 1 : -1));
 
-const getRegionSearchObject = (properties, regionKey) => {
+const getRegionSearchObject = properties => {
   let key;
   let flag;
-  if (regionKey === 'alpha3Code') {
-    if (!properties.alpha2Code) {
-      return null;
-    }
+  if (properties.alpha2Code) {
     key = properties.alpha2Code.toString().toLowerCase();
     flag = { flag: key };
   } else {
-    key = properties[regionKey];
+    key = properties.regionID;
   }
 
   return {
     key,
     ...flag,
     text: properties.name,
-    value: properties[regionKey],
+    value: properties.regionID,
   };
 };

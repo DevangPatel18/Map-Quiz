@@ -15,11 +15,36 @@ const DEFAULT_STROKE_STYLE = {
 };
 
 export const checkRegionHide = geography => {
-  const { filterRegions, currentMap, regionKey } = store.getState().map;
-  const regionID = geography.properties[regionKey];
-  const isRegionOnQuiz = filterRegions.includes(regionID);
+  const { filterRegions, currentMap } = store.getState().map;
+  const isRegionOnQuiz = filterRegions.includes(geography.properties.regionID);
   const isRegionHidden = currentMap !== 'World' ? !isRegionOnQuiz : false;
   return isRegionHidden;
+};
+
+export const getRegionStyles = () => {
+  const { geographyPaths } = store.getState().data;
+  return geographyPaths.reduce((regionStyles, geoPath) => {
+    const { regionID } = geoPath.properties;
+    regionStyles[regionID] = colorPicker(geoPath);
+    return regionStyles;
+  }, {});
+};
+
+export const getSelectUpdatedRegionStyles = (regionIDList = []) => {
+  const { geographyPaths } = store.getState().data;
+  const { regionStyles } = store.getState().map;
+  return regionIDList.reduce(
+    (newRegionStyles, regionID) => {
+      const geoPath = geographyPaths.find(
+        geoPath => geoPath.properties.regionID === regionID
+      );
+      if (geoPath) {
+        newRegionStyles[regionID] = colorPicker(geoPath);
+      }
+      return newRegionStyles;
+    },
+    { ...regionStyles }
+  );
 };
 
 export const colorPicker = geo => {
@@ -28,27 +53,30 @@ export const colorPicker = geo => {
     selectedProperties,
     infoTabShow,
   } = store.getState().quiz;
-  const { regionKey, choropleth } = store.getState().map;
+  const { choropleth } = store.getState().map;
   const isSelected =
-    selectedProperties[regionKey] === geo.properties[regionKey]
+    selectedProperties.regionID === geo.properties.regionID
       ? infoTabShow
       : false;
-  const regionID = geo.properties[regionKey];
+  const regionID = geo.properties.regionID;
   const geoStyleBasic = { ...DEFAULT_GEO_STYLE };
   const stroke = { ...DEFAULT_STROKE_STYLE };
 
-  if (isSelected) {
-    setGeoStyleSelected(geoStyleBasic, stroke);
+  if (isQuizActive) {
+    updateGeographyQuizStyle(regionID, geoStyleBasic, stroke);
   }
 
-  if (isQuizActive) {
-    updateGeographyQuizStyle(regionID, geoStyleBasic);
+  if (isSelected) {
+    setGeoStyleSelected(geoStyleBasic, stroke);
   }
 
   checkWorldViewHide(geo, geoStyleBasic, stroke);
 
   if (choropleth !== 'None' && !isQuizActive) {
     geoStyleBasic.defaultColor = choroplethColor(choropleth, geo);
+    if (!isSelected) {
+      stroke.strokeColor = 'black';
+    }
   }
 
   const geoStyle = getGeoStyle(geoStyleBasic);
@@ -56,17 +84,17 @@ export const colorPicker = geo => {
   return { geoStyle, stroke };
 };
 
-export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
+export const updateGeographyQuizStyle = (regionID, geoStyleBasic, stroke) => {
   const {
     quizGuesses,
     quizAnswers,
     isTypeQuizActive,
-    activeQuestionNum,
+    quizIdx,
   } = store.getState().quiz;
   const geoQuizIdx = quizAnswers.indexOf(regionID);
 
   // Fills region with name input request as yellow
-  if (isTypeQuizActive && quizAnswers[activeQuestionNum] === regionID) {
+  if (isTypeQuizActive && quizAnswers[quizIdx] === regionID) {
     geoStyleBasic.defaultColor = PROMPT_COLOR;
     geoStyleBasic.hoverColor = PROMPT_COLOR;
   }
@@ -82,7 +110,7 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
 
   // Fills status of region click, green for correct and red for incorrect
   geoStyleBasic.pressedColor =
-    !isTypeQuizActive && regionID === quizAnswers[activeQuestionNum]
+    !isTypeQuizActive && regionID === quizAnswers[quizIdx]
       ? RIGHT_ANSWER_COLOR
       : WRONG_ANSWER_COLOR;
 
@@ -90,24 +118,27 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic) => {
   if (geoQuizIdx !== -1 && quizGuesses[geoQuizIdx]) {
     geoStyleBasic.defaultColor = RIGHT_ANSWER_COLOR;
     geoStyleBasic.hoverColor = RIGHT_ANSWER_COLOR;
+    stroke.strokeColor = 'black';
   }
 };
 
 export const setGeoStyleSelected = (geoStyleBasic, stroke) => {
   const { defaultZoom } = store.getState().map;
-  geoStyleBasic.defaultColor = 'rgb(0, 100, 0)';
-  geoStyleBasic.hoverColor = 'rgb(0, 100, 0)';
+  const { isQuizActive } = store.getState().quiz;
+  if (!isQuizActive) {
+    geoStyleBasic.defaultColor = 'rgb(0, 100, 0)';
+    geoStyleBasic.hoverColor = 'rgb(0, 100, 0)';
+  }
   stroke.strokeWidth = 1 / defaultZoom;
   stroke.strokeColor = PROMPT_COLOR;
 };
 
 export const checkWorldViewHide = (geography, geoStyleBasic, stroke) => {
-  const { currentMap, filterRegions, regionKey } = store.getState().map;
+  const { currentMap, filterRegions } = store.getState().map;
   const { selectedProperties, infoTabShow } = store.getState().quiz;
   const isSelected =
     selectedProperties === geography.properties ? infoTabShow : false;
-  const { regionOf } = geography.properties;
-  const regionID = geography.properties[regionKey];
+  const { regionOf, regionID } = geography.properties;
   const onQuiz = filterRegions.includes(regionID);
   if (currentMap === 'World' && !regionOf && !onQuiz) {
     geoStyleBasic.defaultColor = 'rgba(0, 104, 0, .05)';
@@ -129,3 +160,8 @@ export const getGeoStyle = ({ defaultColor, hoverColor, pressedColor }) => ({
     transition: 'fill .5s',
   },
 });
+
+export const defaultStyle = {
+  geoStyle: getGeoStyle({ ...DEFAULT_GEO_STYLE }),
+  stroke: { ...DEFAULT_STROKE_STYLE },
+};

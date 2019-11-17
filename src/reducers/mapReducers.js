@@ -17,9 +17,9 @@ const initialState = {
   orientation: 'default',
   disableOptimization: false,
   filterRegions: [],
+  regionStyles: {},
   currentMap: 'World',
   subRegionName: 'country',
-  regionKey: 'alpha3Code',
   checkedRegions: {
     'North & Central America': true,
     'South America': true,
@@ -37,7 +37,6 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case types.LOAD_DATA:
     case types.LOAD_PATHS:
     case types.REGION_CLICK:
     case types.QUIZ_ANSWER:
@@ -47,6 +46,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         disableOptimization: true,
+      };
+    case types.LOAD_DATA:
+      return {
+        ...state,
+        disableOptimization: true,
+        regionStyles: action.regionStyles,
       };
     case types.SET_REGION_CHECKBOX:
       const { checkedRegions, filterRegions } = action;
@@ -67,6 +72,8 @@ export default function(state = initialState, action) {
         filterRegions: action.filterRegions,
         currentMap: action.regionName,
         disableOptimization: true,
+        choropleth: 'None',
+        slider: false,
       };
     case types.REGION_SELECT:
       return {
@@ -102,6 +109,11 @@ export default function(state = initialState, action) {
         zoomFactor: action.zoomFactor,
         disableOptimization: true,
       };
+    case types.UPDATE_MAP:
+      return {
+        ...state,
+        regionStyles: action.regionStyles,
+      };
     case types.MOVE_CENTER:
       return {
         ...state,
@@ -133,11 +145,9 @@ export default function(state = initialState, action) {
       };
     case types.LOAD_REGION_DATA:
       const { subRegionName } = action;
-      const regionKey = subRegionName === 'country' ? 'alpha3Code' : 'regionID';
       return {
         ...state,
         subRegionName,
-        regionKey,
       };
     default:
       return state;

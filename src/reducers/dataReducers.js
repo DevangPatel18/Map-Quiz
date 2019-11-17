@@ -10,6 +10,7 @@ const initialState = {
   mapViewRegionIds: {},
   mapViewCountryIds: {},
   regionSearchList: {},
+  choroplethParams: {},
   loadingData: false,
 };
 
@@ -65,6 +66,20 @@ export default function(state = initialState, action) {
         regionSearchList: {
           ...state.regionSearchList,
           [action.currentMap]: action.regionSearchOptions,
+        },
+      };
+    case types.SET_CHOROPLETH_PARAMS:
+      return {
+        ...state,
+        choroplethParams: {
+          ...state.choroplethParams,
+          [action.currentMap]: {
+            ...state.choroplethParams[action.currentMap],
+            [action.attribute]: {
+              regionStyles: action.regionStyles,
+              bounds: action.bounds,
+            },
+          },
         },
       };
     case types.LOADING_DATA:

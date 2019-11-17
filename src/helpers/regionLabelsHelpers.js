@@ -22,23 +22,21 @@ export const getMarkerConfig = () => {
 
 export const getRegionMarker = (regionID, testing) => {
   const { regionMarkers, capitalMarkers } = store.getState().data;
-  const { regionKey } = store.getState().map;
   let marker;
   if (testing === 'name' || testing === 'flag') {
-    marker = regionMarkers.find(x => x[regionKey] === regionID);
+    marker = regionMarkers.find(x => x.regionID === regionID);
   } else if (testing === 'capital') {
-    marker = capitalMarkers.find(x => x[regionKey] === regionID);
+    marker = capitalMarkers.find(x => x.regionID === regionID);
   }
   return marker;
 };
 
 export const updateMarkerForSmallCarib = (labelData, regionID, testing) => {
   const { capitalMarkers } = store.getState().data;
-  const { regionKey } = store.getState().map;
   const [deltaX, deltaY, textAnchor] = labelDist(20, -20, regionID);
   labelData.marker =
     testing !== 'capital'
-      ? capitalMarkers.find(x => x[regionKey] === regionID)
+      ? capitalMarkers.find(x => x.regionID === regionID)
       : labelData.marker;
   labelData.deltaX = deltaX;
   labelData.deltaY = deltaY;
