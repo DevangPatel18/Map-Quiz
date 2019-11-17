@@ -10,6 +10,7 @@ import {
   getRegionStyles,
   getSelectUpdatedRegionStyles,
 } from '../helpers/MapHelpers';
+import { getChoroplethParams } from '../helpers/choroplethFunctions';
 import * as types from './types';
 import store from '../store';
 
@@ -112,6 +113,19 @@ export const moveMap = (event, data) => async dispatch => {
 };
 
 export const setChoropleth = choropleth => async dispatch => {
+  const { currentMap } = store.getState().map;
+  const mapChoroData = store.getState().data.choroplethParams[currentMap];
+  if (!(mapChoroData && mapChoroData[choropleth]) && choropleth !== 'None') {
+    const { regionStyles, bounds } = getChoroplethParams(choropleth);
+    if (!regionStyles) return;
+    await dispatch({
+      type: types.SET_CHOROPLETH_PARAMS,
+      currentMap,
+      attribute: choropleth,
+      regionStyles,
+      bounds,
+    });
+  }
   await dispatch({ type: types.SET_CHOROPLETH, choropleth });
   const regionStyles = getVisibleRegionStyles();
   await dispatch({ type: types.UPDATE_MAP, regionStyles });

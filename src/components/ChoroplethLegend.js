@@ -5,31 +5,17 @@ import { choroParams } from '../helpers/choroplethFunctions';
 import ChoroplethLegendStyles from './styles/ChoroplethLegendStyles';
 
 const ChoroplethLegend = props => {
-  const { choropleth } = props;
+  const { choropleth, currentMap, choroplethParams } = props;
 
   if (choropleth === 'None') return null;
 
-  const { scaleFunc, bounds, units } = choroParams[choropleth];
-  let legendsMap;
-  const grouped = bounds.length > 2;
+  const { units } = choroParams[choropleth];
+  const { bounds } = choroplethParams[currentMap][choropleth];
 
-  if (grouped) {
-    legendsMap = bounds;
-  } else {
-    const bound = (bounds[1] - bounds[0]) / 10;
-    legendsMap = [bounds[0]];
-    for (let i = 0; i < 10; i++) {
-      legendsMap.push(legendsMap[i] + bound);
-    }
-  }
-
-  legendsMap = legendsMap.map((x, i) => (
-    <div key={x} className="legendItem">
-      <div
-        className="legendColor"
-        style={{ background: `${scaleFunc(grouped ? i : x)}` }}
-      />
-      {x.toLocaleString()}
+  const legendsMap = bounds.map(({ val, color }) => (
+    <div key={color} className="legendItem">
+      <div className="legendColor" style={{ background: `${color}` }} />
+      {val.toLocaleString()}
     </div>
   ));
 
@@ -45,8 +31,12 @@ const ChoroplethLegend = props => {
 
 const getAppState = createSelector(
   state => state.map.choropleth,
-  choropleth => ({
+  state => state.map.currentMap,
+  state => state.data.choroplethParams,
+  (choropleth, currentMap, choroplethParams) => ({
     choropleth,
+    currentMap,
+    choroplethParams,
   })
 );
 
