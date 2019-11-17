@@ -244,6 +244,7 @@ const addRegionDataToGeographyPaths = async (
         geoPath.properties.area = +area;
         geoPath.properties.population = +population;
         geoPath.properties.spellings = [name];
+        geoPath.properties.density = parseInt(population/area);
       }
     }
 };
