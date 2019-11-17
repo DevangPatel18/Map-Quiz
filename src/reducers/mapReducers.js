@@ -72,6 +72,8 @@ export default function(state = initialState, action) {
         filterRegions: action.filterRegions,
         currentMap: action.regionName,
         disableOptimization: true,
+        choropleth: 'None',
+        slider: false,
       };
     case types.REGION_SELECT:
       return {
