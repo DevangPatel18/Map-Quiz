@@ -74,6 +74,9 @@ export const colorPicker = geo => {
 
   if (choropleth !== 'None' && !isQuizActive) {
     geoStyleBasic.defaultColor = choroplethColor(choropleth, geo);
+    if (!isSelected) {
+      stroke.strokeColor = 'black';
+    }
   }
 
   const geoStyle = getGeoStyle(geoStyleBasic);
