@@ -117,7 +117,10 @@ export const setChoropleth = choropleth => async dispatch => {
   const mapChoroData = store.getState().data.choroplethParams[currentMap];
   if (!(mapChoroData && mapChoroData[choropleth]) && choropleth !== 'None') {
     const { regionStyles, bounds } = getChoroplethParams(choropleth);
-    if (!regionStyles) return;
+    if (!regionStyles) {
+      alert(`Sorry! ${choropleth} data not available.`);
+      return;
+    }
     await dispatch({
       type: types.SET_CHOROPLETH_PARAMS,
       currentMap,
