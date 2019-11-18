@@ -7,17 +7,24 @@ const AboutStyles = styled.div`
 
   a {
     color: white;
-    font-weight: bolder;
+    text-decoration: underline;
 
     :hover {
       color: white;
-      text-decoration: underline;
     }
   }
 
   .about-section {
     margin-bottom: 4rem;
     padding: 0 1rem;
+  }
+
+  .reference-section {
+    ul {
+      padding: 0;
+      list-style-type: none;
+    }
+    padding-top: 1em;
   }
 `;
 
