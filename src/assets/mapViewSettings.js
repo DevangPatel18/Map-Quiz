@@ -10,6 +10,7 @@ const mapConfig = {
   'United States of America': { center: [-95, 35], zoom: 4 },
   China: { center: [102, 35], zoom: 3.7 },
   India: { center: [79, 21], zoom: 5.5 },
+  Germany: { center: [10.4, 51.1], zoom: 13 },
 };
 
 const mapViewsList = Object.keys(mapConfig);

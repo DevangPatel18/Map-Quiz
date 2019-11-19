@@ -29,6 +29,16 @@ const geoPathLink = {
     subRegionName: 'state',
     regionID: 'HASC_1',
   },
+  Germany: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574191982/Map%20Quiz/Germany_states.json',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574190575/Map%20Quiz/Germany_data.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574189403/Map%20Quiz/Germany_capitals_LatLng.csv',
+    subRegionName: 'state',
+    regionID: 'HASC_1',
+  },
 };
 
 export default geoPathLink;
