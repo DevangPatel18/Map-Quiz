@@ -16,7 +16,7 @@ const About = () => {
         <h1>References</h1>
         <p>Sources of data obtained for app.</p>
         {Object.keys(aboutLinks).map((sectionName, idx) => (
-          <div class="reference-section" key={idx}>
+          <div className="reference-section" key={idx}>
             <h3>{sectionName}</h3>
             <ul>
               {aboutLinks[sectionName].map((link, jdx) => (
