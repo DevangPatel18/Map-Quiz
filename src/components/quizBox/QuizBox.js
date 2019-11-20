@@ -11,6 +11,7 @@ import {
   closeQuiz,
   setLabel,
   toggleExternalRegions,
+  toggleTimer,
 } from '../../actions/quizActions';
 
 const generateQuizOptions = regionType => [
@@ -104,8 +105,14 @@ class QuizBox extends Component {
 
   render() {
     const { regionMenu } = this.state;
-    const { quiz, map, toggleExternalRegions, tooltipToggle } = this.props;
-    const { markerToggle, areExternalRegionsOnQuiz } = quiz;
+    const {
+      quiz,
+      map,
+      toggleExternalRegions,
+      tooltipToggle,
+      toggleTimer,
+    } = this.props;
+    const { markerToggle, areExternalRegionsOnQuiz, isTimerEnabled } = quiz;
     const { checkedRegions, currentMap, subRegionName, tooltip } = map;
     const regionLabel = markerToggle === 'name';
     const capitalLabel = markerToggle === 'capital';
@@ -188,6 +195,18 @@ class QuizBox extends Component {
               style={{}}
             />
           </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <Radio
+              slider
+              fitted
+              size={formSize}
+              label={`Timer`}
+              checked={isTimerEnabled}
+              onChange={toggleTimer}
+              style={{}}
+            />
+          </div>
         </div>
 
         {currentMap === 'World' && (
@@ -218,27 +237,27 @@ const getAppState = createSelector(
   state => state.map.tooltip,
   state => state.quiz.markerToggle,
   state => state.quiz.areExternalRegionsOnQuiz,
+  state => state.quiz.isTimerEnabled,
   (
     checkedRegions,
     currentMap,
     subRegionName,
     tooltip,
     markerToggle,
-    areExternalRegionsOnQuiz
+    areExternalRegionsOnQuiz,
+    isTimerEnabled
   ) => ({
     map: { checkedRegions, currentMap, subRegionName, tooltip },
-    quiz: { markerToggle, areExternalRegionsOnQuiz },
+    quiz: { markerToggle, areExternalRegionsOnQuiz, isTimerEnabled },
   })
 );
 
-export default connect(
-  getAppState,
-  {
-    setRegionCheckbox,
-    startQuiz,
-    closeQuiz,
-    setLabel,
-    tooltipToggle,
-    toggleExternalRegions,
-  }
-)(QuizBox);
+export default connect(getAppState, {
+  setRegionCheckbox,
+  startQuiz,
+  closeQuiz,
+  setLabel,
+  tooltipToggle,
+  toggleExternalRegions,
+  toggleTimer,
+})(QuizBox);
