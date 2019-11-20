@@ -94,3 +94,6 @@ export const setLabel = (markerToggle = '') => async dispatch => {
 
 export const toggleExternalRegions = () => dispatch =>
   dispatch({ type: types.TOGGLE_EXT_REGIONS });
+
+export const toggleTimer = () => dispatch =>
+  dispatch({ type: types.TOGGLE_TIMER });

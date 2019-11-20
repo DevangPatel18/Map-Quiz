@@ -19,6 +19,7 @@ const initialState = {
   markerToggle: '',
   infoTabShow: false,
   areExternalRegionsOnQuiz: true,
+  isTimerEnabled: true,
 };
 
 export default function(state = initialState, action) {
@@ -84,6 +85,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         areExternalRegionsOnQuiz: !state.areExternalRegionsOnQuiz,
+      };
+    case types.TOGGLE_TIMER:
+      return {
+        ...state,
+        isTimerEnabled: !state.isTimerEnabled,
       };
     default:
       return state;

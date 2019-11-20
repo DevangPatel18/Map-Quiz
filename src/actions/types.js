@@ -29,3 +29,4 @@ export const QUIZ_CLOSE = 'QUIZ_CLOSE';
 export const REGION_CLICK = 'REGION_CLICK';
 export const SET_LABEL = 'SET_LABEL';
 export const TOGGLE_EXT_REGIONS = 'TOGGLE_EXT_REGIONS';
+export const TOGGLE_TIMER = 'TOGGLE_TIMER';
