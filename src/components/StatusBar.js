@@ -17,15 +17,17 @@ class StatusBar extends Component {
   }
 
   componentDidMount() {
-    this.start();
+    const { isTimerEnabled } = this.props.quiz;
+    isTimerEnabled && this.start();
+    this.setState({ timerOn: true, time: 0 });
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    const { isTimerEnabled } = this.props.quiz;
+    isTimerEnabled && clearInterval(this.timer);
   }
 
   start = () => {
-    this.setState({ timerOn: true, time: 0 });
     const x = Date.now();
     this.timer = setInterval(
       () => this.setState({ time: Date.now() - x }),
@@ -34,47 +36,55 @@ class StatusBar extends Component {
   };
 
   pause = () => {
+    const { isTimerEnabled } = this.props.quiz;
     const { timerOn } = this.state;
     if (timerOn) {
-      clearInterval(this.timer);
+      isTimerEnabled && clearInterval(this.timer);
       this.setState({ timerOn: false, open: true });
     }
   };
 
   close = () => {
+    const { isTimerEnabled } = this.props.quiz;
     const { closeQuiz } = this.props;
     closeQuiz();
-    clearInterval(this.timer);
+    isTimerEnabled && clearInterval(this.timer);
     this.setState({ time: 0, timerOn: false });
   };
 
   closeModal = () => {
+    const { isTimerEnabled } = this.props.quiz;
     const { timerOn, time } = this.state;
     if (!timerOn) {
       this.setState({ timerOn: true, open: false }, () => {
-        const x = Date.now() - time;
-        this.timer = setInterval(
-          () => this.setState({ time: Date.now() - x }),
-          1000
-        );
+        if (isTimerEnabled) {
+          const x = Date.now() - time;
+          this.timer = setInterval(
+            () => this.setState({ time: Date.now() - x }),
+            1000
+          );
+        }
       });
     }
   };
 
   render() {
-    const { isQuizActive, quizGuesses, quizAnswers } = this.props.quiz;
+    const {
+      isQuizActive,
+      quizGuesses,
+      quizAnswers,
+      isTimerEnabled,
+    } = this.props.quiz;
     const { time, open } = this.state;
     const percentComp = isQuizActive
       ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
       : '';
-    const questionText = `Question: ${quizGuesses.length} / ${
-      quizAnswers.length
-    }`;
+    const questionText = `Question: ${quizGuesses.length} / ${quizAnswers.length}`;
     const scoreText = `Score: ${quizGuesses.filter(x => x).length}`;
     const pauseStyle =
       quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
 
-    if (quizGuesses.length === quizAnswers.length) {
+    if (quizGuesses.length === quizAnswers.length && isTimerEnabled) {
       clearInterval(this.timer);
     }
 
@@ -113,7 +123,9 @@ class StatusBar extends Component {
           <div className="statusBar-ratio">
             <p>{questionText}</p>
             <p>{scoreText}</p>
-            <p className="statusBar-timer">{msToTime(time)}</p>
+            {isTimerEnabled && (
+              <p className="statusBar-timer">{msToTime(time)}</p>
+            )}
           </div>
         </StatusBarStyles>
         <Modal
@@ -142,7 +154,4 @@ const mapStateToProps = state => ({
   quiz: state.quiz,
 });
 
-export default connect(
-  mapStateToProps,
-  { startQuiz, closeQuiz }
-)(StatusBar);
+export default connect(mapStateToProps, { startQuiz, closeQuiz })(StatusBar);
