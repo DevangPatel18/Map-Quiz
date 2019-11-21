@@ -15,6 +15,13 @@ const mapConfig = {
 
 const mapViewsList = Object.keys(mapConfig);
 const worldRegions = mapViewsList.slice(0, 8);
+const checkedRegionsLabels = mapViewsList.slice(1, 8);
 const mapViewsWithNoFlags = ['China', 'India'];
 
-export { mapConfig, mapViewsList, worldRegions, mapViewsWithNoFlags };
+export {
+  mapConfig,
+  mapViewsList,
+  worldRegions,
+  checkedRegionsLabels,
+  mapViewsWithNoFlags,
+};

@@ -3,7 +3,10 @@ import { Button, Form, Radio } from 'semantic-ui-react';
 import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { mapViewsWithNoFlags } from '../../assets/mapViewSettings';
+import {
+  checkedRegionsLabels,
+  mapViewsWithNoFlags,
+} from '../../assets/mapViewSettings';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
@@ -20,16 +23,6 @@ const generateQuizOptions = regionType => [
   { label: 'Click Capital', value: 'click_capital' },
   { label: 'Type Capital', value: 'type_capital' },
   { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
-];
-
-const checkedRegionsLabels = [
-  'North & Central America',
-  'South America',
-  'Caribbean',
-  'Europe',
-  'Africa',
-  'Asia',
-  'Oceania',
 ];
 
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
