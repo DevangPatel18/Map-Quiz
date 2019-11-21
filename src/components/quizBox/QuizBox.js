@@ -61,18 +61,10 @@ class QuizBox extends Component {
     this.setState({ regionMenu: !this.state.regionMenu });
   };
 
-  handleCheckBox = e => {
-    const { setRegionCheckbox, map } = this.props;
-    const { checkedRegions } = map;
-    const { value, checked } = e.target;
-    // check if nothing is selected
-    const nothing = Object.keys(checkedRegions)
-      .filter(region => region !== value)
-      .every(region => !checkedRegions[region]);
-
-    if (!(!checked && nothing)) {
-      setRegionCheckbox(value);
-    }
+  handleCheckBox = event => {
+    const regionName = event.target.value;
+    const { setRegionCheckbox } = this.props;
+    setRegionCheckbox(regionName);
   };
 
   handleQuizOptions = subRegionNameCap => {
@@ -219,7 +211,7 @@ class QuizBox extends Component {
                 key={region}
                 control="input"
                 type="checkbox"
-                checked={checkedRegions[region]}
+                checked={checkedRegions.includes(region)}
                 onChange={this.handleCheckBox}
               />
             ))}
