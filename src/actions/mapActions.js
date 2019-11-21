@@ -11,6 +11,7 @@ import {
   getSelectUpdatedRegionStyles,
 } from '../helpers/MapHelpers';
 import { getChoroplethParams } from '../helpers/choroplethFunctions';
+import { checkedRegionsLabels } from '../assets/mapViewSettings';
 import * as types from './types';
 import store from '../store';
 
@@ -20,7 +21,7 @@ export const setRegionCheckbox = regionName => async dispatch => {
   const checkedRegions = [...store.getState().map.checkedRegions];
   const { mapViewCountryIds } = store.getState().data;
 
-  if (regionName) {
+  if (checkedRegionsLabels.includes(regionName)) {
     const idx = checkedRegions.indexOf(regionName);
     if (idx === -1) {
       checkedRegions.push(regionName);
