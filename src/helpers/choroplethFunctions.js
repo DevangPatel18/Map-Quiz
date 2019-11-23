@@ -52,28 +52,12 @@ const choroplethColor = (choropleth, geo) => {
 };
 
 export const getChoroplethParams = choropleth => {
-  const { currentMap, filterRegions } = store.getState().map;
-  let { geographyPaths } = store.getState().data;
-  if (currentMap !== 'World') {
-    geographyPaths = geographyPaths.filter(({ properties }) =>
-      filterRegions.includes(properties.regionID)
-    );
-  }
-  const dataSet = geographyPaths
-    .map(geoPath => ({
-      regionID: geoPath.properties.regionID,
-      val: geoPath.properties[choropleth],
-    }))
-    .sort((objA, objB) => objA.val - objB.val);
-  const numOnly = dataSet.map(obj => obj.val).filter(Number);
+  const geographyPaths = getChoroplethRegions();
+  const { dataSet, numOnly } = getChoroplethData(choropleth, geographyPaths);
   if (numOnly.length === 0) return {};
   const classes = Math.min(parseInt(numOnly.length / 2), 10);
   const jenksOutput = jenks(numOnly, classes);
-
-  const scaleFunc = scaleSequential(choroParams[choropleth].colorScheme).domain([
-    0,
-    [jenksOutput.length - 1],
-  ]);
+  const scaleFunc = getScaleFunction(choropleth, jenksOutput);
 
   const regionStyles = dataSet.reduce((acc, { regionID, val }) => {
     const idx = jenksOutput.findIndex(bound => val <= bound);
@@ -88,5 +72,32 @@ export const getChoroplethParams = choropleth => {
 
   return { regionStyles, bounds };
 };
+
+const getChoroplethRegions = () => {
+  const { currentMap, filterRegions } = store.getState().map;
+  let { geographyPaths } = store.getState().data;
+  return currentMap !== 'World'
+    ? geographyPaths.filter(({ properties }) =>
+        filterRegions.includes(properties.regionID)
+      )
+    : geographyPaths;
+};
+
+const getChoroplethData = (choropleth, geographyPaths) => {
+  const dataSet = geographyPaths
+    .map(geoPath => ({
+      regionID: geoPath.properties.regionID,
+      val: geoPath.properties[choropleth],
+    }))
+    .sort((objA, objB) => objA.val - objB.val);
+  const numOnly = dataSet.map(obj => obj.val).filter(Number);
+  return { dataSet, numOnly };
+};
+
+const getScaleFunction = (choropleth, jenksOutput) =>
+  scaleSequential(choroParams[choropleth].colorScheme).domain([
+    0,
+    [jenksOutput.length - 1],
+  ]);
 
 export { choroParams, choroplethColor };

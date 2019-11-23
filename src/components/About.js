@@ -1,5 +1,6 @@
 import React from 'react';
 import AboutStyles from './styles/AboutStyles';
+import aboutLinks from '../assets/aboutLinks';
 
 const About = () => {
   return (
@@ -14,38 +15,18 @@ const About = () => {
       <div className="about-section">
         <h1>References</h1>
         <p>Sources of data obtained for app.</p>
-        <p>
-          {'Country Data: '}
-          <a href="https://restcountries.eu/">REST Countries API</a>
-          {', '}
-          <a href="https://en.wikipedia.org/wiki/Main_Page">Wikipedia</a>
-        </p>
-        <p>
-          {'Map Data: '}
-          <a href="https://github.com/topojson/world-atlas">
-            World Atlas TopoJSON
-          </a>
-          {', '}
-          <a href="https://github.com/LonnyGomes/CountryGeoJSONCollection">
-            Country GeoJSON Collection
-          </a>
-          {', '}
-          <a href="http://geojson.xyz/">geojson.xyz</a>
-          {', '}
-          <a href="https://gadm.org/index.html">GADM maps and data</a>
-        </p>
-        <p>
-          {'Capital Coordinates: '}
-          <a href="http://techslides.com/list-of-countries-and-capitals">
-            Techslides
-          </a>
-          {', '}
-          <a href="https://latitude.to/">latitude.to</a>
-        </p>
-        <p>
-          {'Population Data: '}
-          <a href="https://www.worldbank.org/">The World Bank</a>
-        </p>
+        {Object.keys(aboutLinks).map((sectionName, idx) => (
+          <div className="reference-section" key={idx}>
+            <h3>{sectionName}</h3>
+            <ul>
+              {aboutLinks[sectionName].map((link, jdx) => (
+                <li key={jdx}>
+                  <a href={link.url}>{link.text}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </AboutStyles>
   );

@@ -99,6 +99,11 @@ export const removeQuizExceptions = (quizAnswers, quizType) => {
         removedAnswers = ['IN.PB', 'IN.HR', 'IN.CH'];
       }
       break;
+    case 'Germany':
+      if (testedAttr === 'capital') {
+        removedAnswers = ['DE.BE', 'DE.HB', 'DE.HH'];
+      }
+      break;
     default:
   }
   return removedAnswers

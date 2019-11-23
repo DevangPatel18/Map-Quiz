@@ -12,6 +12,8 @@ const getMaxAreaForEllipse = currentMap => {
       return 2000;
     case 'Oceania':
       return 29000;
+    case 'Germany':
+      return 0;
     default:
       return 6000;
   }

@@ -1,5 +1,9 @@
 import * as types from '../actions/types';
 
+const timerLocalStorage = localStorage.getItem('timer');
+const userTimer =
+  timerLocalStorage !== null ? timerLocalStorage === 'true' : true;
+
 const emptySelectedProperties = {
   name: '',
   capital: '',
@@ -19,6 +23,7 @@ const initialState = {
   markerToggle: '',
   infoTabShow: false,
   areExternalRegionsOnQuiz: true,
+  isTimerEnabled: userTimer,
 };
 
 export default function(state = initialState, action) {
@@ -84,6 +89,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         areExternalRegionsOnQuiz: !state.areExternalRegionsOnQuiz,
+      };
+    case types.TOGGLE_TIMER:
+      localStorage.setItem('timer', (!state.isTimerEnabled).toString());
+      return {
+        ...state,
+        isTimerEnabled: !state.isTimerEnabled,
       };
     default:
       return state;
