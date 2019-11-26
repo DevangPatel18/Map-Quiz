@@ -39,6 +39,16 @@ const geoPathLink = {
     subRegionName: 'state',
     regionID: 'HASC_1',
   },
+  France: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574806439/Map%20Quiz/France_states.json',
+    data:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574807112/Map%20Quiz/France_data.csv',
+    capitalLatLng:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1574806468/Map%20Quiz/France_capitals_LatLng.csv',
+    subRegionName: 'region',
+    regionID: 'HASC_1',
+  },
 };
 
 export default geoPathLink;
