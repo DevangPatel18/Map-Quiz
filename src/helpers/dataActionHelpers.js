@@ -205,7 +205,7 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
 export const getNewRegionDataSet = async regionName => {
   const geographyPaths = await getRegionGeographyPaths(regionName);
   const regionMarkers = getRegionMarkers(geographyPaths);
-  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionName);
+  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths);
   const subRegionName = geoPathLinks[regionName].subRegionName
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
@@ -261,29 +261,19 @@ const getRegionMarkers = geographyPaths =>
     };
   });
 
-const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
+const getRegionCapitalMarkers = async geographyPaths => {
   const newCapitalMarkers = [];
-  await fetch(geoPathLinks[regionName].capitalLatLng)
-    .then(response => response.text())
-    .then(csvtext => {
-      Papa.parse(csvtext, {
-        header: true,
-        skipEmptyLines: true,
-        step: row => {
-          let geo = geographyPaths.find(
-            obj => obj.properties.regionID === row.data['regionID']
-          );
-          if (geo) {
-            newCapitalMarkers.push({
-              name: geo.properties.capital,
-              regionID: row.data['regionID'],
-              coordinates: [+row.data['lng'], +row.data['lat']],
-              markerOffset: -7,
-            });
-          }
-        },
+  for (let geoPath of geographyPaths) {
+    if (geoPath.properties) {
+    const { regionID, capital, lat, lng } = geoPath.properties
+      newCapitalMarkers.push({
+        name: capital,
+        regionID,
+        coordinates: [+lng, +lat],
+        markerOffset: -7,
       });
-    });
+    }
+  }
   return newCapitalMarkers;
 };
 
