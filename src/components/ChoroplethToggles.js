@@ -5,8 +5,10 @@ import { createSelector } from 'reselect';
 import { isMobile } from 'react-device-detect';
 import ChoroplethTogglesStyles from './styles/ChoroplethTogglesStyles';
 import { setChoropleth, sliderSet } from '../actions/mapActions';
+import { worldRegions } from '../assets/mapViewSettings';
 
-const choroToggles = ['None', 'population', 'area', 'gini', 'density'];
+const worldToggles = ['None', 'population', 'area', 'gini', 'density'];
+const subDivisionToggles = ['None', 'population', 'area', 'density'];
 
 class ChoroplethToggles extends Component {
   constructor() {
@@ -28,8 +30,11 @@ class ChoroplethToggles extends Component {
   };
 
   render() {
-    const { sliderSet, choropleth, slider } = this.props;
+    const { currentMap, sliderSet, choropleth, slider } = this.props;
     const radioSize = isMobile ? 'mini' : 'small';
+    const choroToggles = worldRegions.includes(currentMap)
+      ? worldToggles
+      : subDivisionToggles;
 
     return (
       <ChoroplethTogglesStyles>
@@ -67,9 +72,11 @@ class ChoroplethToggles extends Component {
 }
 
 const getAppState = createSelector(
+  state => state.map.currentMap,
   state => state.map.choropleth,
   state => state.map.slider,
-  (choropleth, slider) => ({
+  (currentMap, choropleth, slider) => ({
+    currentMap,
     choropleth,
     slider,
   })
