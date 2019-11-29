@@ -56,7 +56,7 @@ export const getChoroplethParams = choropleth => {
   const { dataSet, numOnly } = getChoroplethData(choropleth, geographyPaths);
   if (numOnly.length === 0) return {};
   const classes = Math.min(parseInt(numOnly.length / 2), 10);
-  const jenksOutput = jenks(numOnly, classes);
+  const jenksOutput = [...new Set(jenks(numOnly, classes))];
   const scaleFunc = getScaleFunction(choropleth, jenksOutput);
 
   const regionStyles = dataSet.reduce((acc, { regionID, val }) => {
