@@ -29,6 +29,12 @@ const geoPathLink = {
     subRegionName: 'region',
     regionID: 'HASC_1',
   },
+  Italy: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1575058575/Map%20Quiz/Italy_regions.json',
+      subRegionName: 'region',
+      regionID: 'CC_1',
+  }
 };
 
 export default geoPathLink;
