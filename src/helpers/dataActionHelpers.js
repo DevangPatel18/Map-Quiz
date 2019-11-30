@@ -6,6 +6,7 @@ import store from '../store';
 import capitalData from '../assets/country_capitals';
 import geoPathLinks from '../assets/geoPathLinks';
 import { worldRegions } from '../assets/mapViewSettings';
+import { getFirebaseRegionData } from '../firebase';
 import {
   DataFix,
   CountryMarkersFix,
@@ -205,7 +206,7 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
 export const getNewRegionDataSet = async regionName => {
   const geographyPaths = await getRegionGeographyPaths(regionName);
   const regionMarkers = getRegionMarkers(geographyPaths);
-  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths, regionName);
+  const capitalMarkers = await getRegionCapitalMarkers(geographyPaths);
   const subRegionName = geoPathLinks[regionName].subRegionName
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
@@ -220,33 +221,26 @@ const getRegionGeographyPaths = async regionName => {
   return geographyPaths;
 };
 
-const addRegionDataToGeographyPaths = async (
-  geographyPaths,
-  regionName
-) => {
-  let csvData = {}
-  await fetch(geoPathLinks[regionName].data)
-    .then(response => response.text())
-    .then(csvtext => {
-      Papa.parse(csvtext, {
-        header: true,
-        skipEmptyLines: true,
-        step: row => {
-          csvData[row.data['regionID']] = row.data
-        },
-      });
-    });
-    const regionKey = geoPathLinks[regionName].regionID
-    for (let geoPath of geographyPaths) {
-      if(csvData[geoPath.properties[regionKey]]) {
-        geoPath.properties = {...geoPath.properties, ...csvData[geoPath.properties[regionKey]]}
-        let { area, population, name } = geoPath.properties;
-        geoPath.properties.area = +area;
-        geoPath.properties.population = +population;
-        geoPath.properties.spellings = [name];
-        geoPath.properties.density = parseInt(population/area);
-      }
+const addRegionDataToGeographyPaths = async (geographyPaths, regionName) => {
+  const regionData = await getFirebaseRegionData(regionName)
+  const regionDataObj = regionData.reduce((obj, regionData) => {
+    if(regionData.regionID) {
+      obj[regionData.regionID] = regionData
     }
+    return obj
+  }, {});
+
+  const regionKey = geoPathLinks[regionName].regionID
+  for (let geoPath of geographyPaths) {
+    if(regionDataObj[geoPath.properties[regionKey]]) {
+      geoPath.properties = {...geoPath.properties, ...regionDataObj[geoPath.properties[regionKey]]}
+      let { area, population, name } = geoPath.properties;
+      geoPath.properties.area = +area;
+      geoPath.properties.population = +population;
+      geoPath.properties.spellings = [name];
+      geoPath.properties.density = parseInt(population/area);
+    }
+  }
 };
 
 const getRegionMarkers = geographyPaths =>
@@ -261,29 +255,19 @@ const getRegionMarkers = geographyPaths =>
     };
   });
 
-const getRegionCapitalMarkers = async (geographyPaths, regionName) => {
+const getRegionCapitalMarkers = async geographyPaths => {
   const newCapitalMarkers = [];
-  await fetch(geoPathLinks[regionName].capitalLatLng)
-    .then(response => response.text())
-    .then(csvtext => {
-      Papa.parse(csvtext, {
-        header: true,
-        skipEmptyLines: true,
-        step: row => {
-          let geo = geographyPaths.find(
-            obj => obj.properties.regionID === row.data['regionID']
-          );
-          if (geo) {
-            newCapitalMarkers.push({
-              name: geo.properties.capital,
-              regionID: row.data['regionID'],
-              coordinates: [+row.data['lng'], +row.data['lat']],
-              markerOffset: -7,
-            });
-          }
-        },
+  for (let geoPath of geographyPaths) {
+    if (geoPath.properties) {
+    const { regionID, capital, lat, lng } = geoPath.properties
+      newCapitalMarkers.push({
+        name: capital,
+        regionID,
+        coordinates: [+lng, +lat],
+        markerOffset: -7,
       });
-    });
+    }
+  }
   return newCapitalMarkers;
 };
 

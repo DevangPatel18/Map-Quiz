@@ -37,13 +37,8 @@ export const generateQuizState = (quizAnswers, quizType) => ({
 });
 
 export const checkClickAnswer = ansGeoProperties => {
-  const {
-    quizIdx,
-    quizAnswers,
-    selectedProperties,
-  } = store.getState().quiz;
-  const isAnswerCorrect =
-    ansGeoProperties.regionID === quizAnswers[quizIdx];
+  const { quizIdx, quizAnswers, selectedProperties } = store.getState().quiz;
+  const isAnswerCorrect = ansGeoProperties.regionID === quizAnswers[quizIdx];
   const newGeoProperties = isAnswerCorrect
     ? ansGeoProperties
     : selectedProperties;
@@ -73,8 +68,7 @@ export const checkTypeAnswer = userGuess => {
 export const checkIfQuizIncomplete = () => {
   const { quizIdx, quizGuesses, quizAnswers } = store.getState().quiz;
   return (
-    quizIdx === quizGuesses.length &&
-    quizGuesses.length < quizAnswers.length
+    quizIdx === quizGuesses.length && quizGuesses.length < quizAnswers.length
   );
 };
 
@@ -102,6 +96,11 @@ export const removeQuizExceptions = (quizAnswers, quizType) => {
     case 'Germany':
       if (testedAttr === 'capital') {
         removedAnswers = ['DE.BE', 'DE.HB', 'DE.HH'];
+      }
+      break;
+    case 'France':
+      if (testedAttr === 'flag') {
+        removedAnswers = ['FR.AO', 'FR.IF', 'FR.PL'];
       }
       break;
     default:
