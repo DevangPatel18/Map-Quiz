@@ -45,7 +45,7 @@ const choroplethColor = (choropleth, geo) => {
   }
 
   if (choroplethNum) {
-    const { color } = bounds.find(({ val }) => choroplethNum <= val);
+    const { color } = bounds.find(({ upper }) => choroplethNum <= upper);
     if (color) return color;
   }
   return '#000000';
@@ -59,16 +59,18 @@ export const getChoroplethParams = choropleth => {
   const jenksOutput = [...new Set(jenks(numOnly, classes))];
   const scaleFunc = getScaleFunction(choropleth, jenksOutput);
 
-  const regionStyles = dataSet.reduce((acc, { regionID, val }) => {
-    const idx = jenksOutput.findIndex(bound => val <= bound);
-    acc[regionID] = val ? scaleFunc(idx) : '#000000';
+  const regionStyles = dataSet.reduce((acc, { regionID, upper }) => {
+    const idx = jenksOutput.findIndex(bound => upper <= bound);
+    acc[regionID] = upper ? scaleFunc(idx) : '#000000';
     return acc;
   });
 
   const bounds = jenksOutput.map((bound, idx) => ({
-    val: bound,
+    lower: jenksOutput[idx - 1],
+    upper: bound,
     color: scaleFunc(idx),
   }));
+  bounds[0].lower = 0;
 
   return { regionStyles, bounds };
 };
@@ -87,10 +89,10 @@ const getChoroplethData = (choropleth, geographyPaths) => {
   const dataSet = geographyPaths
     .map(geoPath => ({
       regionID: geoPath.properties.regionID,
-      val: geoPath.properties[choropleth],
+      upper: geoPath.properties[choropleth],
     }))
-    .sort((objA, objB) => objA.val - objB.val);
-  const numOnly = dataSet.map(obj => obj.val).filter(Number);
+    .sort((objA, objB) => objA.upper - objB.upper);
+  const numOnly = dataSet.map(obj => obj.upper).filter(Number);
   return { dataSet, numOnly };
 };
 
@@ -99,5 +101,24 @@ const getScaleFunction = (choropleth, jenksOutput) =>
     0,
     [jenksOutput.length - 1],
   ]);
+
+const SI_SYMBOL = ['', 'k', 'M', 'B'];
+
+export const numShorten = number => {
+  const tier = (Math.log10(number) / 3) | 0;
+
+  // if zero, we don't need a suffix
+  if (tier === 0) return number.toPrecision(3);
+
+  // get suffix and determine scale
+  const suffix = SI_SYMBOL[tier];
+  const scale = Math.pow(10, tier * 3);
+
+  // scale the number
+  const scaled = number / scale;
+
+  // format number and add suffix
+  return scaled.toPrecision(3) + suffix;
+};
 
 export { choroParams, choroplethColor };

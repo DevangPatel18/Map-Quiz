@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { choroParams } from '../helpers/choroplethFunctions';
+import { choroParams, numShorten } from '../helpers/choroplethFunctions';
 import ChoroplethLegendStyles from './styles/ChoroplethLegendStyles';
 
 const ChoroplethLegend = props => {
@@ -12,10 +12,10 @@ const ChoroplethLegend = props => {
   const { units } = choroParams[choropleth];
   const { bounds } = choroplethParams[currentMap][choropleth];
 
-  const legendsMap = bounds.map(({ val, color }) => (
+  const legendsMap = bounds.map(({ lower, upper, color }) => (
     <div key={color} className="legendItem">
       <div className="legendColor" style={{ background: `${color}` }} />
-      {val.toLocaleString()}
+      {numShorten(lower)} - {numShorten(upper)}
     </div>
   ));
 
