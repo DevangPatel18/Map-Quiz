@@ -3,9 +3,19 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { choroParams, numShorten } from '../helpers/choroplethFunctions';
 import ChoroplethLegendStyles from './styles/ChoroplethLegendStyles';
+import {
+  highlightRegions,
+  deselectRegions,
+} from '../actions/mapActions';
 
 const ChoroplethLegend = props => {
-  const { choropleth, currentMap, choroplethParams } = props;
+  const {
+    choropleth,
+    currentMap,
+    choroplethParams,
+    highlightRegions,
+    deselectRegions,
+  } = props;
 
   if (choropleth === 'None') return null;
 
@@ -14,7 +24,13 @@ const ChoroplethLegend = props => {
 
   const legendsMap = bounds.map(({ lower, upper, color }) => (
     <div key={color} className="legendItem">
-      <div className="legendColor" style={{ background: `${color}` }} />
+      <div
+        className="legendColor"
+        style={{ background: `${color}` }}
+        id={color}
+        onMouseEnter={highlightRegions}
+        onMouseLeave={deselectRegions}
+      />
       {numShorten(lower)} - {numShorten(upper)}
     </div>
   ));
@@ -40,4 +56,7 @@ const getAppState = createSelector(
   })
 );
 
-export default connect(getAppState)(ChoroplethLegend);
+export default connect(getAppState, {
+  highlightRegions,
+  deselectRegions,
+})(ChoroplethLegend);
