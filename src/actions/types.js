@@ -13,6 +13,7 @@ export const SET_CHOROPLETH_PARAMS = 'SET_CHOROPLETH_PARAMS';
 export const SET_CHORO_YEAR = 'SET_CHORO_YEAR';
 export const TOGGLE_TOOLTIP = 'TOGGLE_TOOLTIP';
 export const TOGGLE_SLIDER = 'TOGGLE_SLIDER';
+export const HIGHLIGHT_REGIONS = 'HIGHLIGHT_REGIONS';
 // Data actions
 export const INFO_TAB = 'INFO_TAB';
 export const LOAD_PATHS = 'LOAD_PATHS';
