@@ -186,3 +186,54 @@ export const partialMapRefresh = async (dispatch, regionIDList) => {
   });
   dispatch({ type: types.DISABLE_OPT });
 };
+
+export const highlightRegions = event => async dispatch => {
+  const { regionStyles, defaultZoom } = store.getState().map;
+  const color = event.currentTarget.id;
+  const selectedRegions = [];
+  const updatedRegionStyles = {};
+  for (let regionID in regionStyles) {
+    if (regionStyles[regionID].geoStyle.default.fill === color) {
+      selectedRegions.push(regionID);
+      updatedRegionStyles[regionID] = {
+        ...regionStyles[regionID],
+        stroke: {
+          strokeWidth: 1 / defaultZoom,
+          strokeColor: 'rgb(255, 255, 0)',
+        },
+      };
+    }
+  }
+  await dispatch({
+    type: types.HIGHLIGHT_REGIONS,
+    selectedRegions,
+    regionStyles: { ...regionStyles, ...updatedRegionStyles },
+  });
+  dispatch({ type: types.DISABLE_OPT });
+};
+
+export const deselectRegions = () => async dispatch => {
+  let { regionStyles, selectedRegions } = store.getState().map;
+  const { selectedProperties } = store.getState().quiz;
+  const updatedRegionStyles = {};
+  const idxClickedRegion = selectedRegions.indexOf(selectedProperties.regionID);
+  if (idxClickedRegion !== -1) {
+    selectedRegions = [...selectedRegions];
+    selectedRegions.splice(idxClickedRegion, 1);
+  }
+  for (let regionID of selectedRegions) {
+    updatedRegionStyles[regionID] = {
+      ...regionStyles[regionID],
+      stroke: {
+        strokeWidth: 0.05,
+        strokeColor: 'black',
+      },
+    };
+  }
+  await dispatch({
+    type: types.HIGHLIGHT_REGIONS,
+    selectedRegions: [],
+    regionStyles: { ...regionStyles, ...updatedRegionStyles },
+  });
+  dispatch({ type: types.DISABLE_OPT });
+};
