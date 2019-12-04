@@ -214,10 +214,10 @@ export const highlightRegions = event => async dispatch => {
 
 export const deselectRegions = () => async dispatch => {
   let { regionStyles, selectedRegions } = store.getState().map;
-  const { selectedProperties } = store.getState().quiz;
+  const { selectedProperties, infoTabShow } = store.getState().quiz;
   const updatedRegionStyles = {};
   const idxClickedRegion = selectedRegions.indexOf(selectedProperties.regionID);
-  if (idxClickedRegion !== -1) {
+  if (idxClickedRegion !== -1 && infoTabShow) {
     selectedRegions = [...selectedRegions];
     selectedRegions.splice(idxClickedRegion, 1);
   }
