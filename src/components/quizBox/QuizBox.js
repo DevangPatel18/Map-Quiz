@@ -168,6 +168,22 @@ class QuizBox extends Component {
               </Button.Group>
             </div>
           )}
+          {currentMap === 'World' && (
+            <Form className="fmRegionSelect">
+              {checkedRegionsLabels.map(region => (
+                <Form.Field
+                  aria-label={region}
+                  label={region}
+                  value={region}
+                  key={region}
+                  control="input"
+                  type="checkbox"
+                  checked={checkedRegions.includes(region)}
+                  onChange={this.handleCheckBox}
+                />
+              ))}
+            </Form>
+          )}
 
           <div style={{ marginTop: '2rem' }}>
             <Radio
@@ -193,23 +209,6 @@ class QuizBox extends Component {
             />
           </div>
         </div>
-
-        {currentMap === 'World' && (
-          <Form className="fmRegionSelect">
-            {checkedRegionsLabels.map(region => (
-              <Form.Field
-                aria-label={region}
-                label={region}
-                value={region}
-                key={region}
-                control="input"
-                type="checkbox"
-                checked={checkedRegions.includes(region)}
-                onChange={this.handleCheckBox}
-              />
-            ))}
-          </Form>
-        )}
       </QuizMenu>
     );
   }
