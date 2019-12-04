@@ -33,10 +33,10 @@ class Map extends Component {
 
   handleWheel = event => {
     if (event.deltaY > 0) {
-      this.props.zoomMap(0.5);
+      this.props.zoomMap(0.8);
     }
     if (event.deltaY < 0) {
-      this.props.zoomMap(2);
+      this.props.zoomMap(1.25);
     }
   };
 
