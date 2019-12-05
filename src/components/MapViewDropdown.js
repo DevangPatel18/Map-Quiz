@@ -28,25 +28,34 @@ class MapViewDropdown extends Component {
     } = this.props;
     const { regionEllipsesData, regionSearchList } = data;
 
-    await this.handleMapDataUpdate(nextMap);
-    regionSelect(nextMap);
-    if (!regionEllipsesData[nextMap]) {
-      getRegionEllipses(nextMap);
-    }
-    if (!regionSearchList[nextMap]) {
-      getRegionSearchOptions(nextMap);
+    const isMapDataAvailable = await this.handleMapDataUpdate(nextMap);
+    if (isMapDataAvailable) {
+      regionSelect(nextMap);
+      if (!regionEllipsesData[nextMap]) {
+        getRegionEllipses(nextMap);
+      }
+      if (!regionSearchList[nextMap]) {
+        getRegionSearchOptions(nextMap);
+      }
+    } else {
+      alert('Sorry! Data not found.');
     }
   };
 
   handleMapDataUpdate = async nextMap => {
-    if (checkMapViewsBetweenWorldRegions(nextMap)) return;
+    if (checkMapViewsBetweenWorldRegions(nextMap)) return true;
     const { data, processNewRegionDataSet, loadRegionDataSet } = this.props;
     const { regionDataSets } = data;
     const regionDataSetKey = worldRegions.includes(nextMap) ? 'World' : nextMap;
+    let isDataPresent = true;
     if (!regionDataSets[regionDataSetKey]) {
-      await processNewRegionDataSet(nextMap);
+      isDataPresent = await processNewRegionDataSet(nextMap);
     }
-    await loadRegionDataSet(regionDataSetKey);
+    if (isDataPresent) {
+      await loadRegionDataSet(regionDataSetKey);
+      return true;
+    }
+    return false;
   };
 
   render() {
@@ -68,13 +77,10 @@ const mapStateToProps = state => ({
   data: state.data,
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    regionSelect,
-    processNewRegionDataSet,
-    loadRegionDataSet,
-    getRegionEllipses,
-    getRegionSearchOptions,
-  }
-)(MapViewDropdown);
+export default connect(mapStateToProps, {
+  regionSelect,
+  processNewRegionDataSet,
+  loadRegionDataSet,
+  getRegionEllipses,
+  getRegionSearchOptions,
+})(MapViewDropdown);

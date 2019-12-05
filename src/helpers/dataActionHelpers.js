@@ -205,9 +205,10 @@ export const checkMapViewsBetweenWorldRegions = regionName => {
 
 export const getNewRegionDataSet = async regionName => {
   const geographyPaths = await getRegionGeographyPaths(regionName);
+  if (!geographyPaths) return null;
   const regionMarkers = getRegionMarkers(geographyPaths);
   const capitalMarkers = await getRegionCapitalMarkers(geographyPaths);
-  const subRegionName = geoPathLinks[regionName].subRegionName
+  const subRegionName = geoPathLinks[regionName].subRegionName;
   return { geographyPaths, regionMarkers, capitalMarkers, subRegionName };
 };
 
@@ -216,13 +217,14 @@ const getRegionGeographyPaths = async regionName => {
     .then(response => response.json())
     .then(featureCollection => featureCollection.features);
 
-  await addRegionDataToGeographyPaths(geographyPaths, regionName);
+  const isDataValid = await addRegionDataToGeographyPaths(geographyPaths, regionName);
 
-  return geographyPaths;
+  return isDataValid ? geographyPaths : null;
 };
 
 const addRegionDataToGeographyPaths = async (geographyPaths, regionName) => {
   const regionData = await getFirebaseRegionData(regionName)
+  if (!regionData) return false;
   const regionDataObj = regionData.reduce((obj, regionData) => {
     if(regionData.regionID) {
       obj[regionData.regionID] = regionData
@@ -241,6 +243,7 @@ const addRegionDataToGeographyPaths = async (geographyPaths, regionName) => {
       geoPath.properties.density = parseInt(population/area);
     }
   }
+  return true;
 };
 
 const getRegionMarkers = geographyPaths =>

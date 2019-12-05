@@ -40,7 +40,7 @@ export const loadRegionData = () => async dispatch => {
     populationData,
     mapViewRegionIds,
     mapViewCountryIds,
-    regionStyles: getRegionStyles(), 
+    regionStyles: getRegionStyles(),
   });
 
   dispatch({ type: types.DISABLE_OPT });
@@ -50,18 +50,21 @@ export const processNewRegionDataSet = regionName => async dispatch => {
   dispatch({ type: types.LOADING_DATA, value: true });
 
   const newRegionDataSet = await getNewRegionDataSet(regionName);
-  const { geographyPaths } = newRegionDataSet;
-  let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
-  newRegionIdList = [...new Set(newRegionIdList)];
-
-  await dispatch({
-    type: types.ADD_REGION_DATA,
-    regionName,
-    newRegionDataSet,
-    newRegionIdList,
-  });
-
   dispatch({ type: types.LOADING_DATA, value: false });
+  if (newRegionDataSet) {
+    const { geographyPaths } = newRegionDataSet;
+    let newRegionIdList = geographyPaths.map(x => x.properties.regionID);
+    newRegionIdList = [...new Set(newRegionIdList)];
+
+    await dispatch({
+      type: types.ADD_REGION_DATA,
+      regionName,
+      newRegionDataSet,
+      newRegionIdList,
+    });
+    return true;
+  }
+  return false;
 };
 
 export const loadRegionDataSet = regionDataSetKey => async dispatch => {
