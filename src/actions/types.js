@@ -14,6 +14,7 @@ export const SET_CHORO_YEAR = 'SET_CHORO_YEAR';
 export const TOGGLE_TOOLTIP = 'TOGGLE_TOOLTIP';
 export const TOGGLE_SLIDER = 'TOGGLE_SLIDER';
 export const HIGHLIGHT_REGIONS = 'HIGHLIGHT_REGIONS';
+export const SET_REGION_MODAL = 'SET_REGION_MODAL';
 // Data actions
 export const INFO_TAB = 'INFO_TAB';
 export const LOAD_PATHS = 'LOAD_PATHS';
