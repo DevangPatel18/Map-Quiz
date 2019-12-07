@@ -11,6 +11,7 @@ const initialState = {
   mapViewCountryIds: {},
   regionSearchList: {},
   choroplethParams: {},
+  regionProfiles: {},
   loadingData: false,
 };
 
@@ -86,6 +87,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loadingData: action.value,
+      };
+    case types.ADD_REGION_PROFILE:
+      return {
+        ...state,
+        regionProfiles: {
+          ...state.regionProfiles,
+          [action.regionID]: {
+            profileData: action.regionProfileData,
+          },
+        },
       };
     default:
       return state;
