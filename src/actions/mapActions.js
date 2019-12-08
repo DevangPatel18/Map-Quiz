@@ -14,6 +14,7 @@ import { getChoroplethParams } from '../helpers/choroplethFunctions';
 import { checkedRegionsLabels } from '../assets/mapViewSettings';
 import * as types from './types';
 import store from '../store';
+import { getFirebaseRegionProfile } from '../firebase';
 
 const { show, hide } = actions;
 
@@ -236,4 +237,31 @@ export const deselectRegions = () => async dispatch => {
     regionStyles: { ...regionStyles, ...updatedRegionStyles },
   });
   dispatch({ type: types.DISABLE_OPT });
+};
+
+export const openRegionModal = (event, { data }) => async dispatch => {
+  const { regionProfiles } = store.getState().data;
+  const { name, regionID } = data;
+  if (!regionProfiles[regionID]) {
+    const nameFormatted = name.toLowerCase().replace(/ /g, '_');
+    const firebaseRegionObj = await getFirebaseRegionProfile(nameFormatted);
+    if (firebaseRegionObj) {
+      await dispatch({
+        type: types.ADD_REGION_PROFILE,
+        regionID,
+        regionProfileData: firebaseRegionObj.data,
+      });
+    } else return;
+  }
+  dispatch({
+    type: types.SET_REGION_MODAL,
+    regionID,
+  });
+};
+
+export const closeRegionModal = () => dispatch => {
+  dispatch({
+    type: types.SET_REGION_MODAL,
+    regionID: null,
+  });
 };
