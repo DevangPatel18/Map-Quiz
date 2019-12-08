@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import { Button } from 'semantic-ui-react';
 import InfoTabStyles from '../styles/InfoTabStyles';
+import { worldRegions } from '../../assets/mapViewSettings';
 
 class InfoTab extends Component {
   constructor(props) {
@@ -26,12 +29,25 @@ class InfoTab extends Component {
   }
 
   render() {
-    const { selectedProperties } = this.props
-    let { name, capital, population, area, regionOf, flag } = selectedProperties;
+    const {
+      selectedProperties,
+      currentMap,
+      isQuizActive,
+    } = this.props;
+    let {
+      name,
+      capital,
+      population,
+      area,
+      regionOf,
+      flag,
+    } = selectedProperties;
     const { isFlagImgPresent, isFlagImgReady } = this.state;
     if (!isFlagImgReady && isFlagImgPresent) return '';
     population = population ? `${population.toLocaleString()}` : 'N/A';
     area = area ? `${area.toLocaleString()} km²` : 'N/A';
+    const showMoreInfoButton =
+      !isQuizActive && worldRegions.includes(currentMap);
     return (
       <InfoTabStyles>
         {isFlagImgPresent && (
@@ -43,14 +59,33 @@ class InfoTab extends Component {
           <li>Population: {population}</li>
           <li>Area: {area}</li>
           {regionOf ? <li>Region of {regionOf}</li> : ''}
+          {showMoreInfoButton && (
+            <li className="infoTab-moreInfo">
+              <Button
+                icon="clipboard list"
+                size="small"
+                content="View Profile"
+                data={selectedProperties}
+                compact
+                inverted
+              />
+            </li>
+          )}
         </div>
       </InfoTabStyles>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  selectedProperties: state.quiz.selectedProperties,
-});
+const getAppState = createSelector(
+  state => state.quiz.selectedProperties,
+  state => state.quiz.isQuizActive,
+  state => state.map.currentMap,
+  (selectedProperties, isQuizActive, currentMap) => ({
+    selectedProperties,
+    isQuizActive,
+    currentMap,
+  })
+);
 
-export default connect(mapStateToProps)(InfoTab);
+export default connect(getAppState)(InfoTab);

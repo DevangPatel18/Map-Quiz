@@ -25,6 +25,15 @@ const InfoTabStyles = styled.div`
   sup {
     font-size: 0.6em;
   }
+
+  .infoTab-moreInfo {
+    text-align: center;
+    padding: 0.5em 0;
+
+    .ui.button {
+      margin: 0;
+    }
+  }
 `;
 
 export default InfoTabStyles;
