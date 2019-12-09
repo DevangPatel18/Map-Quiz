@@ -94,7 +94,7 @@ export default function(state = initialState, action) {
         regionProfiles: {
           ...state.regionProfiles,
           [action.regionID]: {
-            profileData: action.regionProfileData,
+            ...action.regionProfileData,
           },
         },
       };

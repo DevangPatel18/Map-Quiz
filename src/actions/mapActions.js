@@ -249,7 +249,7 @@ export const openRegionModal = (event, { data }) => async dispatch => {
       await dispatch({
         type: types.ADD_REGION_PROFILE,
         regionID,
-        regionProfileData: firebaseRegionObj.data,
+        regionProfileData: firebaseRegionObj,
       });
     } else return;
   }
