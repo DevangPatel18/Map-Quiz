@@ -32,6 +32,7 @@ const InfoTabStyles = styled.div`
 
     .ui.button {
       margin: 0;
+      font-size: 1em;
     }
   }
 `;
