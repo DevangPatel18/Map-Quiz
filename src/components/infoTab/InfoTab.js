@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 import { Button } from 'semantic-ui-react';
 import InfoTabStyles from '../styles/InfoTabStyles';
 import { worldRegions } from '../../assets/mapViewSettings';
+import { openRegionModal } from '../../actions/mapActions';
 
 class InfoTab extends Component {
   constructor(props) {
@@ -33,6 +34,7 @@ class InfoTab extends Component {
       selectedProperties,
       currentMap,
       isQuizActive,
+      openRegionModal,
     } = this.props;
     let {
       name,
@@ -68,6 +70,7 @@ class InfoTab extends Component {
                 data={selectedProperties}
                 compact
                 inverted
+                onClick={openRegionModal}
               />
             </li>
           )}
@@ -88,4 +91,4 @@ const getAppState = createSelector(
   })
 );
 
-export default connect(getAppState)(InfoTab);
+export default connect(getAppState, { openRegionModal })(InfoTab);
