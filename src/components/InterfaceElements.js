@@ -10,13 +10,15 @@ import ChoroplethSlider from './ChoroplethSlider';
 import DirectionPad from './DirectionPad';
 import QuestionBox from './quizBox/QuestionBox';
 import LoadingPrompt from './LoadingPrompt';
+import RegionModal from './RegionModal';
 
-const InterfaceElements = ({ quiz: { isQuizActive } }) => (
+const InterfaceElements = ({ isQuizActive, modalRegionID }) => (
   <>
     <ZoomButtons />
     <TransitionInfoTab />
     <DirectionPad />
     <LoadingPrompt />
+    {modalRegionID && <RegionModal />}
     {isMobile && <MobileMessage />}
     {isQuizActive && <QuestionBox />}
     {isQuizActive && <StatusBar />}
@@ -26,10 +28,8 @@ const InterfaceElements = ({ quiz: { isQuizActive } }) => (
 );
 
 const mapStateToProps = state => ({
-  quiz: state.quiz,
+  isQuizActive: state.quiz.isQuizActive,
+  modalRegionID: state.map.modalRegionID,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(InterfaceElements);
+export default connect(mapStateToProps, null)(InterfaceElements);
