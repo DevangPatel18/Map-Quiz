@@ -254,7 +254,10 @@ export const openRegionModal = (event, { data }) => async dispatch => {
         regionID,
         regionProfileData: firebaseRegionObj,
       });
-    } else return;
+    } else {
+      alert('Sorry! Profile not found.');
+      return;
+    }
   }
   dispatch({
     type: types.SET_REGION_MODAL,
