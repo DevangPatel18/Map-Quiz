@@ -15,6 +15,7 @@ import { checkedRegionsLabels } from '../assets/mapViewSettings';
 import * as types from './types';
 import store from '../store';
 import { getFirebaseRegionProfile } from '../firebase';
+import countryProfileIDs from '../assets/countryProfileIDs';
 
 const { show, hide } = actions;
 
@@ -243,8 +244,10 @@ export const openRegionModal = (event, { data }) => async dispatch => {
   const { regionProfiles } = store.getState().data;
   const { name, regionID } = data;
   if (!regionProfiles[regionID]) {
-    const nameFormatted = name.toLowerCase().replace(/ /g, '_');
-    const firebaseRegionObj = await getFirebaseRegionProfile(nameFormatted);
+    const regionProfileID = Object.keys(countryProfileIDs).includes(regionID)
+      ? countryProfileIDs[regionID]
+      : name.toLowerCase().replace(/ /g, '_');
+    const firebaseRegionObj = await getFirebaseRegionProfile(regionProfileID);
     if (firebaseRegionObj) {
       await dispatch({
         type: types.ADD_REGION_PROFILE,
