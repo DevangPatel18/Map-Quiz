@@ -1,3 +1,7 @@
+import { Tab } from 'semantic-ui-react';
+import styled, { css } from 'styled-components';
+import { isMobile } from 'react-device-detect';
+
 export const theme = {
   scheme: 'colors',
   author: 'mrmrs (http://clrs.cc)',
@@ -18,3 +22,18 @@ export const theme = {
   base0E: '#b10dc9',
   base0F: '#85144b',
 };
+
+export const TabStyled = styled(Tab)`
+  .ui.secondary {
+    overflow: auto;
+
+    ${isMobile &&
+      css`
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        -ms-overflow-style: none;
+      `}
+  }
+`;
