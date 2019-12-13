@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { closeRegionModal } from '../actions/mapActions';
-import { Modal, Button, Tab } from 'semantic-ui-react';
-import JSONTree from 'react-json-tree';
-import { theme, TabStyled } from './styles/RegionModalStyles';
+import { Modal, Button } from 'semantic-ui-react';
+import { TabStyled } from './styles/RegionModalStyles';
+import { generateTabContent } from '../helpers/RegionModalHelpers';
 
 const RegionModal = props => {
   const { modalRegionID, regionProfiles, closeRegionModal } = props;
@@ -13,11 +13,7 @@ const RegionModal = props => {
 
   const panes = Object.keys(displayData).map(sectionName => ({
     menuItem: sectionName,
-    render: () => (
-      <Tab.Pane>
-        <JSONTree data={displayData[sectionName]} theme={theme} />
-      </Tab.Pane>
-    ),
+    render: () => generateTabContent(displayData, sectionName),
   }));
 
   if (modalRegionID) {
