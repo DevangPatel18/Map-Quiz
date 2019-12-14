@@ -13,7 +13,7 @@ import {
   closeQuiz,
   processTypeAnswer,
 } from '../../actions/quizActions';
-import { capitalize } from './QuizBox';
+import { capitalize } from '../../helpers/textHelpers';
 
 class QuestionBox extends Component {
   constructor(props) {

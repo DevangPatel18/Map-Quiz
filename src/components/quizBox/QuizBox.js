@@ -7,6 +7,7 @@ import {
   checkedRegionsLabels,
   mapViewsWithNoFlags,
 } from '../../assets/mapViewSettings';
+import { capitalize } from '../../helpers/textHelpers';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
@@ -24,8 +25,6 @@ const generateQuizOptions = regionType => [
   { label: 'Type Capital', value: 'type_capital' },
   { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
 ];
-
-export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 class QuizBox extends Component {
   constructor() {
