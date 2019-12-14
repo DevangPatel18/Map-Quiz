@@ -10,7 +10,7 @@ const QuizMenu = styled.div`
   flex-direction: row-reverse;
 
   .ui.button.regionDrawer {
-    margin: 1em 0 0;
+    margin: 1em 0;
   }
 
   .ui.button {
@@ -40,8 +40,7 @@ const QuizMenu = styled.div`
     display: ${props => (props.regionMenu ? 'flex' : 'none')};
     flex-direction: column;
     justify-content: center;
-    margin-right: ${isMobile ? '.6em' : '1.9em'};
-    width: auto;
+    margin: 0 auto;
 
     .field {
       margin: 0;
@@ -72,6 +71,7 @@ const QuizMenu = styled.div`
   .form {
     text-align: left;
     width: ${isMobile ? '130px' : '160px'};
+    margin: 0 auto;
   }
 
   .ui.mini.form .field {

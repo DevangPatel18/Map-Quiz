@@ -30,9 +30,11 @@ const initialState = {
     'Oceania',
   ],
   choropleth: 'None',
+  selectedRegions: [],
   tooltip: userTooltip,
   slider: false,
   sliderYear: 2018,
+  modalRegionID: null,
 };
 
 export default function(state = initialState, action) {
@@ -148,6 +150,18 @@ export default function(state = initialState, action) {
       return {
         ...state,
         subRegionName,
+      };
+    case types.HIGHLIGHT_REGIONS:
+      return {
+        ...state,
+        selectedRegions: action.selectedRegions,
+        regionStyles: action.regionStyles,
+        disableOptimization: true,
+      };
+    case types.SET_REGION_MODAL:
+      return {
+        ...state,
+        modalRegionID: action.regionID,
       };
     default:
       return state;

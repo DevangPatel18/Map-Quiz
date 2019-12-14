@@ -13,6 +13,7 @@ const mapConfig = {
   Germany: { center: [10.4, 51.1], zoom: 13 },
   France: { center: [2.5, 46.6], zoom: 11 },
   Italy: { center: [12, 41], zoom: 11 },
+  Japan: { center: [137, 34.2], zoom: 6.5 },
 };
 
 const mapViewsList = Object.keys(mapConfig);

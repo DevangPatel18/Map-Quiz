@@ -26,6 +26,10 @@ const ChoroplethLegendStyles = styled.div`
     .legendColor {
       margin-right: 5px;
       width: 2em;
+
+      :hover {
+        border: 1px solid rgb(255, 255, 0);
+      }
     }
 `;
 

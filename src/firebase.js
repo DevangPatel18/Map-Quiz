@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+require('firebase/database');
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -19,3 +20,10 @@ export const getFirebaseRegionData = async regionName =>
     .ref(`/${regionName}`)
     .once('value')
     .then(data => data.val());
+
+export const getFirebaseRegionProfile = async regionName =>
+  await firebase
+    .database()
+    .ref(`/CIA factbook data/countries/${regionName}`)
+    .once('value')
+    .then(res => (res.val() ? res.val().data : null));

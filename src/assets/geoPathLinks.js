@@ -32,9 +32,15 @@ const geoPathLink = {
   Italy: {
     geoJSON:
       'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1575058575/Map%20Quiz/Italy_regions.json',
-      subRegionName: 'region',
-      regionID: 'CC_1',
-  }
+    subRegionName: 'region',
+    regionID: 'CC_1',
+  },
+  Japan: {
+    geoJSON:
+      'https://res.cloudinary.com/dbeqp2lyo/raw/upload/v1575222794/Map%20Quiz/Japan_regions.json',
+    subRegionName: 'prefecture',
+    regionID: 'HASC_1',
+  },
 };
 
 export default geoPathLink;

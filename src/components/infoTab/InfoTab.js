@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import { Button } from 'semantic-ui-react';
 import InfoTabStyles from '../styles/InfoTabStyles';
+import { worldRegions } from '../../assets/mapViewSettings';
+import { openRegionModal } from '../../actions/mapActions';
 
 class InfoTab extends Component {
   constructor(props) {
@@ -11,9 +16,10 @@ class InfoTab extends Component {
   }
 
   componentDidMount() {
+    const { flag } = this.props.selectedProperties;
     const flagImg = new Image();
-    flagImg.src = this.props.regionData.flag;
-    if (!this.props.regionData.flag) {
+    flagImg.src = flag;
+    if (!flag) {
       this.setState({ isFlagImgPresent: false });
       return;
     }
@@ -24,12 +30,26 @@ class InfoTab extends Component {
   }
 
   render() {
+    const {
+      selectedProperties,
+      currentMap,
+      isQuizActive,
+      openRegionModal,
+    } = this.props;
+    let {
+      name,
+      capital,
+      population,
+      area,
+      regionOf,
+      flag,
+    } = selectedProperties;
     const { isFlagImgPresent, isFlagImgReady } = this.state;
     if (!isFlagImgReady && isFlagImgPresent) return '';
-    const { regionData } = this.props;
-    let { name, capital, population, area, regionOf, flag } = regionData;
     population = population ? `${population.toLocaleString()}` : 'N/A';
     area = area ? `${area.toLocaleString()} km²` : 'N/A';
+    const showMoreInfoButton =
+      !isQuizActive && worldRegions.includes(currentMap);
     return (
       <InfoTabStyles>
         {isFlagImgPresent && (
@@ -41,10 +61,34 @@ class InfoTab extends Component {
           <li>Population: {population}</li>
           <li>Area: {area}</li>
           {regionOf ? <li>Region of {regionOf}</li> : ''}
+          {showMoreInfoButton && (
+            <li className="infoTab-moreInfo">
+              <Button
+                icon="clipboard list"
+                size="small"
+                content="View Profile"
+                data={selectedProperties}
+                compact
+                inverted
+                onClick={openRegionModal}
+              />
+            </li>
+          )}
         </div>
       </InfoTabStyles>
     );
   }
 }
 
-export default InfoTab;
+const getAppState = createSelector(
+  state => state.quiz.selectedProperties,
+  state => state.quiz.isQuizActive,
+  state => state.map.currentMap,
+  (selectedProperties, isQuizActive, currentMap) => ({
+    selectedProperties,
+    isQuizActive,
+    currentMap,
+  })
+);
+
+export default connect(getAppState, { openRegionModal })(InfoTab);

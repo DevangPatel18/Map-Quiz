@@ -14,6 +14,8 @@ import { getChoroplethParams } from '../helpers/choroplethFunctions';
 import { checkedRegionsLabels } from '../assets/mapViewSettings';
 import * as types from './types';
 import store from '../store';
+import { getFirebaseRegionProfile } from '../firebase';
+import countryProfileIDs from '../assets/countryProfileIDs';
 
 const { show, hide } = actions;
 
@@ -185,4 +187,87 @@ export const partialMapRefresh = async (dispatch, regionIDList) => {
     regionStyles: getSelectUpdatedRegionStyles(regionIDList),
   });
   dispatch({ type: types.DISABLE_OPT });
+};
+
+export const highlightRegions = event => async dispatch => {
+  const { regionStyles, defaultZoom } = store.getState().map;
+  const color = event.currentTarget.id;
+  const selectedRegions = [];
+  const updatedRegionStyles = {};
+  for (let regionID in regionStyles) {
+    if (regionStyles[regionID].geoStyle.default.fill === color) {
+      selectedRegions.push(regionID);
+      updatedRegionStyles[regionID] = {
+        ...regionStyles[regionID],
+        stroke: {
+          strokeWidth: 1 / defaultZoom,
+          strokeColor: 'rgb(255, 255, 0)',
+        },
+      };
+    }
+  }
+  await dispatch({
+    type: types.HIGHLIGHT_REGIONS,
+    selectedRegions,
+    regionStyles: { ...regionStyles, ...updatedRegionStyles },
+  });
+  dispatch({ type: types.DISABLE_OPT });
+};
+
+export const deselectRegions = () => async dispatch => {
+  let { regionStyles, selectedRegions } = store.getState().map;
+  const { selectedProperties, infoTabShow } = store.getState().quiz;
+  const updatedRegionStyles = {};
+  const idxClickedRegion = selectedRegions.indexOf(selectedProperties.regionID);
+  if (idxClickedRegion !== -1 && infoTabShow) {
+    selectedRegions = [...selectedRegions];
+    selectedRegions.splice(idxClickedRegion, 1);
+  }
+  for (let regionID of selectedRegions) {
+    updatedRegionStyles[regionID] = {
+      ...regionStyles[regionID],
+      stroke: {
+        strokeWidth: 0.05,
+        strokeColor: 'black',
+      },
+    };
+  }
+  await dispatch({
+    type: types.HIGHLIGHT_REGIONS,
+    selectedRegions: [],
+    regionStyles: { ...regionStyles, ...updatedRegionStyles },
+  });
+  dispatch({ type: types.DISABLE_OPT });
+};
+
+export const openRegionModal = (event, { data }) => async dispatch => {
+  const { regionProfiles } = store.getState().data;
+  const { name, regionID } = data;
+  if (!regionProfiles[regionID]) {
+    const regionProfileID = Object.keys(countryProfileIDs).includes(regionID)
+      ? countryProfileIDs[regionID]
+      : name.toLowerCase().replace(/ /g, '_');
+    const firebaseRegionObj = await getFirebaseRegionProfile(regionProfileID);
+    if (firebaseRegionObj) {
+      await dispatch({
+        type: types.ADD_REGION_PROFILE,
+        regionID,
+        regionProfileData: firebaseRegionObj,
+      });
+    } else {
+      alert('Sorry! Profile not found.');
+      return;
+    }
+  }
+  dispatch({
+    type: types.SET_REGION_MODAL,
+    regionID,
+  });
+};
+
+export const closeRegionModal = () => dispatch => {
+  dispatch({
+    type: types.SET_REGION_MODAL,
+    regionID: null,
+  });
 };

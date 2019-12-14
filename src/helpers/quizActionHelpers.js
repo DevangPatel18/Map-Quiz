@@ -103,6 +103,11 @@ export const removeQuizExceptions = (quizAnswers, quizType) => {
         removedAnswers = ['FR.AO', 'FR.IF', 'FR.PL'];
       }
       break;
+    case 'Japan':
+      if (testedAttr === 'capital') {
+        removedAnswers = ['JP,TK'];
+      }
+      break;
     default:
   }
   return removedAnswers

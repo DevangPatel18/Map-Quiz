@@ -5,22 +5,24 @@ import InfoTab from './InfoTab';
 
 const MOTIONCONFIG = { stiffness: 300, damping: 15 };
 
-const TransitionInfoTab = ({ quiz }) => {
+const TransitionInfoTab = ({ name, infoTabShow }) => {
   return (
     <TransitionMotion
-      defaultStyles={[quiz.selectedProperties].map(infoProp => ({
-        key: infoProp.name,
-        style: { x: -230, opacity: 0 },
-        data: infoProp,
-      }))}
-      styles={[quiz.selectedProperties].map(infoProp => ({
-        key: infoProp.name,
-        style: {
-          x: spring(quiz.infoTabShow ? 15 : -230, MOTIONCONFIG),
-          opacity: spring(quiz.infoTabShow ? 1 : 0, MOTIONCONFIG),
+      defaultStyles={[
+        {
+          key: name,
+          style: { x: -230, opacity: 0 },
         },
-        data: infoProp,
-      }))}
+      ]}
+      styles={[
+        {
+          key: name,
+          style: {
+            x: spring(infoTabShow ? 15 : -230, MOTIONCONFIG),
+            opacity: spring(infoTabShow ? 1 : 0, MOTIONCONFIG),
+          },
+        },
+      ]}
     >
       {interpolatedStyles => (
         <div>
@@ -35,7 +37,7 @@ const TransitionInfoTab = ({ quiz }) => {
                 opacity: `${config.style.opacity}`,
               }}
             >
-              <InfoTab regionData={config.data} />
+              <InfoTab />
             </div>
           ))}
         </div>
@@ -45,10 +47,8 @@ const TransitionInfoTab = ({ quiz }) => {
 };
 
 const mapStateToProps = state => ({
-  quiz: state.quiz,
+  name: state.quiz.selectedProperties.name,
+  infoTabShow: state.quiz.infoTabShow,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(TransitionInfoTab);
+export default connect(mapStateToProps)(TransitionInfoTab);
