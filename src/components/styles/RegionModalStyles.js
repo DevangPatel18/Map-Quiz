@@ -26,6 +26,7 @@ export const theme = {
 export const TabStyled = styled(Tab)`
   .ui.secondary {
     overflow: auto;
+    padding: 0.5em 0;
 
     ${isMobile &&
       css`

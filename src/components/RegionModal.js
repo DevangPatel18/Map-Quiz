@@ -5,6 +5,7 @@ import { closeRegionModal } from '../actions/mapActions';
 import { Modal, Button } from 'semantic-ui-react';
 import { TabStyled } from './styles/RegionModalStyles';
 import { generateTabContent } from '../helpers/RegionModalHelpers';
+import { capitalize } from '../helpers/textHelpers';
 
 const RegionModal = props => {
   const { modalRegionID, regionProfiles, closeRegionModal } = props;
@@ -12,7 +13,7 @@ const RegionModal = props => {
   const { name, ...displayData } = profileData;
 
   const panes = Object.keys(displayData).map(sectionName => ({
-    menuItem: sectionName,
+    menuItem: capitalize(sectionName).replace(/_/g, ' '),
     render: () => generateTabContent(displayData, sectionName),
   }));
 
