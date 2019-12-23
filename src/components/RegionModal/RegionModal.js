@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { closeRegionModal } from '../actions/mapActions';
+import { closeRegionModal } from '../../actions/mapActions';
 import { Modal, Button } from 'semantic-ui-react';
-import { TabStyled } from './styles/RegionModalStyles';
-import { generateTabContent } from '../helpers/RegionModalHelpers';
-import { capitalize } from '../helpers/textHelpers';
+import { TabStyled } from '../styles/RegionModalStyles';
+import { generateTabContent } from './RegionModalHelpers';
+import { capitalize } from '../../helpers/textHelpers';
 
 const RegionModal = props => {
   const { modalRegionID, regionProfiles, closeRegionModal } = props;
