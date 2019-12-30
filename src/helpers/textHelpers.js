@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Table } from 'semantic-ui-react';
+import { List, Table, Header } from 'semantic-ui-react';
 
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -49,11 +49,16 @@ export const generateList = list => (
   </List>
 );
 
-export const generateTable = table => {
+export const generateTable = (table, title) => {
   const items = Object.keys(table[0]);
 
   return (
-    <div style={{ overflow: 'auto' }}>
+    <div style={{ overflow: 'auto', margin: '1rem 0' }}>
+      {title && (
+        <Header size="small" textAlign="center">
+          {title}
+        </Header>
+      )}
       <Table
         definition
         compact
