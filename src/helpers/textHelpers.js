@@ -3,6 +3,10 @@ import { List, Table, Header } from 'semantic-ui-react';
 
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
+export const capWithSpacing = str => capitalize(str).replace(/_/g, ' ');
+
+export const remUnderscore = str => str.replace(/_/g, ' ');
+
 const numDescription = ['', ' thousand', ' million', ' billion', ' trillion'];
 
 export const numScale = number => {
