@@ -5,6 +5,7 @@ import { theme } from '../styles/RegionModalStyles';
 import { generateParagraphs } from '../../helpers/textHelpers';
 import TransnationalIssues from './TransnationalIssues';
 import Energy from './Energy';
+import Economy from './Economy';
 
 export const generateTabContent = (displayData, sectionName) => {
   switch (sectionName) {
@@ -14,6 +15,8 @@ export const generateTabContent = (displayData, sectionName) => {
       return <TransnationalIssues data={displayData[sectionName]} />;
     case 'energy':
       return <Energy data={displayData[sectionName]} />;
+    case 'economy':
+      return <Economy data={displayData[sectionName]} />;
     default:
       return (
         <Tab.Pane>
