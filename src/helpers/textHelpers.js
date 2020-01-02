@@ -10,10 +10,10 @@ export const remUnderscore = str => str.replace(/_/g, ' ');
 const numDescription = ['', ' thousand', ' million', ' billion', ' trillion'];
 
 export const numScale = number => {
-  const tier = (Math.log10(number) / 3) | 0;
+  const tier = (Math.log10(Math.abs(number)) / 3) | 0;
 
   // if zero, we don't need a suffix
-  if (tier === 0) return number.toPrecision(3);
+  if (tier === 0) return number;
 
   // get suffix and determine scale
   const suffix = numDescription[tier];
@@ -23,7 +23,7 @@ export const numScale = number => {
   const scaled = number / scale;
 
   // format number and add suffix
-  return scaled.toPrecision(3) + suffix;
+  return scaled + suffix;
 };
 
 export const generateParagraphs = text => {
