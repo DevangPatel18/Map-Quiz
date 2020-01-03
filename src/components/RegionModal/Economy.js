@@ -2,36 +2,8 @@ import React from 'react';
 import { Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import {
-  generateParagraphs,
-  capWithSpacing,
-  remUnderscore,
-  numScale,
-} from '../../helpers/textHelpers';
-
-const formatAnnualValue = obj => {
-  const { value, units, date } = obj;
-  return `${numScale(value)} ${remUnderscore(units)} (${date})`;
-};
-
-const formatDUVobj = obj => (
-  <List.Item as="li">
-    <strong>{`${capWithSpacing(obj.attribute)}: `}</strong>
-    {obj.annual_values
-      .map(annual_value => formatAnnualValue(annual_value))
-      .join(', ')}
-    {obj.note && (
-      <List as="ul">
-        <List.Item as="li">
-          <em>
-            {'Note: '}
-            {obj.note}
-          </em>
-        </List.Item>
-      </List>
-    )}
-  </List.Item>
-);
+import { generateParagraphs } from '../../helpers/textHelpers';
+import { formatDUVobj } from './EconomyHelpers';
 
 const Economy = ({ data }) => {
   const {
