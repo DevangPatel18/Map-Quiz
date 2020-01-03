@@ -3,7 +3,7 @@ import { Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import { generateParagraphs } from '../../helpers/textHelpers';
-import { formatDUVobj } from './EconomyHelpers';
+import { formatDUVobj, generateImportExportTable } from './EconomyHelpers';
 
 const Economy = ({ data }) => {
   const {
@@ -11,8 +11,13 @@ const Economy = ({ data }) => {
     agriculture_products,
     budget_surplus_or_deficit,
     budget,
+    imports,
+    exports,
     ...rest
   } = data;
+
+  const importData = imports;
+  const exportData = data.exports;
 
   let dateUnitValueObj = [];
   const abstractObj = {};
@@ -56,6 +61,7 @@ const Economy = ({ data }) => {
           <React.Fragment key={i}>{formatDUVobj(obj)}</React.Fragment>
         ))}
       </List>
+      {generateImportExportTable({ importData, exportData })}
       {isRestTreeNonEmpty && <JSONTree data={abstractObj} theme={theme} />}
     </Container>
   );
