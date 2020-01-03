@@ -14,9 +14,10 @@ export const formatAnnualValue = obj => {
 export const formatDUVobj = obj => (
   <List.Item as="li">
     {obj.attribute && <strong>{`${capWithSpacing(obj.attribute)}: `}</strong>}
-    {obj.annual_values
-      .map(annual_value => formatAnnualValue(annual_value))
-      .join(', ')}
+    {obj.annual_values &&
+      obj.annual_values
+        .map(annual_value => formatAnnualValue(annual_value))
+        .join(', ')}
     {obj.note && (
       <List as="ul">
         <List.Item as="li">
@@ -44,7 +45,7 @@ export const generateImportExportTable = ({ importData, exportData }) => {
       <Table.Body>
         <Table.Row verticalAlign="top">
           <Table.Cell>Commodities</Table.Cell>
-          {importData && (
+          {importData.commodities && (
             <Table.Cell>
               <List as="ul">
                 {importData.commodities.by_commodity.map(commodity => (
@@ -58,7 +59,7 @@ export const generateImportExportTable = ({ importData, exportData }) => {
               )}
             </Table.Cell>
           )}
-          {exportData && (
+          {exportData.commodities && (
             <Table.Cell>
               <List as="ul">
                 {exportData.commodities.by_commodity.map(commodity => (
@@ -75,7 +76,7 @@ export const generateImportExportTable = ({ importData, exportData }) => {
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell>Partners</Table.Cell>
-          {importData && (
+          {importData.partners && (
             <Table.Cell>
               {
                 <List as="ul">
@@ -91,7 +92,7 @@ export const generateImportExportTable = ({ importData, exportData }) => {
               )}
             </Table.Cell>
           )}
-          {exportData && (
+          {exportData.partners && (
             <Table.Cell>
               {
                 <List as="ul">
@@ -110,12 +111,12 @@ export const generateImportExportTable = ({ importData, exportData }) => {
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell>Total Value</Table.Cell>
-          {importData && (
+          {importData.total_value && (
             <Table.Cell>
               <List as="ul">{formatDUVobj(importData.total_value)}</List>
             </Table.Cell>
           )}
-          {exportData && (
+          {exportData.total_value && (
             <Table.Cell>
               <List as="ul">{formatDUVobj(exportData.total_value)}</List>
             </Table.Cell>
