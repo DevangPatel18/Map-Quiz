@@ -7,6 +7,7 @@ import {
   formatAnnualValue,
   formatDUVobj,
   generateImportExportTable,
+  generateIndustries,
 } from './EconomyHelpers';
 
 const Economy = ({ data }) => {
@@ -22,6 +23,7 @@ const Economy = ({ data }) => {
     population_below_poverty_line,
     industrial_production_growth_rate,
     taxes_and_other_revenues,
+    industries,
     ...rest
   } = data;
 
@@ -126,6 +128,7 @@ const Economy = ({ data }) => {
         )}
       </List>
       {generateImportExportTable({ importData, exportData })}
+      {generateIndustries(industries)}
       {isRestTreeNonEmpty && <JSONTree data={abstractObj} theme={theme} />}
     </Container>
   );
