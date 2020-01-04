@@ -92,9 +92,13 @@ export const generateTable = (table, title) => {
         <Table.Body>
           {items.map((item, i) => (
             <Table.Row key={i}>
-              <Table.Cell>{capitalize(item).replace(/_/g, ' ')}</Table.Cell>
+              <Table.Cell>{capWithSpacing(item)}</Table.Cell>
               {table.map((entry, j) => (
-                <Table.Cell key={j}>{entry[item]}</Table.Cell>
+                <Table.Cell key={j}>
+                  {typeof entry[item] === 'number'
+                    ? numScale(entry[item])
+                    : capWithSpacing(entry[item])}
+                </Table.Cell>
               ))}
             </Table.Row>
           ))}
