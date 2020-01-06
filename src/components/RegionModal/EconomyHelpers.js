@@ -160,3 +160,50 @@ export const generateIndustries = data => {
     </Table>
   );
 };
+
+export const generateLaborForce = data => {
+  if (!data) return '';
+  const { by_occupation, total_size } = data;
+
+  let occupationList = '';
+
+  if (by_occupation && by_occupation.occupation) {
+    occupationList = Object.entries(by_occupation.occupation).map(entry => (
+      <List.Item key={entry[0]}>
+        {capWithSpacing(entry[0])}: {entry[1].value}
+        {entry[1].units} {entry[1].note && ` (${entry[1].note})`}
+      </List.Item>
+    ));
+  }
+  return (
+    <Table definition unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell />
+          <Table.HeaderCell>Labor Force</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {occupationList && (
+          <Table.Row verticalAlign="top">
+            <Table.Cell>Occupation</Table.Cell>
+            <Table.Cell>
+              <List bulleted>{occupationList}</List>
+            </Table.Cell>
+          </Table.Row>
+        )}
+        {total_size && (
+          <Table.Row verticalAlign="top">
+            <Table.Cell>Total size</Table.Cell>
+            <Table.Cell>
+              <p>
+                {`${numScale(total_size.total_people)} (${total_size.date}) `}
+                <sup>(global rank - {total_size.global_rank})</sup>
+              </p>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+};

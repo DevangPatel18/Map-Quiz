@@ -8,6 +8,7 @@ import {
   formatDUVobj,
   generateImportExportTable,
   generateIndustries,
+  generateLaborForce,
 } from './EconomyHelpers';
 
 const Economy = ({ data }) => {
@@ -24,6 +25,7 @@ const Economy = ({ data }) => {
     industrial_production_growth_rate,
     taxes_and_other_revenues,
     industries,
+    labor_force,
     ...rest
   } = data;
 
@@ -129,6 +131,7 @@ const Economy = ({ data }) => {
       </List>
       {generateImportExportTable({ importData, exportData })}
       {generateIndustries(industries)}
+      {generateLaborForce(labor_force)}
       {isRestTreeNonEmpty && <JSONTree data={abstractObj} theme={theme} />}
     </Container>
   );
