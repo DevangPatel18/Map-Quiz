@@ -28,6 +28,7 @@ export const formatDUVobj = obj => (
         </List.Item>
       </List>
     )}
+    {obj.global_rank && <sup> (global rank - {obj.global_rank})</sup>}
   </List.Item>
 );
 
