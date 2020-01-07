@@ -28,11 +28,13 @@ const Economy = ({ data }) => {
     industries,
     labor_force,
     gdp,
+    household_income_by_percentage_share,
     ...rest
   } = data;
 
   const importData = imports;
   const exportData = data.exports;
+  const houseIncome = household_income_by_percentage_share;
 
   let dateUnitValueObj = [];
   const abstractObj = {};
@@ -128,6 +130,26 @@ const Economy = ({ data }) => {
             {taxes_and_other_revenues.percent_of_gdp}% of GDP (
             {taxes_and_other_revenues.date}){' '}
             <sup>(global rank - {taxes_and_other_revenues.global_rank})</sup>
+          </List.Item>
+        )}
+        {houseIncome && (
+          <List.Item as="li">
+            <strong>Household income by percentage share: </strong>
+            {houseIncome.note && `(note: ${houseIncome.note})`}
+            <List as="ul">
+              <List.Item as="li">
+                {houseIncome.lowest_ten_percent &&
+                  `lowest 10%: ${houseIncome.lowest_ten_percent.value}${houseIncome.lowest_ten_percent.units}`}
+                {houseIncome.lowest_ten_percent.date &&
+                  ` (${houseIncome.lowest_ten_percent.date})`}
+              </List.Item>
+              <List.Item as="li">
+                {houseIncome.highest_ten_percent &&
+                  `highest 10%: ${houseIncome.highest_ten_percent.value}${houseIncome.highest_ten_percent.units}`}
+                {houseIncome.highest_ten_percent.date &&
+                  ` (${houseIncome.highest_ten_percent.date})`}
+              </List.Item>
+            </List>
           </List.Item>
         )}
       </List>
