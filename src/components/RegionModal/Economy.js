@@ -9,6 +9,7 @@ import {
   generateImportExportTable,
   generateIndustries,
   generateLaborForce,
+  generateGDP,
 } from './EconomyHelpers';
 
 const Economy = ({ data }) => {
@@ -26,6 +27,7 @@ const Economy = ({ data }) => {
     taxes_and_other_revenues,
     industries,
     labor_force,
+    gdp,
     ...rest
   } = data;
 
@@ -132,6 +134,7 @@ const Economy = ({ data }) => {
       {generateImportExportTable({ importData, exportData })}
       {generateIndustries(industries)}
       {generateLaborForce(labor_force)}
+      {generateGDP(gdp)}
       {isRestTreeNonEmpty && <JSONTree data={abstractObj} theme={theme} />}
     </Container>
   );

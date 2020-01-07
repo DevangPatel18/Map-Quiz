@@ -1,10 +1,15 @@
 import React from 'react';
-import { List, Table } from 'semantic-ui-react';
+import { List, Table, Header } from 'semantic-ui-react';
+import styled from 'styled-components';
 import {
   capWithSpacing,
   remUnderscore,
   numScale,
 } from '../../helpers/textHelpers';
+
+const SubHeader = styled.p`
+  font-size: 0.7em;
+`;
 
 export const formatAnnualValue = obj => {
   const { value, units, date } = obj;
@@ -30,6 +35,41 @@ export const formatDUVobj = obj => (
     )}
     {obj.global_rank && <sup> (global rank - {obj.global_rank})</sup>}
   </List.Item>
+);
+
+export const generateDUVTable = obj => (
+  <Table celled compact collapsing unstackable textAlign="center">
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>
+          {obj.attribute && capWithSpacing(obj.attribute)}
+          {obj.global_rank && (
+            <SubHeader>(global rank - {obj.global_rank})</SubHeader>
+          )}
+        </Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
+      {obj.annual_values &&
+        obj.annual_values.map((annual_value, i) => (
+          <Table.Row key={i}>
+            <Table.Cell>{formatAnnualValue(annual_value)}</Table.Cell>
+          </Table.Row>
+        ))}
+      {obj.note && (
+        <Table.Row>
+          <Table.Cell style={{ fontSize: '.8rem' }}>
+            {obj.note && (
+              <em>
+                {'Note: '}
+                {obj.note}
+              </em>
+            )}
+          </Table.Cell>
+        </Table.Row>
+      )}
+    </Table.Body>
+  </Table>
 );
 
 export const generateImportExportTable = ({ importData, exportData }) => {
@@ -205,5 +245,118 @@ export const generateLaborForce = data => {
         )}
       </Table.Body>
     </Table>
+  );
+};
+
+export const generateGDP = data => {
+  if (!data) return '';
+  const {
+    composition,
+    official_exchange_rate,
+    per_capita_purchasing_power_parity,
+    purchasing_power_parity,
+    real_growth_rate,
+  } = data;
+
+  return (
+    <>
+      <Header textAlign="center">GDP Figures</Header>
+      {official_exchange_rate && (
+        <p>
+          <strong>Official exchange rate:</strong> $
+          {numScale(official_exchange_rate.USD)} USD (
+          {official_exchange_rate.date})
+        </p>
+      )}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-evenly',
+          flexWrap: 'wrap',
+        }}
+      >
+        {per_capita_purchasing_power_parity &&
+          generateDUVTable({
+            attribute: 'Per capita purchasing power parity',
+            ...per_capita_purchasing_power_parity,
+          })}
+        {purchasing_power_parity &&
+          generateDUVTable({
+            attribute: 'Purchasing power parity',
+            ...purchasing_power_parity,
+          })}
+        {real_growth_rate &&
+          generateDUVTable({
+            attribute: 'Real growth rate',
+            ...real_growth_rate,
+          })}
+      </div>
+      {generateGDPcompTable(composition)}
+    </>
+  );
+};
+
+const generateGDPcompTable = ({ by_end_use, by_sector_of_origin }) => {
+  if (!by_end_use && !by_sector_of_origin) return '';
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+      }}
+    >
+      {by_end_use && (
+        <Table celled compact collapsing unstackable>
+          <Table.Header>
+            <Table.Row textAlign="center">
+              <Table.HeaderCell colSpan={2}>
+                GDP composition by end use
+                <SubHeader>({by_end_use.date})</SubHeader>
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {by_end_use.end_uses &&
+              Object.entries(by_end_use.end_uses).map(entry => (
+                <Table.Row key={entry[0]}>
+                  <Table.Cell>{capWithSpacing(entry[0])}</Table.Cell>
+                  <Table.Cell textAlign="right">
+                    {entry[1].value}
+                    {entry[1].units}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+          </Table.Body>
+        </Table>
+      )}
+
+      {by_sector_of_origin && (
+        <Table celled compact collapsing unstackable>
+          <Table.Header>
+            <Table.Row textAlign="center">
+              <Table.HeaderCell colSpan={2}>
+                GDP composition by sector
+                <SubHeader>({by_sector_of_origin.date})</SubHeader>
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {by_sector_of_origin.sectors &&
+              Object.entries(by_sector_of_origin.sectors).map(entry => (
+                <Table.Row key={entry[0]}>
+                  <Table.Cell>{capWithSpacing(entry[0])}</Table.Cell>
+                  <Table.Cell textAlign="right">
+                    {entry[1].value}
+                    {entry[1].units}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+          </Table.Body>
+        </Table>
+      )}
+    </div>
   );
 };
