@@ -52,15 +52,15 @@ const Economy = ({ data }) => {
   return (
     <Container text>
       {generateParagraphs(overview)}
-      <List as="ul">
+      <List bulleted>
         {agriculture_products && (
           <>
-            <List.Item as="li">
+            <List.Item>
               <strong>Agriculture products: </strong>
               {agriculture_products.products.join(', ')}
               {agriculture_products.note && (
-                <List as="ul">
-                  <List.Item as="li">{agriculture_products.note}</List.Item>
+                <List>
+                  <List.Item>{agriculture_products.note}</List.Item>
                 </List>
               )}
             </List.Item>
@@ -68,7 +68,7 @@ const Economy = ({ data }) => {
         )}
         {budget_surplus_or_deficit && (
           <>
-            <List.Item as="li">
+            <List.Item>
               <strong>Budget surplus or deficit: </strong>
               {`${budget_surplus_or_deficit.percent_of_gdp}% (${budget_surplus_or_deficit.date} - global rank ${budget_surplus_or_deficit.global_rank})`}
             </List.Item>
@@ -78,9 +78,9 @@ const Economy = ({ data }) => {
           <React.Fragment key={i}>{formatDUVobj(obj)}</React.Fragment>
         ))}
         {stock_of_direct_foreign_investment && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Stock of direct Foreign investment</strong>
-            <List as="ul">
+            <List>
               {Object.keys(stock_of_direct_foreign_investment).map(subAttr => (
                 <React.Fragment key={subAttr}>
                   {formatDUVobj({
@@ -93,18 +93,18 @@ const Economy = ({ data }) => {
           </List.Item>
         )}
         {fiscal_year && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Fiscal Year: </strong>
             {fiscal_year.start} - {fiscal_year.end}
           </List.Item>
         )}
         {population_below_poverty_line && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Population below poverty line: </strong>
             {formatAnnualValue(population_below_poverty_line)}
             {population_below_poverty_line.note && (
-              <List as="ul">
-                <List.Item as="li">
+              <List>
+                <List.Item>
                   <em>
                     {'Note: '}
                     {population_below_poverty_line.note}
@@ -115,7 +115,7 @@ const Economy = ({ data }) => {
           </List.Item>
         )}
         {industrial_production_growth_rate && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Industrial production growth rate: </strong>
             {industrial_production_growth_rate.annual_percentage_increase}% (
             {industrial_production_growth_rate.date}){' '}
@@ -125,7 +125,7 @@ const Economy = ({ data }) => {
           </List.Item>
         )}
         {taxes_and_other_revenues && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Taxes and other revenues: </strong>
             {taxes_and_other_revenues.percent_of_gdp}% of GDP (
             {taxes_and_other_revenues.date}){' '}
@@ -133,17 +133,17 @@ const Economy = ({ data }) => {
           </List.Item>
         )}
         {houseIncome && (
-          <List.Item as="li">
+          <List.Item>
             <strong>Household income by percentage share: </strong>
             {houseIncome.note && `(note: ${houseIncome.note})`}
-            <List as="ul">
-              <List.Item as="li">
+            <List>
+              <List.Item>
                 {houseIncome.lowest_ten_percent &&
                   `lowest 10%: ${houseIncome.lowest_ten_percent.value}${houseIncome.lowest_ten_percent.units}`}
                 {houseIncome.lowest_ten_percent.date &&
                   ` (${houseIncome.lowest_ten_percent.date})`}
               </List.Item>
-              <List.Item as="li">
+              <List.Item>
                 {houseIncome.highest_ten_percent &&
                   `highest 10%: ${houseIncome.highest_ten_percent.value}${houseIncome.highest_ten_percent.units}`}
                 {houseIncome.highest_ten_percent.date &&

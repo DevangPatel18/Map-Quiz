@@ -17,15 +17,15 @@ export const formatAnnualValue = obj => {
 };
 
 export const formatDUVobj = obj => (
-  <List.Item as="li">
+  <List.Item>
     {obj.attribute && <strong>{`${capWithSpacing(obj.attribute)}: `}</strong>}
     {obj.annual_values &&
       obj.annual_values
         .map(annual_value => formatAnnualValue(annual_value))
         .join(', ')}
     {obj.note && (
-      <List as="ul">
-        <List.Item as="li">
+      <List>
+        <List.Item>
           <em>
             {'Note: '}
             {obj.note}
@@ -88,11 +88,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           <Table.Cell>Commodities</Table.Cell>
           {importData.commodities && (
             <Table.Cell>
-              <List as="ul">
+              <List bulleted>
                 {importData.commodities.by_commodity.map(commodity => (
-                  <List.Item key={commodity} as="li">
-                    {commodity}
-                  </List.Item>
+                  <List.Item key={commodity}>{commodity}</List.Item>
                 ))}
               </List>
               {importData.commodities.date && (
@@ -102,11 +100,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           )}
           {exportData.commodities && (
             <Table.Cell>
-              <List as="ul">
+              <List bulleted>
                 {exportData.commodities.by_commodity.map(commodity => (
-                  <List.Item key={commodity} as="li">
-                    {commodity}
-                  </List.Item>
+                  <List.Item key={commodity}>{commodity}</List.Item>
                 ))}
               </List>
               {exportData.commodities.date && (
@@ -120,9 +116,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           {importData.partners && (
             <Table.Cell>
               {
-                <List as="ul">
+                <List bulleted>
                   {importData.partners.by_country.map(({ name, percent }) => (
-                    <List.Item key={name} as="li">
+                    <List.Item key={name}>
                       {name} - {percent}%
                     </List.Item>
                   ))}
@@ -136,9 +132,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           {exportData.partners && (
             <Table.Cell>
               {
-                <List as="ul">
+                <List bulleted>
                   {exportData.partners.by_country.map(({ name, percent }) => (
-                    <List.Item key={name} as="li">
+                    <List.Item key={name}>
                       {name} - {percent}%
                     </List.Item>
                   ))}
@@ -154,12 +150,12 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           <Table.Cell>Total Value</Table.Cell>
           {importData.total_value && (
             <Table.Cell>
-              <List as="ul">{formatDUVobj(importData.total_value)}</List>
+              <List bulleted>{formatDUVobj(importData.total_value)}</List>
             </Table.Cell>
           )}
           {exportData.total_value && (
             <Table.Cell>
-              <List as="ul">{formatDUVobj(exportData.total_value)}</List>
+              <List bulleted>{formatDUVobj(exportData.total_value)}</List>
             </Table.Cell>
           )}
         </Table.Row>
