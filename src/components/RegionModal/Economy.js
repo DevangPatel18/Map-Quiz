@@ -2,12 +2,14 @@ import React from 'react';
 import { Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateParagraphs } from '../../helpers/textHelpers';
+import {
+  generateParagraphs,
+  generateTableList,
+} from '../../helpers/textHelpers';
 import {
   formatAnnualValue,
   formatDUVobj,
   generateImportExportTable,
-  generateIndustries,
   generateLaborForce,
   generateGDP,
 } from './EconomyHelpers';
@@ -154,7 +156,12 @@ const Economy = ({ data }) => {
         )}
       </List>
       {generateImportExportTable({ importData, exportData })}
-      {generateIndustries(industries)}
+      {industries &&
+        generateTableList({
+          list: industries.industries,
+          title: 'Industries',
+          note: industries.note,
+        })}
       {generateLaborForce(labor_force)}
       {generateGDP(gdp)}
       {isRestTreeNonEmpty && <JSONTree data={abstractObj} theme={theme} />}
