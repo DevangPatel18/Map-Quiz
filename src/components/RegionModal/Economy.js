@@ -55,19 +55,6 @@ const Economy = ({ data }) => {
     <Container text>
       {generateParagraphs(overview)}
       <List bulleted>
-        {agriculture_products && (
-          <>
-            <List.Item>
-              <strong>Agriculture products: </strong>
-              {agriculture_products.products.join(', ')}
-              {agriculture_products.note && (
-                <List>
-                  <List.Item>{agriculture_products.note}</List.Item>
-                </List>
-              )}
-            </List.Item>
-          </>
-        )}
         {budget_surplus_or_deficit && (
           <>
             <List.Item>
@@ -156,6 +143,12 @@ const Economy = ({ data }) => {
         )}
       </List>
       {generateImportExportTable({ importData, exportData })}
+      {agriculture_products &&
+        generateTableList({
+          list: agriculture_products.products,
+          title: 'Agriculture products',
+          note: agriculture_products.note,
+        })}
       {industries &&
         generateTableList({
           list: industries.industries,
