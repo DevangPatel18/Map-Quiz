@@ -107,3 +107,36 @@ export const generateTable = (table, title) => {
     </div>
   );
 };
+
+export const generateTableList = data => {
+  if (!data) return '';
+  const { list, title, note } = data;
+  let listA = [...list];
+  let listB = listA.splice(Math.ceil(listA.length / 2));
+  return (
+    <Table columns={2} unstackable celled>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan="2">{title}</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row textAlign="center" verticalAlign="top">
+          <Table.Cell>
+            <List items={listA} />
+          </Table.Cell>
+          <Table.Cell>
+            <List items={listB} />
+          </Table.Cell>
+        </Table.Row>
+        {note && (
+          <Table.Row>
+            <Table.Cell colSpan="2">
+              <em>Note: {note}</em>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+};
