@@ -7,6 +7,9 @@ export const capWithSpacing = str => capitalize(str).replace(/_/g, ' ');
 
 export const remUnderscore = str => str.replace(/_/g, ' ');
 
+export const objToArray = obj =>
+  Object.entries(obj).map(entry => ({ category: entry[0], ...entry[1] }));
+
 const numDescription = ['', ' thousand', ' million', ' billion', ' trillion'];
 
 export const numScale = number => {

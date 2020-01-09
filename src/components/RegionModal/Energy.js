@@ -2,10 +2,10 @@ import React from 'react';
 import { Tab, Container, Header, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateTable } from '../../helpers/textHelpers';
-
-const objToArraywithSameKeys = obj =>
-  Object.entries(obj).map(entry => ({ category: entry[0], ...entry[1] }));
+import {
+  generateTable,
+  objToArray,
+} from '../../helpers/textHelpers';
 
 const Energy = ({ data }) => {
   let {
@@ -21,13 +21,13 @@ const Energy = ({ data }) => {
   let cdEmissions = carbon_dioxide_emissions_from_consumption_of_energy;
 
   if (refined_petroleum_products) {
-    refined_petroleum_products = objToArraywithSameKeys(
+    refined_petroleum_products = objToArray(
       refined_petroleum_products
     );
   }
 
   if (natural_gas) {
-    natural_gas = objToArraywithSameKeys(natural_gas);
+    natural_gas = objToArray(natural_gas);
   }
 
   let electricityElements;
@@ -39,8 +39,8 @@ const Energy = ({ data }) => {
       ...electricity_rest
     } = electricity;
 
-    const electricityTable = objToArraywithSameKeys(electricity_rest);
-    by_source = objToArraywithSameKeys(by_source);
+    const electricityTable = objToArray(electricity_rest);
+    by_source = objToArray(by_source);
     const igc = installed_generating_capacity;
 
     electricityElements = (
