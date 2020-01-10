@@ -2,10 +2,7 @@ import React from 'react';
 import { Tab, Container, Header, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import {
-  generateTable,
-  objToArray,
-} from '../../helpers/textHelpers';
+import { generateTable, objToArray, numScale } from '../../helpers/textHelpers';
 
 const Energy = ({ data }) => {
   let {
@@ -21,9 +18,7 @@ const Energy = ({ data }) => {
   let cdEmissions = carbon_dioxide_emissions_from_consumption_of_energy;
 
   if (refined_petroleum_products) {
-    refined_petroleum_products = objToArray(
-      refined_petroleum_products
-    );
+    refined_petroleum_products = objToArray(refined_petroleum_products);
   }
 
   if (natural_gas) {
@@ -49,14 +44,18 @@ const Energy = ({ data }) => {
         {generateTable(electricityTable, 'Electricity breakdown')}
         {generateTable(by_source, 'Electricity by Source')}
         <List as="ul">
-          <List.Item as="li">
-            {`Installed generating capacity: ${parseInt(igc.kW)} kW (${
-              igc.date
-            } - global rank ${igc.global_rank})`}
-          </List.Item>
-          <List.Item as="li">
-            {`Access: ${access.total_electrification.value} ${access.total_electrification.units} (${access.date})`}
-          </List.Item>
+          {igc && (
+            <List.Item as="li">
+              {`Installed generating capacity: ${numScale(igc.kW)} kW (${
+                igc.date
+              } - global rank ${igc.global_rank})`}
+            </List.Item>
+          )}
+          {access && (
+            <List.Item as="li">
+              {`Access: ${access.total_electrification.value} ${access.total_electrification.units} (${access.date})`}
+            </List.Item>
+          )}
         </List>
       </>
     );
@@ -70,7 +69,7 @@ const Energy = ({ data }) => {
             <List.Item as="li">
               CO<sub>2</sub>
               {' emissions from energy consumption: '}
-              {parseInt(cdEmissions.megatonnes)}
+              {numScale(cdEmissions.megatonnes)}
               {` megatonnes (${cdEmissions.date})`}
             </List.Item>
             <List.Item>{`Global rank: ${cdEmissions.global_rank}`}</List.Item>
