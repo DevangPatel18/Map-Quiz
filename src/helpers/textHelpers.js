@@ -111,9 +111,9 @@ export const generateTable = (table, title) => {
   );
 };
 
-export const generateTableList = data => {
-  if (!data) return '';
+export const generateTableList = (data = {}) => {
   const { list, title, note } = data;
+  if (!list) return '';
   let listA = [...list];
   let listB = listA.splice(Math.ceil(listA.length / 2));
   return (
