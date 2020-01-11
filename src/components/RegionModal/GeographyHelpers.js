@@ -5,6 +5,7 @@ import {
   capWithSpacing,
   numScale,
   objToArray,
+  generateTableList,
 } from '../../helpers/textHelpers';
 
 const AreaContainer = styled.div`
@@ -109,6 +110,34 @@ export const generateElevation = data => {
           </List.Item>
         )}
       </List>
+    </>
+  );
+};
+
+export const generateEnvironment = data => {
+  const { current_issues, international_agreements } = data;
+
+  return (
+    <>
+      <Header textAlign="center">Environment</Header>
+
+      {generateTableList({
+        list: current_issues,
+        title: 'Current Issues',
+      })}
+
+      {international_agreements && (
+        <>
+          {generateTableList({
+            list: international_agreements.party_to,
+            title: 'International agreements (party to)',
+          })}
+          {generateTableList({
+            list: international_agreements.signed_but_not_ratified,
+            title: 'International agreements (signed but not ratified)',
+          })}
+        </>
+      )}
     </>
   );
 };
