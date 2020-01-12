@@ -203,3 +203,58 @@ const agriculturalList = [
   'permanent_crops',
   'permanent_pasture',
 ];
+
+export const generateBoundaries = (data = {}) => {
+  const { border_countries, total, note } = data;
+
+  if (!border_countries) return '';
+
+  return (
+    <>
+      <Table celled compact collapsing unstackable>
+        <Table.Header>
+          <Table.Row textAlign="center">
+            <Table.HeaderCell colSpan={2}>Land boundaries</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {border_countries.map((obj, idx) => (
+            <React.Fragment key={idx}>
+              {obj.border_length && (
+                <Table.Row>
+                  <Table.Cell>
+                    {obj.country}
+                    {obj.note && (
+                      <p style={{ fontSize: '.8rem' }}>
+                        <em>Note: {obj.note}</em>
+                      </p>
+                    )}
+                  </Table.Cell>
+                  <Table.Cell textAlign="right">
+                    {obj.border_length.value} {obj.border_length.units}
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </React.Fragment>
+          ))}
+          {total && (
+            <Table.Row>
+              <Table.Cell>Total</Table.Cell>
+              <Table.Cell textAlign="right">
+                {total.value} {total.units}
+              </Table.Cell>
+            </Table.Row>
+          )}
+
+          {note && (
+            <Table.Row>
+              <Table.Cell colSpan={2} style={{ fontSize: '.8rem' }}>
+                <em>Note: {note}</em>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+    </>
+  );
+};
