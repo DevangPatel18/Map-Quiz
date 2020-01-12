@@ -8,6 +8,10 @@ import {
   generateTableList,
 } from '../../helpers/textHelpers';
 
+const SubHeader = styled.p`
+  font-size: 0.7em;
+`;
+
 const AreaContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -141,3 +145,61 @@ export const generateEnvironment = data => {
     </>
   );
 };
+
+export const generateLandUse = (data = {}) => {
+  const { by_sector, date, note } = data;
+
+  if (!by_sector) return '';
+
+  return (
+    <Table celled compact collapsing unstackable>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={3}>
+            Land use by sector
+            {date && <SubHeader>({date})</SubHeader>}
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {landUseList.map((landUse, idx) => {
+          const nestedRow = agriculturalList.includes(landUse);
+          return (
+            <Table.Row key={idx}>
+              {nestedRow && <Table.Cell />}
+              <Table.Cell colSpan={nestedRow ? 1 : 2}>
+                {capWithSpacing(landUse)}
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                {by_sector[landUse].value}
+                {by_sector[landUse].units}
+              </Table.Cell>
+            </Table.Row>
+          );
+        })}
+        {note && (
+          <Table.Row>
+            <Table.Cell colSpan={3} style={{ fontSize: '0.8rem' }}>
+              <em>Note: {note}</em>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+};
+
+const landUseList = [
+  'agricultural_land_total',
+  'arable_land',
+  'permanent_crops',
+  'permanent_pasture',
+  'forest',
+  'other',
+];
+
+const agriculturalList = [
+  'arable_land',
+  'permanent_crops',
+  'permanent_pasture',
+];
