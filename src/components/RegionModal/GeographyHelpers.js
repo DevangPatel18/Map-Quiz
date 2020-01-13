@@ -258,3 +258,57 @@ export const generateBoundaries = (data = {}) => {
     </>
   );
 };
+
+export const generateNaturalHazards = data => {
+  let volcanism;
+  let list =
+    data &&
+    data
+      .filter(obj => {
+        if (obj.type === 'volcanism') {
+          volcanism = obj.description.split(';');
+          return false;
+        }
+        return true;
+      })
+      .map(obj => obj.description);
+
+  if (!list) return '';
+  let listA = [...list];
+  let listB = listA.splice(Math.ceil(listA.length / 2));
+  return (
+    <Table columns={2} unstackable celled>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan="2">Natural Hazards</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row textAlign="center" verticalAlign="top">
+          <Table.Cell>
+            <List items={listA} />
+          </Table.Cell>
+          <Table.Cell>
+            <List items={listB} />
+          </Table.Cell>
+        </Table.Row>
+        {volcanism && (
+          <Table.Row>
+            <Table.Cell colSpan="2">
+              <List bulleted>
+                <List.Item>
+                  <List.Header>Volcanism</List.Header>
+                  <List>
+                    {volcanism.map((item, idx) => (
+                      <List.Item key={idx}>{item}</List.Item>
+                    ))}
+                  </List>
+                </List.Item>
+              </List>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+};
