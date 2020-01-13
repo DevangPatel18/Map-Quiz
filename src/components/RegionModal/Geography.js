@@ -8,6 +8,7 @@ import {
   generateEnvironment,
   generateLandUse,
   generateBoundaries,
+  generateNaturalHazards,
 } from './GeographyHelpers';
 import { generateTableList } from '../../helpers/textHelpers';
 
@@ -19,6 +20,7 @@ const Economy = ({ data }) => {
     land_use,
     land_boundaries,
     natural_resources,
+    natural_hazards,
     ...rest
   } = data;
 
@@ -47,6 +49,7 @@ const Economy = ({ data }) => {
           list: natural_resources.resources,
           title: 'Natural Resources',
         })}
+      {natural_hazards && generateNaturalHazards(natural_hazards)}
       {isRestTreeNonEmpty && <JSONTree data={rest} theme={theme} />}
     </Container>
   );
