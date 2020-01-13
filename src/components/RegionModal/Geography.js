@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Header } from 'semantic-ui-react';
+import { Container, Header, Divider } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import {
@@ -9,6 +9,7 @@ import {
   generateLandUse,
   generateBoundaries,
 } from './GeographyHelpers';
+import { generateTableList } from '../../helpers/textHelpers';
 
 const Economy = ({ data }) => {
   const {
@@ -17,6 +18,7 @@ const Economy = ({ data }) => {
     environment,
     land_use,
     land_boundaries,
+    natural_resources,
     ...rest
   } = data;
 
@@ -39,6 +41,12 @@ const Economy = ({ data }) => {
         {generateLandUse(land_use)}
         {generateBoundaries(land_boundaries)}
       </div>
+      <Divider />
+      {natural_resources &&
+        generateTableList({
+          list: natural_resources.resources,
+          title: 'Natural Resources',
+        })}
       {isRestTreeNonEmpty && <JSONTree data={rest} theme={theme} />}
     </Container>
   );
