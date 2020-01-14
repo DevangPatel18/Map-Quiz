@@ -112,15 +112,23 @@ export const generateTable = (table, title) => {
 };
 
 export const generateTableList = (data = {}) => {
-  const { list, title, note } = data;
+  const { list, title, note, ...rest } = data;
+  const extraLists = Object.entries(rest).filter(entry =>
+    Array.isArray(entry[1])
+  );
   if (!list) return '';
-  let listA = [...list];
-  let listB = listA.splice(Math.ceil(listA.length / 2));
+  let listA = [...list],
+    listB,
+    columns = 1;
+  if (list.length > 1) {
+    listB = listA.splice(Math.ceil(listA.length / 2));
+    columns = 2;
+  }
   return (
-    <Table columns={2} unstackable celled>
+    <Table columns={columns} unstackable celled>
       <Table.Header>
         <Table.Row textAlign="center">
-          <Table.HeaderCell colSpan="2">{title}</Table.HeaderCell>
+          <Table.HeaderCell colSpan={columns}>{title}</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -128,13 +136,32 @@ export const generateTableList = (data = {}) => {
           <Table.Cell>
             <List items={listA} />
           </Table.Cell>
-          <Table.Cell>
-            <List items={listB} />
-          </Table.Cell>
+          {listB && (
+            <Table.Cell>
+              <List items={listB} />
+            </Table.Cell>
+          )}
         </Table.Row>
+        {extraLists &&
+          extraLists.map((entry, idx) => (
+            <Table.Row key={idx}>
+              <Table.Cell colSpan={columns}>
+                <List bulleted>
+                  <List.Item>
+                    <List.Header>{capWithSpacing(entry[0])}</List.Header>
+                    <List>
+                      {entry[1].map((item, jdx) => (
+                        <List.Item key={jdx}>{item}</List.Item>
+                      ))}
+                    </List>
+                  </List.Item>
+                </List>
+              </Table.Cell>
+            </Table.Row>
+          ))}
         {note && (
           <Table.Row>
-            <Table.Cell colSpan="2">
+            <Table.Cell colSpan={columns}>
               <em>Note: {note}</em>
             </Table.Cell>
           </Table.Row>
