@@ -24,6 +24,25 @@ const ListStyled = styled(List)`
   min-width: 50%;
 `;
 
+export const generateSubListItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (!entries) return '';
+  const [title, text] = entries[0];
+  if (typeof text !== 'string') return '';
+  return (
+    <List.Item>
+      {title && <List.Header>{capWithSpacing(title)}</List.Header>}
+      <List>
+        {text &&
+          text
+            .split(';')
+            .filter(x => x)
+            .map((item, idx) => <List.Item key={idx}>{item}</List.Item>)}
+      </List>
+    </List.Item>
+  );
+};
+
 export const generateArea = data => {
   const { total, land, water, note, comparative, global_rank } = data;
   const areaTable = objToArray({ land, water, total });
