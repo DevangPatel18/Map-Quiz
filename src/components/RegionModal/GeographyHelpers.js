@@ -43,6 +43,34 @@ export const generateSubListItem = (obj = {}) => {
   );
 };
 
+export const generateValueItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, valObj] = entries[0];
+  if (typeof valObj !== 'object') return '';
+  return (
+    <List.Item>
+      {title && <strong>{capWithSpacing(title)}:</strong>}
+      {valObj.value && ` ${numScale(valObj.value)}`}
+      {valObj.units && ` ${valObj.units}`}
+      {valObj.date && ` (${valObj.date})`}
+    </List.Item>
+  );
+};
+
+export const generateTextItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, text] = entries[0];
+  if (typeof text !== 'string') return '';
+  return (
+    <List.Item>
+      {title && <strong>{capWithSpacing(title)}:</strong>}
+      {text && ` ${text}`}
+    </List.Item>
+  );
+};
+
 export const generateArea = data => {
   const { total, land, water, note, comparative, global_rank } = data;
   const areaTable = objToArray({ land, water, total });
