@@ -321,3 +321,23 @@ export const generateNaturalHazards = data => {
       .map(obj => obj.description);
   return generateTableList({ list, title: 'Natural Hazards', volcanism });
 };
+
+export const generateMaritimeClaims = (data = {}) => {
+  const entries = Object.entries(data);
+  if (entries.length === 0) return '';
+  return (
+    <List.Item>
+      <List.Header>Maritime Claims</List.Header>
+      <List>
+        {entries.map((entry, idx) => {
+          const itemObj = { [entry[0]]: entry[1] };
+          const item =
+            typeof entry[1] === 'string'
+              ? generateTextItem(itemObj)
+              : generateValueItem(itemObj);
+          return <React.Fragment key={idx}>{item}</React.Fragment>;
+        })}
+      </List>
+    </List.Item>
+  );
+};
