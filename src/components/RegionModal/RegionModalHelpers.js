@@ -7,6 +7,7 @@ import TransnationalIssues from './TransnationalIssues';
 import Energy from './Energy';
 import Economy from './Economy';
 import Geography from './Geography';
+import Government from './Government';
 
 export const generateTabContent = (displayData, sectionName) => {
   switch (sectionName) {
@@ -20,6 +21,8 @@ export const generateTabContent = (displayData, sectionName) => {
       return <Economy data={displayData[sectionName]} />;
     case 'geography':
       return <Geography data={displayData[sectionName]} />;
+    case 'government':
+      return <Government data={displayData[sectionName]} />;
     default:
       return (
         <Tab.Pane>
