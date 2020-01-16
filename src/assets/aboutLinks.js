@@ -8,6 +8,14 @@ export default {
       url: 'https://en.wikipedia.org/wiki/Main_Page',
       text: 'Wikipedia',
     },
+    {
+      url: 'https://www.cia.gov/library/publications/the-world-factbook/',
+      text: 'The World Factbook',
+    },
+    {
+      url: 'https://github.com/iancoleman/cia_world_factbook_api',
+      text: 'CIA World Factbook API',
+    },
   ],
   'Map Data': [
     {

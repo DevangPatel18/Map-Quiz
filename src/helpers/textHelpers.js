@@ -1,6 +1,33 @@
 import React from 'react';
+import { List, Table, Header } from 'semantic-ui-react';
 
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const capWithSpacing = str => capitalize(str).replace(/_/g, ' ');
+
+export const remUnderscore = str => str.replace(/_/g, ' ');
+
+export const objToArray = obj =>
+  Object.entries(obj).map(entry => ({ category: entry[0], ...entry[1] }));
+
+const numDescription = ['', ' thousand', ' million', ' billion', ' trillion'];
+
+export const numScale = number => {
+  const tier = (Math.log10(Math.abs(number)) / 3) | 0;
+
+  // if zero, we don't need a suffix
+  if (tier === 0) return number;
+
+  // get suffix and determine scale
+  const suffix = numDescription[tier];
+  const scale = Math.pow(10, tier * 3);
+
+  // scale the number
+  const scaled = number / scale;
+
+  // format number and add suffix
+  return scaled + suffix;
+};
 
 export const generateParagraphs = text => {
   const lines = text.split('. ');
@@ -29,5 +56,117 @@ export const generateParagraphs = text => {
         <p key={i}>{line}</p>
       ))}
     </div>
+  );
+};
+
+export const generateList = list => (
+  <List bulleted>
+    {list.length > 0 ? (
+      <>
+        {list.map((item, i) => (
+          <List.Item key={i} size="large">
+            {item}
+          </List.Item>
+        ))}
+      </>
+    ) : (
+      <List.Item>none</List.Item>
+    )}
+  </List>
+);
+
+export const generateTable = (table, title) => {
+  const items = Object.keys(table[0]);
+
+  return (
+    <div style={{ overflow: 'auto', margin: '1rem 0' }}>
+      {title && (
+        <Header size="small" textAlign="center">
+          {title}
+        </Header>
+      )}
+      <Table
+        definition
+        compact
+        unstackable
+        collapsing
+        style={{ margin: '0 auto' }}
+      >
+        <Table.Body>
+          {items.map((item, i) => (
+            <Table.Row key={i}>
+              <Table.Cell>{capWithSpacing(item)}</Table.Cell>
+              {table.map((entry, j) => (
+                <Table.Cell key={j}>
+                  {typeof entry[item] === 'number'
+                    ? numScale(entry[item])
+                    : capWithSpacing(entry[item])}
+                </Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </div>
+  );
+};
+
+export const generateTableList = (data = {}) => {
+  const { list, title, note, ...rest } = data;
+  const extraLists = Object.entries(rest).filter(entry =>
+    Array.isArray(entry[1])
+  );
+  if (!list) return '';
+  let listA = [...list],
+    listB,
+    columns = 1;
+  if (list.length > 1) {
+    listB = listA.splice(Math.ceil(listA.length / 2));
+    columns = 2;
+  }
+  return (
+    <Table columns={columns} unstackable celled>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={columns}>{title}</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row textAlign="center" verticalAlign="top">
+          <Table.Cell>
+            <List items={listA} />
+          </Table.Cell>
+          {listB && (
+            <Table.Cell>
+              <List items={listB} />
+            </Table.Cell>
+          )}
+        </Table.Row>
+        {extraLists &&
+          extraLists.map((entry, idx) => (
+            <Table.Row key={idx}>
+              <Table.Cell colSpan={columns}>
+                <List bulleted>
+                  <List.Item>
+                    <List.Header>{capWithSpacing(entry[0])}</List.Header>
+                    <List>
+                      {entry[1].map((item, jdx) => (
+                        <List.Item key={jdx}>{item}</List.Item>
+                      ))}
+                    </List>
+                  </List.Item>
+                </List>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        {note && (
+          <Table.Row>
+            <Table.Cell colSpan={columns}>
+              <em>Note: {note}</em>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
   );
 };

@@ -10,7 +10,7 @@ import ChoroplethSlider from './ChoroplethSlider';
 import DirectionPad from './DirectionPad';
 import QuestionBox from './quizBox/QuestionBox';
 import LoadingPrompt from './LoadingPrompt';
-import RegionModal from './RegionModal';
+import RegionModal from './RegionModal/RegionModal';
 
 const InterfaceElements = ({ isQuizActive, modalRegionID }) => (
   <>
