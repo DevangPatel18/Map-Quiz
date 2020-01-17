@@ -79,43 +79,47 @@ export const generateImportExportTable = ({ importData, exportData }) => {
       <Table.Header>
         <Table.Row verticalAlign="top">
           <Table.HeaderCell />
-          {importData && <Table.HeaderCell>Imports</Table.HeaderCell>}
-          {exportData && <Table.HeaderCell>Exports</Table.HeaderCell>}
+          <Table.HeaderCell>Imports</Table.HeaderCell>
+          <Table.HeaderCell>Exports</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
         <Table.Row verticalAlign="top">
           <Table.Cell>Commodities</Table.Cell>
-          {importData.commodities && (
-            <Table.Cell>
-              <List bulleted>
-                {importData.commodities.by_commodity.map(commodity => (
-                  <List.Item key={commodity}>{commodity}</List.Item>
-                ))}
-              </List>
-              {importData.commodities.date && (
-                <p>Date: {importData.commodities.date}</p>
-              )}
-            </Table.Cell>
-          )}
-          {exportData.commodities && (
-            <Table.Cell>
-              <List bulleted>
-                {exportData.commodities.by_commodity.map(commodity => (
-                  <List.Item key={commodity}>{commodity}</List.Item>
-                ))}
-              </List>
-              {exportData.commodities.date && (
-                <p>Date: {exportData.commodities.date}</p>
-              )}
-            </Table.Cell>
-          )}
+          <Table.Cell>
+            {importData && importData.commodities && (
+              <>
+                <List bulleted>
+                  {importData.commodities.by_commodity.map(commodity => (
+                    <List.Item key={commodity}>{commodity}</List.Item>
+                  ))}
+                </List>
+                {importData.commodities.date && (
+                  <p>Date: {importData.commodities.date}</p>
+                )}
+              </>
+            )}
+          </Table.Cell>
+          <Table.Cell>
+            {exportData && exportData.commodities && (
+              <>
+                <List bulleted>
+                  {exportData.commodities.by_commodity.map(commodity => (
+                    <List.Item key={commodity}>{commodity}</List.Item>
+                  ))}
+                </List>
+                {exportData.commodities.date && (
+                  <p>Date: {exportData.commodities.date}</p>
+                )}
+              </>
+            )}
+          </Table.Cell>
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell>Partners</Table.Cell>
-          {importData.partners && (
-            <Table.Cell>
-              {
+          <Table.Cell>
+            {importData && importData.partners && (
+              <>
                 <List bulleted>
                   {importData.partners.by_country.map(({ name, percent }) => (
                     <List.Item key={name}>
@@ -123,15 +127,15 @@ export const generateImportExportTable = ({ importData, exportData }) => {
                     </List.Item>
                   ))}
                 </List>
-              }
-              {importData.partners.date && (
-                <p>Date: {importData.partners.date}</p>
-              )}
-            </Table.Cell>
-          )}
-          {exportData.partners && (
-            <Table.Cell>
-              {
+                {importData.partners.date && (
+                  <p>Date: {importData.partners.date}</p>
+                )}
+              </>
+            )}
+          </Table.Cell>
+          <Table.Cell>
+            {exportData && exportData.partners && (
+              <>
                 <List bulleted>
                   {exportData.partners.by_country.map(({ name, percent }) => (
                     <List.Item key={name}>
@@ -139,25 +143,25 @@ export const generateImportExportTable = ({ importData, exportData }) => {
                     </List.Item>
                   ))}
                 </List>
-              }
-              {exportData.partners.date && (
-                <p>Date: {exportData.partners.date}</p>
-              )}
-            </Table.Cell>
-          )}
+                {exportData.partners.date && (
+                  <p>Date: {exportData.partners.date}</p>
+                )}
+              </>
+            )}
+          </Table.Cell>
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell>Total Value</Table.Cell>
-          {importData.total_value && (
-            <Table.Cell>
+          <Table.Cell>
+            {importData && importData.total_value && (
               <List bulleted>{formatDUVobj(importData.total_value)}</List>
-            </Table.Cell>
-          )}
-          {exportData.total_value && (
-            <Table.Cell>
+            )}
+          </Table.Cell>
+          <Table.Cell>
+            {exportData && exportData.total_value && (
               <List bulleted>{formatDUVobj(exportData.total_value)}</List>
-            </Table.Cell>
-          )}
+            )}
+          </Table.Cell>
         </Table.Row>
       </Table.Body>
     </Table>
@@ -187,25 +191,23 @@ export const generateLaborForce = data => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {occupationList && (
-          <Table.Row verticalAlign="top">
-            <Table.Cell>Occupation</Table.Cell>
-            <Table.Cell>
-              <List bulleted>{occupationList}</List>
-            </Table.Cell>
-          </Table.Row>
-        )}
-        {total_size && (
-          <Table.Row verticalAlign="top">
-            <Table.Cell>Total size</Table.Cell>
-            <Table.Cell>
+        <Table.Row verticalAlign="top">
+          <Table.Cell>Occupation</Table.Cell>
+          <Table.Cell>
+            {occupationList && <List bulleted>{occupationList}</List>}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row verticalAlign="top">
+          <Table.Cell>Total size</Table.Cell>
+          <Table.Cell>
+            {total_size && (
               <p>
                 {`${numScale(total_size.total_people)} (${total_size.date}) `}
                 <sup>(global rank - {total_size.global_rank})</sup>
               </p>
-            </Table.Cell>
-          </Table.Row>
-        )}
+            )}
+          </Table.Cell>
+        </Table.Row>
       </Table.Body>
     </Table>
   );
