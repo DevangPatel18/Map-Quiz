@@ -289,7 +289,9 @@ export const generateGDP = data => {
   );
 };
 
-const generateGDPcompTable = ({ by_end_use, by_sector_of_origin }) => {
+const generateGDPcompTable = data => {
+  if (!data) return '';
+  const { by_end_use, by_sector_of_origin } = data;
   if (!by_end_use && !by_sector_of_origin) return '';
   return (
     <div
