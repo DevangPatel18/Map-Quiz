@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { Container, List, Grid, Divider } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import {
@@ -49,11 +49,33 @@ const Economy = ({ data }) => {
     }
   }
 
+  const duvListA = [...dateUnitValueObj];
+  const duvListB = duvListA.splice(Math.ceil(duvListA.length / 2));
+
   const isRestTreeNonEmpty = Object.keys(dateUnitValueObj).length !== 0;
 
   return (
     <Container text>
       {generateParagraphs(overview)}
+      <Divider />
+      <Grid columns={2} divided stackable>
+        <Grid.Row>
+          <Grid.Column>
+            <List>
+              {duvListA.map((obj, i) => (
+                <React.Fragment key={i}>{formatDUVobj(obj)}</React.Fragment>
+              ))}
+            </List>
+          </Grid.Column>
+          <Grid.Column>
+            <List>
+              {duvListB.map((obj, i) => (
+                <React.Fragment key={i}>{formatDUVobj(obj)}</React.Fragment>
+              ))}
+            </List>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
       <List bulleted>
         {budget_surplus_or_deficit && (
           <>
@@ -63,9 +85,6 @@ const Economy = ({ data }) => {
             </List.Item>
           </>
         )}
-        {dateUnitValueObj.map((obj, i) => (
-          <React.Fragment key={i}>{formatDUVobj(obj)}</React.Fragment>
-        ))}
         {stock_of_direct_foreign_investment && (
           <List.Item>
             <strong>Stock of direct Foreign investment</strong>
