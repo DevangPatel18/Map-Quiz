@@ -165,12 +165,28 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           <Table.Cell>Total Value</Table.Cell>
           <Table.Cell>
             {importData && importData.total_value && (
-              <List bulleted>{formatDUVobj(importData.total_value)}</List>
+              <List bulleted>
+                {importData.total_value.annual_values.map(
+                  (annual_value, idx) => (
+                    <List.Item key={idx}>
+                      {formatAnnualValue(annual_value)}
+                    </List.Item>
+                  )
+                )}
+              </List>
             )}
           </Table.Cell>
           <Table.Cell>
             {exportData && exportData.total_value && (
-              <List bulleted>{formatDUVobj(exportData.total_value)}</List>
+              <List bulleted>
+                {exportData.total_value.annual_values.map(
+                  (annual_value, idx) => (
+                    <List.Item key={idx}>
+                      {formatAnnualValue(annual_value)}
+                    </List.Item>
+                  )
+                )}
+              </List>
             )}
           </Table.Cell>
         </Table.Row>
