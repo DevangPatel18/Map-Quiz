@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Table, Header } from 'semantic-ui-react';
+import { List, Table, Header, Popup, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 import {
   capWithSpacing,
@@ -18,22 +18,33 @@ export const formatAnnualValue = obj => {
 
 export const formatDUVobj = obj => (
   <List.Item>
-    {obj.attribute && <strong>{`${capWithSpacing(obj.attribute)}: `}</strong>}
-    {obj.annual_values &&
-      obj.annual_values
-        .map(annual_value => formatAnnualValue(annual_value))
-        .join(', ')}
-    {obj.note && (
-      <List>
-        <List.Item>
-          <em>
-            {'Note: '}
-            {obj.note}
-          </em>
-        </List.Item>
+    {obj.attribute && (
+      <List.Header>
+        {`${capWithSpacing(obj.attribute)}`}
+        {obj.note && (
+          <Popup
+            content={obj.note}
+            header="Note"
+            size="mini"
+            trigger={
+              <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
+            }
+          />
+        )}
+        {obj.global_rank && (
+          <p style={{ fontSize: '0.8rem' }}>
+            (global rank - {obj.global_rank})
+          </p>
+        )}
+      </List.Header>
+    )}
+    {obj.annual_values && (
+      <List bulleted>
+        {obj.annual_values.map((annual_value, idx) => (
+          <List.Item key={idx}>{formatAnnualValue(annual_value)}</List.Item>
+        ))}
       </List>
     )}
-    {obj.global_rank && <sup> (global rank - {obj.global_rank})</sup>}
   </List.Item>
 );
 
