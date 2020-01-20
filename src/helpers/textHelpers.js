@@ -1,6 +1,10 @@
 import React from 'react';
 import { List, Table, Header } from 'semantic-ui-react';
 
+const cellStyle = {
+  padding: '0.3rem 0.7rem',
+};
+
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const capWithSpacing = str => capitalize(str).replace(/_/g, ' ');
@@ -125,23 +129,19 @@ export const generateTableList = (data = {}) => {
     columns = 2;
   }
   return (
-    <Table columns={columns} unstackable celled>
+    <Table columns={columns} unstackable celled compact>
       <Table.Header>
         <Table.Row textAlign="center">
           <Table.HeaderCell colSpan={columns}>{title}</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        <Table.Row textAlign="center" verticalAlign="top">
-          <Table.Cell>
-            <List items={listA} />
-          </Table.Cell>
-          {listB && (
-            <Table.Cell>
-              <List items={listB} />
-            </Table.Cell>
-          )}
-        </Table.Row>
+        {listA.map((entryA, idx) => (
+          <Table.Row textAlign="center" verticalAlign="top" key={idx}>
+            <Table.Cell style={cellStyle}>{entryA}</Table.Cell>
+            {listB && <Table.Cell style={cellStyle}>{listB[idx]}</Table.Cell>}
+          </Table.Row>
+        ))}
         {extraLists &&
           extraLists.map((entry, idx) => (
             <Table.Row key={idx}>
@@ -161,8 +161,8 @@ export const generateTableList = (data = {}) => {
           ))}
         {note && (
           <Table.Row>
-            <Table.Cell colSpan={columns}>
-              <em>Note: {note}</em>
+            <Table.Cell style={cellStyle} colSpan={columns}>
+              <em style={{ fontSize: '0.8rem' }}>Note: {note}</em>
             </Table.Cell>
           </Table.Row>
         )}
