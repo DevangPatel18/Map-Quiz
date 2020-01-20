@@ -41,6 +41,12 @@ const Economy = ({ data }) => {
   let dateUnitValueObj = [];
   const abstractObj = {};
 
+  if (stock_of_direct_foreign_investment) {
+    Object.entries(stock_of_direct_foreign_investment).forEach(entry => {
+      rest[`stock_of_direct_foreign_investment - ${entry[0]}`] = entry[1];
+    });
+  }
+
   for (let attribute in rest) {
     if (rest[attribute].annual_values) {
       dateUnitValueObj.push({ attribute, ...rest[attribute] });
@@ -84,21 +90,6 @@ const Economy = ({ data }) => {
               {`${budget_surplus_or_deficit.percent_of_gdp}% (${budget_surplus_or_deficit.date} - global rank ${budget_surplus_or_deficit.global_rank})`}
             </List.Item>
           </>
-        )}
-        {stock_of_direct_foreign_investment && (
-          <List.Item>
-            <strong>Stock of direct Foreign investment</strong>
-            <List>
-              {Object.keys(stock_of_direct_foreign_investment).map(subAttr => (
-                <React.Fragment key={subAttr}>
-                  {formatDUVobj({
-                    attribute: subAttr,
-                    ...stock_of_direct_foreign_investment[subAttr],
-                  })}
-                </React.Fragment>
-              ))}
-            </List>
-          </List.Item>
         )}
         {fiscal_year && (
           <List.Item>
