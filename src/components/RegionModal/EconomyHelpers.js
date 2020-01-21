@@ -27,6 +27,15 @@ export const formatAnnualValue = obj => {
   return `${numScale(value)} ${remUnderscore(units)} (${date})`;
 };
 
+const tableProps = {
+  celled: true,
+  compact: true,
+  collapsing: true,
+  unstackable: true,
+};
+
+const centerStyle = { margin: '0 auto' };
+
 export const formatDUVobj = obj => (
   <List.Item>
     {obj.attribute && (
@@ -60,7 +69,7 @@ export const formatDUVobj = obj => (
 );
 
 export const generateDUVTable = obj => (
-  <Table celled compact collapsing unstackable textAlign="center">
+  <Table {...tableProps} textAlign="center">
     <Table.Header>
       <Table.Row>
         <Table.HeaderCell>
@@ -98,12 +107,10 @@ export const generateImportExportTable = ({ importData, exportData }) => {
   if (!importData && !exportData) return '';
   return (
     <Table
+      {...tableProps}
       definition
-      unstackable
-      celled
-      collapsing
       size={isMobile ? 'small' : 'large'}
-      style={{ margin: '0 auto' }}
+      style={centerStyle}
     >
       <Table.Header>
         <Table.Row verticalAlign="top">
@@ -234,7 +241,7 @@ export const generateLaborForce = data => {
     ));
   }
   return (
-    <Table definition unstackable celled compact collapsing>
+    <Table {...tableProps} definition style={centerStyle}>
       <Table.Header>
         <Table.Row textAlign="center">
           <Table.HeaderCell />
@@ -327,7 +334,7 @@ const generateGDPcompTable = data => {
       }}
     >
       {by_end_use && (
-        <Table celled compact collapsing unstackable>
+        <Table {...tableProps}>
           <Table.Header>
             <Table.Row textAlign="center">
               <Table.HeaderCell colSpan={2}>
