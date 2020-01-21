@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, Table, Header, Popup, Icon } from 'semantic-ui-react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { isMobile } from 'react-device-detect';
 import {
   capWithSpacing,
   remUnderscore,
@@ -9,6 +10,16 @@ import {
 
 const SubHeader = styled.p`
   font-size: 0.7em;
+`;
+
+const RowHeaderTextStyled = styled.div`
+  ${isMobile &&
+    css`
+      transform-origin: right center;
+      transform: rotate(-90deg) translateX(-2rem);
+      white-space: nowrap;
+      width: 0;
+    `}
 `;
 
 export const formatAnnualValue = obj => {
@@ -86,7 +97,14 @@ export const generateDUVTable = obj => (
 export const generateImportExportTable = ({ importData, exportData }) => {
   if (!importData && !exportData) return '';
   return (
-    <Table definition unstackable celled>
+    <Table
+      definition
+      unstackable
+      celled
+      collapsing
+      size={isMobile ? 'small' : 'large'}
+      style={{ margin: '0 auto' }}
+    >
       <Table.Header>
         <Table.Row verticalAlign="top">
           <Table.HeaderCell />
@@ -96,7 +114,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
       </Table.Header>
       <Table.Body>
         <Table.Row verticalAlign="top">
-          <Table.Cell>Commodities</Table.Cell>
+          <Table.Cell verticalAlign="middle">
+            <RowHeaderTextStyled>Commodities</RowHeaderTextStyled>
+          </Table.Cell>
           <Table.Cell>
             {importData && importData.commodities && (
               <>
@@ -127,7 +147,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           </Table.Cell>
         </Table.Row>
         <Table.Row verticalAlign="top">
-          <Table.Cell>Partners</Table.Cell>
+          <Table.Cell verticalAlign="middle">
+            <RowHeaderTextStyled>Partners</RowHeaderTextStyled>
+          </Table.Cell>
           <Table.Cell>
             {importData && importData.partners && (
               <>
@@ -162,7 +184,9 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           </Table.Cell>
         </Table.Row>
         <Table.Row verticalAlign="top">
-          <Table.Cell>Total Value</Table.Cell>
+          <Table.Cell verticalAlign="middle">
+            <RowHeaderTextStyled>Total Value</RowHeaderTextStyled>
+          </Table.Cell>
           <Table.Cell>
             {importData && importData.total_value && (
               <List bulleted>
