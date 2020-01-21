@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Grid, Accordion } from 'semantic-ui-react';
+import { Container, List, Grid, Accordion } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import {
@@ -73,7 +73,7 @@ const Economy = ({ data }) => {
       title: 'Yearly Figures',
       content: {
         content: (
-          <>
+          <Container text>
             <Grid columns={2} divided stackable>
               <Grid.Row>
                 <Grid.Column>
@@ -169,7 +169,7 @@ const Economy = ({ data }) => {
                 </List.Item>
               )}
             </List>
-          </>
+          </Container>
         ),
       },
     },
