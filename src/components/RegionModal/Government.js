@@ -4,25 +4,27 @@ import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import { generateSubListItem } from './GeographyHelpers';
 import { capWithSpacing } from '../../helpers/textHelpers';
+import { reviseCapitalObj } from './GovernmentHelpers';
 
 const Government = ({ data }) => {
-  const { ...rest } = data;
+  const { capital, ...rest } = data;
   const other = {};
-  const subListSections = Object.entries(rest).reduce(
-    (acc, [section, value]) => {
-      if (
-        typeof value === 'object' &&
-        !Array.isArray(value) &&
-        Object.values(value).every(val => typeof val === 'string')
-      ) {
-        acc.push({ [section]: value });
-      } else {
-        other[section] = value;
-      }
-      return acc;
-    },
-    []
-  );
+
+  const subListSections = Object.entries({
+    capital: reviseCapitalObj(capital),
+    ...rest,
+  }).reduce((acc, [section, value]) => {
+    if (
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      Object.values(value).every(val => typeof val === 'string')
+    ) {
+      acc.push({ [section]: value });
+    } else {
+      other[section] = value;
+    }
+    return acc;
+  }, []);
 
   const isOtherTreeNonEmpty = Object.keys(other).length !== 0;
 
