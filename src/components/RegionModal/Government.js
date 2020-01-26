@@ -3,11 +3,17 @@ import { Accordion, Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import { generateSubListItem } from './GeographyHelpers';
-import { capWithSpacing } from '../../helpers/textHelpers';
+import { capWithSpacing, generateTableList } from '../../helpers/textHelpers';
 import { reviseCapitalObj } from './GovernmentHelpers';
 
 const Government = ({ data }) => {
-  const { capital, ...rest } = data;
+  const {
+    capital,
+    dependent_areas,
+    administrative_divisions,
+    international_organization_participation,
+    ...rest
+  } = data;
   const other = {};
 
   const subListSections = Object.entries({
@@ -50,6 +56,49 @@ const Government = ({ data }) => {
       },
     });
   });
+
+  if (dependent_areas) {
+    panels.push({
+      key: 'dependent_areas',
+      title: 'Dependant Areas',
+      content: {
+        content: generateTableList({
+          list: dependent_areas.areas,
+          title: 'Dependant Areas',
+          note: dependent_areas.note,
+        }),
+      },
+    });
+  }
+
+  if (administrative_divisions) {
+    panels.push({
+      key: 'administrative_divisions',
+      title: 'Administrative divisions',
+      content: {
+        content: generateTableList({
+          list: administrative_divisions.map(({ name }) => name),
+          title: 'Administrative divisions',
+        }),
+      },
+    });
+  }
+
+  if (international_organization_participation) {
+    panels.push({
+      key: 'international_organization_participation',
+      title: 'International Organization Participation',
+      content: {
+        content: generateTableList({
+          list: international_organization_participation.map(
+            ({ organization, note }) =>
+              `${organization}${note ? ` (${note})` : ''}`
+          ),
+          title: 'International Organization Participation',
+        }),
+      },
+    });
+  }
 
   if (isOtherTreeNonEmpty) {
     panels.push({
