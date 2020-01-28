@@ -2,8 +2,11 @@ import React from 'react';
 import { Accordion, Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateSubListItem } from './GeographyHelpers';
-import { capWithSpacing, generateTableList } from '../../helpers/textHelpers';
+import {
+  capWithSpacing,
+  generateSubListItem,
+  generateTableList,
+} from '../../helpers/textHelpers';
 import { reviseCapitalObj } from './GovernmentHelpers';
 
 const Government = ({ data }) => {
