@@ -83,7 +83,7 @@ export const generateTextItem = (obj = {}) => {
   const entries = Object.entries(obj);
   if (entries.length === 0) return '';
   const [title, text] = entries[0];
-  if (typeof text !== 'string') return '';
+  if (typeof text === 'object' || !text) return '';
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
