@@ -25,13 +25,13 @@ const Military = ({ data }) => {
     const { years_of_age, date, note } = service_age_and_obligation;
 
     serviceAge = (
-      <>
+      <div style={{ flex: '1', marginRight: '1rem', minWidth: '60%' }}>
         <Header>Service age and obligation {date && ` (${date})`}</Header>
         <List bulleted>
           {generateTextItem({ years_of_age })}
           {generateSubListItem({ note })}
         </List>
-      </>
+      </div>
     );
   }
 
@@ -61,11 +61,15 @@ const Military = ({ data }) => {
 
   return (
     <Container text>
-      {serviceAge}
+      <div
+        style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}
+      >
+        {serviceAge}
+        {expenditures &&
+          generateDUVTable({ ...expenditures, attribute: 'expenditures' })}
+      </div>
       {branchesList}
       {noteList}
-      {expenditures &&
-        generateDUVTable({ ...expenditures, attribute: 'expenditures' })}
       {isRestTreeNonEmpty && <JSONTree data={rest} theme={theme} />}
     </Container>
   );
