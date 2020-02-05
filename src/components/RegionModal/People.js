@@ -2,7 +2,7 @@ import React from 'react';
 import { Accordion, Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generatePeopleItem } from './PeopleHelpers';
+import { generatePeopleItem, generateHealthTable } from './PeopleHelpers';
 
 const People = ({ data }) => {
   const {
@@ -10,8 +10,24 @@ const People = ({ data }) => {
     physicians_density,
     hospital_bed_density,
     underweight_children,
+    drinking_water_source,
+    sanitation_facility_access,
+    hiv_aids,
     ...rest
   } = data;
+
+  const HIVsection = hiv_aids && (
+    <List.Item>
+      <List.Header>HIV Aids</List.Header>
+      <List>
+        {Object.entries(hiv_aids).map(([item, itemObj], idx) => (
+          <React.Fragment key={idx}>
+            {generatePeopleItem({ [item]: itemObj })}
+          </React.Fragment>
+        ))}
+      </List>
+    </List.Item>
+  );
 
   const isOtherTreeNonEmpty = Object.keys(rest).length !== 0;
 
@@ -28,7 +44,10 @@ const People = ({ data }) => {
             {generatePeopleItem({ physicians_density })}
             {generatePeopleItem({ hospital_bed_density })}
             {generatePeopleItem({ underweight_children })}
+            {HIVsection}
           </List>
+          {generateHealthTable({ drinking_water_source })}
+          {generateHealthTable({ sanitation_facility_access })}
         </Container>
       ),
     },
