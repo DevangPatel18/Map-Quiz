@@ -8,14 +8,19 @@ export const generatePeopleItem = (obj = {}) => {
   if (entries.length === 0) return '';
   const [title, dataObj] = entries[0];
   if (typeof dataObj !== 'object') return '';
-  const { date, global_rank, ...rest } = dataObj;
-  const numFigureObj = Object.entries(rest)[0];
-  const [text, num] = numFigureObj;
+  const { value, units, date, global_rank, ...rest } = dataObj;
+  let dataFigure;
+  if (value) {
+    dataFigure = ` ${value} ${units}`;
+  } else {
+    const numFigureObj = Object.entries(rest)[0];
+    const [text, num] = numFigureObj;
+    dataFigure = ` ${num} ${capWithSpacing(text)}`;
+  }
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
-      {num && ` ${num}`}
-      {text && ` ${capWithSpacing(text)}`}
+      {dataFigure}
       {date && ` (${date})`}
       {global_rank && <sup> (global rank - {global_rank})</sup>}
     </List.Item>
