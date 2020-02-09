@@ -1,7 +1,12 @@
 import React from 'react';
 import { List, Header, Table } from 'semantic-ui-react';
+import styled from 'styled-components';
 import { capWithSpacing } from '../../helpers/textHelpers';
 import { generateTableList, generateList } from '../../helpers/textHelpers';
+
+const SubHeader = styled.p`
+  font-size: 0.7em;
+`;
 
 export const generatePeopleItem = (obj = {}) => {
   const entries = Object.entries(obj);
@@ -89,5 +94,59 @@ export const generateHealthMID = (obj = {}) => {
           </React.Fragment>
         ))}
     </>
+  );
+};
+
+export const generateValueUnitTable = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, dataObj] = entries[0];
+  const { date, global_rank, ...rest } = dataObj;
+  const subHeaderText = [date, global_rank && `global rank - ${global_rank}`]
+    .filter(x => x)
+    .join(', ');
+  const totalRows = [];
+  const rows = Object.entries(rest)
+    .map(([category, dataObj]) => ({
+      category,
+      ...dataObj,
+    }))
+    .filter(entry => {
+      if (entry.category.includes('total')) {
+        totalRows.push(entry);
+        return false;
+      }
+      return true;
+    });
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={2}>
+            {capWithSpacing(title)}
+            <SubHeader>({subHeaderText})</SubHeader>
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {rows.map((entry, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>{capWithSpacing(entry.category)}</Table.Cell>
+            <Table.Cell>{`${entry.value} ${capWithSpacing(
+              entry.units
+            )}`}</Table.Cell>
+          </Table.Row>
+        ))}
+        {totalRows.map((entry, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>{capWithSpacing(entry.category)}</Table.Cell>
+            <Table.Cell>{`${entry.value} ${capWithSpacing(
+              entry.units
+            )}`}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
   );
 };
