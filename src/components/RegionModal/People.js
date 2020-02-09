@@ -2,7 +2,11 @@ import React from 'react';
 import { Accordion, Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generatePeopleItem, generateHealthTable } from './PeopleHelpers';
+import {
+  generatePeopleItem,
+  generateHealthTable,
+  generateHealthMID,
+} from './PeopleHelpers';
 
 const People = ({ data }) => {
   const {
@@ -13,6 +17,7 @@ const People = ({ data }) => {
     drinking_water_source,
     sanitation_facility_access,
     hiv_aids,
+    major_infectious_diseases,
     ...rest
   } = data;
 
@@ -48,6 +53,7 @@ const People = ({ data }) => {
           </List>
           {generateHealthTable({ drinking_water_source })}
           {generateHealthTable({ sanitation_facility_access })}
+          {generateHealthMID(major_infectious_diseases)}
         </Container>
       ),
     },

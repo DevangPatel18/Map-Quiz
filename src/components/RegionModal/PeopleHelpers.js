@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, Header, Table } from 'semantic-ui-react';
 import { capWithSpacing } from '../../helpers/textHelpers';
+import { generateTableList, generateList } from '../../helpers/textHelpers';
 
 export const generatePeopleItem = (obj = {}) => {
   const entries = Object.entries(obj);
@@ -58,6 +59,30 @@ export const generateHealthTable = (obj = {}) => {
           </Table.Row>
         </Table.Body>
       </Table>
+    </>
+  );
+};
+
+export const generateHealthMID = (obj = {}) => {
+  const { date, note, degree_of_risk, ...rest } = obj;
+  const textLists = Object.entries(rest).filter(
+    ([_, val]) => Array.isArray(val) && val.every(x => typeof x === 'string')
+  );
+  if (!note && textLists.length < 1) return '';
+
+  return (
+    <>
+      <Header size="small" textAlign="center">
+        Major infectious diseases
+        {date && ` (${date})`}
+      </Header>
+      {note && generateList(note.split(';'))}
+      {textLists &&
+        textLists.map(([title, list], idx) => (
+          <React.Fragment key={idx}>
+            {generateTableList({ title, list })}
+          </React.Fragment>
+        ))}
     </>
   );
 };
