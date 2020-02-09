@@ -6,6 +6,7 @@ import {
   generatePeopleItem,
   generateHealthTable,
   generateHealthMID,
+  generateValueUnitTable,
 } from './PeopleHelpers';
 
 const People = ({ data }) => {
@@ -18,6 +19,14 @@ const People = ({ data }) => {
     sanitation_facility_access,
     hiv_aids,
     major_infectious_diseases,
+    contraceptive_prevalence_rate,
+    birth_rate,
+    maternal_mortality_rate,
+    mothers_mean_age_at_first_birth,
+    death_rate,
+    total_fertility_rate,
+    life_expectancy_at_birth,
+    infant_mortality_rate,
     ...rest
   } = data;
 
@@ -54,6 +63,36 @@ const People = ({ data }) => {
           {generateHealthTable({ drinking_water_source })}
           {generateHealthTable({ sanitation_facility_access })}
           {generateHealthMID(major_infectious_diseases)}
+        </Container>
+      ),
+    },
+  });
+
+  panels.push({
+    key: 'birth_and_mortality',
+    title: 'Birth and Mortality',
+    content: {
+      content: (
+        <Container text>
+          <List bulleted>
+            {generatePeopleItem({ contraceptive_prevalence_rate })}
+            {generatePeopleItem({ birth_rate })}
+            {generatePeopleItem({ maternal_mortality_rate })}
+            {generatePeopleItem({ mothers_mean_age_at_first_birth })}
+            {generatePeopleItem({ death_rate })}
+            {generatePeopleItem({ total_fertility_rate })}
+          </List>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-evenly',
+              flexWrap: 'wrap',
+            }}
+          >
+            {generateValueUnitTable({ life_expectancy_at_birth })}
+            {generateValueUnitTable({ infant_mortality_rate })}
+          </div>
         </Container>
       ),
     },
