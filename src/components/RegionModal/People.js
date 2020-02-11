@@ -8,6 +8,7 @@ import {
   generateHealthMID,
   generateValueUnitTable,
 } from './PeopleHelpers';
+import { generateSubListItem } from '../../helpers/textHelpers';
 
 const People = ({ data }) => {
   const {
@@ -27,6 +28,12 @@ const People = ({ data }) => {
     total_fertility_rate,
     life_expectancy_at_birth,
     infant_mortality_rate,
+    population,
+    population_growth_rate,
+    population_distribution,
+    age_structure,
+    median_age,
+    sex_ratio,
     ...rest
   } = data;
 
@@ -92,6 +99,40 @@ const People = ({ data }) => {
           >
             {generateValueUnitTable({ life_expectancy_at_birth })}
             {generateValueUnitTable({ infant_mortality_rate })}
+          </div>
+        </Container>
+      ),
+    },
+  });
+
+  let updated_sex_ratio = {};
+  if (sex_ratio) {
+    updated_sex_ratio = { ...sex_ratio, ...sex_ratio.by_age };
+  }
+
+  panels.push({
+    key: 'population',
+    title: 'Population',
+    content: {
+      content: (
+        <Container text>
+          <List bulleted>
+            {generatePeopleItem({ population })}
+            {generatePeopleItem({ population_growth_rate })}
+            {typeof population_distribution === 'string' &&
+              generateSubListItem({ population_distribution })}
+          </List>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-evenly',
+              flexWrap: 'wrap',
+            }}
+          >
+            {generateValueUnitTable({ median_age })}
+            {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
+            {generateValueUnitTable({ age_structure })}
           </div>
         </Container>
       ),
