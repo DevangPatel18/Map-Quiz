@@ -1,12 +1,20 @@
 import React from 'react';
-import { List, Header, Table } from 'semantic-ui-react';
+import { List, Header, Table, Popup, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
-import { capWithSpacing } from '../../helpers/textHelpers';
+import { capWithSpacing, remUnderscore } from '../../helpers/textHelpers';
 import { generateTableList, generateList } from '../../helpers/textHelpers';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
 `;
+
+const union = (setA, setB) => {
+  let _union = new Set(setA);
+  for (let elem of setB) {
+    _union.add(elem);
+  }
+  return _union;
+};
 
 export const generatePeopleItem = (obj = {}) => {
   const entries = Object.entries(obj);
@@ -102,48 +110,82 @@ export const generateValueUnitTable = (obj = {}) => {
   if (entries.length === 0) return '';
   const [title, dataObj] = entries[0];
   const { date, global_rank, ...rest } = dataObj;
-  const subHeaderText = [date, global_rank && `global rank - ${global_rank}`]
-    .filter(x => x)
-    .join(', ');
-  const totalRows = [];
-  const rows = Object.entries(rest)
+
+  const popUpNote = global_rank && (
+    <Popup
+      content={
+        <p>
+          <strong>Global rank: </strong>
+          {global_rank}
+        </p>
+      }
+      size="mini"
+      trigger={<Icon style={{ marginLeft: '0.5rem' }} name="info circle" />}
+    />
+  );
+
+  let rows = Object.entries(rest)
     .map(([category, dataObj]) => ({
-      category,
+      category: capWithSpacing(category),
       ...dataObj,
     }))
-    .filter(entry => {
-      if (entry.category.includes('total')) {
-        totalRows.push(entry);
-        return false;
+    .filter(obj => Object.values(obj).every(val => typeof val !== 'object'))
+    .reduce((acc, entry) => {
+      if (entry.category.toLowerCase().includes('total')) {
+        return [...acc, entry];
       }
-      return true;
-    });
+      acc.push(entry);
+      return acc;
+    }, []);
+
+  const units = rows.reduce((acc, { units }) => {
+    if (units && !acc.includes(units)) {
+      acc.push(units);
+    }
+    return acc;
+  }, []);
+
+  let unitHeader;
+  if (units.length > 1) {
+    rows = rows.map(({ value, units, ...rest }) => ({
+      value: `${value.toLocaleString()} ${remUnderscore(units)}`,
+      ...rest,
+    }));
+  } else if (units.length === 1) {
+    unitHeader = `(in ${remUnderscore(units[0])})`;
+    rows = rows.map(({ value, units, ...rest }) => ({
+      value: value.toLocaleString(),
+      ...rest,
+    }));
+  }
+
+  const cols = [...rows.reduce((acc, obj) => union(acc, Object.keys(obj)), [])];
+  const categoryIdx = cols.indexOf('category');
+  cols.splice(categoryIdx, 1);
+  cols.unshift('category');
 
   return (
     <Table unstackable celled compact collapsing>
       <Table.Header>
         <Table.Row textAlign="center">
-          <Table.HeaderCell colSpan={2}>
-            {capWithSpacing(title)}
-            <SubHeader>({subHeaderText})</SubHeader>
+          <Table.HeaderCell colSpan={cols.length}>
+            {capWithSpacing(title)} - {date}
+            {popUpNote}
+            {unitHeader && <SubHeader>{unitHeader}</SubHeader>}
           </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          {cols.map(col => (
+            <Table.HeaderCell key={col}>{capWithSpacing(col)}</Table.HeaderCell>
+          ))}
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {rows.map((entry, idx) => (
           <Table.Row key={idx}>
-            <Table.Cell>{capWithSpacing(entry.category)}</Table.Cell>
-            <Table.Cell>{`${entry.value} ${capWithSpacing(
-              entry.units
-            )}`}</Table.Cell>
-          </Table.Row>
-        ))}
-        {totalRows.map((entry, idx) => (
-          <Table.Row key={idx}>
-            <Table.Cell>{capWithSpacing(entry.category)}</Table.Cell>
-            <Table.Cell>{`${entry.value} ${capWithSpacing(
-              entry.units
-            )}`}</Table.Cell>
+            {cols.map(col => (
+              <Table.Cell key={col}>{entry[col].toLocaleString()}</Table.Cell>
+            ))}
           </Table.Row>
         ))}
       </Table.Body>
