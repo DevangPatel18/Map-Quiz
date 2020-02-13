@@ -7,8 +7,13 @@ import {
   generateHealthTable,
   generateHealthMID,
   generateValueUnitTable,
+  generateNamePercentTable,
 } from './PeopleHelpers';
-import { generateSubListItem } from '../../helpers/textHelpers';
+import {
+  generateSubListItem,
+  generateParagraphs,
+  generateTextItem,
+} from '../../helpers/textHelpers';
 
 const People = ({ data }) => {
   const {
@@ -34,6 +39,11 @@ const People = ({ data }) => {
     age_structure,
     median_age,
     sex_ratio,
+    demographic_profile,
+    nationality,
+    ethnic_groups,
+    religions,
+    languages,
     ...rest
   } = data;
 
@@ -133,6 +143,41 @@ const People = ({ data }) => {
             {generateValueUnitTable({ median_age })}
             {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
             {generateValueUnitTable({ age_structure })}
+          </div>
+        </Container>
+      ),
+    },
+  });
+
+  panels.push({
+    key: 'demographic',
+    title: 'Demographic',
+    content: {
+      content: (
+        <Container text>
+          {generateParagraphs(demographic_profile)}
+          {nationality && (
+            <List bulleted>
+              <List.Item>
+                <List.Header>Nationality</List.Header>
+                <List>
+                  {generateTextItem({ adjective: nationality?.adjective })}
+                  {generateTextItem({ noun: nationality?.noun })}
+                </List>
+              </List.Item>
+            </List>
+          )}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-evenly',
+              flexWrap: 'wrap',
+            }}
+          >
+            {generateNamePercentTable({ ethnic_groups })}
+            {generateNamePercentTable({ religions })}
+            {generateNamePercentTable({ languages })}
           </div>
         </Container>
       ),
