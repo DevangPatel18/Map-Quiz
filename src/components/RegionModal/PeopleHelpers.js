@@ -44,8 +44,12 @@ export const generateHealthTable = (obj = {}) => {
   const entries = Object.entries(obj);
   if (entries.length === 0) return '';
   const [title, dataObj] = entries[0];
+  if (!dataObj) return '';
   const { date, improved, unimproved } = dataObj;
   if (!improved || !unimproved) return '';
+
+  const rows = ['improved', 'unimproved'];
+  const cols = ['rural', 'urban', 'total'];
 
   return (
     <>
@@ -63,18 +67,16 @@ export const generateHealthTable = (obj = {}) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          <Table.Row>
-            <Table.Cell>improved</Table.Cell>
-            <Table.Cell>{`${improved?.rural?.value} ${improved?.rural?.units}`}</Table.Cell>
-            <Table.Cell>{`${improved?.urban?.value} ${improved?.urban?.units}`}</Table.Cell>
-            <Table.Cell>{`${improved?.total?.value} ${improved?.total?.units}`}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>unimproved</Table.Cell>
-            <Table.Cell>{`${unimproved?.rural?.value} ${unimproved?.rural?.units}`}</Table.Cell>
-            <Table.Cell>{`${unimproved?.urban?.value} ${unimproved?.urban?.units}`}</Table.Cell>
-            <Table.Cell>{`${unimproved?.total?.value} ${unimproved?.total?.units}`}</Table.Cell>
-          </Table.Row>
+          {rows.map((row, idx) => (
+            <Table.Row key={idx}>
+              <Table.Cell>{row}</Table.Cell>
+              {cols.map((col, jdx) => (
+                <Table.Cell
+                  key={jdx}
+                >{`${dataObj[row]?.[col]?.value} ${dataObj[row]?.[col]?.units}`}</Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
     </>
