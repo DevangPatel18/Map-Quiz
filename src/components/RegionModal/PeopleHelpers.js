@@ -192,3 +192,58 @@ export const generateValueUnitTable = (obj = {}) => {
     </Table>
   );
 };
+
+export const generateNamePercentTable = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, dataObj] = entries[0];
+  const { date, note, ...rest } = dataObj;
+
+  let rows = Object.values(rest)
+    .filter(
+      value =>
+        Array.isArray(value) &&
+        value.some(val => typeof val === 'object' && val.name)
+    )
+    .reduce((acc, array) => [...acc, ...array], []);
+
+  if (rows.length === 0) return '';
+
+  const noPercent = rows.every(({ percent }) => !percent);
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={noPercent ? 1 : 2}>
+            {capWithSpacing(title)}
+            {date && ` - ${date}`}
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell>Name</Table.HeaderCell>
+          {!noPercent && <Table.HeaderCell>Percent</Table.HeaderCell>}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {rows.map((entry, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>
+              {entry?.name}
+              {entry?.note && (
+                <Popup
+                  content={generateList(entry.note.split(';'))}
+                  size="mini"
+                  trigger={
+                    <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
+                  }
+                />
+              )}
+            </Table.Cell>
+            {!noPercent && <Table.Cell>{entry?.percent}</Table.Cell>}
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
