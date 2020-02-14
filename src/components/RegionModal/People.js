@@ -8,6 +8,7 @@ import {
   generateHealthMID,
   generateValueUnitTable,
   generateNamePercentTable,
+  generateMajorUrbanAreasTable,
 } from './PeopleHelpers';
 import {
   generateSubListItem,
@@ -49,6 +50,7 @@ const People = ({ data }) => {
     youth_employment,
     youth_unemployment,
     literacy,
+    major_urban_areas,
     ...rest
   } = data;
 
@@ -145,6 +147,7 @@ const People = ({ data }) => {
               flexWrap: 'wrap',
             }}
           >
+            {generateMajorUrbanAreasTable(major_urban_areas)}
             {generateValueUnitTable({ median_age })}
             {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
             {generateValueUnitTable({ age_structure })}
