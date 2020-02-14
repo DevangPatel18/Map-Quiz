@@ -7,6 +7,7 @@ import {
   remUnderscore,
   numScale,
 } from '../../helpers/textHelpers';
+import { TableContainer } from '../styles/RegionModalStyles';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
@@ -291,14 +292,7 @@ export const generateGDP = data => {
           {official_exchange_rate.date})
         </p>
       )}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-evenly',
-          flexWrap: 'wrap',
-        }}
-      >
+      <TableContainer>
         {per_capita_purchasing_power_parity &&
           generateDUVTable({
             attribute: 'Per capita purchasing power parity',
@@ -314,7 +308,7 @@ export const generateGDP = data => {
             attribute: 'Real growth rate',
             ...real_growth_rate,
           })}
-      </div>
+      </TableContainer>
       {generateGDPcompTable(composition)}
     </>
   );
@@ -325,14 +319,7 @@ const generateGDPcompTable = data => {
   const { by_end_use, by_sector_of_origin } = data;
   if (!by_end_use && !by_sector_of_origin) return '';
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        justifyContent: 'space-evenly',
-        flexWrap: 'wrap',
-      }}
-    >
+    <TableContainer>
       {by_end_use && (
         <Table {...tableProps}>
           <Table.Header>
@@ -382,6 +369,6 @@ const generateGDPcompTable = data => {
           </Table.Body>
         </Table>
       )}
-    </div>
+    </TableContainer>
   );
 };

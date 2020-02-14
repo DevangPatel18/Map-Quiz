@@ -1,7 +1,7 @@
 import React from 'react';
 import { Accordion, Container, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
-import { theme } from '../styles/RegionModalStyles';
+import { theme, TableContainer } from '../styles/RegionModalStyles';
 import {
   generatePeopleItem,
   generateHealthTable,
@@ -106,17 +106,10 @@ const People = ({ data }) => {
             {generatePeopleItem({ death_rate })}
             {generatePeopleItem({ total_fertility_rate })}
           </List>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-evenly',
-              flexWrap: 'wrap',
-            }}
-          >
+          <TableContainer>
             {generateValueUnitTable({ life_expectancy_at_birth })}
             {generateValueUnitTable({ infant_mortality_rate })}
-          </div>
+          </TableContainer>
         </Container>
       ),
     },
@@ -150,14 +143,7 @@ const People = ({ data }) => {
               </List>
             )}
           </List>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-evenly',
-              flexWrap: 'wrap',
-            }}
-          >
+          <TableContainer>
             {generateMajorUrbanAreasTable(major_urban_areas)}
             {generateValueUnitTable({ median_age })}
             {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
@@ -173,7 +159,7 @@ const People = ({ data }) => {
                   ...dependency_ratios.ratios,
                 },
               })}
-          </div>
+          </TableContainer>
         </Container>
       ),
     },
@@ -194,18 +180,11 @@ const People = ({ data }) => {
     title: 'Ethnicity - Language - Religion',
     content: {
       content: (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'baseline',
-            justifyContent: 'space-evenly',
-            flexWrap: 'wrap',
-          }}
-        >
+        <TableContainer>
           {generateNamePercentTable({ ethnic_groups })}
           {generateNamePercentTable({ languages })}
           {generateNamePercentTable({ religions })}
-        </div>
+        </TableContainer>
       ),
     },
   });
