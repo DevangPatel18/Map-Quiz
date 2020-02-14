@@ -125,29 +125,33 @@ const People = ({ data }) => {
     title: 'Population',
     content: {
       content: (
-        <Container text>
-          <List bulleted>
-            {generatePeopleItem({ population })}
-            {generatePeopleItem({ population_growth_rate })}
-            {typeof population_distribution === 'string' &&
-              generateSubListItem({ population_distribution })}
-            {nationality && (
-              <List bulleted>
-                <List.Item>
-                  <List.Header>Nationality</List.Header>
-                  <List>
-                    {generateTextItem({ adjective: nationality?.adjective })}
-                    {generateTextItem({ noun: nationality?.noun })}
-                  </List>
-                </List.Item>
-              </List>
-            )}
-          </List>
+        <>
+          <Container text>
+            <List bulleted>
+              {generatePeopleItem({ population })}
+              {generatePeopleItem({ population_growth_rate })}
+              {typeof population_distribution === 'string' &&
+                generateSubListItem({ population_distribution })}
+              {nationality && (
+                <List bulleted>
+                  <List.Item>
+                    <List.Header>Nationality</List.Header>
+                    <List>
+                      {generateTextItem({ adjective: nationality?.adjective })}
+                      {generateTextItem({ noun: nationality?.noun })}
+                    </List>
+                  </List.Item>
+                </List>
+              )}
+            </List>
+          </Container>
           <TableContainer>
             {generateMajorUrbanAreasTable(major_urban_areas)}
-            {generateValueUnitTable({ median_age })}
-            {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
             {generateValueUnitTable({ age_structure })}
+            {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
+          </TableContainer>
+          <TableContainer>
+            {generateValueUnitTable({ median_age })}
             {generateValueUnitTable({ school_life_expectancy })}
             {generateValueUnitTable({ literacy })}
             {generateValueUnitTable({ youth_employment })}
@@ -160,7 +164,7 @@ const People = ({ data }) => {
                 },
               })}
           </TableContainer>
-        </Container>
+        </>
       ),
     },
   });
