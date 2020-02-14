@@ -187,9 +187,6 @@ const People = ({ data }) => {
             {generateValueUnitTable({ literacy })}
             {generateValueUnitTable({ youth_employment })}
             {generateValueUnitTable({ youth_unemployment })}
-            {generateNamePercentTable({ ethnic_groups })}
-            {generateNamePercentTable({ religions })}
-            {generateNamePercentTable({ languages })}
             {dependency_ratios &&
               generateValueUnitTable({
                 dependency_ratios: {
@@ -199,6 +196,27 @@ const People = ({ data }) => {
               })}
           </div>
         </Container>
+      ),
+    },
+  });
+
+  panels.push({
+    key: 'ethnic_language_religion',
+    title: 'Ethnicity - Language - Religion',
+    content: {
+      content: (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-evenly',
+            flexWrap: 'wrap',
+          }}
+        >
+          {generateNamePercentTable({ ethnic_groups })}
+          {generateNamePercentTable({ languages })}
+          {generateNamePercentTable({ religions })}
+        </div>
       ),
     },
   });
