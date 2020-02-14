@@ -111,6 +111,7 @@ export const generateValueUnitTable = (obj = {}) => {
   const entries = Object.entries(obj);
   if (entries.length === 0) return '';
   const [title, dataObj] = entries[0];
+  if (!dataObj) return '';
   const { date, global_rank, ...rest } = dataObj;
 
   const popUpNote = global_rank && (
@@ -126,7 +127,16 @@ export const generateValueUnitTable = (obj = {}) => {
     />
   );
 
+  const primitiveVals = [];
+
   let rows = Object.entries(rest)
+    .filter(([key, val]) => {
+      if (typeof val === 'object') {
+        return true;
+      }
+      primitiveVals.push([key, val]);
+      return false;
+    })
     .map(([category, dataObj]) => ({
       category: capWithSpacing(category),
       ...dataObj,
@@ -150,13 +160,13 @@ export const generateValueUnitTable = (obj = {}) => {
   let unitHeader;
   if (units.length > 1) {
     rows = rows.map(({ value, units, ...rest }) => ({
-      value: `${value.toLocaleString()} ${remUnderscore(units)}`,
+      value: `${value && value.toLocaleString()} ${remUnderscore(units)}`,
       ...rest,
     }));
   } else if (units.length === 1) {
     unitHeader = `(in ${remUnderscore(units[0])})`;
     rows = rows.map(({ value, units, ...rest }) => ({
-      value: value.toLocaleString(),
+      value: value && value.toLocaleString(),
       ...rest,
     }));
   }
@@ -186,10 +196,26 @@ export const generateValueUnitTable = (obj = {}) => {
         {rows.map((entry, idx) => (
           <Table.Row key={idx}>
             {cols.map(col => (
-              <Table.Cell key={col}>{entry[col].toLocaleString()}</Table.Cell>
+              <Table.Cell key={col}>
+                {entry[col] && entry[col].toLocaleString()}
+              </Table.Cell>
             ))}
           </Table.Row>
         ))}
+        {primitiveVals.length > 0 && (
+          <Table.Row>
+            <Table.Cell colSpan="2">
+              <List bulleted style={{ fontSize: '0.8rem' }}>
+                {primitiveVals.map(([item, val], idx) => (
+                  <List.Item key={idx}>
+                    <strong>{capWithSpacing(item)}: </strong>
+                    {val}
+                  </List.Item>
+                ))}
+              </List>
+            </Table.Cell>
+          </Table.Row>
+        )}
       </Table.Body>
     </Table>
   );
