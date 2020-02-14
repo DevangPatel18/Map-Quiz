@@ -138,6 +138,17 @@ const People = ({ data }) => {
             {generatePeopleItem({ population_growth_rate })}
             {typeof population_distribution === 'string' &&
               generateSubListItem({ population_distribution })}
+            {nationality && (
+              <List bulleted>
+                <List.Item>
+                  <List.Header>Nationality</List.Header>
+                  <List>
+                    {generateTextItem({ adjective: nationality?.adjective })}
+                    {generateTextItem({ noun: nationality?.noun })}
+                  </List>
+                </List.Item>
+              </List>
+            )}
           </List>
           <div
             style={{
@@ -151,38 +162,6 @@ const People = ({ data }) => {
             {generateValueUnitTable({ median_age })}
             {generateValueUnitTable({ sex_ratio: updated_sex_ratio })}
             {generateValueUnitTable({ age_structure })}
-          </div>
-        </Container>
-      ),
-    },
-  });
-
-  panels.push({
-    key: 'demographic',
-    title: 'Demographic',
-    content: {
-      content: (
-        <Container text>
-          {generateParagraphs(demographic_profile)}
-          {nationality && (
-            <List bulleted>
-              <List.Item>
-                <List.Header>Nationality</List.Header>
-                <List>
-                  {generateTextItem({ adjective: nationality?.adjective })}
-                  {generateTextItem({ noun: nationality?.noun })}
-                </List>
-              </List.Item>
-            </List>
-          )}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-evenly',
-              flexWrap: 'wrap',
-            }}
-          >
             {generateValueUnitTable({ school_life_expectancy })}
             {generateValueUnitTable({ literacy })}
             {generateValueUnitTable({ youth_employment })}
@@ -196,6 +175,16 @@ const People = ({ data }) => {
               })}
           </div>
         </Container>
+      ),
+    },
+  });
+
+  panels.push({
+    key: 'demographic',
+    title: 'Demographic',
+    content: {
+      content: (
+        <Container text>{generateParagraphs(demographic_profile)}</Container>
       ),
     },
   });
