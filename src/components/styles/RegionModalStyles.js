@@ -38,3 +38,10 @@ export const TabStyled = styled(Tab)`
       `}
   }
 `;
+
+export const TableContainer = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+`;
