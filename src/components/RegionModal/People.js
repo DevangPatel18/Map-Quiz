@@ -44,6 +44,11 @@ const People = ({ data }) => {
     ethnic_groups,
     religions,
     languages,
+    school_life_expectancy,
+    dependency_ratios,
+    youth_employment,
+    youth_unemployment,
+    literacy,
     ...rest
   } = data;
 
@@ -175,9 +180,20 @@ const People = ({ data }) => {
               flexWrap: 'wrap',
             }}
           >
+            {generateValueUnitTable({ school_life_expectancy })}
+            {generateValueUnitTable({ literacy })}
+            {generateValueUnitTable({ youth_employment })}
+            {generateValueUnitTable({ youth_unemployment })}
             {generateNamePercentTable({ ethnic_groups })}
             {generateNamePercentTable({ religions })}
             {generateNamePercentTable({ languages })}
+            {dependency_ratios &&
+              generateValueUnitTable({
+                dependency_ratios: {
+                  ...dependency_ratios,
+                  ...dependency_ratios.ratios,
+                },
+              })}
           </div>
         </Container>
       ),
