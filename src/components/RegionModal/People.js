@@ -179,15 +179,15 @@ const People = ({ data }) => {
     },
   });
 
-  panels.push({
-    key: 'demographic',
-    title: 'Demographic',
-    content: {
-      content: (
-        <Container text>{generateParagraphs(demographic_profile)}</Container>
-      ),
-    },
-  });
+  if (demographic_profile) {
+    panels.push({
+      key: 'demographic_profile',
+      title: 'Demographic profile',
+      content: {
+        content: generateParagraphs(demographic_profile),
+      },
+    });
+  }
 
   panels.push({
     key: 'ethnic_language_religion',
