@@ -275,3 +275,37 @@ export const generateNamePercentTable = (obj = {}) => {
     </Table>
   );
 };
+
+export const generateMajorUrbanAreasTable = (obj = {}) => {
+  const { date, places } = obj;
+  if (!places || !Array.isArray(places)) return '';
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan="2">
+            {'Major Urban Areas'}
+            {date && ` - ${date}`}
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell>Place</Table.HeaderCell>
+          <Table.HeaderCell>Population</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {places.map((obj, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>
+              {obj.is_capital ? `${obj.place} (capital)` : obj.place}
+            </Table.Cell>
+            <Table.Cell>
+              {obj.population && obj.population.toLocaleString()}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
