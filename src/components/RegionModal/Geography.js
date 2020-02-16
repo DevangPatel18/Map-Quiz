@@ -1,10 +1,8 @@
 import React from 'react';
 import { Container, Header, Divider, List } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
-import { theme } from '../styles/RegionModalStyles';
+import { theme, TableContainer } from '../styles/RegionModalStyles';
 import {
-  generateSubListItem,
-  generateValueItem,
   generateArea,
   generateElevation,
   generateEnvironment,
@@ -13,7 +11,11 @@ import {
   generateNaturalHazards,
   generateMaritimeClaims,
 } from './GeographyHelpers';
-import { generateTableList } from '../../helpers/textHelpers';
+import {
+  generateSubListItem,
+  generateValueItem,
+  generateTableList,
+} from '../../helpers/textHelpers';
 
 const Economy = ({ data }) => {
   const {
@@ -62,17 +64,10 @@ const Economy = ({ data }) => {
       {generateElevation(elevation)}
       {generateEnvironment(environment)}
       <Header textAlign="center">Land</Header>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-evenly',
-          flexWrap: 'wrap',
-        }}
-      >
+      <TableContainer>
         {generateLandUse(land_use)}
         {generateBoundaries(land_boundaries)}
-      </div>
+      </TableContainer>
       <Divider />
       {natural_resources &&
         generateTableList({

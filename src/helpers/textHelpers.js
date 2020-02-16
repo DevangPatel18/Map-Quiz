@@ -34,6 +34,7 @@ export const numScale = number => {
 };
 
 export const generateParagraphs = text => {
+  if (!text) return '';
   const lines = text.split('. ');
   let temp = '';
   const paragraphs = [];
@@ -78,6 +79,77 @@ export const generateList = list => (
     )}
   </List>
 );
+
+export const generateTextItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, text] = entries[0];
+  if (typeof text === 'object' || !text) return '';
+  return (
+    <List.Item>
+      {title && <strong>{capWithSpacing(title)}:</strong>}
+      {text && ` ${text}`}
+    </List.Item>
+  );
+};
+
+export const generateSubListItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (!entries) return '';
+  const [title, text] = entries[0];
+  if (typeof text !== 'string') return '';
+  return (
+    <List.Item>
+      {title && <List.Header>{capWithSpacing(title)}</List.Header>}
+      <List>
+        {text &&
+          text
+            .split(';')
+            .filter(x => x)
+            .map((item, idx) => <List.Item key={idx}>{item}</List.Item>)}
+      </List>
+    </List.Item>
+  );
+};
+
+export const generateValueItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, valObj] = entries[0];
+  if (typeof valObj !== 'object') return '';
+  return (
+    <List.Item>
+      {title && <strong>{capWithSpacing(title)}:</strong>}
+      {valObj.value && ` ${numScale(valObj.value)}`}
+      {valObj.units && ` ${valObj.units}`}
+      {valObj.date && ` (${valObj.date})`}
+      {valObj.note && ` (${valObj.note})`}
+    </List.Item>
+  );
+};
+
+export const generateSubObjListItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, dataObj] = entries[0];
+  if (typeof dataObj !== 'object') return '';
+  const listEntries = Object.entries(dataObj);
+  if (listEntries.length === 0) return '';
+  return (
+    <List.Item>
+      <List.Header>{capWithSpacing(title)}</List.Header>
+      <List>
+        {listEntries.map(([key, val], idx) => (
+          <React.Fragment key={idx}>
+            {typeof val === 'object'
+              ? generateValueItem({ [key]: val })
+              : generateTextItem({ [key]: val })}
+          </React.Fragment>
+        ))}
+      </List>
+    </List.Item>
+  );
+};
 
 export const generateTable = (table, title) => {
   const items = Object.keys(table[0]);
@@ -132,7 +204,9 @@ export const generateTableList = (data = {}) => {
     <Table columns={columns} unstackable celled compact>
       <Table.Header>
         <Table.Row textAlign="center">
-          <Table.HeaderCell colSpan={columns}>{title}</Table.HeaderCell>
+          <Table.HeaderCell colSpan={columns}>
+            {capWithSpacing(title)}
+          </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>

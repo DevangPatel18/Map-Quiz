@@ -6,7 +6,9 @@ import {
   capWithSpacing,
   remUnderscore,
   numScale,
+  generateList,
 } from '../../helpers/textHelpers';
+import { TableContainer } from '../styles/RegionModalStyles';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
@@ -43,8 +45,7 @@ export const formatDUVobj = obj => (
         {`${capWithSpacing(obj.attribute)}`}
         {obj.note && (
           <Popup
-            content={obj.note}
-            header="Note"
+            content={generateList(obj.note.split(';'))}
             size="mini"
             trigger={
               <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
@@ -103,8 +104,15 @@ export const generateDUVTable = obj => (
   </Table>
 );
 
-export const generateImportExportTable = ({ importData, exportData }) => {
-  if (!importData && !exportData) return '';
+export const generateImportExportTable = (dataObj = {}) => {
+  if (
+    Object.entries(dataObj).length === 0 ||
+    (!dataObj.importData && !dataObj.exportData)
+  )
+    return '';
+
+  const cols = ['importData', 'exportData'];
+
   return (
     <Table
       {...tableProps}
@@ -124,102 +132,67 @@ export const generateImportExportTable = ({ importData, exportData }) => {
           <Table.Cell verticalAlign="middle">
             <RowHeaderTextStyled>Commodities</RowHeaderTextStyled>
           </Table.Cell>
-          <Table.Cell>
-            {importData && importData.commodities && (
-              <>
-                <List bulleted>
-                  {importData.commodities.by_commodity.map(commodity => (
-                    <List.Item key={commodity}>{commodity}</List.Item>
-                  ))}
-                </List>
-                {importData.commodities.date && (
-                  <p>Date: {importData.commodities.date}</p>
-                )}
-              </>
-            )}
-          </Table.Cell>
-          <Table.Cell>
-            {exportData && exportData.commodities && (
-              <>
-                <List bulleted>
-                  {exportData.commodities.by_commodity.map(commodity => (
-                    <List.Item key={commodity}>{commodity}</List.Item>
-                  ))}
-                </List>
-                {exportData.commodities.date && (
-                  <p>Date: {exportData.commodities.date}</p>
-                )}
-              </>
-            )}
-          </Table.Cell>
+          {cols.map(col => (
+            <Table.Cell key={col}>
+              {dataObj[col]?.commodities && (
+                <>
+                  <List bulleted>
+                    {dataObj[col]?.commodities?.by_commodity?.map(commodity => (
+                      <List.Item key={commodity}>{commodity}</List.Item>
+                    ))}
+                  </List>
+                  {dataObj[col]?.commodities?.date && (
+                    <p>Date: {dataObj[col].commodities.date}</p>
+                  )}
+                </>
+              )}
+            </Table.Cell>
+          ))}
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell verticalAlign="middle">
             <RowHeaderTextStyled>Partners</RowHeaderTextStyled>
           </Table.Cell>
-          <Table.Cell>
-            {importData && importData.partners && (
-              <>
-                <List bulleted>
-                  {importData.partners.by_country.map(({ name, percent }) => (
-                    <List.Item key={name}>
-                      {name} - {percent}%
-                    </List.Item>
-                  ))}
-                </List>
-                {importData.partners.date && (
-                  <p>Date: {importData.partners.date}</p>
-                )}
-              </>
-            )}
-          </Table.Cell>
-          <Table.Cell>
-            {exportData && exportData.partners && (
-              <>
-                <List bulleted>
-                  {exportData.partners.by_country.map(({ name, percent }) => (
-                    <List.Item key={name}>
-                      {name} - {percent}%
-                    </List.Item>
-                  ))}
-                </List>
-                {exportData.partners.date && (
-                  <p>Date: {exportData.partners.date}</p>
-                )}
-              </>
-            )}
-          </Table.Cell>
+          {cols.map(col => (
+            <Table.Cell key={col}>
+              {dataObj[col]?.partners && (
+                <>
+                  <List bulleted>
+                    {dataObj[col]?.partners?.by_country?.map(
+                      ({ name, percent }) => (
+                        <List.Item key={name}>
+                          {name} - {percent}%
+                        </List.Item>
+                      )
+                    )}
+                  </List>
+                  {dataObj[col]?.partners?.date && (
+                    <p>Date: {dataObj[col]?.partners?.date}</p>
+                  )}
+                </>
+              )}
+            </Table.Cell>
+          ))}
         </Table.Row>
         <Table.Row verticalAlign="top">
           <Table.Cell verticalAlign="middle">
             <RowHeaderTextStyled>Total Value</RowHeaderTextStyled>
           </Table.Cell>
-          <Table.Cell>
-            {importData && importData.total_value && (
-              <List bulleted>
-                {importData.total_value.annual_values.map(
-                  (annual_value, idx) => (
-                    <List.Item key={idx}>
-                      {formatAnnualValue(annual_value)}
-                    </List.Item>
-                  )
-                )}
-              </List>
-            )}
-          </Table.Cell>
-          <Table.Cell>
-            {exportData && exportData.total_value && (
-              <List bulleted>
-                {exportData.total_value.annual_values.map(
-                  (annual_value, idx) => (
-                    <List.Item key={idx}>
-                      {formatAnnualValue(annual_value)}
-                    </List.Item>
-                  )
-                )}
-              </List>
-            )}
-          </Table.Cell>
+          {cols.map(col => (
+            <Table.Cell key={col}>
+              {dataObj[col]?.total_value && (
+                <List bulleted>
+                  {dataObj[col]?.total_value?.annual_values?.map(
+                    (annual_value, idx) => (
+                      <List.Item key={idx}>
+                        {formatAnnualValue(annual_value)}
+                      </List.Item>
+                    )
+                  )}
+                </List>
+              )}
+            </Table.Cell>
+          ))}
         </Table.Row>
       </Table.Body>
     </Table>
@@ -291,14 +264,7 @@ export const generateGDP = data => {
           {official_exchange_rate.date})
         </p>
       )}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-evenly',
-          flexWrap: 'wrap',
-        }}
-      >
+      <TableContainer>
         {per_capita_purchasing_power_parity &&
           generateDUVTable({
             attribute: 'Per capita purchasing power parity',
@@ -314,7 +280,7 @@ export const generateGDP = data => {
             attribute: 'Real growth rate',
             ...real_growth_rate,
           })}
-      </div>
+      </TableContainer>
       {generateGDPcompTable(composition)}
     </>
   );
@@ -325,14 +291,7 @@ const generateGDPcompTable = data => {
   const { by_end_use, by_sector_of_origin } = data;
   if (!by_end_use && !by_sector_of_origin) return '';
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        justifyContent: 'space-evenly',
-        flexWrap: 'wrap',
-      }}
-    >
+    <TableContainer>
       {by_end_use && (
         <Table {...tableProps}>
           <Table.Header>
@@ -382,6 +341,6 @@ const generateGDPcompTable = data => {
           </Table.Body>
         </Table>
       )}
-    </div>
+    </TableContainer>
   );
 };

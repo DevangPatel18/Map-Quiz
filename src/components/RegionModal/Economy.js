@@ -58,7 +58,7 @@ const Economy = ({ data }) => {
   const duvListA = [...dateUnitValueObj];
   const duvListB = duvListA.splice(Math.ceil(duvListA.length / 2));
 
-  const isRestTreeNonEmpty = Object.keys(dateUnitValueObj).length !== 0;
+  const isRestTreeNonEmpty = Object.keys(abstractObj).length !== 0;
 
   const panels = [
     {
