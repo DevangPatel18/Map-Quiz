@@ -127,6 +127,29 @@ export const generateValueItem = (obj = {}) => {
   );
 };
 
+export const generateSubObjListItem = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, dataObj] = entries[0];
+  if (typeof dataObj !== 'object') return '';
+  const listEntries = Object.entries(dataObj);
+  if (listEntries.length === 0) return '';
+  return (
+    <List.Item>
+      <List.Header>{capWithSpacing(title)}</List.Header>
+      <List>
+        {listEntries.map(([key, val], idx) => (
+          <React.Fragment key={idx}>
+            {typeof val === 'object'
+              ? generateValueItem({ [key]: val })
+              : generateTextItem({ [key]: val })}
+          </React.Fragment>
+        ))}
+      </List>
+    </List.Item>
+  );
+};
+
 export const generateTable = (table, title) => {
   const items = Object.keys(table[0]);
 
