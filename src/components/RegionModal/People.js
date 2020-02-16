@@ -13,7 +13,7 @@ import {
 import {
   generateSubListItem,
   generateParagraphs,
-  generateTextItem,
+  generateSubObjListItem,
 } from '../../helpers/textHelpers';
 
 const People = ({ data }) => {
@@ -51,6 +51,10 @@ const People = ({ data }) => {
     youth_unemployment,
     literacy,
     major_urban_areas,
+    education_expenditures,
+    net_migration_rate,
+    urbanization,
+    note,
     ...rest
   } = data;
 
@@ -132,17 +136,6 @@ const People = ({ data }) => {
               {generatePeopleItem({ population_growth_rate })}
               {typeof population_distribution === 'string' &&
                 generateSubListItem({ population_distribution })}
-              {nationality && (
-                <List bulleted>
-                  <List.Item>
-                    <List.Header>Nationality</List.Header>
-                    <List>
-                      {generateTextItem({ adjective: nationality?.adjective })}
-                      {generateTextItem({ noun: nationality?.noun })}
-                    </List>
-                  </List.Item>
-                </List>
-              )}
             </List>
           </Container>
           <TableContainer>
@@ -189,6 +182,24 @@ const People = ({ data }) => {
           {generateNamePercentTable({ languages })}
           {generateNamePercentTable({ religions })}
         </TableContainer>
+      ),
+    },
+  });
+
+  panels.push({
+    key: 'miscellaneous',
+    title: 'Miscellaneous',
+    content: {
+      content: (
+        <Container text>
+          <List bulleted>
+            {generatePeopleItem({ education_expenditures })}
+            {generatePeopleItem({ net_migration_rate })}
+            {generateSubObjListItem({ urbanization })}
+            {generateSubObjListItem({ nationality })}
+            {generateSubListItem({ note })}
+          </List>
+        </Container>
       ),
     },
   });
