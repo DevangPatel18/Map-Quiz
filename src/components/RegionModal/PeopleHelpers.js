@@ -24,11 +24,11 @@ export const generatePeopleItem = (obj = {}) => {
   const { value, units, date, global_rank, ...rest } = dataObj;
   let dataFigure;
   if (value) {
-    dataFigure = ` ${value} ${units}`;
+    dataFigure = ` ${value.toLocaleString()} ${units}`;
   } else {
     const numFigureObj = Object.entries(rest)[0];
     const [text, num] = numFigureObj;
-    dataFigure = ` ${num} ${capWithSpacing(text)}`;
+    dataFigure = ` ${num && num.toLocaleString()} ${remUnderscore(text)}`;
   }
   return (
     <List.Item>
