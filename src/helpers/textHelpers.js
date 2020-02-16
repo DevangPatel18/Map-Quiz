@@ -34,6 +34,7 @@ export const numScale = number => {
 };
 
 export const generateParagraphs = text => {
+  if (!text) return '';
   const lines = text.split('. ');
   let temp = '';
   const paragraphs = [];
@@ -203,7 +204,9 @@ export const generateTableList = (data = {}) => {
     <Table columns={columns} unstackable celled compact>
       <Table.Header>
         <Table.Row textAlign="center">
-          <Table.HeaderCell colSpan={columns}>{title}</Table.HeaderCell>
+          <Table.HeaderCell colSpan={columns}>
+            {capWithSpacing(title)}
+          </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
