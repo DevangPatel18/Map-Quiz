@@ -6,6 +6,7 @@ import {
   capWithSpacing,
   remUnderscore,
   numScale,
+  generateList,
 } from '../../helpers/textHelpers';
 import { TableContainer } from '../styles/RegionModalStyles';
 
@@ -44,8 +45,7 @@ export const formatDUVobj = obj => (
         {`${capWithSpacing(obj.attribute)}`}
         {obj.note && (
           <Popup
-            content={obj.note}
-            header="Note"
+            content={generateList(obj.note.split(';'))}
             size="mini"
             trigger={
               <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
