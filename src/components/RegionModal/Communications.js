@@ -1,8 +1,8 @@
 import React from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { Container, List, Header } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateSubListItem } from '../../helpers/textHelpers';
+import { generateList } from '../../helpers/textHelpers';
 import { generateValueUnitTable } from './PeopleHelpers';
 
 const Communications = ({ data }) => {
@@ -18,13 +18,26 @@ const Communications = ({ data }) => {
 
   return (
     <Container text>
-      <List bulleted>
-        {generateSubListItem({ broadcast_media })}
-        {generateSubListItem({ note })}
-      </List>
+      {broadcast_media && (
+        <>
+          <Header textAlign="center">Broadcast media</Header>
+          {generateList(broadcast_media.split(';'))}
+        </>
+      )}
 
-      {generateValueUnitTable({ telephones: tableData })}
+      {telephones && (
+        <>
+          <Header textAlign="center">Telephones</Header>
+          {generateValueUnitTable({ telephones: tableData })}
+        </>
+      )}
 
+      {note && (
+        <>
+          <Header textAlign="center">Note</Header>
+          {generateList(note.split(';'))}
+        </>
+      )}
       {isRestTreeNonEmpty && <JSONTree data={rest} theme={theme} />}
     </Container>
   );
