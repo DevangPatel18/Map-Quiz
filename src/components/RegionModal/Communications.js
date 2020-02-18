@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, List, Header } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateList } from '../../helpers/textHelpers';
+import { generateList, generateSubListItem } from '../../helpers/textHelpers';
 import { generateValueUnitTable } from './PeopleHelpers';
 
 const Communications = ({ data }) => {
@@ -10,10 +10,20 @@ const Communications = ({ data }) => {
   const isRestTreeNonEmpty = Object.keys(rest).length !== 0;
 
   let tableData;
+  let telephoneSublist;
   if (telephones) {
     const { system, ...rest_telephones } = telephones;
     tableData = rest_telephones;
-    rest.telephones_system = system;
+    if (system) {
+      const { domestic, general_assessment, international } = system;
+      telephoneSublist = (
+        <List bulleted>
+          {generateSubListItem({ domestic })}
+          {generateSubListItem({ general_assessment })}
+          {generateSubListItem({ international })}
+        </List>
+      );
+    }
   }
 
   return (
@@ -28,6 +38,7 @@ const Communications = ({ data }) => {
       {telephones && (
         <>
           <Header textAlign="center">Telephones</Header>
+          {telephoneSublist}
           {generateValueUnitTable({ telephones: tableData })}
         </>
       )}
