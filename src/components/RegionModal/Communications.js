@@ -2,11 +2,15 @@ import React from 'react';
 import { Container, List, Header } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
-import { generateList, generateSubListItem } from '../../helpers/textHelpers';
+import {
+  generateList,
+  generateSubListItem,
+  generateTextItem,
+} from '../../helpers/textHelpers';
 import { generateValueUnitTable } from './PeopleHelpers';
 
 const Communications = ({ data }) => {
-  const { broadcast_media, note, telephones, ...rest } = data;
+  const { broadcast_media, note, telephones, internet, ...rest } = data;
   const isRestTreeNonEmpty = Object.keys(rest).length !== 0;
 
   let tableData;
@@ -26,6 +30,39 @@ const Communications = ({ data }) => {
     }
   }
 
+  let internetList;
+  if (internet) {
+    const { country_code, users } = internet;
+    let userItem;
+    if (users) {
+      const { total, percent_of_population, date, global_rank } = users;
+      userItem = (
+        <>
+          {total && (
+            <List.Item>
+              <strong>Total:</strong>
+              {total && ` ${total.toLocaleString()}`}
+              {global_rank && <sup> (global rank - {global_rank})</sup>}
+            </List.Item>
+          )}
+          {percent_of_population && (
+            <List.Item>
+              <strong>Percent of population:</strong>
+              {percent_of_population && ` ${percent_of_population}%`}
+              {date && ` (${date})`}
+            </List.Item>
+          )}
+        </>
+      );
+    }
+    internetList = (
+      <List bulleted>
+        {userItem}
+        {generateTextItem({ country_code })}
+      </List>
+    );
+  }
+
   return (
     <Container text>
       {broadcast_media && (
@@ -40,6 +77,13 @@ const Communications = ({ data }) => {
           <Header textAlign="center">Telephones</Header>
           {telephoneSublist}
           {generateValueUnitTable({ telephones: tableData })}
+        </>
+      )}
+
+      {internet && (
+        <>
+          <Header textAlign="center">Internet</Header>
+          {internetList}
         </>
       )}
 
