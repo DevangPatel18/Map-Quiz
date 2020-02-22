@@ -1,10 +1,19 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
+import styled from 'styled-components';
 import { capWithSpacing } from '../../helpers/textHelpers';
+
+const SubHeader = styled.p`
+  font-size: 0.7em;
+`;
 
 export const generateAirportsTable = (obj = {}) => {
   if (typeof obj !== 'object') return;
-  const { paved, unpaved } = obj;
+  const { paved, unpaved, total } = obj;
+  if (!paved || !unpaved) return;
+  const date = total?.date;
+  const airports = total?.airports;
+  const global_rank = total?.global_rank;
   paved.category = 'Paved';
   unpaved.category = 'Unpaved';
 
@@ -23,7 +32,16 @@ export const generateAirportsTable = (obj = {}) => {
     <Table unstackable celled compact collapsing>
       <Table.Header>
         <Table.Row textAlign="center">
-          <Table.HeaderCell colSpan={cols.length}>Airports</Table.HeaderCell>
+          <Table.HeaderCell colSpan={cols.length}>
+            Airports
+            {airports && (
+              <SubHeader>
+                ( Total: {airports.toLocaleString()}
+                {date && ` - Date: ${date}`}
+                {global_rank && ` - Global rank: ${global_rank}`} )
+              </SubHeader>
+            )}
+          </Table.HeaderCell>
         </Table.Row>
         <Table.Row textAlign="center">
           {cols.map(col => (

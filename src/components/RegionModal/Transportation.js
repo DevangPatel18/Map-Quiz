@@ -10,11 +10,7 @@ const Transportation = ({ data }) => {
   let airportsTable;
   if (air_transport) {
     const { airports, ...air_transport_rest } = air_transport;
-    if (airports) {
-      const { paved, unpaved } = airports;
-      const paved_vs_unpaved = { paved, unpaved };
-      airportsTable = generateAirportsTable(paved_vs_unpaved);
-    }
+    airportsTable = generateAirportsTable(airports);
     rest.air_transport = air_transport_rest;
   }
 
