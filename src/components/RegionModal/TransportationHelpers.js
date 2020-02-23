@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, List } from 'semantic-ui-react';
 import styled from 'styled-components';
-import { capWithSpacing } from '../../helpers/textHelpers';
+import { capWithSpacing, generateTextItem } from '../../helpers/textHelpers';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
@@ -62,5 +62,27 @@ export const generateAirportsTable = (obj = {}) => {
         ))}
       </Table.Body>
     </Table>
+  );
+};
+
+export const generateNationalSystemList = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { date, ...rest } = obj;
+  const entries = Object.entries(rest);
+  if (entries.length === 0) return;
+
+  return (
+    <List bulleted>
+      <List.Item>
+        <List.Header>National System{date && ` (${date})`}</List.Header>
+        <List>
+          {entries.map(([key, val], idx) => (
+            <React.Fragment key={idx}>
+              {generateTextItem({ [key]: val })}
+            </React.Fragment>
+          ))}
+        </List>
+      </List.Item>
+    </List>
   );
 };
