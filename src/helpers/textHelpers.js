@@ -88,7 +88,7 @@ export const generateTextItem = (obj = {}) => {
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
-      {text && ` ${text}`}
+      {text && ` ${text.toLocaleString()}`}
     </List.Item>
   );
 };
