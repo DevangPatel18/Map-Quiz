@@ -108,3 +108,73 @@ export const generateAirTransportList = (obj = {}) => {
     </List>
   );
 };
+
+export const generatePipelinesTable = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { by_type, date } = obj;
+
+  if (!by_type) return;
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={2}>
+            {'Pipelines'}
+            {date && ` - ${date}`}
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell>Type</Table.HeaderCell>
+          <Table.HeaderCell>Length</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {by_type.map(({ type, length, units }, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>{capWithSpacing(type)}</Table.Cell>
+            <Table.Cell>{`${length?.toLocaleString()} ${units}`}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
+
+export const generateMerchantMarineTable = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { by_type, date, global_rank, total } = obj;
+
+  if (!by_type) return;
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={2}>
+            {'Merchant Marine'}
+            {date && ` - ${date}`}
+            <SubHeader>
+              {[
+                total && `Total: ${total.toLocaleString()}`,
+                global_rank && `Global rank: ${global_rank}`,
+              ].join(' - ')}
+            </SubHeader>
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell>Type</Table.HeaderCell>
+          <Table.HeaderCell>Count</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {by_type.map(({ type, count }, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>{capWithSpacing(type)}</Table.Cell>
+            <Table.Cell>{`${count?.toLocaleString()}`}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};

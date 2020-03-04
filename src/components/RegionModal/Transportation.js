@@ -6,10 +6,12 @@ import {
   generateAirportsTable,
   generateNationalSystemList,
   generateAirTransportList,
+  generatePipelinesTable,
+  generateMerchantMarineTable,
 } from './TransportationHelpers';
 
 const Transportation = ({ data }) => {
-  const { air_transport, ...rest } = data;
+  const { air_transport, pipelines, merchant_marine, ...rest } = data;
 
   let airportsSection;
   if (air_transport) {
@@ -32,6 +34,8 @@ const Transportation = ({ data }) => {
   return (
     <Container text>
       {airportsSection}
+      {generatePipelinesTable(pipelines)}
+      {generateMerchantMarineTable(merchant_marine)}
       {isRestTreeNonEmpty && <JSONTree data={rest} theme={theme} />}
     </Container>
   );
