@@ -5,6 +5,7 @@ import { theme } from '../styles/RegionModalStyles';
 import {
   generateAirportsTable,
   generateNationalSystemList,
+  generateAirTransportList,
 } from './TransportationHelpers';
 
 const Transportation = ({ data }) => {
@@ -15,11 +16,12 @@ const Transportation = ({ data }) => {
     const { airports, national_system, ...air_transport_rest } = air_transport;
     const airportsTable = generateAirportsTable(airports);
     const nationalSystemList = generateNationalSystemList(national_system);
-    rest.air_transport = air_transport_rest;
+    const airTransportList = generateAirTransportList(air_transport_rest);
 
     airportsSection = (
       <>
         {nationalSystemList}
+        {airTransportList}
         {airportsTable}
       </>
     );

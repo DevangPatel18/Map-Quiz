@@ -86,3 +86,25 @@ export const generateNationalSystemList = (obj = {}) => {
     </List>
   );
 };
+
+export const generateAirTransportList = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { heliports, civil_aircraft_registration_country_code_prefix } = obj;
+
+  return (
+    <List bulleted>
+      {heliports && (
+        <List.Item>
+          <strong>Heliports: </strong>
+          {`${heliports.total?.toLocaleString()} (${heliports.date})`}
+        </List.Item>
+      )}
+      {civil_aircraft_registration_country_code_prefix && (
+        <List.Item>
+          <strong>Civil aircraft registration countrycode: </strong>
+          {`${civil_aircraft_registration_country_code_prefix.prefix} (${civil_aircraft_registration_country_code_prefix.date})`}
+        </List.Item>
+      )}
+    </List>
+  );
+};
