@@ -187,6 +187,49 @@ export const generateTable = (table, title) => {
   );
 };
 
+export const generateTablefromObjArray = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, array] = entries[0];
+
+  if (!Array.isArray(array)) return;
+
+  const columns = Object.keys(array[0]);
+
+  if (columns.length === 0) return '';
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={columns.length}>
+            {capWithSpacing(title)}
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          {columns.map((key, idx) => (
+            <Table.HeaderCell key={idx}>{capWithSpacing(key)}</Table.HeaderCell>
+          ))}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {array.map((entry, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>
+              {entry[columns[0]] && entry[columns[0]].toLocaleString()}
+            </Table.Cell>
+            {columns.slice(1).map((key, jdx) => (
+              <Table.Cell key={jdx} textAlign="right">
+                {entry[key] && entry[key].toLocaleString()}
+              </Table.Cell>
+            ))}
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
+
 export const generateTableList = (data = {}) => {
   const { list, title, note, ...rest } = data;
   const extraLists = Object.entries(rest).filter(entry =>
