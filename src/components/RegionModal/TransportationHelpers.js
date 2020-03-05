@@ -1,7 +1,12 @@
 import React from 'react';
-import { Table, List } from 'semantic-ui-react';
+import { Table, List, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
-import { capWithSpacing, generateTextItem } from '../../helpers/textHelpers';
+import {
+  capWithSpacing,
+  generateTextItem,
+  generateTableList,
+  generateTablefromObjArray,
+} from '../../helpers/textHelpers';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
@@ -176,5 +181,64 @@ export const generateMerchantMarineTable = (obj = {}) => {
         ))}
       </Table.Body>
     </Table>
+  );
+};
+
+export const generatePortsandTerminals = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const {
+    date,
+    cargo_ports,
+    major_ports,
+    cruise_departure_ports_passengers,
+    ...rest
+  } = obj;
+
+  const textList = Object.entries(rest)
+    .filter(([_, value]) => typeof value === 'string')
+    .map(([key, value], idx) => (
+      <React.Fragment key={idx}>
+        {generateTextItem({ [key]: value })}
+      </React.Fragment>
+    ));
+
+  const tables = Object.keys(obj)
+    .filter(key => Array.isArray(obj[key]))
+    .map(key => {
+      if (obj[key].every(entry => typeof entry === 'string')) {
+        return generateTableList({
+          title: key,
+          list: obj[key],
+        });
+      }
+      return generateTablefromObjArray({ [key]: obj[key] });
+    });
+
+  Object.entries({
+    cargo_ports,
+    major_ports,
+    cruise_departure_ports_passengers,
+  })
+    .filter(([_, value]) => value)
+    .forEach(([key, value]) => {
+      tables.push(
+        generateTableList({
+          title: capWithSpacing(key),
+          list: value.split(', '),
+        })
+      );
+    });
+
+  return (
+    <div>
+      <Header textAlign="center" style={{ margin: '3rem 0' }}>
+        Ports and Terminals
+        {date && ` (${date})`}
+      </Header>
+      {textList.length > 0 && <List bulleted>{textList}</List>}
+      {tables.map((table, idx) => (
+        <React.Fragment key={idx}>{table}</React.Fragment>
+      ))}
+    </div>
   );
 };
