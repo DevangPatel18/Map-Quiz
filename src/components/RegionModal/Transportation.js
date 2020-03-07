@@ -3,12 +3,10 @@ import { Container } from 'semantic-ui-react';
 import JSONTree from 'react-json-tree';
 import { theme } from '../styles/RegionModalStyles';
 import {
-  generateAirportsTable,
-  generateNationalSystemList,
-  generateAirTransportList,
   generatePipelinesTable,
   generateMerchantMarineTable,
   generatePortsandTerminals,
+  generateAirTransport,
 } from './TransportationHelpers';
 
 const Transportation = ({ data }) => {
@@ -20,27 +18,11 @@ const Transportation = ({ data }) => {
     ...rest
   } = data;
 
-  let airportsSection;
-  if (air_transport) {
-    const { airports, national_system, ...air_transport_rest } = air_transport;
-    const airportsTable = generateAirportsTable(airports);
-    const nationalSystemList = generateNationalSystemList(national_system);
-    const airTransportList = generateAirTransportList(air_transport_rest);
-
-    airportsSection = (
-      <>
-        {nationalSystemList}
-        {airTransportList}
-        {airportsTable}
-      </>
-    );
-  }
-
   const isRestTreeNonEmpty = Object.keys(rest).length !== 0;
 
   return (
     <Container text>
-      {airportsSection}
+      {generateAirTransport(air_transport)}
       {generatePipelinesTable(pipelines)}
       {generateMerchantMarineTable(merchant_marine)}
       {generatePortsandTerminals(ports_and_terminals)}

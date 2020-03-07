@@ -7,10 +7,27 @@ import {
   generateTableList,
   generateTablefromObjArray,
 } from '../../helpers/textHelpers';
+import { TableContainer } from '../styles/RegionModalStyles';
 
 const SubHeader = styled.p`
   font-size: 0.7em;
 `;
+
+export const generateAirTransport = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { airports, national_system, ...air_transport_rest } = obj;
+  const airportsTable = generateAirportsTable(airports);
+  const nationalSystemList = generateNationalSystemList(national_system);
+  const airTransportList = generateAirTransportList(air_transport_rest);
+
+  return (
+    <>
+      {nationalSystemList}
+      {airTransportList}
+      {airportsTable}
+    </>
+  );
+};
 
 export const generateAirportsTable = (obj = {}) => {
   if (typeof obj !== 'object') return;
