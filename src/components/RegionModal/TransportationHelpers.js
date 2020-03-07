@@ -22,6 +22,9 @@ export const generateAirTransport = (obj = {}) => {
 
   return (
     <>
+      <Header textAlign="center" style={{ margin: '3rem 0' }}>
+        Air Transport
+      </Header>
       {nationalSystemList}
       {airTransportList}
       {airportsTable}
