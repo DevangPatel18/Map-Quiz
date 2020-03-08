@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, List, Header } from 'semantic-ui-react';
+import { Table, List, Header, Popup, Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 import {
   capWithSpacing,
@@ -260,5 +260,101 @@ export const generatePortsandTerminals = (obj = {}) => {
         <React.Fragment key={idx}>{table}</React.Fragment>
       ))}
     </div>
+  );
+};
+
+export const generateRoadways = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { date, global_rank, note, total, ...rest } = obj;
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan="2">
+            Roadways
+            <SubHeader>
+              {[
+                date && `Date: ${date}`,
+                global_rank && `Global rank: ${global_rank}`,
+              ].join(' - ')}
+            </SubHeader>
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell>Category</Table.HeaderCell>
+          <Table.HeaderCell>Value</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {Object.entries(rest).map(([key, obj], idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>
+              {capWithSpacing(key)}
+              {obj.note && (
+                <Popup
+                  content={obj.note}
+                  size="mini"
+                  trigger={
+                    <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
+                  }
+                />
+              )}
+            </Table.Cell>
+            <Table.Cell textAlign="right">
+              {`${obj.value?.toLocaleString()} ${obj.units}`}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+        {total && (
+          <Table.Row>
+            <Table.Cell>Total</Table.Cell>
+            <Table.Cell textAlign="right">
+              {`${total.value?.toLocaleString()} ${total.units}`}
+            </Table.Cell>
+          </Table.Row>
+        )}
+        {note && (
+          <Table.Row>
+            <Table.Cell style={{ fontSize: '0.8rem' }} colSpan="2">
+              <em>{note}</em>
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
+  );
+};
+
+export const generateRailways = (obj = {}) => {
+  if (typeof obj !== 'object') return;
+  const { date, global_rank, total, ...rest } = obj;
+
+  return (
+    <List.Item>
+      <strong>Railways: </strong>
+      {date && `(${date})`}
+      {global_rank && <sup> global rank - {global_rank}</sup>}
+      <List>
+        {Object.entries(rest).map(([key, val], idx) => (
+          <List.Item key={idx}>
+            <strong>{capWithSpacing(key)}: </strong>
+            {val?.length?.toLocaleString()} {val?.units}
+            {val?.gauge && ` ${val?.gauge}`}
+            {val?.electrified &&
+              ` (${val.electrified.toLocaleString()} electrified)`}
+          </List.Item>
+        ))}
+        {total && (
+          <List.Item>
+            <strong>Total: </strong>
+            {`${total?.length?.toLocaleString()} ${total?.units}`}
+            {total?.gauge && ` ${total?.gauge}`}
+            {total?.electrified &&
+              ` (${total.electrified.toLocaleString} electrified)`}
+          </List.Item>
+        )}
+      </List>
+    </List.Item>
   );
 };
