@@ -256,9 +256,11 @@ export const generatePortsandTerminals = (obj = {}) => {
         {date && ` (${date})`}
       </Header>
       {textList.length > 0 && <List bulleted>{textList}</List>}
-      {tables.map((table, idx) => (
-        <React.Fragment key={idx}>{table}</React.Fragment>
-      ))}
+      <TableContainer>
+        {tables.map((table, idx) => (
+          <React.Fragment key={idx}>{table}</React.Fragment>
+        ))}
+      </TableContainer>
     </div>
   );
 };
