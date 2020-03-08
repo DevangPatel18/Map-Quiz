@@ -249,12 +249,12 @@ export const generateTableList = (data = {}) => {
   let listA = [...list],
     listB,
     columns = 1;
-  if (list.length > 1) {
+  if (list.length > 6) {
     listB = listA.splice(Math.ceil(listA.length / 2));
     columns = 2;
   }
   return (
-    <Table columns={columns} unstackable celled compact>
+    <Table columns={columns} unstackable celled compact collapsing>
       <Table.Header>
         <Table.Row textAlign="center">
           <Table.HeaderCell colSpan={columns}>
@@ -288,8 +288,11 @@ export const generateTableList = (data = {}) => {
           ))}
         {note && (
           <Table.Row>
-            <Table.Cell style={cellStyle} colSpan={columns}>
-              <em style={{ fontSize: '0.8rem' }}>Note: {note}</em>
+            <Table.Cell
+              style={{ ...cellStyle, fontSize: '0.8rem' }}
+              colSpan={columns}
+            >
+              {generateSubListItem({ note })}
             </Table.Cell>
           </Table.Row>
         )}
