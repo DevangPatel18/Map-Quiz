@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Table, Header } from 'semantic-ui-react';
+import { List, Table, Header, Popup, Icon } from 'semantic-ui-react';
 
 const cellStyle = {
   padding: '0.3rem 0.7rem',
@@ -120,10 +120,20 @@ export const generateValueItem = (obj = {}) => {
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
-      {valObj.value && ` ${numScale(valObj.value)}`}
-      {valObj.units && ` ${valObj.units}`}
-      {valObj.date && ` (${valObj.date})`}
-      {valObj.note && ` (${valObj.note})`}
+      <span>
+        {valObj.value && ` ${valObj.value && valObj.value.toLocaleString()}`}
+        {valObj.units && ` ${valObj.units}`}
+        {valObj.date && ` (${valObj.date})`}
+        {valObj.note && (
+          <Popup
+            content={generateList(valObj.note.split(';'))}
+            size="mini"
+            trigger={
+              <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
+            }
+          />
+        )}
+      </span>
     </List.Item>
   );
 };
