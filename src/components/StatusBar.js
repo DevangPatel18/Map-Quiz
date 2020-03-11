@@ -76,15 +76,17 @@ class StatusBar extends Component {
       isTimerEnabled,
     } = this.props.quiz;
     const { time, open } = this.state;
+    const correctAnswers = quizGuesses.filter(x => x).length;
+    const answered = quizGuesses.filter(x => x | !x).length;
+    const total = quizAnswers.length;
     const percentComp = isQuizActive
-      ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
+      ? parseInt((answered / total) * 100, 10)
       : '';
-    const questionText = `Question: ${quizGuesses.length} / ${quizAnswers.length}`;
-    const scoreText = `Score: ${quizGuesses.filter(x => x).length}`;
-    const pauseStyle =
-      quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
+    const questionText = `Question: ${answered} / ${total}`;
+    const scoreText = `Score: ${correctAnswers}`;
+    const pauseStyle = quizGuesses.length === total ? { display: 'none' } : {};
 
-    if (quizGuesses.length === quizAnswers.length && isTimerEnabled) {
+    if (answered === total && isTimerEnabled) {
       clearInterval(this.timer);
     }
 
