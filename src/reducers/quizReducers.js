@@ -20,6 +20,8 @@ const initialState = {
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
   isTypeQuizActive: false,
+  isAnsFixed: null,
+  regionClass: null,
   markerToggle: '',
   infoTabShow: false,
   areExternalRegionsOnQuiz: true,
@@ -83,6 +85,8 @@ export default function(state = initialState, action) {
         quizType: null,
         quizIdx: null,
         isTypeQuizActive: false,
+        isAnsFixed: null,
+        regionClass: null,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
