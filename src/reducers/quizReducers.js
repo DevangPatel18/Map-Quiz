@@ -63,6 +63,17 @@ export default function(state = initialState, action) {
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
+    case types.QUIZ_GIVE_UP:
+      const newQuizGuesses = state.quizAnswers.map((_, idx) =>
+        state.quizGuesses[idx] ? state.quizGuesses[idx] : false
+      );
+      return {
+        ...state,
+        quizIdx: state.quizAnswers.length,
+        quizGuesses: newQuizGuesses,
+        selectedProperties: emptySelectedProperties,
+        infoTabShow: false,
+      };
     case types.QUIZ_CLOSE:
       return {
         ...state,

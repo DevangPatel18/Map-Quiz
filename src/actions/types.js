@@ -28,6 +28,7 @@ export const LOADING_DATA = 'LOADING_DATA';
 // Quiz actions
 export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';
+export const QUIZ_GIVE_UP = 'QUIZ_GIVE_UP';
 export const QUIZ_CLOSE = 'QUIZ_CLOSE';
 export const REGION_CLICK = 'REGION_CLICK';
 export const SET_LABEL = 'SET_LABEL';

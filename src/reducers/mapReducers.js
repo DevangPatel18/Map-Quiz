@@ -43,6 +43,7 @@ export default function(state = initialState, action) {
     case types.REGION_CLICK:
     case types.QUIZ_ANSWER:
     case types.SET_QUIZ_STATE:
+    case types.QUIZ_GIVE_UP:
     case types.QUIZ_CLOSE:
     case types.SET_LABEL:
       return {
