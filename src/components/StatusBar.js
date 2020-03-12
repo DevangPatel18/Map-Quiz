@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Button, Modal } from 'semantic-ui-react';
 import StatusBarStyles from './styles/StatusBarStyles';
-import { startQuiz, closeQuiz } from '../actions/quizActions';
+import { startQuiz, giveUpQuiz, closeQuiz } from '../actions/quizActions';
 import msToTime from '../helpers/msToTime';
 import TimerStyles from './styles/TimerStyles';
 
@@ -42,6 +42,12 @@ class StatusBar extends Component {
       isTimerEnabled && clearInterval(this.timer);
       this.setState({ timerOn: false, open: true });
     }
+  };
+
+  giveUp = () => {
+    this.props.giveUpQuiz();
+    this.props.quiz.isTimerEnabled && clearInterval(this.timer);
+    this.setState({ time: 0, timerOn: false });
   };
 
   close = () => {
@@ -156,4 +162,6 @@ const mapStateToProps = state => ({
   quiz: state.quiz,
 });
 
-export default connect(mapStateToProps, { startQuiz, closeQuiz })(StatusBar);
+export default connect(mapStateToProps, { startQuiz, giveUpQuiz, closeQuiz })(
+  StatusBar
+);
