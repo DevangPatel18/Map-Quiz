@@ -10,7 +10,7 @@ const TimerStyles = styled.div`
     z-index: 2;
   }
 
-  .ui.inverted.red.button {
+  .ui.button {
     margin-right: 1em;
   }
 `;

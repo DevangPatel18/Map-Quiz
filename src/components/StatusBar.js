@@ -90,7 +90,7 @@ class StatusBar extends Component {
       : '';
     const questionText = `Question: ${answered} / ${total}`;
     const scoreText = `Score: ${correctAnswers}`;
-    const pauseStyle = quizGuesses.length === total ? { display: 'none' } : {};
+    const quizEndStyle = answered === total ? { display: 'none' } : {};
 
     if (answered === total && isTimerEnabled) {
       clearInterval(this.timer);
@@ -118,8 +118,17 @@ class StatusBar extends Component {
                 color="yellow"
                 icon="pause"
                 onClick={this.pause}
-                style={pauseStyle}
+                style={quizEndStyle}
                 aria-label="pause quiz"
+              />
+              <Button
+                size="mini"
+                compact
+                inverted
+                icon="flag outline"
+                onClick={this.giveUp}
+                style={quizEndStyle}
+                aria-label="give up quiz"
               />
             </div>
           </TimerStyles>
