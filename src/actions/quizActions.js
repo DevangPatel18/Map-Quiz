@@ -20,6 +20,10 @@ export const startQuiz = quizType => async dispatch => {
   await partialMapRefresh(dispatch, filterRegions);
 };
 
+export const giveUpQuiz = () => dispatch => {
+  dispatch({ type: types.QUIZ_GIVE_UP });
+};
+
 export const closeQuiz = () => async dispatch => {
   const { filterRegions } = store.getState().map;
   await dispatch({ type: types.QUIZ_CLOSE });
