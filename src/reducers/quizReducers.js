@@ -50,11 +50,23 @@ export default function(state = initialState, action) {
         infoTabShow: action.infoTabShow,
       };
     case types.QUIZ_ANSWER:
+      const quizGuessesUpdated = state.quizGuesses.slice();
+      if (state.isAnsFixed) {
+        quizGuessesUpdated.push(action.isAnswerCorrect);
+      } else {
+        const { regionID } = action.selectedProperties;
+        const idx = state.quizAnswers.indexOf(regionID);
+        if (idx < 0) {
+          console.log('regionID not found in answer array');
+          return { ...state };
+        }
+        quizGuessesUpdated[idx] = action.isAnswerCorrect;
+      }
       return {
         ...state,
         selectedProperties:
           action.selectedProperties || emptySelectedProperties,
-        quizGuesses: [...state.quizGuesses, action.isAnswerCorrect],
+        quizGuesses: quizGuessesUpdated,
         quizIdx: state.quizIdx + 1,
         infoTabShow: false,
       };
