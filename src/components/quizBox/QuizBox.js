@@ -20,11 +20,11 @@ import {
 } from '../../actions/quizActions';
 
 const generateQuizOptions = regionType => [
-  { label: `Click ${regionType}`, value: 'click_name' },
-  { label: `Type ${regionType}`, value: 'type_name' },
-  { label: 'Click Capital', value: 'click_capital' },
-  { label: 'Type Capital', value: 'type_capital' },
-  { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
+  { label: `Click ${regionType}`, value: 'click_name_ordered' },
+  { label: `Type Marked ${regionType}`, value: 'type_name_ordered' },
+  { label: 'Click Capital', value: 'click_capital_ordered' },
+  { label: 'Type Marked Capital', value: 'type_capital_ordered' },
+  { label: `Click ${regionType} from Flag`, value: 'click_flag_ordered' },
 ];
 
 class QuizBox extends Component {

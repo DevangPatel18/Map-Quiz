@@ -14,7 +14,7 @@ const emptySelectedProperties = {
 
 const initialState = {
   quizAnswers: [],
-  quizType: 'click_name',
+  quizType: 'click_name_ordered',
   isQuizActive: false,
   quizIdx: null,
   quizGuesses: [],
