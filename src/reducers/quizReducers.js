@@ -70,7 +70,10 @@ export default function(state = initialState, action) {
     case types.SET_QUIZ_STATE:
       return {
         ...state,
-        ...action.quizAttributes,
+        quizAnswers: action.quizAnswers,
+        isQuizActive: true,
+        quizIdx: 0,
+        quizGuesses: [],
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };

@@ -2,7 +2,6 @@ import * as types from './types';
 import {
   removeQuizExceptions,
   generateAnswerArray,
-  generateQuizState,
   checkClickAnswer,
   checkTypeAnswer,
   getRegionIdsForQuiz,
@@ -10,13 +9,12 @@ import {
 import { partialMapRefresh } from './mapActions';
 import store from '../store';
 
-export const startQuiz = quizType => async dispatch => {
+export const startQuiz = () => async dispatch => {
   const { filterRegions } = store.getState().map;
   const quizRegionIds = getRegionIdsForQuiz();
   let quizAnswers = generateAnswerArray(quizRegionIds);
-  quizAnswers = removeQuizExceptions(quizAnswers, quizType);
-  const quizAttributes = generateQuizState(quizAnswers, quizType);
-  await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
+  quizAnswers = removeQuizExceptions(quizAnswers);
+  await dispatch({ type: types.SET_QUIZ_STATE, quizAnswers });
   await partialMapRefresh(dispatch, filterRegions);
 };
 

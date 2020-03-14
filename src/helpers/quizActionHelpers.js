@@ -26,16 +26,6 @@ export const generateAnswerArray = quizRegionIds => {
   }, quizAnswers);
 };
 
-export const generateQuizState = (quizAnswers, quizType) => ({
-  quizAnswers,
-  quizType,
-  isQuizActive: true,
-  quizIdx: 0,
-  quizGuesses: [],
-  selectedProperties: '',
-  isTypeQuizActive: quizType.split('_')[0] === 'type',
-});
-
 export const checkClickAnswer = ansGeoProperties => {
   const { quizIdx, quizAnswers, selectedProperties } = store.getState().quiz;
   const isAnswerCorrect = ansGeoProperties.regionID === quizAnswers[quizIdx];
