@@ -83,13 +83,16 @@ export const toggleInfoTab = () => async dispatch => {
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
-  const { quizAnswers, quizIdx } = store.getState().quiz;
+  const { quizAnswers, quizIdx, isAnsFixed } = store.getState().quiz;
+  if (!isAnsFixed && !isAnswerCorrect) return;
+  const updatedRegionIDList = isAnsFixed
+    ? quizAnswers.slice(quizIdx, quizIdx + 2)
+    : [newGeoProperties.regionID];
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
     isAnswerCorrect,
   });
-  const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
   await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 
