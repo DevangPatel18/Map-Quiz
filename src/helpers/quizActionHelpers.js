@@ -72,19 +72,19 @@ export const checkIfQuizIncomplete = () => {
   );
 };
 
-export const removeQuizExceptions = (quizAnswers, quizType) => {
+export const removeQuizExceptions = quizAnswers => {
   const { currentMap } = store.getState().map;
-  const testedAttr = quizType.split('_')[1];
+  const { quizType, regionClass } = store.getState().quiz;
   let newQuizAnswers = [...quizAnswers];
   let removedAnswers = null;
   switch (currentMap) {
     case 'Asia':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['MAC', 'HKG'];
       }
       break;
     case 'United States of America':
-      if (testedAttr !== 'flag') {
+      if (regionClass !== 'flag') {
         removedAnswers = ['DC'];
       }
       break;
@@ -94,17 +94,17 @@ export const removeQuizExceptions = (quizAnswers, quizType) => {
       }
       break;
     case 'Germany':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['DE.BE', 'DE.HB', 'DE.HH'];
       }
       break;
     case 'France':
-      if (testedAttr === 'flag') {
+      if (regionClass === 'flag') {
         removedAnswers = ['FR.AO', 'FR.IF', 'FR.PL'];
       }
       break;
     case 'Japan':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['JP,TK'];
       }
       break;
