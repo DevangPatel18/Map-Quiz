@@ -22,8 +22,10 @@ import {
 const generateQuizOptions = regionType => [
   { label: `Click ${regionType}`, value: 'click_name_ordered' },
   { label: `Type Marked ${regionType}`, value: 'type_name_ordered' },
+  { label: `Type any ${regionType}`, value: 'type_name_unordered' },
   { label: 'Click Capital', value: 'click_capital_ordered' },
   { label: 'Type Marked Capital', value: 'type_capital_ordered' },
+  { label: 'Type any Capital', value: 'type_capital_unordered' },
   { label: `Click ${regionType} from Flag`, value: 'click_flag_ordered' },
 ];
 
