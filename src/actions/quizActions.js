@@ -30,6 +30,10 @@ export const closeQuiz = () => async dispatch => {
   await partialMapRefresh(dispatch, filterRegions);
 };
 
+export const changeQuiz = quizType => dispatch => {
+  dispatch({ type: types.CHANGE_QUIZ, quizType });
+};
+
 export const processClickAnswer = geoProperties => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkClickAnswer(geoProperties);
   const { quizAnswers, quizGuesses, quizIdx } = store.getState().quiz;
