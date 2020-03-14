@@ -38,17 +38,43 @@ export const checkClickAnswer = ansGeoProperties => {
 };
 
 export const checkTypeAnswer = userGuess => {
-  const { quizAnswers, quizIdx } = store.getState().quiz;
+  const { quizAnswers, isAnsFixed } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
+  const filteredGeoPaths = geographyPaths.filter(
+    ({ properties }) =>
+      Object.keys(properties).length !== 0 &&
+      quizAnswers.includes(properties.regionID)
+  );
 
-  const answerProperties = geographyPaths.find(
+  return isAnsFixed
+    ? checkTypeAnswerOrdered(userGuess, filteredGeoPaths)
+    : checkTypeAnswerUnordered(userGuess, filteredGeoPaths);
+};
+
+const checkTypeAnswerOrdered = (userGuess, filteredGeoPaths) => {
+  const { quizAnswers, quizIdx } = store.getState().quiz;
+  let newGeoProperties = filteredGeoPaths.find(
     geo => geo.properties.regionID === quizAnswers[quizIdx]
   ).properties;
+  const isAnswerCorrect = checkValidSpelling(userGuess, newGeoProperties);
+  newGeoProperties = isAnswerCorrect ? newGeoProperties : '';
+  return { isAnswerCorrect, newGeoProperties };
+};
 
-  const isAnswerCorrect = checkValidSpelling(userGuess, answerProperties);
-
-  const newGeoProperties = isAnswerCorrect ? answerProperties : '';
-
+const checkTypeAnswerUnordered = (userGuess, filteredGeoPaths) => {
+  const { quizAnswers, quizGuesses } = store.getState().quiz;
+  const answeredRegions = quizAnswers.filter((__, idx) => quizGuesses[idx]);
+  let isAnswerCorrect, newGeoProperties;
+  filteredGeoPaths
+    .filter(({ properties }) => !answeredRegions.includes(properties.regionID))
+    .some(({ properties }) => {
+      isAnswerCorrect = checkValidSpelling(userGuess, properties);
+      if (isAnswerCorrect) {
+        newGeoProperties = properties;
+        return true;
+      }
+      return false;
+    });
   return { isAnswerCorrect, newGeoProperties };
 };
 
