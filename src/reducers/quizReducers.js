@@ -20,8 +20,8 @@ const initialState = {
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
   isTypeQuizActive: false,
-  isAnsFixed: null,
-  regionClass: null,
+  isAnsFixed: true,
+  regionClass: 'name',
   markerToggle: '',
   infoTabShow: false,
   areExternalRegionsOnQuiz: true,
@@ -59,7 +59,14 @@ export default function(state = initialState, action) {
         infoTabShow: false,
       };
     case types.CHANGE_QUIZ:
-      return { ...state, quizType: action.quizType };
+      const [behaviour, regionClass, sortType] = action.quizType.split('_');
+      return {
+        ...state,
+        quizType: action.quizType,
+        isTypeQuizActive: behaviour === 'type',
+        isAnsFixed: sortType === 'ordered',
+        regionClass,
+      };
     case types.SET_QUIZ_STATE:
       return {
         ...state,
@@ -84,11 +91,7 @@ export default function(state = initialState, action) {
         quizAnswers: [],
         quizGuesses: [],
         isQuizActive: false,
-        quizType: null,
         quizIdx: null,
-        isTypeQuizActive: false,
-        isAnsFixed: null,
-        regionClass: null,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
