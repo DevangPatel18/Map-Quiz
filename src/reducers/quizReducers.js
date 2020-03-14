@@ -14,7 +14,7 @@ const emptySelectedProperties = {
 
 const initialState = {
   quizAnswers: [],
-  quizType: null,
+  quizType: 'click_name',
   isQuizActive: false,
   quizIdx: null,
   quizGuesses: [],
@@ -58,6 +58,8 @@ export default function(state = initialState, action) {
         quizIdx: state.quizIdx + 1,
         infoTabShow: false,
       };
+    case types.CHANGE_QUIZ:
+      return { ...state, quizType: action.quizType };
     case types.SET_QUIZ_STATE:
       return {
         ...state,

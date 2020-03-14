@@ -30,6 +30,7 @@ export const SET_QUIZ_STATE = 'SET_QUIZ_STATE';
 export const QUIZ_ANSWER = 'QUIZ_ANSWER';
 export const QUIZ_GIVE_UP = 'QUIZ_GIVE_UP';
 export const QUIZ_CLOSE = 'QUIZ_CLOSE';
+export const CHANGE_QUIZ = 'CHANGE_QUIZ';
 export const REGION_CLICK = 'REGION_CLICK';
 export const SET_LABEL = 'SET_LABEL';
 export const TOGGLE_EXT_REGIONS = 'TOGGLE_EXT_REGIONS';
