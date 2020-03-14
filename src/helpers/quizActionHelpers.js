@@ -38,23 +38,25 @@ export const checkClickAnswer = ansGeoProperties => {
 };
 
 export const checkTypeAnswer = userGuess => {
-  const { quizAnswers, quizIdx, quizType } = store.getState().quiz;
+  const { quizAnswers, quizIdx } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
 
   const answerProperties = geographyPaths.find(
     geo => geo.properties.regionID === quizAnswers[quizIdx]
   ).properties;
 
-  const isAnswerCorrect =
-    quizType.split('_')[1] === 'name'
-      ? answerProperties.spellings.some(
-          name => simple(userGuess) === simple(name)
-        )
-      : simple(userGuess) === simple(answerProperties.capital);
+  const isAnswerCorrect = checkValidSpelling(userGuess, answerProperties);
 
   const newGeoProperties = isAnswerCorrect ? answerProperties : '';
 
   return { isAnswerCorrect, newGeoProperties };
+};
+
+const checkValidSpelling = (userGuess, regionObj) => {
+  const { regionClass } = store.getState().quiz;
+  return regionClass === 'name'
+    ? regionObj.spellings.some(name => simple(userGuess) === simple(name))
+    : simple(userGuess) === simple(regionObj.capital);
 };
 
 export const checkIfQuizIncomplete = () => {
