@@ -18,6 +18,8 @@ export const getRegionIdsForQuiz = () => {
 };
 
 export const generateAnswerArray = quizRegionIds => {
+  const { isAnsFixed } = store.getState().quiz;
+  if (!isAnsFixed) return quizRegionIds;
   const quizAnswers = [...quizRegionIds];
   return quizAnswers.reduce((dum1, dum2, i) => {
     const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
