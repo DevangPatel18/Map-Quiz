@@ -11,6 +11,7 @@ import { capitalize } from '../../helpers/textHelpers';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
+  changeQuiz,
   startQuiz,
   closeQuiz,
   setLabel,
@@ -30,14 +31,11 @@ class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = {
-      quizType: 'click_name',
-      regionMenu: false,
-    };
+    this.state = { regionMenu: false };
   }
 
   handleQuizChange = (event, { value }) => {
-    this.setState({ quizType: value });
+    this.props.changeQuiz(value);
   };
 
   handleLabelToggle = (event, data) => {
@@ -60,7 +58,7 @@ class QuizBox extends Component {
   };
 
   handleQuizOptions = subRegionNameCap => {
-    const { quizType } = this.state;
+    const { quizType } = this.props.quiz;
     const { currentMap } = this.props.map;
     let quizOptions = generateQuizOptions(subRegionNameCap);
     if (mapViewsWithNoFlags.includes(currentMap)) {
@@ -82,9 +80,7 @@ class QuizBox extends Component {
   };
 
   start = () => {
-    const { startQuiz } = this.props;
-    const { quizType } = this.state;
-    startQuiz(quizType);
+    this.props.startQuiz();
   };
 
   render() {
@@ -218,6 +214,7 @@ const getAppState = createSelector(
   state => state.map.currentMap,
   state => state.map.subRegionName,
   state => state.map.tooltip,
+  state => state.quiz.quizType,
   state => state.quiz.markerToggle,
   state => state.quiz.areExternalRegionsOnQuiz,
   state => state.quiz.isTimerEnabled,
@@ -226,17 +223,19 @@ const getAppState = createSelector(
     currentMap,
     subRegionName,
     tooltip,
+    quizType,
     markerToggle,
     areExternalRegionsOnQuiz,
     isTimerEnabled
   ) => ({
     map: { checkedRegions, currentMap, subRegionName, tooltip },
-    quiz: { markerToggle, areExternalRegionsOnQuiz, isTimerEnabled },
+    quiz: { quizType, markerToggle, areExternalRegionsOnQuiz, isTimerEnabled },
   })
 );
 
 export default connect(getAppState, {
   setRegionCheckbox,
+  changeQuiz,
   startQuiz,
   closeQuiz,
   setLabel,
