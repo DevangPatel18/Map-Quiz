@@ -18,8 +18,8 @@ export const getRegionIdsForQuiz = () => {
 };
 
 export const generateAnswerArray = quizRegionIds => {
-  const { isAnsFixed } = store.getState().quiz;
-  if (!isAnsFixed) return quizRegionIds;
+  const { isQtnFixed } = store.getState().quiz;
+  if (!isQtnFixed) return quizRegionIds;
   const quizAnswers = [...quizRegionIds];
   return quizAnswers.reduce((dum1, dum2, i) => {
     const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
@@ -38,7 +38,7 @@ export const checkClickAnswer = ansGeoProperties => {
 };
 
 export const checkTypeAnswer = userGuess => {
-  const { quizAnswers, isAnsFixed } = store.getState().quiz;
+  const { quizAnswers, isQtnFixed } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
   const filteredGeoPaths = geographyPaths.filter(
     ({ properties }) =>
@@ -46,7 +46,7 @@ export const checkTypeAnswer = userGuess => {
       quizAnswers.includes(properties.regionID)
   );
 
-  return isAnsFixed
+  return isQtnFixed
     ? checkTypeAnswerOrdered(userGuess, filteredGeoPaths)
     : checkTypeAnswerUnordered(userGuess, filteredGeoPaths);
 };
