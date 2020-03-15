@@ -46,7 +46,10 @@ class QuestionBox extends Component {
   handleTypePrompt = testing => {
     const { userGuess } = this.state;
     const { subRegionName } = this.props.map;
-    const text = `Enter the ${testing} of the highlighted ${subRegionName}`;
+    const { isAnsFixed } = this.props.quiz;
+    const text = `Enter the ${testing} of ${
+      isAnsFixed ? `the highlighted` : 'any'
+    } ${subRegionName}`;
     const inputSize = isMobile ? 'mini' : 'small';
     return (
       <QuizPrompt typeTest={true}>
@@ -251,6 +254,7 @@ const getAppState = createSelector(
   state => state.quiz.quizGuesses,
   state => state.quiz.quizAnswers,
   state => state.quiz.quizIdx,
+  state => state.quiz.isAnsFixed,
   state => state.map.subRegionName,
   state => state.map.orientation,
   state => state.data.geographyPaths,
@@ -259,11 +263,12 @@ const getAppState = createSelector(
     quizGuesses,
     quizAnswers,
     quizIdx,
+    isAnsFixed,
     subRegionName,
     orientation,
     geographyPaths
   ) => ({
-    quiz: { quizType, quizGuesses, quizAnswers, quizIdx },
+    quiz: { quizType, quizGuesses, quizAnswers, quizIdx, isAnsFixed },
     map: { subRegionName, orientation },
     data: { geographyPaths },
   })

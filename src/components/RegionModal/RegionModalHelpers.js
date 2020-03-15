@@ -10,6 +10,8 @@ import Geography from './Geography';
 import Government from './Government';
 import Military from './Military';
 import People from './People';
+import Communications from './Communications';
+import Transportation from './Transportation';
 
 export const generateTabContent = (displayData, sectionName) => {
   switch (sectionName) {
@@ -29,6 +31,10 @@ export const generateTabContent = (displayData, sectionName) => {
       return <Military data={displayData[sectionName]} />;
     case 'people':
       return <People data={displayData[sectionName]} />;
+    case 'communications':
+      return <Communications data={displayData[sectionName]} />;
+    case 'transportation':
+      return <Transportation data={displayData[sectionName]} />;
     default:
       return (
         <Tab.Pane>

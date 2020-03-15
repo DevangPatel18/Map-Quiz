@@ -181,7 +181,8 @@ export const generateValueUnitTable = (obj = {}) => {
       <Table.Header>
         <Table.Row textAlign="center">
           <Table.HeaderCell colSpan={cols.length}>
-            {capWithSpacing(title)} - {date}
+            {capWithSpacing(title)}
+            {date && ` - ${date}`}
             {popUpNote}
             {unitHeader && <SubHeader>{unitHeader}</SubHeader>}
           </Table.HeaderCell>
@@ -194,8 +195,11 @@ export const generateValueUnitTable = (obj = {}) => {
       </Table.Header>
       <Table.Body>
         {rows.map((entry, idx) => (
-          <Table.Row key={idx}>
-            {cols.map(col => (
+          <Table.Row key={idx} textAlign="center">
+            <Table.Cell textAlign="left">
+              {entry.category && entry.category.toLocaleString()}
+            </Table.Cell>
+            {cols.slice(1).map(col => (
               <Table.Cell key={col}>
                 {entry[col] && entry[col].toLocaleString()}
               </Table.Cell>

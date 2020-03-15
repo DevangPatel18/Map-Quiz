@@ -18,6 +18,8 @@ export const getRegionIdsForQuiz = () => {
 };
 
 export const generateAnswerArray = quizRegionIds => {
+  const { isAnsFixed } = store.getState().quiz;
+  if (!isAnsFixed) return quizRegionIds;
   const quizAnswers = [...quizRegionIds];
   return quizAnswers.reduce((dum1, dum2, i) => {
     const j = Math.floor(Math.random() * (quizAnswers.length - i) + i);
@@ -25,16 +27,6 @@ export const generateAnswerArray = quizRegionIds => {
     return quizAnswers;
   }, quizAnswers);
 };
-
-export const generateQuizState = (quizAnswers, quizType) => ({
-  quizAnswers,
-  quizType,
-  isQuizActive: true,
-  quizIdx: 0,
-  quizGuesses: [],
-  selectedProperties: '',
-  isTypeQuizActive: quizType.split('_')[0] === 'type',
-});
 
 export const checkClickAnswer = ansGeoProperties => {
   const { quizIdx, quizAnswers, selectedProperties } = store.getState().quiz;
@@ -46,23 +38,51 @@ export const checkClickAnswer = ansGeoProperties => {
 };
 
 export const checkTypeAnswer = userGuess => {
-  const { quizAnswers, quizIdx, quizType } = store.getState().quiz;
+  const { quizAnswers, isAnsFixed } = store.getState().quiz;
   const { geographyPaths } = store.getState().data;
+  const filteredGeoPaths = geographyPaths.filter(
+    ({ properties }) =>
+      Object.keys(properties).length !== 0 &&
+      quizAnswers.includes(properties.regionID)
+  );
 
-  const answerProperties = geographyPaths.find(
+  return isAnsFixed
+    ? checkTypeAnswerOrdered(userGuess, filteredGeoPaths)
+    : checkTypeAnswerUnordered(userGuess, filteredGeoPaths);
+};
+
+const checkTypeAnswerOrdered = (userGuess, filteredGeoPaths) => {
+  const { quizAnswers, quizIdx } = store.getState().quiz;
+  let newGeoProperties = filteredGeoPaths.find(
     geo => geo.properties.regionID === quizAnswers[quizIdx]
   ).properties;
-
-  const isAnswerCorrect =
-    quizType.split('_')[1] === 'name'
-      ? answerProperties.spellings.some(
-          name => simple(userGuess) === simple(name)
-        )
-      : simple(userGuess) === simple(answerProperties.capital);
-
-  const newGeoProperties = isAnswerCorrect ? answerProperties : '';
-
+  const isAnswerCorrect = checkValidSpelling(userGuess, newGeoProperties);
+  newGeoProperties = isAnswerCorrect ? newGeoProperties : '';
   return { isAnswerCorrect, newGeoProperties };
+};
+
+const checkTypeAnswerUnordered = (userGuess, filteredGeoPaths) => {
+  const { quizAnswers, quizGuesses } = store.getState().quiz;
+  const answeredRegions = quizAnswers.filter((__, idx) => quizGuesses[idx]);
+  let isAnswerCorrect, newGeoProperties;
+  filteredGeoPaths
+    .filter(({ properties }) => !answeredRegions.includes(properties.regionID))
+    .some(({ properties }) => {
+      isAnswerCorrect = checkValidSpelling(userGuess, properties);
+      if (isAnswerCorrect) {
+        newGeoProperties = properties;
+        return true;
+      }
+      return false;
+    });
+  return { isAnswerCorrect, newGeoProperties };
+};
+
+const checkValidSpelling = (userGuess, regionObj) => {
+  const { regionClass } = store.getState().quiz;
+  return regionClass === 'name'
+    ? regionObj.spellings.some(name => simple(userGuess) === simple(name))
+    : simple(userGuess) === simple(regionObj.capital);
 };
 
 export const checkIfQuizIncomplete = () => {
@@ -72,19 +92,19 @@ export const checkIfQuizIncomplete = () => {
   );
 };
 
-export const removeQuizExceptions = (quizAnswers, quizType) => {
+export const removeQuizExceptions = quizAnswers => {
   const { currentMap } = store.getState().map;
-  const testedAttr = quizType.split('_')[1];
+  const { quizType, regionClass } = store.getState().quiz;
   let newQuizAnswers = [...quizAnswers];
   let removedAnswers = null;
   switch (currentMap) {
     case 'Asia':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['MAC', 'HKG'];
       }
       break;
     case 'United States of America':
-      if (testedAttr !== 'flag') {
+      if (regionClass !== 'flag') {
         removedAnswers = ['DC'];
       }
       break;
@@ -94,17 +114,17 @@ export const removeQuizExceptions = (quizAnswers, quizType) => {
       }
       break;
     case 'Germany':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['DE.BE', 'DE.HB', 'DE.HH'];
       }
       break;
     case 'France':
-      if (testedAttr === 'flag') {
+      if (regionClass === 'flag') {
         removedAnswers = ['FR.AO', 'FR.IF', 'FR.PL'];
       }
       break;
     case 'Japan':
-      if (testedAttr === 'capital') {
+      if (regionClass === 'capital') {
         removedAnswers = ['JP,TK'];
       }
       break;

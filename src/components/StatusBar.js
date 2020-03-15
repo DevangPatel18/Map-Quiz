@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Button, Modal } from 'semantic-ui-react';
 import StatusBarStyles from './styles/StatusBarStyles';
-import { startQuiz, closeQuiz } from '../actions/quizActions';
+import { startQuiz, giveUpQuiz, closeQuiz } from '../actions/quizActions';
 import msToTime from '../helpers/msToTime';
 import TimerStyles from './styles/TimerStyles';
 
@@ -44,6 +44,12 @@ class StatusBar extends Component {
     }
   };
 
+  giveUp = () => {
+    this.props.giveUpQuiz();
+    this.props.quiz.isTimerEnabled && clearInterval(this.timer);
+    this.setState({ time: 0, timerOn: false });
+  };
+
   close = () => {
     const { isTimerEnabled } = this.props.quiz;
     const { closeQuiz } = this.props;
@@ -76,15 +82,17 @@ class StatusBar extends Component {
       isTimerEnabled,
     } = this.props.quiz;
     const { time, open } = this.state;
+    const correctAnswers = quizGuesses.filter(x => x).length;
+    const answered = quizGuesses.filter(x => x | !x).length;
+    const total = quizAnswers.length;
     const percentComp = isQuizActive
-      ? parseInt((quizGuesses.length / quizAnswers.length) * 100, 10)
+      ? parseInt((answered / total) * 100, 10)
       : '';
-    const questionText = `Question: ${quizGuesses.length} / ${quizAnswers.length}`;
-    const scoreText = `Score: ${quizGuesses.filter(x => x).length}`;
-    const pauseStyle =
-      quizGuesses.length === quizAnswers.length ? { display: 'none' } : {};
+    const questionText = `Question: ${answered} / ${total}`;
+    const scoreText = `Score: ${correctAnswers}`;
+    const quizEndStyle = answered === total ? { display: 'none' } : {};
 
-    if (quizGuesses.length === quizAnswers.length && isTimerEnabled) {
+    if (answered === total && isTimerEnabled) {
       clearInterval(this.timer);
     }
 
@@ -110,8 +118,17 @@ class StatusBar extends Component {
                 color="yellow"
                 icon="pause"
                 onClick={this.pause}
-                style={pauseStyle}
+                style={quizEndStyle}
                 aria-label="pause quiz"
+              />
+              <Button
+                size="mini"
+                compact
+                inverted
+                icon="flag outline"
+                onClick={this.giveUp}
+                style={quizEndStyle}
+                aria-label="give up quiz"
               />
             </div>
           </TimerStyles>
@@ -154,4 +171,6 @@ const mapStateToProps = state => ({
   quiz: state.quiz,
 });
 
-export default connect(mapStateToProps, { startQuiz, closeQuiz })(StatusBar);
+export default connect(mapStateToProps, { startQuiz, giveUpQuiz, closeQuiz })(
+  StatusBar
+);

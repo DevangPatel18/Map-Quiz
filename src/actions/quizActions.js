@@ -2,7 +2,6 @@ import * as types from './types';
 import {
   removeQuizExceptions,
   generateAnswerArray,
-  generateQuizState,
   checkClickAnswer,
   checkTypeAnswer,
   getRegionIdsForQuiz,
@@ -10,20 +9,27 @@ import {
 import { partialMapRefresh } from './mapActions';
 import store from '../store';
 
-export const startQuiz = quizType => async dispatch => {
+export const startQuiz = () => async dispatch => {
   const { filterRegions } = store.getState().map;
   const quizRegionIds = getRegionIdsForQuiz();
   let quizAnswers = generateAnswerArray(quizRegionIds);
-  quizAnswers = removeQuizExceptions(quizAnswers, quizType);
-  const quizAttributes = generateQuizState(quizAnswers, quizType);
-  await dispatch({ type: types.SET_QUIZ_STATE, quizAttributes });
+  quizAnswers = removeQuizExceptions(quizAnswers);
+  await dispatch({ type: types.SET_QUIZ_STATE, quizAnswers });
   await partialMapRefresh(dispatch, filterRegions);
+};
+
+export const giveUpQuiz = () => dispatch => {
+  dispatch({ type: types.QUIZ_GIVE_UP });
 };
 
 export const closeQuiz = () => async dispatch => {
   const { filterRegions } = store.getState().map;
   await dispatch({ type: types.QUIZ_CLOSE });
   await partialMapRefresh(dispatch, filterRegions);
+};
+
+export const changeQuiz = quizType => dispatch => {
+  dispatch({ type: types.CHANGE_QUIZ, quizType });
 };
 
 export const processClickAnswer = geoProperties => async dispatch => {
@@ -77,13 +83,16 @@ export const toggleInfoTab = () => async dispatch => {
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
-  const { quizAnswers, quizIdx } = store.getState().quiz;
+  const { quizAnswers, quizIdx, isAnsFixed } = store.getState().quiz;
+  if (!isAnsFixed && !isAnswerCorrect) return;
+  const updatedRegionIDList = isAnsFixed
+    ? quizAnswers.slice(quizIdx, quizIdx + 2)
+    : [newGeoProperties.regionID];
   await dispatch({
     type: types.QUIZ_ANSWER,
     selectedProperties: newGeoProperties,
     isAnswerCorrect,
   });
-  const updatedRegionIDList = quizAnswers.slice(quizIdx, quizIdx + 2);
   await partialMapRefresh(dispatch, updatedRegionIDList);
 };
 

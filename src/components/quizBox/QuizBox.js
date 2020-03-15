@@ -11,6 +11,7 @@ import { capitalize } from '../../helpers/textHelpers';
 import QuizMenu from '../styles/QuizMenuStyles';
 import { setRegionCheckbox, tooltipToggle } from '../../actions/mapActions';
 import {
+  changeQuiz,
   startQuiz,
   closeQuiz,
   setLabel,
@@ -19,25 +20,24 @@ import {
 } from '../../actions/quizActions';
 
 const generateQuizOptions = regionType => [
-  { label: `Click ${regionType}`, value: 'click_name' },
-  { label: `Type ${regionType}`, value: 'type_name' },
-  { label: 'Click Capital', value: 'click_capital' },
-  { label: 'Type Capital', value: 'type_capital' },
-  { label: `Click ${regionType} from matching Flag`, value: 'click_flag' },
+  { label: `Click ${regionType}`, value: 'click_name_ordered' },
+  { label: `Type Marked ${regionType}`, value: 'type_name_ordered' },
+  { label: `Type any ${regionType}`, value: 'type_name_unordered' },
+  { label: 'Click Capital', value: 'click_capital_ordered' },
+  { label: 'Type Marked Capital', value: 'type_capital_ordered' },
+  { label: 'Type any Capital', value: 'type_capital_unordered' },
+  { label: `Click ${regionType} from Flag`, value: 'click_flag_ordered' },
 ];
 
 class QuizBox extends Component {
   constructor() {
     super();
 
-    this.state = {
-      quizType: 'click_name',
-      regionMenu: false,
-    };
+    this.state = { regionMenu: false };
   }
 
   handleQuizChange = (event, { value }) => {
-    this.setState({ quizType: value });
+    this.props.changeQuiz(value);
   };
 
   handleLabelToggle = (event, data) => {
@@ -60,7 +60,7 @@ class QuizBox extends Component {
   };
 
   handleQuizOptions = subRegionNameCap => {
-    const { quizType } = this.state;
+    const { quizType } = this.props.quiz;
     const { currentMap } = this.props.map;
     let quizOptions = generateQuizOptions(subRegionNameCap);
     if (mapViewsWithNoFlags.includes(currentMap)) {
@@ -82,9 +82,7 @@ class QuizBox extends Component {
   };
 
   start = () => {
-    const { startQuiz } = this.props;
-    const { quizType } = this.state;
-    startQuiz(quizType);
+    this.props.startQuiz();
   };
 
   render() {
@@ -218,6 +216,7 @@ const getAppState = createSelector(
   state => state.map.currentMap,
   state => state.map.subRegionName,
   state => state.map.tooltip,
+  state => state.quiz.quizType,
   state => state.quiz.markerToggle,
   state => state.quiz.areExternalRegionsOnQuiz,
   state => state.quiz.isTimerEnabled,
@@ -226,17 +225,19 @@ const getAppState = createSelector(
     currentMap,
     subRegionName,
     tooltip,
+    quizType,
     markerToggle,
     areExternalRegionsOnQuiz,
     isTimerEnabled
   ) => ({
     map: { checkedRegions, currentMap, subRegionName, tooltip },
-    quiz: { markerToggle, areExternalRegionsOnQuiz, isTimerEnabled },
+    quiz: { quizType, markerToggle, areExternalRegionsOnQuiz, isTimerEnabled },
   })
 );
 
 export default connect(getAppState, {
   setRegionCheckbox,
+  changeQuiz,
   startQuiz,
   closeQuiz,
   setLabel,

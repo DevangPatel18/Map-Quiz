@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Table, Header } from 'semantic-ui-react';
+import { List, Table, Header, Popup, Icon } from 'semantic-ui-react';
 
 const cellStyle = {
   padding: '0.3rem 0.7rem',
@@ -88,7 +88,7 @@ export const generateTextItem = (obj = {}) => {
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
-      {text && ` ${text}`}
+      {text && ` ${text.toLocaleString()}`}
     </List.Item>
   );
 };
@@ -120,10 +120,20 @@ export const generateValueItem = (obj = {}) => {
   return (
     <List.Item>
       {title && <strong>{capWithSpacing(title)}:</strong>}
-      {valObj.value && ` ${numScale(valObj.value)}`}
-      {valObj.units && ` ${valObj.units}`}
-      {valObj.date && ` (${valObj.date})`}
-      {valObj.note && ` (${valObj.note})`}
+      <span>
+        {valObj.value && ` ${valObj.value && valObj.value.toLocaleString()}`}
+        {valObj.units && ` ${valObj.units}`}
+        {valObj.date && ` (${valObj.date})`}
+        {valObj.note && (
+          <Popup
+            content={generateList(valObj.note.split(';'))}
+            size="mini"
+            trigger={
+              <Icon style={{ marginLeft: '0.5rem' }} name="info circle" />
+            }
+          />
+        )}
+      </span>
     </List.Item>
   );
 };
@@ -187,6 +197,49 @@ export const generateTable = (table, title) => {
   );
 };
 
+export const generateTablefromObjArray = (obj = {}) => {
+  const entries = Object.entries(obj);
+  if (entries.length === 0) return '';
+  const [title, array] = entries[0];
+
+  if (!Array.isArray(array)) return;
+
+  const columns = Object.keys(array[0]);
+
+  if (columns.length === 0) return '';
+
+  return (
+    <Table unstackable celled compact collapsing>
+      <Table.Header>
+        <Table.Row textAlign="center">
+          <Table.HeaderCell colSpan={columns.length}>
+            {capWithSpacing(title)}
+          </Table.HeaderCell>
+        </Table.Row>
+        <Table.Row textAlign="center">
+          {columns.map((key, idx) => (
+            <Table.HeaderCell key={idx}>{capWithSpacing(key)}</Table.HeaderCell>
+          ))}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {array.map((entry, idx) => (
+          <Table.Row key={idx}>
+            <Table.Cell>
+              {entry[columns[0]] && entry[columns[0]].toLocaleString()}
+            </Table.Cell>
+            {columns.slice(1).map((key, jdx) => (
+              <Table.Cell key={jdx} textAlign="right">
+                {entry[key] && entry[key].toLocaleString()}
+              </Table.Cell>
+            ))}
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
+
 export const generateTableList = (data = {}) => {
   const { list, title, note, ...rest } = data;
   const extraLists = Object.entries(rest).filter(entry =>
@@ -196,12 +249,12 @@ export const generateTableList = (data = {}) => {
   let listA = [...list],
     listB,
     columns = 1;
-  if (list.length > 1) {
+  if (list.length > 6) {
     listB = listA.splice(Math.ceil(listA.length / 2));
     columns = 2;
   }
   return (
-    <Table columns={columns} unstackable celled compact>
+    <Table columns={columns} unstackable celled compact collapsing>
       <Table.Header>
         <Table.Row textAlign="center">
           <Table.HeaderCell colSpan={columns}>
@@ -235,8 +288,11 @@ export const generateTableList = (data = {}) => {
           ))}
         {note && (
           <Table.Row>
-            <Table.Cell style={cellStyle} colSpan={columns}>
-              <em style={{ fontSize: '0.8rem' }}>Note: {note}</em>
+            <Table.Cell
+              style={{ ...cellStyle, fontSize: '0.8rem' }}
+              colSpan={columns}
+            >
+              {generateSubListItem({ note })}
             </Table.Cell>
           </Table.Row>
         )}

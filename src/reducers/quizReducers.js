@@ -14,12 +14,14 @@ const emptySelectedProperties = {
 
 const initialState = {
   quizAnswers: [],
-  quizType: null,
+  quizType: 'click_name_ordered',
   isQuizActive: false,
   quizIdx: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
   isTypeQuizActive: false,
+  isAnsFixed: true,
+  regionClass: 'name',
   markerToggle: '',
   infoTabShow: false,
   areExternalRegionsOnQuiz: true,
@@ -48,18 +50,53 @@ export default function(state = initialState, action) {
         infoTabShow: action.infoTabShow,
       };
     case types.QUIZ_ANSWER:
+      const quizGuessesUpdated = state.quizGuesses.slice();
+      if (state.isAnsFixed) {
+        quizGuessesUpdated.push(action.isAnswerCorrect);
+      } else {
+        const { regionID } = action.selectedProperties;
+        const idx = state.quizAnswers.indexOf(regionID);
+        if (idx < 0) {
+          console.log('regionID not found in answer array');
+          return { ...state };
+        }
+        quizGuessesUpdated[idx] = action.isAnswerCorrect;
+      }
       return {
         ...state,
         selectedProperties:
           action.selectedProperties || emptySelectedProperties,
-        quizGuesses: [...state.quizGuesses, action.isAnswerCorrect],
+        quizGuesses: quizGuessesUpdated,
         quizIdx: state.quizIdx + 1,
         infoTabShow: false,
+      };
+    case types.CHANGE_QUIZ:
+      const [behaviour, regionClass, sortType] = action.quizType.split('_');
+      return {
+        ...state,
+        quizType: action.quizType,
+        isTypeQuizActive: behaviour === 'type',
+        isAnsFixed: sortType === 'ordered',
+        regionClass,
       };
     case types.SET_QUIZ_STATE:
       return {
         ...state,
-        ...action.quizAttributes,
+        quizAnswers: action.quizAnswers,
+        isQuizActive: true,
+        quizIdx: 0,
+        quizGuesses: [],
+        selectedProperties: emptySelectedProperties,
+        infoTabShow: false,
+      };
+    case types.QUIZ_GIVE_UP:
+      const newQuizGuesses = state.quizAnswers.map((_, idx) =>
+        state.quizGuesses[idx] ? state.quizGuesses[idx] : false
+      );
+      return {
+        ...state,
+        quizIdx: state.quizAnswers.length,
+        quizGuesses: newQuizGuesses,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
@@ -69,9 +106,7 @@ export default function(state = initialState, action) {
         quizAnswers: [],
         quizGuesses: [],
         isQuizActive: false,
-        quizType: null,
         quizIdx: null,
-        isTypeQuizActive: false,
         selectedProperties: emptySelectedProperties,
         infoTabShow: false,
       };
