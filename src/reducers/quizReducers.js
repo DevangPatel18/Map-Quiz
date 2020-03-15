@@ -20,7 +20,7 @@ const initialState = {
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
   isTypeQuizMarked: false,
-  isAnsFixed: true,
+  isQtnFixed: true,
   regionClass: 'name',
   markerToggle: '',
   infoTabShow: false,
@@ -51,7 +51,7 @@ export default function(state = initialState, action) {
       };
     case types.QUIZ_ANSWER:
       const quizGuessesUpdated = state.quizGuesses.slice();
-      if (state.isAnsFixed) {
+      if (state.isQtnFixed) {
         quizGuessesUpdated.push(action.isAnswerCorrect);
       } else {
         const { regionID } = action.selectedProperties;
@@ -76,7 +76,7 @@ export default function(state = initialState, action) {
         ...state,
         quizType: action.quizType,
         isTypeQuizMarked: behaviour === 'type',
-        isAnsFixed: sortType === 'ordered',
+        isQtnFixed: sortType === 'ordered',
         regionClass,
       };
     case types.SET_QUIZ_STATE:

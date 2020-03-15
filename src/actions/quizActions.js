@@ -83,9 +83,9 @@ export const toggleInfoTab = () => async dispatch => {
 
 export const processTypeAnswer = (userGuess = null) => async dispatch => {
   const { isAnswerCorrect, newGeoProperties } = checkTypeAnswer(userGuess);
-  const { quizAnswers, quizIdx, isAnsFixed } = store.getState().quiz;
-  if (!isAnsFixed && !isAnswerCorrect) return;
-  const updatedRegionIDList = isAnsFixed
+  const { quizAnswers, quizIdx, isQtnFixed } = store.getState().quiz;
+  if (!isQtnFixed && !isAnswerCorrect) return;
+  const updatedRegionIDList = isQtnFixed
     ? quizAnswers.slice(quizIdx, quizIdx + 2)
     : [newGeoProperties.regionID];
   await dispatch({

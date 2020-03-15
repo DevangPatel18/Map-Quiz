@@ -90,25 +90,25 @@ export const updateGeographyQuizStyle = (regionID, geoStyleBasic, stroke) => {
     quizAnswers,
     isTypeQuizMarked,
     quizIdx,
-    isAnsFixed,
+    isQtnFixed,
   } = store.getState().quiz;
   const geoQuizIdx = quizAnswers.indexOf(regionID);
 
   // Fills region with name input request as yellow
-  if (isTypeQuizMarked && isAnsFixed && quizAnswers[quizIdx] === regionID) {
+  if (isTypeQuizMarked && isQtnFixed && quizAnswers[quizIdx] === regionID) {
     geoStyleBasic.defaultColor = PROMPT_COLOR;
     geoStyleBasic.hoverColor = PROMPT_COLOR;
   }
 
   // Fills status of region name guess, green for correct and red for incorrect
-  if (isTypeQuizMarked && isAnsFixed && quizGuesses[geoQuizIdx] !== undefined) {
+  if (isTypeQuizMarked && isQtnFixed && quizGuesses[geoQuizIdx] !== undefined) {
     const answer = quizGuesses[geoQuizIdx] ? RIGHT_ANSWER_COLOR : WRONG_ANSWER_COLOR;
     geoStyleBasic.defaultColor = answer;
     geoStyleBasic.hoverColor = answer;
   }
 
   // Fills status of correct region name guess for unordered quizzes
-  if (isTypeQuizMarked && !isAnsFixed && quizGuesses[geoQuizIdx]) {
+  if (isTypeQuizMarked && !isQtnFixed && quizGuesses[geoQuizIdx]) {
     geoStyleBasic.defaultColor = RIGHT_ANSWER_COLOR;
     geoStyleBasic.hoverColor = RIGHT_ANSWER_COLOR;
   }
