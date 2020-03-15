@@ -42,9 +42,9 @@ class Map extends Component {
 
   handleRegionClick = geographyPath => {
     if (Object.keys(geographyPath.properties).length === 0) return;
-    const { isTypeQuizActive, selectedProperties } = this.props.quiz;
+    const { isTypeQuizMarked, selectedProperties } = this.props.quiz;
     const { processClickAnswer, loadNewInfoTab, toggleInfoTab } = this.props;
-    if (isTypeQuizActive) return;
+    if (isTypeQuizMarked) return;
     const geoProperties = geographyPath.properties;
     if (checkIfQuizIncomplete()) {
       processClickAnswer(geoProperties);

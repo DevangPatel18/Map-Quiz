@@ -19,7 +19,7 @@ const initialState = {
   quizIdx: null,
   quizGuesses: [],
   selectedProperties: emptySelectedProperties,
-  isTypeQuizActive: false,
+  isTypeQuizMarked: false,
   isAnsFixed: true,
   regionClass: 'name',
   markerToggle: '',
@@ -75,7 +75,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         quizType: action.quizType,
-        isTypeQuizActive: behaviour === 'type',
+        isTypeQuizMarked: behaviour === 'type',
         isAnsFixed: sortType === 'ordered',
         regionClass,
       };
