@@ -164,7 +164,8 @@ export const getMapViewIds = worldDataSet => {
   const dataArr = regionIdUniqueGeoPaths.map(obj => obj.properties);
   const mapViewRegionIds = {
     'North & Central America': dataArr.filter(obj =>
-      ['Northern America', 'Central America'].includes(obj.subregion)
+      ['Northern America', 'North America', 'Central America'].includes(
+        obj.subregion)
     ),
     'South America': dataArr.filter(obj => obj.subregion === 'South America'),
     Caribbean: dataArr.filter(obj => obj.subregion === 'Caribbean'),
