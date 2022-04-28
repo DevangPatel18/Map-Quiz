@@ -287,7 +287,7 @@ export const getRegionSearchObjectArray = mapRegions =>
     .filter(x => x.key)
     .filter(
       x =>
-        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq'].includes(
           x.key
         )
     )
