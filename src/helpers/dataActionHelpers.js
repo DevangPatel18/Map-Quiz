@@ -85,7 +85,7 @@ const copyWorldGeographyPaths = () =>
 
 const getRestCountryData = async () =>
   fetch(
-    `https://restcountries.eu/rest/v2/all?fields=${restDataFields.join(';')}`
+    `https://restcountries.com/v2/all?fields=${restDataFields.join(',')}`
   ).then(restCountries => {
     if (restCountries.status !== 200) {
       console.log(`There was a problem: ${restCountries.status}`);
@@ -150,14 +150,22 @@ const getWorldCapitalMarkers = geographyPaths =>
       return capitalMarkers;
     }, []);
 
-const checkGeoPathValidId = geographyPath => +geographyPath.id !== -99;
+const checkGeoPathValidId = geographyPath => {
+  switch(+geographyPath.id) {
+    case -99:
+      return false;
+    default:
+      return true;
+  }
+};
 
 export const getMapViewIds = worldDataSet => {
   const regionIdUniqueGeoPaths = getRegionIdUniqueGeoPaths(worldDataSet.geographyPaths)
   const dataArr = regionIdUniqueGeoPaths.map(obj => obj.properties);
   const mapViewRegionIds = {
     'North & Central America': dataArr.filter(obj =>
-      ['Northern America', 'Central America'].includes(obj.subregion)
+      ['Northern America', 'North America', 'Central America'].includes(
+        obj.subregion)
     ),
     'South America': dataArr.filter(obj => obj.subregion === 'South America'),
     Caribbean: dataArr.filter(obj => obj.subregion === 'Caribbean'),
@@ -280,7 +288,7 @@ export const getRegionSearchObjectArray = mapRegions =>
     .filter(x => x.key)
     .filter(
       x =>
-        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq', 'ko'].includes(
+        !['bl', 'cw', 'gg', 'im', 'je', 'mf', 'ss', 'sx', 'bq'].includes(
           x.key
         )
     )

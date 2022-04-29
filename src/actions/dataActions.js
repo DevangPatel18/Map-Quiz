@@ -115,6 +115,11 @@ export const getRegionSearchOptions = currentMap => dispatch => {
 
   const regionSearchOptions = getRegionSearchObjectArray(mapRegions);
 
+  const kosovo = regionSearchOptions.find(option => option.text.includes(
+    'Kosovo'));
+  if(kosovo) {
+    delete kosovo.flag;
+  }
   dispatch({
     type: types.GET_REGION_SEARCH_LIST,
     currentMap,

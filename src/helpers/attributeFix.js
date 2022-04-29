@@ -17,9 +17,9 @@ const DataFix = data => {
   ['VEN', 'BOL', 'GBR', 'MDA', 'MKD', 'PSE', 'SYR', 'IRN', 'PRK', 'KOR', 'LAO', 'BRN', 'COD', 'TZA', 'FSM', 'BLM', 'KNA', 'LCA', 'MAF', 'SHN', 'SPM', 'VCT', 'KOS', 'VAT']
     .forEach((code) => {
       const country = countryData.find(x => x.alpha3Code === code);
-      if (country.altSpellings) {
+      if (country?.altSpellings) {
         country.altSpellings.push(country.name);
-      } else {
+      } else if(country) {
         country.altSpellings = [country.name];
       }
     });
@@ -31,7 +31,7 @@ const DataFix = data => {
     { alpha: 'GBR', attribute: 'name', value: 'United Kingdom' },
     { alpha: 'MDA', attribute: 'name', value: 'Moldova' },
     { alpha: 'MKD', attribute: 'name', value: 'Macedonia' },
-    { alpha: 'KOS', attribute: 'name', value: 'Kosovo' },
+    { alpha: 'UNK', attribute: 'name', value: 'Kosovo' },
     { alpha: 'PSE', attribute: 'name', value: 'Palestine' },
     { alpha: 'SYR', attribute: 'name', value: 'Syria' },
     { alpha: 'IRN', attribute: 'name', value: 'Iran' },
@@ -63,8 +63,8 @@ const DataFix = data => {
     { alpha: 'GLP', attribute: 'area', value: 1628 },
     { alpha: 'SJM', attribute: 'area', value: 62049 },
     // Set numericCode and alpha2Code for Kosovo
-    { alpha: 'KOS', attribute: 'numericCode', value: 999 },
-    { alpha: 'KOS', attribute: 'alpha2Code', value: 'KO' },
+    { alpha: 'UNK', attribute: 'numericCode', value: 999 },
+    { alpha: 'UNK', attribute: 'alpha2Code', value: 'KO' },
     // Resolve Holy See capital name conflict with Italy, and change name to common designation
     { alpha: 'VAT', attribute: 'capital', value: 'Vatican City' },
     { alpha: 'VAT', attribute: 'name', value: 'Vatican City' },
